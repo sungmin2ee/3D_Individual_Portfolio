@@ -6,6 +6,7 @@
 #include "Prototype_Manager.h"
 #include "Object_Manager.h"
 #include "Renderer.h"
+#include "CImguiMgr.h"
 
 CGameInstance::CGameInstance()
 {
@@ -41,12 +42,18 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, ComPtr<I
     if (nullptr == m_pLevel_Manager)
         return E_FAIL;
 
-
+    m_pImguiMgr = CImguiMgr::Create();
+    if (nullptr == m_pImguiMgr)
+        return E_FAIL;
+    m_pImguiMgr->Ready_Imgui(EngineDesc.hWnd, pOutDevice, pOutContext);
+    
     return S_OK;
 }
 
 void CGameInstance::Update_Engine(_float fTimeDelta)
 {
+
+    m_pImguiMgr->Update_Imgui();
     m_pObject_Manager->Priority_Update(fTimeDelta);
 
     m_pObject_Manager->Update(fTimeDelta);
@@ -54,6 +61,8 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
     m_pObject_Manager->Late_Update(fTimeDelta);
 
     m_pLevel_Manager->Update(fTimeDelta);
+
+    
 }
 
 HRESULT CGameInstance::Draw()
@@ -65,6 +74,8 @@ HRESULT CGameInstance::Draw()
     if (FAILED(m_pLevel_Manager->Render()))
         return E_FAIL;
 
+    if (FAILED(m_pImguiMgr->Render_Imgui()))
+        return E_FAIL;
     return S_OK;
 }
 
@@ -147,6 +158,16 @@ HRESULT CGameInstance::Add_RenderObject(RENDERGROUP eRenderGroup, shared_ptr<CGa
 }
 #pragma endregion
 
+
+#pragma region IMGUI_MANAGER
+
+bool CGameInstance::WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+    return m_pImguiMgr->WinProc(hWnd, message, wParam, lParam);
+}
+
+#pragma endregion
+
 void CGameInstance::Release_Engine()
 {
     m_pRenderer.reset();
@@ -159,8 +180,11 @@ void CGameInstance::Release_Engine()
 
     m_pPrototype_Manager.reset();
 
+    m_pImguiMgr.reset();
+
     m_pGraphic_Device->Shutdown();
 
     m_pGraphic_Device.reset();
+
 }
 

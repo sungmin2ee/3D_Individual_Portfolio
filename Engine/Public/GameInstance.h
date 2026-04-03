@@ -48,6 +48,11 @@ public:
 #pragma region RENDERER
 	HRESULT Add_RenderObject(RENDERGROUP eRenderGroup, shared_ptr<CGameObject> pRenderObject);
 #pragma endregion
+
+#pragma region IMGUI_MANAGER
+	bool WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+#pragma endregion
+
 private:
 	unique_ptr<class CGraphic_Device>				m_pGraphic_Device = { nullptr };
 	unique_ptr<class CTimer_Manager>				m_pTimer_Manager = { nullptr };
@@ -55,6 +60,7 @@ private:
 	unique_ptr<class CPrototype_Manager>			m_pPrototype_Manager = { nullptr };
 	unique_ptr<class CObject_Manager>				m_pObject_Manager = { nullptr };
 	unique_ptr<class CRenderer>						m_pRenderer = { nullptr };
+	unique_ptr<class CImguiMgr>						m_pImguiMgr = { nullptr };
 
 
 public:

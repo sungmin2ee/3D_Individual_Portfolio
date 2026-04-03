@@ -170,6 +170,9 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+
+    if (FAILED(CGameInstance::Get().WinProc(hWnd, message, wParam, lParam)))
+        return E_FAIL;
     switch (message)
     {
     case WM_COMMAND:

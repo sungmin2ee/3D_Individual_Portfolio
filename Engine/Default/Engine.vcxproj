@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\CImguiMgr.h" />
     <ClInclude Include="..\Public\Component.h" />
     <ClInclude Include="..\Public\Engine_Defines.h" />
     <ClInclude Include="..\Public\Engine_Enum.h" />
@@ -41,6 +42,15 @@
     <ClInclude Include="..\Public\Transform.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\ThirdParty\imgui\imgui-1.83\imgui.cpp" />
+    <ClCompile Include="..\..\ThirdParty\imgui\imgui-1.83\imgui_demo.cpp" />
+    <ClCompile Include="..\..\ThirdParty\imgui\imgui-1.83\imgui_draw.cpp" />
+    <ClCompile Include="..\..\ThirdParty\imgui\imgui-1.83\imgui_impl_dx11.cpp" />
+    <ClCompile Include="..\..\ThirdParty\imgui\imgui-1.83\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\..\ThirdParty\imgui\imgui-1.83\imgui_tables.cpp" />
+    <ClCompile Include="..\..\ThirdParty\imgui\imgui-1.83\imgui_widgets.cpp" />
+    <ClCompile Include="..\..\ThirdParty\imgui\ImGuizmo-1.83\ImGuizmo.cpp" />
+    <ClCompile Include="..\Private\CImguiMgr.cpp" />
     <ClCompile Include="..\Private\Component.cpp" />
     <ClCompile Include="..\Private\GameInstance.cpp" />
     <ClCompile Include="..\Private\GameObject.cpp" />
@@ -149,7 +159,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;ENGINE_EXPORTS;_WINDOWS;_USRDLL;IMGUI_DEFINE_MATH_OPERATORS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;ENGINE_EXPORTS;_WINDOWS;_USRDLL;IMGUI_DEFINE_MATH_OPERATORS;IMGUI_API=__declspec(dllexport);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>

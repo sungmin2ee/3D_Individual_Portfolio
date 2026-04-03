@@ -1,7 +1,7 @@
 #include "MainApp.h"
 #include "GameInstance.h"
-
 #include "Level_Loading.h"
+
 CMainApp::CMainApp()
 {
 }
@@ -13,6 +13,10 @@ CMainApp::~CMainApp()
 
 HRESULT CMainApp::Initialize()
 {
+
+	
+
+
 	ENGINE_DESC EngineDesc{};
 	EngineDesc.hWnd = g_hWnd;
 	EngineDesc.eWinMode = WINMODE::WIN;
@@ -24,12 +28,39 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;
 	if (FAILED(Start_Level(LEVEL::LOGO)))
 		return E_FAIL;
+	
 	return S_OK;
 }
 
 void CMainApp::Update(float fTimeDelta)
 {
 	CGameInstance::Get().Update_Engine(fTimeDelta);
+	ImGui::Begin("My First Tool");
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
+			if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenuBar();
+	}
+	XMFLOAT4 m_vColor = { 0.3f, 0.3f, 0.3f, 1.0f };
+	// Edit a color (stored as ~4 floats)
+	ImGui::ColorEdit4("Color", (float*)&m_vColor);
+
+	// Plot some values
+	const float my_values[] = { 0.2f, 0.1f, 1.0f, 0.5f, 0.9f, 2.2f };
+	ImGui::PlotLines("Frame Times", my_values, IM_ARRAYSIZE(my_values));
+
+	// Display contents in a scrolling region
+	ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
+	ImGui::BeginChild("Scrolling");
+	for (int n = 0; n < 50; n++)
+		ImGui::Text("%04d: Some text", n);
+	ImGui::EndChild();
+	ImGui::End();
 
 }
 
