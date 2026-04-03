@@ -4,6 +4,33 @@
     <Filter Include="99.Default">
       <UniqueIdentifier>{24d02944-0f0f-4672-8508-5497e38af20c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="00.MainApp">
+      <UniqueIdentifier>{abfb389d-e421-4292-bdbd-a256b3a82dfe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="98.Defines">
+      <UniqueIdentifier>{ece059f9-1d9f-42b9-a833-0cf489e43bf4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels">
+      <UniqueIdentifier>{e76a50fd-a3fe-4472-bd3c-6217cc6bdb8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\GamePlay">
+      <UniqueIdentifier>{899091c6-f0f6-465d-86c8-0f05aba72f86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\Loading">
+      <UniqueIdentifier>{3e79cb57-a720-47f4-a876-c1fa5cc90ee4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\Logo">
+      <UniqueIdentifier>{cafd4acc-c595-40e9-90bf-9b3c26dd061a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\Loading\Loader">
+      <UniqueIdentifier>{07161b62-bf41-4681-955f-0388e0645021}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject">
+      <UniqueIdentifier>{d2cffcae-62d1-4c6b-8129-78d64cd44044}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\00.BackGround">
+      <UniqueIdentifier>{a5614f95-22d8-423c-9c18-a5bdb7ab43d7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -18,10 +45,49 @@
     <ClInclude Include="Resource.h">
       <Filter>99.Default</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MainApp.h">
+      <Filter>00.MainApp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Client_Defines.h">
+      <Filter>98.Defines</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Loader.h">
+      <Filter>01.Levels\Loading\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Logo.h">
+      <Filter>01.Levels\Logo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Loading.h">
+      <Filter>01.Levels\Loading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BackGround.h">
+      <Filter>02.GameObject\00.BackGround</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_GamePlay.h">
+      <Filter>01.Levels\GamePlay</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
       <Filter>99.Default</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MainApp.cpp">
+      <Filter>00.MainApp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Loader.cpp">
+      <Filter>01.Levels\Loading\Loader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Logo.cpp">
+      <Filter>01.Levels\Logo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Loading.cpp">
+      <Filter>01.Levels\Loading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BackGround.cpp">
+      <Filter>02.GameObject\00.BackGround</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_GamePlay.cpp">
+      <Filter>01.Levels\GamePlay</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
