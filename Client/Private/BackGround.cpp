@@ -3,7 +3,7 @@
 #include "GameInstance.h"
 
 CBackGround::CBackGround(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
-	: CGameObject { pDevice, pContext }
+	: CGameObject{ pDevice, pContext }
 
 {
 }
@@ -15,7 +15,7 @@ CBackGround::CBackGround(const CBackGround& Prototype)
 
 CBackGround::~CBackGround()
 {
-
+	int a = 10;
 }
 
 

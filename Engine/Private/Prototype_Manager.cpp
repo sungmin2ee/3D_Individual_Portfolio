@@ -59,6 +59,7 @@ CPrototype* CPrototype_Manager::Find_Prototype(uint32_t iLevelIndex, const _wstr
 	auto	iter = m_pPrototypes[iLevelIndex].find(strPrototypeTag);
 	if (iter == m_pPrototypes[iLevelIndex].end())
 		return nullptr;
+
 	return iter->second.get();
 }
 

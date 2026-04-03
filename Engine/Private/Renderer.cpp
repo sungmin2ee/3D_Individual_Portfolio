@@ -1,8 +1,8 @@
 #include "Renderer.h"
 
 CRenderer::CRenderer(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
-    : m_pDevice{ pDevice }
-    , m_pContext{ pContext }
+    : m_pDevice { pDevice }
+    , m_pContext { pContext }
 {
 }
 
@@ -17,7 +17,7 @@ HRESULT CRenderer::Initialize()
 
 HRESULT CRenderer::Add_RenderObject(RENDERGROUP eRenderGroup, shared_ptr<CGameObject> pRenderObject)
 {
-    if (eRenderGroup >= RENDERGROUP::END ||
+    if (eRenderGroup >= RENDERGROUP::END || 
         nullptr == pRenderObject)
         return E_FAIL;
 
@@ -39,7 +39,7 @@ HRESULT CRenderer::Draw()
 
     if (FAILED(Render_UI()))
         return E_FAIL;
-
+    
     return S_OK;
 }
 
