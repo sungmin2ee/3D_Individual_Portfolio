@@ -35,7 +35,10 @@ HRESULT CMainApp::Initialize()
 void CMainApp::Update(float fTimeDelta)
 {
 	CGameInstance::Get().Update_Engine(fTimeDelta);
+	_float fps = 1 / fTimeDelta;
 	ImGui::Begin("My First Tool");
+	ImGui::Text("Current FPS: %.2f", fps);
+	ImGui::Separator(); // ±¸ºÐ¼±
 	if (ImGui::BeginMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))

@@ -55,6 +55,15 @@
     <Filter Include="98.ImGui\Gizmo">
       <UniqueIdentifier>{d36bf000-3480-481a-ac28-d5cd31ee5264}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97.Assimp">
+      <UniqueIdentifier>{3dceab2d-5d2c-4ea9-8622-515bbf5d93bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.Assimp\TextureLoader">
+      <UniqueIdentifier>{75d12d3b-d7bd-44d6-a688-4729f8a17603}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="97.Assimp\ModelLoader">
+      <UniqueIdentifier>{2c666ee2-351f-43db-983a-f70b7a71c5a1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -119,6 +128,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\CImguiMgr.h">
       <Filter>98.ImGui\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TextureLoader.h">
+      <Filter>97.Assimp\TextureLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Mesh.h">
+      <Filter>97.Assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ModelLoader.h">
+      <Filter>97.Assimp\ModelLoader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -190,6 +208,15 @@
     </ClCompile>
     <ClCompile Include="..\..\ThirdParty\imgui\ImGuizmo-1.83\ImGuizmo.cpp">
       <Filter>98.ImGui\Gizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TextureLoader.cpp">
+      <Filter>97.Assimp\TextureLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Mesh.cpp">
+      <Filter>97.Assimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ModelLoader.cpp">
+      <Filter>97.Assimp\ModelLoader</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

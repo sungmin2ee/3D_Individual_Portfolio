@@ -13,6 +13,17 @@ namespace Engine
 		int32_t		iNumLevels;
 	}ENGINE_DESC;
 
+	struct VERTEX {
+		FLOAT X, Y, Z;
+		XMFLOAT2 texcoord;
+	};
+
+	struct Texture {
+		std::string type;
+		std::string path;
+		ComPtr<ID3D11ShaderResourceView> texture;
+
+	};
 }
 
 
