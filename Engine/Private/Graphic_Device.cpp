@@ -85,6 +85,7 @@ HRESULT CGraphic_Device::Clear_BackBuffer_View(const _float4* pClearColor)
 	// m_pGraphic_Device->Clear(어떤 영역만큼 지울까, 어떤 것들을 지울까? , 뭘로 지울가. );	
 
 	/* 백버퍼를 초기화한다.  */
+
 	m_pDeviceContext->ClearRenderTargetView(m_pBackBufferRTV.Get(), reinterpret_cast<const _float*>(pClearColor));
 
 	return S_OK;
@@ -112,6 +113,25 @@ HRESULT CGraphic_Device::Present()
 
 void CGraphic_Device::Shutdown()
 {
+
+//#if defined(DEBUG) || defined(_DEBUG)
+//	ID3D11Debug* d3dDebug;
+//	HRESULT hr = m_pDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&d3dDebug));
+//	if (SUCCEEDED(hr))
+//	{
+//		OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
+//		OutputDebugStringW(L"                                                                    D3D11 Live Object ref Count Checker \r ");
+//		OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
+//
+//		hr = d3dDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
+//
+//		OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
+//		OutputDebugStringW(L"                                                                    D3D11 Live Object ref Count Checker END \r ");
+//		OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
+//	}
+//	if (d3dDebug != nullptr)            d3dDebug->Release();
+//#endif
+
 	m_pDeviceContext->ClearState();
 	m_pDeviceContext->Flush();
 
@@ -121,26 +141,8 @@ void CGraphic_Device::Shutdown()
 	m_pDepthStencilView.Reset();
 	m_pDeviceContext.Reset();
 
-	//
-	//
-	//#if defined(DEBUG) || defined(_DEBUG)
-	//	ID3D11Debug* d3dDebug;
-	//	HRESULT hr = m_pDevice->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(&d3dDebug));
-	//	if (SUCCEEDED(hr))
-	//	{
-	//		OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
-	//		OutputDebugStringW(L"                                                                    D3D11 Live Object ref Count Checker \r ");
-	//		OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
-	//
-	//		hr = d3dDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
-	//
-	//		OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
-	//		OutputDebugStringW(L"                                                                    D3D11 Live Object ref Count Checker END \r ");
-	//		OutputDebugStringW(L"----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- \r ");
-	//	}
-	//	if (d3dDebug != nullptr)            d3dDebug->Release();
-	//#endif
-	//
+	
+
 
 	m_pDevice.Reset();
 }

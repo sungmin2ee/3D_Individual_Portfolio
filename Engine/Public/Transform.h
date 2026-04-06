@@ -47,9 +47,9 @@ public:
 	void Rotation(_fvector vAxis, _float fAngle);
 	void Turn(_fvector vAxis, _float fTimeDelta);
 
-	void LookAt();
-	void Scaling();
-	void Chase();
+	void LookAt(_fvector vAt);
+	void Scaling(_float fScaleX, _float fScaleY, _float fScaleZ);
+	void Chase(_fvector vGoal, _float fTimeDelta, _float fLimit);
 
 
 private:

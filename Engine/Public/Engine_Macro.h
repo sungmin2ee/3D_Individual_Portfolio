@@ -23,7 +23,7 @@
 #define ENGINE_DLL		_declspec(dllimport)
 #endif
 
-
+#define MAX_BONE_INFLUENCE 4
 #define NULL_CHECK( _ptr)	\
 		{if( _ptr == 0){ return;}}
 

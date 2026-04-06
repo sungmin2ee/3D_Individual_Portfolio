@@ -2,6 +2,9 @@
 
 #include "GameInstance.h"
 #include "BackGround.h"
+#include "Player.h"
+#include "Model.h"
+#include "Shader.h"
 
 CLoader::CLoader(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: m_pDevice{ pDevice }
@@ -34,6 +37,16 @@ HRESULT CLoader::Initialize(LEVEL eNextLevelIndex)
 
 	m_eNextLevelIndex = eNextLevelIndex;
 
+	//if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO),
+	//	TEXT("Prototype_Player_Model"), CGameInstance::Get().Load("../../Resources/Models/Joe5.fbx"))))
+	//{
+	//	return E_FAIL;
+	//}
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO),
+		TEXT("Prototype_Player_Model"), CGameInstance::Get().Load("../../Resources/Models/NonAnim.fbx"))))
+	{
+		return E_FAIL;
+	}
 	m_hThread = (HANDLE)_beginthreadex(nullptr, 0, ThreadMain, this, 0, nullptr);
 	if (0 == m_hThread)
 		return E_FAIL;
@@ -87,22 +100,33 @@ HRESULT CLoader::Loading_For_Logo()
 	}
 
 	lstrcpy(m_szLoadingText, TEXT("모델을 로딩 중 입니다."));
-	for (size_t i = 0; i < 99999999; i++)
-	{
-		int a = 10;
-	}
+
+	//if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO),
+	//	TEXT("Prototype_Player_Model"), CGameInstance::Get().Load("../../Resources/Models/Joe5.fbx"))))
+	//{
+	//	return E_FAIL;
+	//}
+
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩 중 입니다."));
+	
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO), TEXT("Prototype_NonAnimShander"),
+		Shader::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	
 	for (size_t i = 0; i < 99999999; i++)
 	{
 		int a = 10;
 	}
 	lstrcpy(m_szLoadingText, TEXT("객체원형 생성 중 입니다."));
-
+	
 	/* Prototype_GameObject_BackGround */
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO), TEXT("Prototype_GameObject_BackGround"),
 		CBackGround::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
+	
+ 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO), TEXT("Prototype_Player"),
+		CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
@@ -112,6 +136,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 HRESULT CLoader::Loading_For_GamePlay()
 {
+
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
 	for (size_t i = 0; i < 99999999; i++)
 	{
@@ -119,10 +144,9 @@ HRESULT CLoader::Loading_For_GamePlay()
 	}
 
 	lstrcpy(m_szLoadingText, TEXT("모델을 로딩 중 입니다."));
-	for (size_t i = 0; i < 99999999; i++)
-	{
-		int a = 10;
-	}
+
+
+
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩 중 입니다."));
 	for (size_t i = 0; i < 99999999; i++)
 	{

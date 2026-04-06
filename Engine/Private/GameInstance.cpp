@@ -7,6 +7,9 @@
 #include "Object_Manager.h"
 #include "Renderer.h"
 #include "CImguiMgr.h"
+#include "ModelLoader.h"
+#include "Model.h"
+#include "Camera.h"
 
 CGameInstance::CGameInstance()
 {
@@ -42,16 +45,39 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, ComPtr<I
     if (nullptr == m_pLevel_Manager)
         return E_FAIL;
 
+
+
+
+    m_pModelLoader = ModelLoader::Create(EngineDesc.hWnd, pOutDevice, pOutContext);
+    if (nullptr == m_pModelLoader)
+        return E_FAIL;
+
     m_pImguiMgr = CImguiMgr::Create();
     if (nullptr == m_pImguiMgr)
         return E_FAIL;
     m_pImguiMgr->Ready_Imgui(EngineDesc.hWnd, pOutDevice, pOutContext);
     
+    m_pCamera = make_unique<CCamera>();
+    float aspect = (float)EngineDesc.iWinSizeX / EngineDesc.iWinSizeY;
+    m_pCamera->SetLens(XM_PIDIV4, aspect, 0.1f, 1000.f);
     return S_OK;
 }
 
 void CGameInstance::Update_Engine(_float fTimeDelta)
 {
+    if (GetAsyncKeyState('W') & 0x8000) {
+        m_pCamera->Walk(10.0f * fTimeDelta);
+    }
+    if (GetAsyncKeyState('S') & 0x8000) {
+        m_pCamera->Walk(-10.0f * fTimeDelta);
+    }
+    if (GetAsyncKeyState('A') & 0x8000) {
+        m_pCamera->Strafe(-10.0f * fTimeDelta);
+    }
+    if (GetAsyncKeyState('D') & 0x8000) {
+        m_pCamera->Strafe(10.0f * fTimeDelta);
+    }
+    m_pCamera->UpdateViewMatrix();
 
     m_pImguiMgr->Update_Imgui();
     m_pObject_Manager->Priority_Update(fTimeDelta);
@@ -159,6 +185,19 @@ HRESULT CGameInstance::Add_RenderObject(RENDERGROUP eRenderGroup, shared_ptr<CGa
 #pragma endregion
 
 
+#pragma region MODEL_LOADER
+
+unique_ptr<Model>CGameInstance::Load(string filename) {
+    
+    return m_pModelLoader->Load(filename);
+}
+void CGameInstance::Close () {
+
+    return m_pModelLoader->Close();
+}
+
+#pragma endregion
+
 #pragma region IMGUI_MANAGER
 
 bool CGameInstance::WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -168,6 +207,16 @@ bool CGameInstance::WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 
 #pragma endregion
 
+#pragma region CAMERA
+XMFLOAT4X4 CGameInstance::GetView() {
+    return m_pCamera->GetView();
+}
+XMFLOAT4X4 CGameInstance::GetProj() {
+    return m_pCamera->GetProj();
+}
+#pragma endregion
+
+
 void CGameInstance::Release_Engine()
 {
     m_pRenderer.reset();
@@ -175,16 +224,18 @@ void CGameInstance::Release_Engine()
     m_pLevel_Manager.reset();
 
     m_pTimer_Manager.reset();
+    m_pCamera.reset();
 
     m_pObject_Manager.reset();
 
     m_pPrototype_Manager.reset();
-
+    m_pModelLoader.reset();
     m_pImguiMgr.reset();
-
     m_pGraphic_Device->Shutdown();
 
     m_pGraphic_Device.reset();
+
+
 
 }
 

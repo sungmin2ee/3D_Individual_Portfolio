@@ -72,8 +72,8 @@ HRESULT CObject_Manager::Add_GameObject_toLayer(uint32_t iPrototypeLevelIndex, c
 	if (nullptr == pGameObject)
 		return E_FAIL;
 
-	/* 현재 객체를 추가할려고하는 레이어가 없어ㅕㅆ다면. */
-	/* 새로 레이어를 ㅁ난드러어서 추가해주닺3ㅏ. */
+	/* 현재 객체를 추가할려고하는 레이어가 없다면. */
+	/* 새로 레이어를 만들어서 추가해준다. */
 	auto		pLayer = Find_Layer(iLayerLevelIndex, strLayerTag);
 	if (nullptr == pLayer)
 	{

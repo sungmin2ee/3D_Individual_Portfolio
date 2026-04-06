@@ -53,6 +53,15 @@ public:
 	bool WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 #pragma endregion
 
+#pragma region MODEL_LOADER
+	unique_ptr<class Model> Load(string filename);
+	void Close();
+#pragma endregion
+
+#pragma region CAMERA
+	XMFLOAT4X4 GetView();
+	XMFLOAT4X4 GetProj();
+#pragma endregion
 private:
 	unique_ptr<class CGraphic_Device>				m_pGraphic_Device = { nullptr };
 	unique_ptr<class CTimer_Manager>				m_pTimer_Manager = { nullptr };
@@ -61,7 +70,12 @@ private:
 	unique_ptr<class CObject_Manager>				m_pObject_Manager = { nullptr };
 	unique_ptr<class CRenderer>						m_pRenderer = { nullptr };
 	unique_ptr<class CImguiMgr>						m_pImguiMgr = { nullptr };
+	unique_ptr<class ModelLoader>					m_pModelLoader = { nullptr };
+	unique_ptr<class CCamera> 						m_pCamera = nullptr;
 
+	ComPtr<ID3D11RasterizerState> m_pRasterizerState = { nullptr };
+
+public:
 
 public:
 	void Release_Engine();

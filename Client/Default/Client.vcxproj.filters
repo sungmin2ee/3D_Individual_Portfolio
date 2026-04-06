@@ -31,6 +31,9 @@
     <Filter Include="02.GameObject\00.BackGround">
       <UniqueIdentifier>{a5614f95-22d8-423c-9c18-a5bdb7ab43d7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\09.Player">
+      <UniqueIdentifier>{7d9a787e-4300-4ed0-9f1d-086ab5a3bf85}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -66,6 +69,9 @@
     <ClInclude Include="..\Public\Level_GamePlay.h">
       <Filter>01.Levels\GamePlay</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Player.h">
+      <Filter>02.GameObject\09.Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -88,6 +94,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Level_GamePlay.cpp">
       <Filter>01.Levels\GamePlay</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Player.cpp">
+      <Filter>02.GameObject\09.Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

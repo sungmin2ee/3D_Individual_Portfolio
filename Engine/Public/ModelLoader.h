@@ -1,18 +1,9 @@
-#ifndef MODEL_LOADER_H
-#define MODEL_LOADER_H
 
-#include <vector>
-#include <d3d11_1.h>
-#include <DirectXMath.h>
-
-#include <assimp\Importer.hpp>
-#include <assimp\scene.h>
-#include <assimp\postprocess.h>
-
-#include "Mesh.h"
 #include "TextureLoader.h"
+NS_BEGIN(Engine)
 
 using namespace DirectX;
+
 
 class ModelLoader
 {
@@ -21,10 +12,10 @@ private:
 public:
 	~ModelLoader();
 
-	bool Load(string filename);
-	void Draw();
+	unique_ptr<class Model> Load(string filename);
+	// Draw();
 
-	//void Close();
+	void Close();
 private:
 	ComPtr<ID3D11Device>						m_pDevice = { nullptr };
 	ComPtr<ID3D11DeviceContext>					m_pContext = { nullptr };
@@ -39,8 +30,8 @@ private:
 	ComPtr<ID3D11ShaderResourceView> loadEmbeddedTexture(const aiTexture* embeddedTexture);
 
 public:
-	//static shared_ptr<ModelLoader> Create(HWND hwnd, ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext);
+	static unique_ptr<ModelLoader> Create(HWND hwnd, ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext);
 
 };
 
-#endif // !MODEL_LOADER_H
+NS_END

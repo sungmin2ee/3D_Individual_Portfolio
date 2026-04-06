@@ -64,6 +64,27 @@
     <Filter Include="97.Assimp\ModelLoader">
       <UniqueIdentifier>{2c666ee2-351f-43db-983a-f70b7a71c5a1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="96.Shader">
+      <UniqueIdentifier>{ca4fe118-a508-4062-abe6-383aac7ed521}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Camera">
+      <UniqueIdentifier>{6bbb1fd7-889b-4ce6-93df-ac16dc96ab0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Component\Cube">
+      <UniqueIdentifier>{86594362-aaf7-4b8c-a527-da8d0aa75db1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Component\VIBuffer">
+      <UniqueIdentifier>{5cabf052-270a-43ba-a25f-8aed61698b2f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Component\VIBuffer\Rect">
+      <UniqueIdentifier>{3fc2152e-032a-409f-b485-fa99394ced22}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Component\VIBuffer\Terrian">
+      <UniqueIdentifier>{eeaca35f-f3a0-477b-bc40-dc74ddf419c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Component\VIBuffer\Cube">
+      <UniqueIdentifier>{54b34834-75a7-446b-a7ab-d221039667a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -137,6 +158,19 @@
     </ClInclude>
     <ClInclude Include="..\Public\ModelLoader.h">
       <Filter>97.Assimp\ModelLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Model.h">
+      <Filter>97.Assimp</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Shader.h">
+      <Filter>96.Shader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Camera.h" />
+    <ClInclude Include="..\Public\VIBuffer.h">
+      <Filter>06.Component\VIBuffer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Rect.h">
+      <Filter>06.Component\VIBuffer\Rect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -218,5 +252,26 @@
     <ClCompile Include="..\Private\ModelLoader.cpp">
       <Filter>97.Assimp\ModelLoader</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Model.cpp">
+      <Filter>97.Assimp</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Shader.cpp">
+      <Filter>96.Shader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Camera.cpp" />
+    <ClCompile Include="..\Private\VIBuffer.cpp">
+      <Filter>06.Component\VIBuffer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Rect.cpp">
+      <Filter>06.Component\VIBuffer\Rect</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\..\VertexShader.hlsl">
+      <Filter>96.Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Shader_VtxNonAnim.hlsl">
+      <Filter>96.Shader</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

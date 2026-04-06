@@ -23,6 +23,9 @@ HRESULT CMainApp::Initialize()
 	EngineDesc.iWinSizeX = g_iWinSizeX;
 	EngineDesc.iWinSizeY = g_iWinSizeY;
 	EngineDesc.iNumLevels = ETOUI(LEVEL::END);
+
+
+
 	
 	if (FAILED(CGameInstance::Get().Initialize_Engine(EngineDesc, m_pDevice, m_pContext)))
 		return E_FAIL;
@@ -35,6 +38,7 @@ HRESULT CMainApp::Initialize()
 void CMainApp::Update(float fTimeDelta)
 {
 	CGameInstance::Get().Update_Engine(fTimeDelta);
+
 	_float fps = 1 / fTimeDelta;
 	ImGui::Begin("My First Tool");
 	ImGui::Text("Current FPS: %.2f", fps);

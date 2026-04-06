@@ -1,66 +1,73 @@
 
 #include "Shader_Defines.hpp"
 
-// float4x4
-matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-
-struct BoneDesc
+// 1. 행렬 상수 버퍼 (Slot 0)
+cbuffer MatrixBuffer : register(b0)
 {
-	matrix		BoneMatrices[128];
+    matrix g_WorldMatrix;
+    matrix g_ViewMatrix;
+    matrix g_ProjMatrix;
 };
 
-BoneDesc		g_Bones;
+// 2. 본 행렬 상수 버퍼 (Slot 1)
+// struct가 아닌 cbuffer로 감싸야 register 바인딩이 가능합니다.
+cbuffer BoneBuffer : register(b1)
+{
+    matrix g_BoneMatrices[256];
+};
 
-texture2D		g_DiffuseTexture;
+Texture2D g_DiffuseTexture;
 
 struct VS_IN
 {
-	float3		vPosition : POSITION;
-	float3		vNormal : NORMAL;
-	float2		vTexUV : TEXCOORD0;
-	float3		vTangent : TANGENT;
-	uint4		vBlendIndex : BLENDINDEX;
-	float4		vBlendWeight : BLENDWEIGHT;
+    float3 vPosition : POSITION;
+    float3 vNormal : NORMAL;
+    float2 vTexUV : TEXCOORD0;
+    float3 vTangent : TANGENT;
+    uint4 vBlendIndex : BLENDINDEX;
+    float4 vBlendWeight : BLENDWEIGHT;
 };
 
 struct VS_OUT
 {
-	float4		vPosition : SV_POSITION;
-	float3		vNormal : NORMAL;
-	float2		vTexUV : TEXCOORD0;
-	float4		vWorldPos : TEXCOORD1;
-	float4		vProjPos : TEXCOORD2;
+    float4 vPosition : SV_POSITION;
+    float3 vNormal : NORMAL;
+    float2 vTexUV : TEXCOORD0;
+    float4 vWorldPos : TEXCOORD1;
+    float4 vProjPos : TEXCOORD2;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
 {
-	VS_OUT		Out = (VS_OUT)0;
+    VS_OUT Out = (VS_OUT) 0;
 
-	matrix		matWV, matWVP;
+    // 1. [임시 주석] 본 변환을 하지 않을 때는 이 계산이 필요 없습니다.
+    /*
+    float fWeightW = 1.f - (In.vBlendWeight.x + In.vBlendWeight.y + In.vBlendWeight.z);
+    matrix BoneMatrix = g_BoneMatrices[In.vBlendIndex.x] * In.vBlendWeight.x
+                      + g_BoneMatrices[In.vBlendIndex.y] * In.vBlendWeight.y
+                      + g_BoneMatrices[In.vBlendIndex.z] * In.vBlendWeight.z
+                      + g_BoneMatrices[In.vBlendIndex.w] * fWeightW;
+    */
 
-	matWV = mul(g_WorldMatrix, g_ViewMatrix);
-	matWVP = mul(matWV, g_ProjMatrix);
+    // 2. [수정] 본 변환(BoneMatrix)을 곱하지 않고 로컬 좌표를 그대로 사용합니다.
+    vector vLocalPos = float4(In.vPosition, 1.f);
+    
+    // 3. 월드/뷰/투영 변환 (Row-Major 연산)
+    matrix matWVP = mul(mul(g_WorldMatrix, g_ViewMatrix), g_ProjMatrix);
+    Out.vPosition = mul(vLocalPos, matWVP);
 
-	float		fWeightW = 1.f - (In.vBlendWeight.x + In.vBlendWeight.y + In.vBlendWeight.z);
+    // 4. 노멀 변환도 본 변환 제외
+    Out.vNormal = normalize(mul(float4(In.vNormal, 0.f), g_WorldMatrix).xyz);
 
-	matrix		BoneMatrix = g_Bones.BoneMatrices[In.vBlendIndex.x] * In.vBlendWeight.x
-		+ g_Bones.BoneMatrices[In.vBlendIndex.y] * In.vBlendWeight.y
-		+ g_Bones.BoneMatrices[In.vBlendIndex.z] * In.vBlendWeight.z
-		+ g_Bones.BoneMatrices[In.vBlendIndex.w] * fWeightW;
+    Out.vTexUV = In.vTexUV;
+    Out.vWorldPos = mul(vLocalPos, g_WorldMatrix);
+    Out.vProjPos = Out.vPosition;
 
-	vector		vPosition = mul(float4(In.vPosition, 1.f), BoneMatrix);
-	vector		vNormal = mul(float4(In.vNormal, 0.f), BoneMatrix);
-	vPosition = mul(vPosition, matWVP);
-
-	Out.vPosition = vPosition;
-	Out.vNormal = mul(vNormal, g_WorldMatrix).xyz;
-	Out.vTexUV = In.vTexUV;
-	Out.vWorldPos = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
-	Out.vProjPos = vPosition;
-
-	return Out;
+    return Out;
 }
 
+// ... PS_MAIN 및 technique11 부분은 동일 ...
 struct PS_IN
 {
 	float4		vPosition : SV_POSITION;

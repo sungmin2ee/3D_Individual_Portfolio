@@ -1,5 +1,5 @@
 #include "ModelLoader.h"
-
+#include "Model.h"
 ModelLoader::ModelLoader(HWND hwnd, ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext) :
 	m_pDevice(pDevice),
 	m_pContext(pContext),
@@ -15,28 +15,39 @@ ModelLoader::~ModelLoader() {
 	// empty
 }
 
-bool ModelLoader::Load(string filename) {
+unique_ptr<Model> ModelLoader::Load(string filename) {
+	this->Close();
 	Assimp::Importer importer;
 
 	const aiScene* pScene = importer.ReadFile(filename,
-		aiProcess_Triangulate |
-		aiProcess_ConvertToLeftHanded);
+		aiProcess_CalcTangentSpace | //탄젠트/비단젠트 계산 (노말용)
+		aiProcess_Triangulate | // 모든 폴리곤을 삼각형으로 변환
+		aiProcess_JoinIdenticalVertices | // 같은 정점을 합침
+		aiProcess_SortByPType |   //점 선 삼각형 타입별로 정리
+		aiProcess_GenUVCoords | //UV 좌표 생성
+		aiProcess_GenNormals | // 법선 생성
+		aiProcess_ConvertToLeftHanded |
+		aiProcess_LimitBoneWeights | aiProcess_PopulateArmatureData
+	);
 
 	if (pScene == nullptr)
-		return false;
+		return nullptr;
 
 	this->directory_ = filename.substr(0, filename.find_last_of("/\\"));
 
 	processNode(pScene->mRootNode, pScene);
 
-	return true;
+	auto model = Model::Create(m_pDevice, m_pContext, StringToWString(filename));
+ 	model->Set_Meshes(std::move(this->meshes_));
+	
+	return model;
 }
 
-void ModelLoader::Draw() {
-	for (size_t i = 0; i < meshes_.size(); ++i) {
-		meshes_[i].Draw();
-	}
-}
+//void ModelLoader::Draw() {
+//	for (size_t i = 0; i < meshes_.size(); ++i) {
+//		meshes_[i].Draw();
+//	}
+//}
 
 Mesh ModelLoader::processMesh(aiMesh* mesh, const aiScene* scene) {
 	// Data to fill
@@ -47,14 +58,22 @@ Mesh ModelLoader::processMesh(aiMesh* mesh, const aiScene* scene) {
 	// Walk through each of the mesh's vertices
 	for (UINT i = 0; i < mesh->mNumVertices; i++) {
 		VERTEX vertex;
+		vertex.position.x = mesh->mVertices[i].x;
+		vertex.position.y = mesh->mVertices[i].y;
+		vertex.position.z = mesh->mVertices[i].z;
 
-		vertex.X = mesh->mVertices[i].x;
-		vertex.Y = mesh->mVertices[i].y;
-		vertex.Z = mesh->mVertices[i].z;
+		if (mesh->HasNormals()) {
+			vertex.Normal.x = mesh->mNormals[i].x;
+			vertex.Normal.y = mesh->mNormals[i].y;
+			vertex.Normal.z = mesh->mNormals[i].z;
+		}
 
 		if (mesh->mTextureCoords[0]) {
-			vertex.texcoord.x = (float)mesh->mTextureCoords[0][i].x;
-			vertex.texcoord.y = (float)mesh->mTextureCoords[0][i].y;
+			vertex.TexCoords.x = (float)mesh->mTextureCoords[0][i].x;
+			vertex.TexCoords.y = (float)mesh->mTextureCoords[0][i].y;
+		}
+		else {
+			vertex.TexCoords = { 0.0f, 0.0f };
 		}
 
 		vertices.push_back(vertex);
@@ -66,15 +85,15 @@ Mesh ModelLoader::processMesh(aiMesh* mesh, const aiScene* scene) {
 		for (UINT j = 0; j < face.mNumIndices; j++)
 			indices.push_back(face.mIndices[j]);
 	}
-
 	if (mesh->mMaterialIndex >= 0) {
 		aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
 
 		std::vector<Texture> diffuseMaps = this->loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse", scene);
 		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 	}
+	//ProcessBones(mesh, vertices); // 뼈 가중치 처리
 
-	return Mesh(m_pDevice, vertices, indices, textures);
+	return Mesh(m_pDevice,m_pContext, vertices, indices, textures);
 }
 
 vector<Texture> ModelLoader::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName, const aiScene* scene) {
@@ -107,6 +126,7 @@ vector<Texture> ModelLoader::loadMaterialTextures(aiMaterial* mat, aiTextureType
 			// 3. 와이드 스트링 변환 (안전한 방식 권장)
 			std::wstring filenamews(myTexturePath.begin(), myTexturePath.end());
 
+
 			// 4. 내 경로에서 먼저 로드 시도
 			hr = CreateWICTextureFromFile(m_pDevice.Get(), m_pContext.Get(), filenamews.c_str(), dummy, texture.texture);
 
@@ -132,14 +152,14 @@ vector<Texture> ModelLoader::loadMaterialTextures(aiMaterial* mat, aiTextureType
 	return textures;
 }
 
-//void ModelLoader::Close() {
-//	for (auto& t : textures_loaded_)
-//		t.Release();
-//
-//	for (size_t i = 0; i < meshes_.size(); i++) {
-//		meshes_[i].Close();
-//	}
-//}
+void ModelLoader::Close() {
+	textures_loaded_.clear();
+	meshes_.clear();
+	directory_ = "";
+	//for (auto& t : textures_loaded_)
+	//	t.Release();
+
+}
 
 void ModelLoader::processNode(aiNode* node, const aiScene* scene) {
 	for (UINT i = 0; i < node->mNumMeshes; i++) {
@@ -196,4 +216,9 @@ ComPtr<ID3D11ShaderResourceView> ModelLoader::loadEmbeddedTexture(const aiTextur
 	if (FAILED(hr))
 		MSG_BOX("Texture couldn't be created from memory!");
 	return texture;
+}
+
+unique_ptr<ModelLoader> ModelLoader::Create(HWND hwnd, ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
+{
+	return unique_ptr<ModelLoader>(new ModelLoader(hwnd,pDevice,pContext));
 }

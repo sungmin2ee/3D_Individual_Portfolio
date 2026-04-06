@@ -6,7 +6,6 @@
 #pragma once
 #endif
 
-#include <d3d11.h>
 
 #ifdef _MSC_VER
 #pragma warning(push)

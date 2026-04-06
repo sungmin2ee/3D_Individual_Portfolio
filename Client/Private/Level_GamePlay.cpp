@@ -1,4 +1,6 @@
 #include "Level_GamePlay.h"
+#include "GameInstance.h"
+#include "Player.h"
 
 CLevel_GamePlay::CLevel_GamePlay(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: CLevel{ pDevice, pContext }
@@ -11,6 +13,7 @@ CLevel_GamePlay::~CLevel_GamePlay()
 
 HRESULT CLevel_GamePlay::Initialize()
 {
+
 	return S_OK;
 }
 

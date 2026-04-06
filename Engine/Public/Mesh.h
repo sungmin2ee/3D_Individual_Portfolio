@@ -1,10 +1,8 @@
-#ifndef MESH_H
-#define MESH_H
-#include "GameObject.h"
+#pragma once
 #include "Engine_Defines.h"
 
-
-class Mesh : public CComponent{
+NS_BEGIN(Engine)
+class ENGINE_DLL Mesh {
 public:
     vector<VERTEX> vertices_;
     vector<UINT> indices_;
@@ -12,17 +10,17 @@ public:
 
 
     Mesh(ComPtr<ID3D11Device> dev, ComPtr<ID3D11DeviceContext> context, const std::vector<VERTEX>& vertices,
-        const std::vector<UINT>& indices, const std::vector<Texture>& textures);
+        const std::vector<UINT>& indices, const std::vector<Texture> textures);
   
 
 public:
 
     void Draw();
 
-    static shared_ptr<Mesh> Create(ComPtr<ID3D11Device> dev, ComPtr<ID3D11DeviceContext> context,
-        const vector<VERTEX>& vertices, const vector<UINT>& indices, const vector<Texture>& textures);
+    //static shared_ptr<Mesh> Create(ComPtr<ID3D11Device> dev, ComPtr<ID3D11DeviceContext> context,
+    //    const vector<VERTEX>& vertices, const vector<UINT>& indices, const vector<Texture>& textures);
 
-    virtual shared_ptr<CPrototype> Clone(void* pArg) override;
+    //virtual shared_ptr<CPrototype> Clone(void* pArg) override;
 
 private:
 
@@ -38,4 +36,4 @@ private:
     
 };
 
-#endif
+NS_END

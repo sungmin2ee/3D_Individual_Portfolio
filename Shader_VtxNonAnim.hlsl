@@ -2,11 +2,16 @@
 #include "Shader_Defines.hpp"
 
 // float4x4
-matrix			g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-matrix			g_SocketMatrix;
-texture2D		g_DiffuseTexture;
-texture2D		g_NormalTexture;
+cbuffer ConstantBuffer : register(b0)
+{
+    matrix g_WorldMatrix;
+    matrix g_ViewMatrix;
+    matrix g_ProjMatrix;
+    matrix g_SocketMatrix;
+}
 
+Texture2D		g_DiffuseTexture;
+Texture2D		g_NormalTexture;
 struct VS_IN
 {
 	float3		vPosition : POSITION;

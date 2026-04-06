@@ -1,7 +1,7 @@
 #pragma once
 #include "Client_Defines.h"
 #include "Engine_Defines.h"
-
+#include "Camera.h"
 NS_BEGIN(Client)
 class CMainApp
 {
@@ -21,7 +21,7 @@ private:
 
 private:
 	HRESULT Start_Level(LEVEL eStartLevelIndex);
-	
+
 public:
 	static unique_ptr<CMainApp> Create();
 
