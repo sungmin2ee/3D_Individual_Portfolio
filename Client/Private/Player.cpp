@@ -65,6 +65,41 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 void CPlayer::Update(_float fTimeDelta)
 {
+	_float fps = 1 / fTimeDelta;
+	ImGui::Begin("My Second Tool");
+	ImGui::Text("Current FPS: %.2f", fps);
+	ImGui::Separator(); // ±¸ºÐ¼±
+	if (ImGui::TreeNode("Configuration##2")) {
+
+		ImGui::TreePop();
+		ImGui::Spacing();
+	}
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
+			if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenuBar();
+	}
+	XMFLOAT4 m_vColor = { 0.3f, 0.3f, 0.3f, 1.0f };
+	// Edit a color (stored as ~4 floats)
+	ImGui::ColorEdit4("Color", (float*)&m_vColor);
+
+	// Plot some values
+	const float my_values[] = { 0.2f, 0.1f, 1.0f, 0.5f, 0.9f, 2.2f };
+	ImGui::PlotLines("Frame Times", my_values, IM_ARRAYSIZE(my_values));
+
+	// Display contents in a scrolling region
+	ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
+	ImGui::BeginChild("Scrolling");
+	for (int n = 0; n < 50; n++)
+		ImGui::Text("%04d: Some text", n);
+	ImGui::EndChild();
+	ImGui::End();
+
 	int a = 10;
 }
 

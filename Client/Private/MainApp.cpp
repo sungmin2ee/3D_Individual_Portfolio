@@ -38,11 +38,21 @@ HRESULT CMainApp::Initialize()
 void CMainApp::Update(float fTimeDelta)
 {
 	CGameInstance::Get().Update_Engine(fTimeDelta);
+	static bool show_demo = true; // 프로그램이 꺼질 때까지 상태가 유지됨
 
+	if (show_demo)
+	{
+		ImGui::ShowDemoWindow(&show_demo);
+	}
 	_float fps = 1 / fTimeDelta;
 	ImGui::Begin("My First Tool");
 	ImGui::Text("Current FPS: %.2f", fps);
 	ImGui::Separator(); // 구분선
+	if (ImGui::TreeNode("Configuration##2")) {
+
+		ImGui::TreePop();
+		ImGui::Spacing();
+	}
 	if (ImGui::BeginMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
