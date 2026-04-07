@@ -18,7 +18,7 @@ ModelLoader::~ModelLoader() {
 unique_ptr<Model> ModelLoader::Load(string filename) {
 	this->Close();
 	Assimp::Importer importer;
-
+	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
 	const aiScene* pScene = importer.ReadFile(filename,
 		aiProcess_CalcTangentSpace | //탄젠트/비단젠트 계산 (노말용)
 		aiProcess_Triangulate | // 모든 폴리곤을 삼각형으로 변환

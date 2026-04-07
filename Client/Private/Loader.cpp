@@ -43,7 +43,7 @@ HRESULT CLoader::Initialize(LEVEL eNextLevelIndex)
 	//	return E_FAIL;
 	//}
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO),
-		TEXT("Prototype_Player_Model"), CGameInstance::Get().Load("../../Resources/Models/NonAnim.fbx"))))
+		TEXT("Prototype_Player_Model"), CGameInstance::Get().Load("../../Resources/Models/Joe5.fbx"))))
 	{
 		return E_FAIL;
 	}

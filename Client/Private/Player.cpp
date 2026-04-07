@@ -19,12 +19,13 @@ CPlayer::~CPlayer()
 
 HRESULT CPlayer::Initialize_Prototype()
 {
+
 	return S_OK;
 }
 
 HRESULT CPlayer::Initialize(void* pArg)
 {
-	auto		pDesc = static_cast<BACKGROUND_DESC*>(pArg);
+	auto		pDesc = static_cast<PLAYER_DESC*>(pArg);
 	m_iData = pDesc->iData;
 
 	pDesc->pGameObjectTag = TEXT("Player");
@@ -45,16 +46,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 		MSG_BOX("쉐이더 컴포넌트 클론 실패!");
 		return E_FAIL;
 	}
-
-	/*BACKGROUND_DESC			Desc{};
-
-	Desc.pGameObjectTag = TEXT("BackGround");
-	Desc.fSpeedPerSec = 10.f;
-	Desc.fRotationPerSec = 180.f;
-
-	if (FAILED(__super::Initialize(&Desc)))
-		return E_FAIL;*/
-
+	m_pTransformCom->Scaling(0.001f, 0.001f, 0.001f);
+	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), 270.f);
 	return S_OK;
 }
 
@@ -65,40 +58,43 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 void CPlayer::Update(_float fTimeDelta)
 {
-	_float fps = 1 / fTimeDelta;
-	ImGui::Begin("My Second Tool");
-	ImGui::Text("Current FPS: %.2f", fps);
-	ImGui::Separator(); // 구분선
-	if (ImGui::TreeNode("Configuration##2")) {
-
-		ImGui::TreePop();
-		ImGui::Spacing();
+	if (GetAsyncKeyState('E') & 0x8000) {
+		m_pTransformCom->Go_Right(fTimeDelta);
 	}
-	if (ImGui::BeginMenuBar())
-	{
-		if (ImGui::BeginMenu("File"))
-		{
-			if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
-			if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
-			ImGui::EndMenu();
-		}
-		ImGui::EndMenuBar();
-	}
-	XMFLOAT4 m_vColor = { 0.3f, 0.3f, 0.3f, 1.0f };
-	// Edit a color (stored as ~4 floats)
-	ImGui::ColorEdit4("Color", (float*)&m_vColor);
+	//_float fps = 1 / fTimeDelta;
+	//ImGui::Begin("My Second Tool");
+	//ImGui::Text("Current FPS: %.2f", fps);
+	//ImGui::Separator(); // 구분선
+	//if (ImGui::TreeNode("Configuration##2")) {
 
-	// Plot some values
-	const float my_values[] = { 0.2f, 0.1f, 1.0f, 0.5f, 0.9f, 2.2f };
-	ImGui::PlotLines("Frame Times", my_values, IM_ARRAYSIZE(my_values));
+	//	ImGui::TreePop();
+	//	ImGui::Spacing();
+	//}
+	//if (ImGui::BeginMenuBar())
+	//{
+	//	if (ImGui::BeginMenu("File"))
+	//	{
+	//		if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
+	//		if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
+	//		ImGui::EndMenu();
+	//	}
+	//	ImGui::EndMenuBar();
+	//}
+	//XMFLOAT4 m_vColor = { 0.3f, 0.3f, 0.3f, 1.0f };
+	//// Edit a color (stored as ~4 floats)
+	//ImGui::ColorEdit4("Color", (float*)&m_vColor);
 
-	// Display contents in a scrolling region
-	ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
-	ImGui::BeginChild("Scrolling");
-	for (int n = 0; n < 50; n++)
-		ImGui::Text("%04d: Some text", n);
-	ImGui::EndChild();
-	ImGui::End();
+	//// Plot some values
+	//const float my_values[] = { 0.2f, 0.1f, 1.0f, 0.5f, 0.9f, 2.2f };
+	//ImGui::PlotLines("Frame Times", my_values, IM_ARRAYSIZE(my_values));
+
+	//// Display contents in a scrolling region
+	//ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
+	//ImGui::BeginChild("Scrolling");
+	//for (int n = 0; n < 50; n++)
+	//	ImGui::Text("%04d: Some text", n);
+	//ImGui::EndChild();
+	//ImGui::End();
 
 	int a = 10;
 }
@@ -112,20 +108,20 @@ HRESULT CPlayer::Render()
 {
 	if (nullptr == m_pModelCom /*|| nullptr == m_pShaderCom*/)
 		return E_FAIL;
+	_float3 scale = m_pTransformCom->Get_Scaled();
     static float fRotation = 0.f;
     fRotation += 0.01f; // 매 프레임 조금씩 증가
     // =========================
     // Matrix 설정
     // =========================
     MatrixBuffer cb;
-    XMMATRIX matScale = XMMatrixScaling(0.1f, 0.1f, 0.1f);
-    XMMATRIX matRot = XMMatrixRotationX(XMConvertToRadians(270)); // Y축 기준 회전
-   // XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(0)); // Y축 기준 회전
-    XMMATRIX matTrans = XMMatrixTranslation(0.f, 0.f, 0.f);
-    XMMATRIX matWorld = matScale * matRot * matTrans;
+	_float4x4 mat = m_pTransformCom->GetWorld();
+	_matrix world = XMLoadFloat4x4(&mat);
+	 XMStoreFloat4x4(&cb.world,XMMatrixTranspose(world));
+	//XMMATRIX matWorld = m_pTransformCom->m_WorldMatrix;
     //  스케일 추가 (FBX 안보일 때 필수)
 
-    XMStoreFloat4x4(&cb.world, XMMatrixTranspose(matWorld));
+   // XMStoreFloat4x4(&cb.world, XMMatrixTranspose(matWorld));
     cb.view = CGameInstance::Get().GetView();
     XMMATRIX matView = XMLoadFloat4x4(&cb.view);
     XMStoreFloat4x4(&cb.view, XMMatrixTranspose(matView));

@@ -14,10 +14,10 @@ NS_BEGIN(Client)
 class CPlayer final : public CGameObject
 {
 public:
-	typedef struct tagBackGroundDesc : public CGameObject::GAMEOBJECT_DESC
+	typedef struct tagPlayerDesc : public CGameObject::GAMEOBJECT_DESC
 	{
 		uint32_t		iData;
-	}BACKGROUND_DESC;
+	}PLAYER_DESC;
 
 private:
 	CPlayer(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);

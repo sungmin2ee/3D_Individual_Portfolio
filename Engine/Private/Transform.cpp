@@ -21,6 +21,7 @@ _float3 CTransform::Get_Scaled()
 
 HRESULT CTransform::Initialize_Prototype()
 {
+    XMStoreFloat4x4(&m_WorldMatrix, XMMatrixIdentity());
     return S_OK;
 }
 
