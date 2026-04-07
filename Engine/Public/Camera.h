@@ -3,11 +3,12 @@
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CCamera
+class  CCamera
 {
-public:
+private:
 	CCamera();
-	virtual ~CCamera();
+public:
+	~CCamera();
 
 public:
 
@@ -48,8 +49,8 @@ public:
 	//매 프 레 임 □[다 , 카 메 라 위 치 나 방 향 을 수 정 한 후 
 	// 이 메서드를 호출해서 시0 ^ 행렬을 재 구 축 한 다 .
 	void UpdateViewMatrix();
-	XMFLOAT4X4 GetView() { return mView; }
-	XMFLOAT4X4 GetProj() { return mProj; }
+	const XMFLOAT4X4 GetView() { return mView; }
+	const XMFLOAT4X4 GetProj() { return mProj; }
 private:
 	//세 계 공 간 기준의 카메라 좌표계
 	XMFLOAT3 mPosition;
@@ -66,6 +67,10 @@ private:
 	//시 야 행 렬 과 투 영 행렬
 	XMFLOAT4X4 mView;
 	XMFLOAT4X4 mProj;
+
+public:
+	static unique_ptr<CCamera> Create();
+
 };
 
 NS_END

@@ -5,6 +5,7 @@
 #include "Level_Manager.h"
 #include "Prototype_Manager.h"
 #include "Object_Manager.h"
+#include "DInput_Manager.h"
 #include "Renderer.h"
 #include "CImguiMgr.h"
 #include "ModelLoader.h"
@@ -45,8 +46,10 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, ComPtr<I
     if (nullptr == m_pLevel_Manager)
         return E_FAIL;
 
-
-
+    m_pInput_Manager = CDInput_Manager::Create();
+    if (nullptr == m_pInput_Manager)
+        return E_FAIL;
+    m_pInput_Manager->Ready_InputDev(EngineDesc.hInst, EngineDesc.hWnd);
 
     m_pModelLoader = ModelLoader::Create(EngineDesc.hWnd, pOutDevice, pOutContext);
     if (nullptr == m_pModelLoader)
@@ -57,7 +60,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, ComPtr<I
         return E_FAIL;
     m_pImguiMgr->Ready_Imgui(EngineDesc.hWnd, pOutDevice, pOutContext);
     
-    m_pCamera = make_unique<CCamera>();
+    m_pCamera = CCamera::Create();
+    if (nullptr == m_pCamera)
+        return E_FAIL;
     float aspect = (float)EngineDesc.iWinSizeX / EngineDesc.iWinSizeY;
     m_pCamera->SetLens(XM_PIDIV4, aspect, 0.1f, 1000.f);
     return S_OK;
@@ -65,6 +70,7 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, ComPtr<I
 
 void CGameInstance::Update_Engine(_float fTimeDelta)
 {
+    m_pInput_Manager->Update_InputDev();
     if (GetAsyncKeyState('W') & 0x8000) {
         m_pCamera->Walk(10.0f * fTimeDelta);
     }
@@ -154,7 +160,9 @@ HRESULT CGameInstance::Change_Level(uint32_t iNewLevelIndex, unique_ptr<class CL
 {
     return m_pLevel_Manager->Change_Level(iNewLevelIndex, std::move(pNewLevel));
 }
-
+uint32_t  CGameInstance::GetCurLevelIndex() {
+    return m_pLevel_Manager->GetCurLevelIndex();
+}
 #pragma endregion
 
 #pragma region PROTOTYPE_MANAGER
@@ -198,6 +206,42 @@ void CGameInstance::Close () {
 
 #pragma endregion
 
+#pragma region INPUT_MANAGER
+_byte	CGameInstance::Get_DIKeyState(_ubyte byKeyID) {
+    return m_pInput_Manager->Get_DIKeyState(byKeyID);
+}
+
+_byte	CGameInstance::Get_DIMouseState(MOUSEKEYSTATE eMouse) {
+    return m_pInput_Manager->Get_DIMouseState(eMouse);
+}
+
+// 현재 마우스의 특정 축 좌표를 반환
+_long	CGameInstance::Get_DIMouseMove(MOUSEMOVESTATE eMouseState) {
+    return m_pInput_Manager->Get_DIMouseMove(eMouseState);
+}
+
+bool CGameInstance::Key_Pressing(_ubyte byKeyID) {
+    return m_pInput_Manager->Key_Pressing(byKeyID);
+}
+bool CGameInstance::Key_Up(_ubyte byKeyID) {
+    return m_pInput_Manager->Key_Up(byKeyID);
+}
+bool CGameInstance::Key_Down(_ubyte byKeyID) {
+    return m_pInput_Manager->Key_Down(byKeyID);
+}
+
+bool CGameInstance::Mouse_Pressing(MOUSEKEYSTATE eMouseState) {
+    return m_pInput_Manager->Mouse_Pressing(eMouseState);
+}
+bool CGameInstance::Mouse_Up(MOUSEKEYSTATE eMouseState) {
+    return m_pInput_Manager->Mouse_Up(eMouseState);
+}
+bool CGameInstance::Mouse_Down(MOUSEKEYSTATE eMouseState) {
+    return m_pInput_Manager->Mouse_Down(eMouseState);
+}
+#pragma endregion
+
+
 #pragma region IMGUI_MANAGER
 
 bool CGameInstance::WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -208,11 +252,14 @@ bool CGameInstance::WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 #pragma endregion
 
 #pragma region CAMERA
-XMFLOAT4X4 CGameInstance::GetView() {
+const XMFLOAT4X4 CGameInstance::GetView() {
     return m_pCamera->GetView();
 }
-XMFLOAT4X4 CGameInstance::GetProj() {
+const XMFLOAT4X4 CGameInstance::GetProj() {
     return m_pCamera->GetProj();
+}
+const  XMVECTOR CGameInstance::GetPositionXM() {
+    return m_pCamera->GetPositionXM();
 }
 #pragma endregion
 
@@ -222,7 +269,7 @@ void CGameInstance::Release_Engine()
     m_pRenderer.reset();
 
     m_pLevel_Manager.reset();
-
+    m_pInput_Manager.reset();
     m_pTimer_Manager.reset();
     m_pCamera.reset();
 

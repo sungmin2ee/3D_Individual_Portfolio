@@ -1,6 +1,8 @@
 #include "MainApp.h"
 #include "GameInstance.h"
 #include "Level_Loading.h"
+#include "ImguiHandler.h"
+#include "Helper.h"
 
 CMainApp::CMainApp()
 {
@@ -19,66 +21,27 @@ HRESULT CMainApp::Initialize()
 
 	ENGINE_DESC EngineDesc{};
 	EngineDesc.hWnd = g_hWnd;
+	EngineDesc.hInst = g_hInstance;
 	EngineDesc.eWinMode = WINMODE::WIN;
 	EngineDesc.iWinSizeX = g_iWinSizeX;
 	EngineDesc.iWinSizeY = g_iWinSizeY;
 	EngineDesc.iNumLevels = ETOUI(LEVEL::END);
-
-
 
 	
 	if (FAILED(CGameInstance::Get().Initialize_Engine(EngineDesc, m_pDevice, m_pContext)))
 		return E_FAIL;
 	if (FAILED(Start_Level(LEVEL::LOGO)))
 		return E_FAIL;
-	
+	m_pImguiHandler = CImguiHandler::Create(EngineDesc);
+	if (nullptr == m_pImguiHandler)
+		return E_FAIL;
 	return S_OK;
 }
 
 void CMainApp::Update(float fTimeDelta)
 {
 	CGameInstance::Get().Update_Engine(fTimeDelta);
-	static bool show_demo = true; // 프로그램이 꺼질 때까지 상태가 유지됨
-
-	if (show_demo)
-	{
-		ImGui::ShowDemoWindow(&show_demo);
-	}
-	_float fps = 1 / fTimeDelta;
-	ImGui::Begin("My First Tool");
-	ImGui::Text("Current FPS: %.2f", fps);
-	ImGui::Separator(); // 구분선
-	if (ImGui::TreeNode("Configuration##2")) {
-
-		ImGui::TreePop();
-		ImGui::Spacing();
-	}
-	if (ImGui::BeginMenuBar())
-	{
-		if (ImGui::BeginMenu("File"))
-		{
-			if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
-			if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
-			ImGui::EndMenu();
-		}
-		ImGui::EndMenuBar();
-	}
-	XMFLOAT4 m_vColor = { 0.3f, 0.3f, 0.3f, 1.0f };
-	// Edit a color (stored as ~4 floats)
-	ImGui::ColorEdit4("Color", (float*)&m_vColor);
-
-	// Plot some values
-	const float my_values[] = { 0.2f, 0.1f, 1.0f, 0.5f, 0.9f, 2.2f };
-	ImGui::PlotLines("Frame Times", my_values, IM_ARRAYSIZE(my_values));
-
-	// Display contents in a scrolling region
-	ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
-	ImGui::BeginChild("Scrolling");
-	for (int n = 0; n < 50; n++)
-		ImGui::Text("%04d: Some text", n);
-	ImGui::EndChild();
-	ImGui::End();
-
+	m_pImguiHandler->Handle_Imgui(CGameInstance::Get().GetCurLevelIndex(), fTimeDelta);
 }
 
 HRESULT CMainApp::Render()
@@ -107,6 +70,10 @@ HRESULT CMainApp::Start_Level(LEVEL eStartLevelIndex)
 
 	return S_OK;
 }
+
+
+
+
 
 unique_ptr<CMainApp> Client::CMainApp::Create() {
 

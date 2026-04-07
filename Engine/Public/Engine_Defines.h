@@ -1,8 +1,10 @@
 #pragma once
 
 #include <d3d11.h>
+
 #include <DirectXMath.h>
 #include <d3dcompiler.h>
+#include <DirectXCollision.h>
 using namespace DirectX;
 
 #include <vector>
@@ -36,8 +38,13 @@ using namespace Microsoft::WRL;
 using namespace std;
 
 #include "imgui.h"
+
 #include "imgui_internal.h"
 #include "ImGuizmo.h"
+#include "ImSequencer.h"
+#include "ImZoomSlider.h"
+#include "ImCurveEdit.h"
+#include "GraphEditor.h"
 
 #include "Engine_Enum.h"
 #include "Engine_Macro.h"

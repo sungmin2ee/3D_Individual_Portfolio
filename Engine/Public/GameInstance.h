@@ -33,6 +33,7 @@ public:
 
 #pragma region LEVEL_MANAGER
 	HRESULT Change_Level(uint32_t iNewLevelIndex, unique_ptr<class CLevel> pNewLevel);
+	uint32_t GetCurLevelIndex();
 #pragma endregion
 
 #pragma region PROTOTYPE_MANAGER
@@ -57,10 +58,28 @@ public:
 	unique_ptr<class Model> Load(string filename);
 	void Close();
 #pragma endregion
+#pragma region INPUT_MANAGER
+	_byte	Get_DIKeyState(_ubyte byKeyID);
+
+	_byte	Get_DIMouseState(MOUSEKEYSTATE eMouse);
+
+	// 현재 마우스의 특정 축 좌표를 반환
+	_long	Get_DIMouseMove(MOUSEMOVESTATE eMouseState);
+
+	bool Key_Pressing(_ubyte byKeyID);
+	bool Key_Up(_ubyte byKeyID);	
+	bool Key_Down(_ubyte byKeyID);
+
+	bool Mouse_Pressing(MOUSEKEYSTATE eMouseState);
+	bool Mouse_Up(MOUSEKEYSTATE eMouseState);
+	bool Mouse_Down(MOUSEKEYSTATE eMouseState);
+#pragma endregion
 
 #pragma region CAMERA
-	XMFLOAT4X4 GetView();
-	XMFLOAT4X4 GetProj();
+	const XMFLOAT4X4 GetView();
+	const XMFLOAT4X4 GetProj();
+	const XMVECTOR GetPositionXM();
+
 #pragma endregion
 private:
 	unique_ptr<class CGraphic_Device>				m_pGraphic_Device = { nullptr };
@@ -68,6 +87,7 @@ private:
 	unique_ptr<class CLevel_Manager>				m_pLevel_Manager = { nullptr };
 	unique_ptr<class CPrototype_Manager>			m_pPrototype_Manager = { nullptr };
 	unique_ptr<class CObject_Manager>				m_pObject_Manager = { nullptr };
+	unique_ptr<class CDInput_Manager>				m_pInput_Manager = { nullptr };
 	unique_ptr<class CRenderer>						m_pRenderer = { nullptr };
 	unique_ptr<class CImguiMgr>						m_pImguiMgr = { nullptr };
 	unique_ptr<class ModelLoader>					m_pModelLoader = { nullptr };

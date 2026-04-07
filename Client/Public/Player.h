@@ -7,6 +7,7 @@ NS_BEGIN(Engine)
 class Model;
 class CGameObject;
 class Shader;
+class Obb;
 NS_END
 
 NS_BEGIN(Client)
@@ -35,10 +36,8 @@ public:
 private:
 	shared_ptr<Model> m_pModelCom = { nullptr };
 	shared_ptr<Shader> m_pShaderCom = { nullptr };
+	shared_ptr<Obb> m_pObbCom = { nullptr };
 	uint32_t			m_iData = {};
-	XMMATRIX m_WorldMatrix = XMMatrixIdentity();
-	XMMATRIX m_ViewMatrix = XMMatrixIdentity();
-	XMMATRIX m_ProjMatrix = XMMatrixIdentity();
 	MatrixBuffer cb;
 	ComPtr<ID3D11Buffer>							m_pConstantBuffer = { nullptr };
 	ComPtr<ID3D11Buffer>							m_pBoneBuffer = { nullptr };
@@ -48,6 +47,8 @@ private:
 	ComPtr<ID3D11SamplerState>						m_pSamplerState = { nullptr };
 	ComPtr<ID3D11Device>							m_pDevice = { nullptr };
 	ComPtr<ID3D11DeviceContext>						m_pContext = { nullptr };
+
+	ImGuizmo::OPERATION m_CurrentGizmoOperation;
 public:
 	static unique_ptr<CPlayer> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
 	virtual shared_ptr<CPrototype> Clone(void* pArg) override;

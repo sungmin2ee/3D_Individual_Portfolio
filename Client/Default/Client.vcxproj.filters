@@ -34,6 +34,9 @@
     <Filter Include="02.GameObject\09.Player">
       <UniqueIdentifier>{7d9a787e-4300-4ed0-9f1d-086ab5a3bf85}</UniqueIdentifier>
     </Filter>
+    <Filter Include="97.ImguiHandler">
+      <UniqueIdentifier>{4721d10c-98c2-43b0-ab68-12825102d29e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -72,6 +75,9 @@
     <ClInclude Include="..\Public\Player.h">
       <Filter>02.GameObject\09.Player</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ImguiHandler.h">
+      <Filter>97.ImguiHandler</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -97,6 +103,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
       <Filter>02.GameObject\09.Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ImguiHandler.cpp">
+      <Filter>97.ImguiHandler</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -22,6 +22,7 @@ public:
 	HRESULT Change_Level(uint32_t iNewLevelIndex, unique_ptr<class CLevel> pNewLevel);
 	void Update(_float fTimeDelta);
 	HRESULT Render();
+	uint32_t GetCurLevelIndex() { return m_iCurrentLevelIndex; }
 
 private:
 	uint32_t							m_iCurrentLevelIndex = {};

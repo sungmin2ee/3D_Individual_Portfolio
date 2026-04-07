@@ -4,6 +4,12 @@
 namespace Engine
 {
 
+	typedef		signed char					_byte;
+	typedef		unsigned char				_ubyte;
+
+	typedef		signed long					_long;
+	typedef		unsigned long				_ulong;
+
 	typedef		bool						_bool;
 	typedef		char						_char;
 	typedef		wchar_t						_tchar;

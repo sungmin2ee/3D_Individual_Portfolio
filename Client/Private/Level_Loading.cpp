@@ -29,6 +29,7 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelIndex)
 	if (nullptr == m_pLoader)
 		return E_FAIL;
 
+
 	return S_OK;
 }
 
@@ -47,14 +48,15 @@ void CLevel_Loading::Update(_float fTimeDelta)
 			break;
 		case LEVEL::GAMEPLAY:
 			pNewLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
+
 			break;
 		}
 
 		if (FAILED(CGameInstance::Get().Change_Level(ETOUI(m_eNextLevelIndex), std::move(pNewLevel))))
 			return;
-
 		return;
 	}
+
 }
 
 HRESULT CLevel_Loading::Render()

@@ -50,6 +50,8 @@ private:
 
 private:
 	HRESULT Start_Level(LEVEL eStartLevelIndex);
+    unique_ptr<class CImguiHandler>		m_pImguiHandler = { nullptr };
+
 
 public:
 	static unique_ptr<CMainApp> Create();

@@ -217,3 +217,9 @@ void CCamera::UpdateViewMatrix()
 	mView(3, 0) = x;        mView(3, 1) = y;      mView(3, 2) = z;       mView(3, 3) = 1.0f;
 
 }
+
+unique_ptr<CCamera> CCamera::Create()
+{
+
+	return unique_ptr<CCamera>(new CCamera());
+}

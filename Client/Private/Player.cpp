@@ -2,6 +2,7 @@
 #include "Model.h"
 #include "Shader.h"
 #include "GameInstance.h"
+#include "Obb.h"
 #include <d3dcompiler.h>
 #pragma comment(lib, "d3dcompiler.lib")
 CPlayer::CPlayer(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
@@ -48,6 +49,17 @@ HRESULT CPlayer::Initialize(void* pArg)
 	}
 	m_pTransformCom->Scaling(0.001f, 0.001f, 0.001f);
 	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), 270.f);
+
+	m_pObbCom = Obb::Create(m_pDevice, m_pContext);
+	m_pObbCom->myOBB.Center = XMFLOAT3(0.f, 0.f, 0.f);
+
+	// 2. Extents: 중심에서 각 면까지의 거리 (반지름 개념)
+	// 가로 0.5m, 세로 1.0m, 두께 0.5m인 박스라면:
+	m_pObbCom->myOBB.Extents = XMFLOAT3(10.f, 10.0f, 10.f);
+
+	// 3. Orientation: 회전값 (사원수)
+	// 처음에는 회전이 없으므로 Identity(단위 행렬의 회전값)를 넣습니다.
+	m_pObbCom->myOBB.Orientation = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
 	return S_OK;
 }
 
@@ -60,41 +72,54 @@ void CPlayer::Update(_float fTimeDelta)
 {
 	if (GetAsyncKeyState('E') & 0x8000) {
 		m_pTransformCom->Go_Right(fTimeDelta);
+		//BoundingOrientedBox localOBB = m_LocalOBB;
+		//localOBB.Transform(m_pObbCom->myOBB, worldMatrix);
+		//m_pObbCom->myOBB.Transform(m_pObbCom->myOBB, );
 	}
-	//_float fps = 1 / fTimeDelta;
-	//ImGui::Begin("My Second Tool");
-	//ImGui::Text("Current FPS: %.2f", fps);
-	//ImGui::Separator(); // 구분선
-	//if (ImGui::TreeNode("Configuration##2")) {
+	_float fps = 1 / fTimeDelta;
+	ImGui::Begin("My Second Tool");
+	ImGui::Text("Current FPS: %.2f", fps);
+	ImGui::Separator(); // 구분선
+	if (ImGui::TreeNode("Configuration##2")) {
 
-	//	ImGui::TreePop();
-	//	ImGui::Spacing();
-	//}
-	//if (ImGui::BeginMenuBar())
-	//{
-	//	if (ImGui::BeginMenu("File"))
-	//	{
-	//		if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
-	//		if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
-	//		ImGui::EndMenu();
-	//	}
-	//	ImGui::EndMenuBar();
-	//}
-	//XMFLOAT4 m_vColor = { 0.3f, 0.3f, 0.3f, 1.0f };
-	//// Edit a color (stored as ~4 floats)
-	//ImGui::ColorEdit4("Color", (float*)&m_vColor);
+		/*ImGui::Begin("Operation");
+		if (ImGui::RadioButton("Translate", m_CurrentGizmoOperation == ImGuizmo::TRANSLATE))
+			m_CurrentGizmoOperation = ImGuizmo::TRANSLATE;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Rotate", m_CurrentGizmoOperation == ImGuizmo::ROTATE))
+			m_CurrentGizmoOperation = ImGuizmo::ROTATE;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Scale", m_CurrentGizmoOperation == ImGuizmo::SCALE))
+			m_CurrentGizmoOperation = ImGuizmo::SCALE;*/
 
-	//// Plot some values
-	//const float my_values[] = { 0.2f, 0.1f, 1.0f, 0.5f, 0.9f, 2.2f };
-	//ImGui::PlotLines("Frame Times", my_values, IM_ARRAYSIZE(my_values));
+		ImGui::TreePop();
+		ImGui::Spacing();
+	}
+	if (ImGui::BeginMenuBar())
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
+			if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
+			ImGui::EndMenu();
+		}
+		ImGui::EndMenuBar();
+	}
+	XMFLOAT4 m_vColor = { 0.3f, 0.3f, 0.3f, 1.0f };
+	// Edit a color (stored as ~4 floats)
+	ImGui::ColorEdit4("Color", (float*)&m_vColor);
 
-	//// Display contents in a scrolling region
-	//ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
-	//ImGui::BeginChild("Scrolling");
-	//for (int n = 0; n < 50; n++)
-	//	ImGui::Text("%04d: Some text", n);
-	//ImGui::EndChild();
-	//ImGui::End();
+	// Plot some values
+	const float my_values[] = { 0.2f, 0.1f, 1.0f, 0.5f, 0.9f, 2.2f };
+	ImGui::PlotLines("Frame Times", my_values, IM_ARRAYSIZE(my_values));
+
+	// Display contents in a scrolling region
+	ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
+	ImGui::BeginChild("Scrolling");
+	for (int n = 0; n < 50; n++)
+		ImGui::Text("%04d: Some text", n);
+	ImGui::EndChild();
+	ImGui::End();
 
 	int a = 10;
 }
@@ -148,8 +173,8 @@ HRESULT CPlayer::Render()
 
 	m_pShaderCom->Bind_Matrix(cb);
     
-	m_pModelCom->Draw();
-
+	//m_pModelCom->Draw();
+	m_pObbCom->Render_Debug();
 	return S_OK;
 }
 unique_ptr<CPlayer> CPlayer::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)

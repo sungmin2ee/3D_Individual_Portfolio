@@ -8,6 +8,7 @@ namespace Engine
 	typedef struct tagEngineDesc
 	{
 		HWND		hWnd;
+		HINSTANCE   hInst;
 		WINMODE		eWinMode;
 		int32_t		iWinSizeX, iWinSizeY;
 		int32_t		iNumLevels;
@@ -66,6 +67,12 @@ namespace Engine
 		}
 
 	}VERTEX;
+
+
+	typedef struct VTX_DEBUG {
+		XMFLOAT3 vPos;
+		XMFLOAT4 vColor;
+	}VOBB;
 
 	struct Texture {
 		std::string type;

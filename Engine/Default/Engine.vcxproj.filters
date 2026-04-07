@@ -85,6 +85,21 @@
     <Filter Include="06.Component\VIBuffer\Cube">
       <UniqueIdentifier>{54b34834-75a7-446b-a7ab-d221039667a7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="98.ImGui\Imgui">
+      <UniqueIdentifier>{12fc1452-2830-41bd-b75a-f9b6d762337c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="94.Helper">
+      <UniqueIdentifier>{04c818da-8af1-44de-8f28-5d9952d83923}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="93.DInput">
+      <UniqueIdentifier>{7a9eb76c-1a6e-4f42-a2b3-a9da69d02bb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Component\Collider">
+      <UniqueIdentifier>{5af76609-2098-4d4b-a519-e4269181509e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Component\Collider\OBB">
+      <UniqueIdentifier>{4f128c4b-7ded-4d4a-9994-8848a0878c4a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -165,12 +180,23 @@
     <ClInclude Include="..\Public\Shader.h">
       <Filter>96.Shader</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Camera.h" />
     <ClInclude Include="..\Public\VIBuffer.h">
       <Filter>06.Component\VIBuffer</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_Rect.h">
       <Filter>06.Component\VIBuffer\Rect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Camera.h">
+      <Filter>95.Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Helper.h">
+      <Filter>94.Helper</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DInput_Manager.h">
+      <Filter>93.DInput</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Obb.h">
+      <Filter>06.Component\Collider\OBB</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -219,30 +245,6 @@
     <ClCompile Include="..\Private\CImguiMgr.cpp">
       <Filter>98.ImGui\Manager</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\imgui\imgui-1.83\imgui.cpp">
-      <Filter>98.ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\imgui\imgui-1.83\imgui_demo.cpp">
-      <Filter>98.ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\imgui\imgui-1.83\imgui_draw.cpp">
-      <Filter>98.ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\imgui\imgui-1.83\imgui_impl_dx11.cpp">
-      <Filter>98.ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\imgui\imgui-1.83\imgui_impl_win32.cpp">
-      <Filter>98.ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\imgui\imgui-1.83\imgui_tables.cpp">
-      <Filter>98.ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\imgui\imgui-1.83\imgui_widgets.cpp">
-      <Filter>98.ImGui</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\ThirdParty\imgui\ImGuizmo-1.83\ImGuizmo.cpp">
-      <Filter>98.ImGui\Gizmo</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\TextureLoader.cpp">
       <Filter>97.Assimp\TextureLoader</Filter>
     </ClCompile>
@@ -258,12 +260,59 @@
     <ClCompile Include="..\Private\Shader.cpp">
       <Filter>96.Shader</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Camera.cpp" />
     <ClCompile Include="..\Private\VIBuffer.cpp">
       <Filter>06.Component\VIBuffer</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Rect.cpp">
       <Filter>06.Component\VIBuffer\Rect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui\ImGuizmo-1.83\GraphEditor.cpp">
+      <Filter>98.ImGui\Gizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui\ImGuizmo-1.83\ImCurveEdit.cpp">
+      <Filter>98.ImGui\Gizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui\ImGuizmo-1.83\ImSequencer.cpp">
+      <Filter>98.ImGui\Gizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui\imgui-1.83\imgui.cpp">
+      <Filter>98.ImGui\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui\imgui-1.83\imgui_demo.cpp">
+      <Filter>98.ImGui\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui\imgui-1.83\imgui_draw.cpp">
+      <Filter>98.ImGui\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui\imgui-1.83\imgui_impl_dx11.cpp">
+      <Filter>98.ImGui\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui\imgui-1.83\imgui_impl_win32.cpp">
+      <Filter>98.ImGui\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui\imgui-1.83\imgui_tables.cpp">
+      <Filter>98.ImGui\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui\imgui-1.83\imgui_widgets.cpp">
+      <Filter>98.ImGui\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui\ImGuizmo-1.83\ImGradient.cpp">
+      <Filter>98.ImGui\Gizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\ThirdParty\imgui\ImGuizmo-1.83\ImGuizmo.cpp">
+      <Filter>98.ImGui\Gizmo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Camera.cpp">
+      <Filter>95.Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Helper.cpp">
+      <Filter>94.Helper</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DInput_Manager.cpp">
+      <Filter>93.DInput</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Obb.cpp">
+      <Filter>06.Component\Collider\OBB</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -271,6 +320,9 @@
       <Filter>96.Shader</Filter>
     </FxCompile>
     <FxCompile Include="..\..\Shader_VtxNonAnim.hlsl">
+      <Filter>96.Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\Obb.hlsl">
       <Filter>96.Shader</Filter>
     </FxCompile>
   </ItemGroup>

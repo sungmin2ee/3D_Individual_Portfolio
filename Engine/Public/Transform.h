@@ -51,6 +51,7 @@ public:
 	void Scaling(_float fScaleX, _float fScaleY, _float fScaleZ);
 	void Chase(_fvector vGoal, _float fTimeDelta, _float fLimit);
 	_float4x4 GetWorld() { return m_WorldMatrix; }
+	XMMATRIX GetWorldMat() { return XMLoadFloat4x4(&m_WorldMatrix); }
 	void SetWorld(_float4x4 world) {m_WorldMatrix = world; }
 
 private:
