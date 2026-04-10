@@ -26,6 +26,7 @@ public:
 	HRESULT Add_GameObject_toLayer(uint32_t iPrototypeLevelIndex, const _wstring& strPrototypeTag,
 		uint32_t iLayerLevelIndex, const _wstring& strLayerTag, void* pArg);
 
+	class CLayer* Find_Layer(uint32_t iLayerLevelIndex, const _wstring& strLayerTag);
 private:
 	uint32_t		m_iNumLevels = {};
 private:
@@ -33,7 +34,6 @@ private:
 	typedef map<const _wstring, unique_ptr<class CLayer>>			LAYERS;
 
 private:
-	class CLayer* Find_Layer(uint32_t iLayerLevelIndex, const _wstring& strLayerTag);
 
 public:
 	static unique_ptr<CObject_Manager> Create(uint32_t iNumLevels);

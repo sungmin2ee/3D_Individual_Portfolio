@@ -46,11 +46,12 @@ public:
 	//?WI 라를 회전한다.
 	void Pitch(float angle);
 	void RotateY(float angle);
-	//매 프 레 임 □[다 , 카 메 라 위 치 나 방 향 을 수 정 한 후 
-	// 이 메서드를 호출해서 시0 ^ 행렬을 재 구 축 한 다 .
 	void UpdateViewMatrix();
+
 	const XMFLOAT4X4 GetView() { return mView; }
 	const XMFLOAT4X4 GetProj() { return mProj; }
+	XMMATRIX GetViewXM() { return XMLoadFloat4x4(&mView); }
+	XMMATRIX GetProjXM(){ return XMLoadFloat4x4(&mProj); }
 private:
 	//세 계 공 간 기준의 카메라 좌표계
 	XMFLOAT3 mPosition;

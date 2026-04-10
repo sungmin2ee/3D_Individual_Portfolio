@@ -17,7 +17,7 @@ CLevel_Logo::~CLevel_Logo()
 
 HRESULT CLevel_Logo::Initialize()
 {
-	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
+	if (FAILED(Ready_Layer_Logo(TEXT("Layer_Logo"))))
 		return E_FAIL;
 	//if(FAILED(CGameInstance::Get().Add_Prototype()))
 
@@ -46,15 +46,15 @@ HRESULT CLevel_Logo::Render()
 	return S_OK;
 }
 
-HRESULT CLevel_Logo::Ready_Layer_BackGround(const _wstring& strLayerTag)
+HRESULT CLevel_Logo::Ready_Layer_Logo(const _wstring& strLayerTag)
 {
 	CBackGround::BACKGROUND_DESC		Desc{};
 	Desc.iData = 10;
 
 	
-	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::LOGO), TEXT("Prototype_GameObject_BackGround"),
-		ETOUI(LEVEL::LOGO), strLayerTag, &Desc)))
-		return E_FAIL;
+	//if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::LOGO), TEXT("Prototype_GameObject_BackGround"),
+	//	ETOUI(LEVEL::LOGO), strLayerTag, &Desc)))
+	//	return E_FAIL;
 
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::LOGO), TEXT("Prototype_Player"),
 		ETOUI(LEVEL::LOGO), strLayerTag, &Desc)))

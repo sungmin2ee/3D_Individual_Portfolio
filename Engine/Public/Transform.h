@@ -53,7 +53,6 @@ public:
 	_float4x4 GetWorld() { return m_WorldMatrix; }
 	XMMATRIX GetWorldMat() { return XMLoadFloat4x4(&m_WorldMatrix); }
 	void SetWorld(_float4x4 world) {m_WorldMatrix = world; }
-
 private:
 	_float			m_fSpeedPerSec = {};
 	_float			m_fRotationPerSec = {};

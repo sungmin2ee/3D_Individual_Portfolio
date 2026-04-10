@@ -1,224 +1,182 @@
 #include "Obb.h"
+#include "GameInstance.h"
+#include "Helper.h"
+#include "VIBuffer_Cube.h"
+Obb::Obb(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext, shared_ptr<CPrototype> bf): CCollider(pDevice, pContext)
 
-Obb::Obb(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext):CVIBuffer(pDevice, pContext)
 {
+    m_pBuffer = static_pointer_cast<VIBuffer_Cube>(bf);
 }
 
 Obb::~Obb()
 {
-    Safe_Delete_Array(pVertices);
-    Safe_Delete_Array(pIndices);
+
 }
 HRESULT Obb::Initialize(void* pArg) {
 
     return S_OK;
 }
 
-
-HRESULT Obb::Initialize_Prototype() {
-    m_iNumVertexBuffers = 1;
-    m_iNumVertices = 8;
-    m_iVertexStride = sizeof(VOBB);
-    m_iNumIndices = 24;
-    m_iIndexStride = 2;
-    m_eIndexFormat = DXGI_FORMAT_R16_UINT;
-    m_ePrimitiveType = D3D_PRIMITIVE_TOPOLOGY_LINELIST;
-
-#pragma region VERTEX_BUFFER
-    /*
-     UINT ByteWidth;
-     D3D11_USAGE Usage;
-     UINT BindFlags;
-     UINT CPUAccessFlags;
-     UINT MiscFlags;
-     UINT StructureByteStride;
-    */
-    D3D11_BUFFER_DESC           VertexBufferDesc{};
-    VertexBufferDesc.ByteWidth = m_iNumVertices * m_iVertexStride;
-    VertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-    VertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-    VertexBufferDesc.StructureByteStride = m_iVertexStride;
-    VertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-    VertexBufferDesc.MiscFlags = 0;
-
-    pVertices = new VOBB[m_iNumVertices];
-    ZeroMemory(pVertices, sizeof(VOBB) * m_iNumVertices);
-
-
-
-
-    D3D11_SUBRESOURCE_DATA          VertexInitialData{};
-    VertexInitialData.pSysMem = pVertices;
-
-    if (FAILED(m_pDevice->CreateBuffer(&VertexBufferDesc, &VertexInitialData, &m_pVB)))
-        return E_FAIL;
-
-#pragma endregion
-
-
-#pragma region INDEX_BUFFER
-    D3D11_BUFFER_DESC           IndexBufferDesc{};
-    IndexBufferDesc.ByteWidth = m_iNumIndices * m_iIndexStride;
-    IndexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    IndexBufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-    IndexBufferDesc.StructureByteStride = m_iIndexStride;
-    IndexBufferDesc.CPUAccessFlags = 0;
-    IndexBufferDesc.MiscFlags = 0;
-
-    pIndices = new uint16_t[m_iNumIndices];
-    ZeroMemory(pIndices, sizeof(uint16_t) * m_iNumIndices);
-
-
-    pIndices[0] = 0;
-    pIndices[1] = 1;
-
-    pIndices[2] = 1;
-    pIndices[3] = 2;
-
-    pIndices[4] = 2;
-    pIndices[5] = 3;
-
-    pIndices[6] = 3;
-    pIndices[7] = 0;
-
-    pIndices[8] = 1;
-    pIndices[9] = 5;
-
-    pIndices[10] = 2;
-    pIndices[11] = 6;
-
-    pIndices[12] = 3;
-    pIndices[13] = 7;
-
-    pIndices[14] = 0;
-    pIndices[15] = 4;
-
-    pIndices[16] = 4;
-    pIndices[17] = 5;
-
-    pIndices[18] = 5;
-    pIndices[19] = 6;
-
-    pIndices[20] = 6;
-    pIndices[21] = 7;
-
-    pIndices[22] = 7;
-    pIndices[23] = 4;
-
-
-
-    D3D11_SUBRESOURCE_DATA          IndexInitialData{};
-    IndexInitialData.pSysMem = pIndices;
-
-    if (FAILED(m_pDevice->CreateBuffer(&IndexBufferDesc, &IndexInitialData, &m_pIB)))
-        return E_FAIL;
-
-
-    HRESULT hr;
-
-    ComPtr<ID3DBlob> pVSBlob = nullptr;
-    ComPtr<ID3DBlob> pErrorBlob = nullptr;
-
-    // =========================
-    // Vertex Shader
-    // =========================
-    hr = D3DCompileFromFile(L"../../Obb.hlsl",
-        nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "VS_MAIN", "vs_5_0",
-        0, 0, &pVSBlob, &pErrorBlob);
-
-    if (FAILED(hr)) {
-        if (pErrorBlob)
-            OutputDebugStringA((char*)pErrorBlob->GetBufferPointer());
-        return hr;
-    }
-
-    m_pDevice->CreateVertexShader(
-        pVSBlob->GetBufferPointer(),
-        pVSBlob->GetBufferSize(),
-        nullptr,
-        &m_pVS);
-
-    // =========================
-    // Input Layout
-    // =========================
-    D3D11_INPUT_ELEMENT_DESC ied[] =
-    {
-        { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-        { "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 }
-    };
-
-    m_pDevice->CreateInputLayout(ied, 2, pVSBlob->GetBufferPointer(), pVSBlob->GetBufferSize(), &m_pLayout);;
-    // =========================
-    // Pixel Shader
-    // =========================
-    ComPtr<ID3DBlob> pPSBlob;
-    hr = D3DCompileFromFile(L"../../Shader_VtxNonAnim.hlsl",
-        nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "PS_MAIN", "ps_5_0",
-        0, 0, &pPSBlob, &pErrorBlob);
-
-    m_pDevice->CreatePixelShader(
-        pPSBlob->GetBufferPointer(),
-        pPSBlob->GetBufferSize(),
-        nullptr,
-        &m_pPS);
-
-    D3D11_SAMPLER_DESC sampDesc;
-    ZeroMemory(&sampDesc, sizeof(sampDesc));
-    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-    sampDesc.MinLOD = 0;
-    sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
-
-
-    hr = m_pDevice->CreateSamplerState(&sampDesc, &m_pSamplerState);
-    if (FAILED(hr)) return E_FAIL;
-
-
-#pragma endregion
-
-   
-
+HRESULT Obb::Render()
+{
+    m_pBuffer->Render();
+    //__super::Render();
     return S_OK;
 }
-void Obb::Render_Debug()
-{
-    // 1. OBB의 8개 꼭짓점 좌표를 가져옵니다.
+
+
+HRESULT Obb::Initialize_Prototype() {
+   
     XMFLOAT3 corners[8];
-    myOBB.GetCorners(corners);
+    myOBB.GetCorners(corners); //
 
-    // 2. 8개의 꼭짓점을 선으로 잇기 위해 PrimitiveBatch를 사용합니다.
-    // (아래는 꼭짓점들을 연결하는 인덱스 순서입니다)
-    for (int i = 0; i < 8; ++i) {
-        pVertices[i].vPos = corners[i];
-        pVertices[i].vColor = XMFLOAT4(1.f, 1.f, 0.f, 1.f); // 녹색
+    // 3. Vertex 채우기
+    for (int i = 0; i < 8; ++i)
+    {
+        m_pBuffer->pVertices[i].vPos = corners[i];
+        m_pBuffer->pVertices[i].vColor = XMFLOAT4(0, 1, 0, 1);
     }
-    D3D11_MAPPED_SUBRESOURCE mapped;
-    m_pContext->Map(m_pVB.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
-
-    memcpy(mapped.pData, pVertices, sizeof(VOBB) * m_iNumVertices);
-
-    m_pContext->Unmap(m_pVB.Get(), 0);
-
-    Bind_Resources();
-    Render();
-
+   // __super::Initialize_Prototype();
+   
+    return S_OK;
 }
-shared_ptr<Obb> Obb::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
+//void Obb::Render_Debug()
+//{
+//    CB_MATRIX cb{};
+//
+//    // View * Projection (보통 Transpose 필요)
+//    cb.matVP = XMMatrixTranspose(CGameInstance::Get().GetViewXM() *CGameInstance::Get().GetProjXM());
+//
+//    // 1. OBB의 8개 꼭짓점 좌표를 가져옵니다.
+//
+//    XMFLOAT3 corners[8];
+//    myOBB.GetCorners(corners);
+//
+//    // 2. 8개의 꼭짓점을 선으로 잇기 위해 PrimitiveBatch를 사용합니다.
+//    // (아래는 꼭짓점들을 연결하는 인덱스 순서입니다)
+//    for (int i = 0; i < 8; ++i) {
+//        pVertices[i].vPos = corners[i];
+//        pVertices[i].vColor = XMFLOAT4(1.f, 1.f, 0.f, 1.f); // 녹색
+//    }
+//    m_pContext->IASetInputLayout(m_pLayout.Get());
+//    Bind_Resources();
+//    m_pContext->VSSetShader(m_pVS.Get(), 0, 0);
+//    m_pContext->PSSetShader(m_pPS.Get(), 0, 0);
+//
+//    m_pContext->PSSetSamplers(0, 1, m_pSamplerState.GetAddressOf());
+//    // 1. 데이터를 GPU 버퍼로 복사
+//    m_pContext->UpdateSubresource(m_pConstantBuffer.Get(), 0, nullptr, &cb, 0, 0);
+//    //// 2. 파이프라인에 바인딩
+//
+//    m_pContext->VSSetConstantBuffers(0, 1, m_pConstantBuffer.GetAddressOf());
+//
+//
+//
+//    D3D11_MAPPED_SUBRESOURCE mapped;
+//    m_pContext->Map(m_pVB.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
+//
+//    memcpy(mapped.pData, pVertices, sizeof(VOBB) * m_iNumVertices);
+//
+//    m_pContext->Unmap(m_pVB.Get(), 0);
+//
+//    Render();
+//
+//}
+
+unique_ptr<Obb> Obb::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext, shared_ptr<CPrototype> bf)
 {
-    auto		pInstance = shared_ptr<Obb>(new Obb(pDevice, pContext));
+    auto		pInstance = unique_ptr<Obb>(new Obb(pDevice, pContext, bf));
 
     if (FAILED(pInstance->Initialize_Prototype()))
     {
         MSG_BOX("Failed to Created : Obb");
         return nullptr;
     }
-
     return pInstance;
 }
 shared_ptr<CPrototype> Obb::Clone(void* pArg)
 {
-    return nullptr;
+    auto pInstance = make_shared<Obb>(*this);
+
+    // 2. 이 부분이 핵심! 
+    // 프로토타입이 들고 있던 m_pBuffer를 클론에게도 전달함
+    // (이때 RefCount가 올라가며 안전하게 공유됨)
+
+    if (FAILED(pInstance->Initialize(pArg))) return nullptr;
+
+    return pInstance;
+}
+
+void Obb::Update_OBB()
+{
+    XMFLOAT3 corners[8];
+    myOBB.GetCorners(corners); //
+
+    // 3. Vertex 채우기
+    for (int i = 0; i < 8; ++i)
+    {
+        m_pBuffer->pVertices[i].vPos = corners[i];
+    }
+
+    //_float3 rayPos;
+    //_float3 rayDir;
+
+    //CGameInstance::Get().GetMousePointRay(&rayPos, &rayDir);
+    //float dist = 0.f;
+
+    //bool hit = myOBB.Intersects(
+    //    XMLoadFloat3(&rayPos),
+    //    XMLoadFloat3(&rayDir),
+    //    dist
+    //);
+    //// 2. OBB corners 가져오기
+    //XMFLOAT3 corners[8];
+    //myOBB.GetCorners(corners); //
+
+    //// 3. Vertex 채우기
+    //for (int i = 0; i < 8; ++i)
+    //{
+    //    m_pBuffer->pVertices[i].vPos = corners[i];
+    //    if (hit) {
+    //        m_pBuffer->pVertices[i].vColor = XMFLOAT4(1, 0, 0, 1); // 노란색
+    //    }
+    //    else {
+    //        m_pBuffer->pVertices[i].vColor = XMFLOAT4(0, 1, 0, 1); // 노란색
+    //    }
+    //}
+}
+
+bool Obb::Intersects(shared_ptr<CCollider> pTarget)
+{
+    return false;
+}
+
+bool Obb::IntersectsRay()
+{
+    float dist = 0.f;
+    _float3 rayPos;
+    _float3 rayDir;
+
+    CGameInstance::Get().GetMousePointRay(&rayPos, &rayDir);
+    bool hit = myOBB.Intersects(
+        XMLoadFloat3(&rayPos),
+        XMLoadFloat3(&rayDir),
+        dist
+    );
+    XMFLOAT3 corners[8];
+    myOBB.GetCorners(corners); //
+
+    // 3. Vertex 채우기
+    for (int i = 0; i < 8; ++i)
+    {
+        m_pBuffer->pVertices[i].vPos = corners[i];
+        if (hit) {
+            m_pBuffer->pVertices[i].vColor = XMFLOAT4(1, 0, 0, 1); // 노란색
+        }
+        else {
+            m_pBuffer->pVertices[i].vColor = XMFLOAT4(0, 1, 0, 1); // 노란색
+        }
+    }
+    return hit;
+
 }

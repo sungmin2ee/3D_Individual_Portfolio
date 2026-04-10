@@ -24,7 +24,10 @@ namespace Engine
 	struct BoneBuffer { // 슬롯 b1용 (나중에 애니메이션할 때 사용)
 		XMMATRIX BoneMatrices[256];
 	};
-
+	struct CB_MATRIX
+	{
+		XMMATRIX matVP;
+	};
 
 
 	typedef struct VERTEX {

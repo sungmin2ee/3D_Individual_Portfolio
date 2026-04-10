@@ -7,7 +7,7 @@ NS_BEGIN(Engine)
 class  CImguiMgr
 {
 private:
-	CImguiMgr();
+	CImguiMgr(ENGINE_DESC EngineDesc);
 public:
 	virtual ~CImguiMgr();
 public:
@@ -20,11 +20,13 @@ public:
 	void After_DeviceReset();
 
 	
-
+	
 public:
-	static unique_ptr<CImguiMgr> Create();
+	static unique_ptr<CImguiMgr> Create(ENGINE_DESC EngineDesc);
 private:
 	virtual void	Free();
+private:
+	ENGINE_DESC engineDesc;
 };
 
 NS_END

@@ -18,14 +18,23 @@ private:
 	ComPtr<ID3D11DeviceContext>		        m_pContext = { nullptr };
 	vector<class Mesh>						m_vMeshes;
 	const _wstring							prototypeTag = L"";
+	
 public:
+	void Update_Box();
+	void Calculate_Box();
 	void Set_Meshes(vector<Mesh> meshes) { m_vMeshes = meshes; }
 	static unique_ptr<Model> Create(ComPtr<ID3D11Device> dev, ComPtr<ID3D11DeviceContext> context, const _wstring& strPrototypeTag);
+	const _float3 GetMin() { return min; }
+	const _float3 GetMax() { return max; }
 public:
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual shared_ptr<CPrototype> Clone(void* pArg);
 	void Draw();
-};
 
+
+	_float3 max = { 0.f,0.f,0.f };
+	_float3 min = { 0.f,0.f,0.f };
+};
+  
 NS_END

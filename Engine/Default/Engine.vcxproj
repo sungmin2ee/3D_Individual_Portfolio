@@ -19,8 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Public\AABB.h" />
     <ClInclude Include="..\Public\Camera.h" />
     <ClInclude Include="..\Public\CImguiMgr.h" />
+    <ClInclude Include="..\Public\Collider.h" />
+    <ClInclude Include="..\Public\Collider_Manager.h" />
     <ClInclude Include="..\Public\Component.h" />
     <ClInclude Include="..\Public\DInput_Manager.h" />
     <ClInclude Include="..\Public\Engine_Defines.h" />
@@ -50,6 +53,7 @@
     <ClInclude Include="..\Public\Timer_Manager.h" />
     <ClInclude Include="..\Public\Transform.h" />
     <ClInclude Include="..\Public\VIBuffer.h" />
+    <ClInclude Include="..\Public\VIBuffer_Cube.h" />
     <ClInclude Include="..\Public\VIBuffer_Rect.h" />
   </ItemGroup>
   <ItemGroup>
@@ -65,8 +69,11 @@
     <ClCompile Include="..\..\ThirdParty\imgui\ImGuizmo-1.83\ImGradient.cpp" />
     <ClCompile Include="..\..\ThirdParty\imgui\ImGuizmo-1.83\ImGuizmo.cpp" />
     <ClCompile Include="..\..\ThirdParty\imgui\ImGuizmo-1.83\ImSequencer.cpp" />
+    <ClCompile Include="..\Private\AABB.cpp" />
     <ClCompile Include="..\Private\Camera.cpp" />
     <ClCompile Include="..\Private\CImguiMgr.cpp" />
+    <ClCompile Include="..\Private\Collider.cpp" />
+    <ClCompile Include="..\Private\Collider_Manager.cpp" />
     <ClCompile Include="..\Private\Component.cpp" />
     <ClCompile Include="..\Private\DInput_Manager.cpp" />
     <ClCompile Include="..\Private\GameInstance.cpp" />
@@ -90,10 +97,11 @@
     <ClCompile Include="..\Private\Timer_Manager.cpp" />
     <ClCompile Include="..\Private\Transform.cpp" />
     <ClCompile Include="..\Private\VIBuffer.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_Cube.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Rect.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\..\Obb.hlsl">
+    <FxCompile Include="..\..\Collider.hlsl">
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">VS_MAIN</EntryPointName>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
     </FxCompile>
@@ -134,6 +142,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <EnableUnitySupport>true</EnableUnitySupport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -206,6 +215,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>../public/</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

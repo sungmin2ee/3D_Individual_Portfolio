@@ -38,7 +38,7 @@ private:
 	shared_ptr<Shader> m_pShaderCom = { nullptr };
 	shared_ptr<Obb> m_pObbCom = { nullptr };
 	uint32_t			m_iData = {};
-	MatrixBuffer cb;
+	MatrixBuffer cb = {};
 	ComPtr<ID3D11Buffer>							m_pConstantBuffer = { nullptr };
 	ComPtr<ID3D11Buffer>							m_pBoneBuffer = { nullptr };
 	ComPtr<ID3D11VertexShader>						m_pVS = { nullptr };

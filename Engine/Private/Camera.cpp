@@ -2,8 +2,10 @@
 
 CCamera::CCamera()
 {
-	XMVECTOR Eye = XMVectorSet(0.0f, 5.0f, -100.0f, 1.0f);
-	XMVECTOR At = XMVectorSet(0.0f, 0.0f, 0.0f, 1.0f);
+
+
+	XMVECTOR Eye = XMVectorSet(0.0f, 0.0f, -100.0f, 1.0f);
+	XMVECTOR At = XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f);
 	XMVECTOR Up = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 
 

@@ -100,6 +100,12 @@
     <Filter Include="06.Component\Collider\OBB">
       <UniqueIdentifier>{4f128c4b-7ded-4d4a-9994-8848a0878c4a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06.Component\Collider\AABB">
+      <UniqueIdentifier>{6655620f-f00f-4599-a458-4df435367aca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Component\Manager">
+      <UniqueIdentifier>{12531f1b-9d5c-4c88-95dd-0a7268226fdc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -197,6 +203,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\Obb.h">
       <Filter>06.Component\Collider\OBB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AABB.h">
+      <Filter>06.Component\Collider\AABB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Cube.h">
+      <Filter>06.Component\VIBuffer\Cube</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Collider_Manager.h">
+      <Filter>06.Component\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Collider.h">
+      <Filter>06.Component\Collider</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -314,6 +332,18 @@
     <ClCompile Include="..\Private\Obb.cpp">
       <Filter>06.Component\Collider\OBB</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\AABB.cpp">
+      <Filter>06.Component\Collider\AABB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Cube.cpp">
+      <Filter>06.Component\VIBuffer\Cube</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Collider_Manager.cpp">
+      <Filter>06.Component\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Collider.cpp">
+      <Filter>06.Component\Collider</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\VertexShader.hlsl">
@@ -322,7 +352,7 @@
     <FxCompile Include="..\..\Shader_VtxNonAnim.hlsl">
       <Filter>96.Shader</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\Obb.hlsl">
+    <FxCompile Include="..\..\Collider.hlsl">
       <Filter>96.Shader</Filter>
     </FxCompile>
   </ItemGroup>

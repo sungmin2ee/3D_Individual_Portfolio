@@ -4,9 +4,17 @@
 #include "Camera.h"
 NS_BEGIN(Engine)
 
-class ENGINE_DLL CHelper
+class CHelper
 {
+private:
+	CHelper(ENGINE_DESC EngineDesc);
 public:
-	static void GetMousePointRay(const ENGINE_DESC& EngineDesc, _float3* pRayPos, _float3* pRayDir);
+	virtual ~CHelper();
+public:
+	void GetMousePointRay(_float3* pRayPos, _float3* pRayDir);
+	static unique_ptr<CHelper> Create(ENGINE_DESC EngineDesc);
+
+private:
+	ENGINE_DESC engineDesc;
 };
 NS_END

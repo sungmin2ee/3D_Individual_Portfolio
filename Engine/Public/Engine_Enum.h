@@ -14,7 +14,7 @@ namespace Engine
 
 	//enum INFO {	INFO_RIGHT, INFO_UP, INFO_LOOK, INFO_POS, INFO_END };
 
-	//enum ROTATION { ROT_X, ROT_Y, ROT_Z, ROT_END };
+	enum ROTATION { ROT_X, ROT_Y, ROT_Z, ROT_END };
 
 	//enum TEXTUREID { TEX_NORMAL, TEX_CUBE, TEX_END };
 

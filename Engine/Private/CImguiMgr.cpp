@@ -1,10 +1,10 @@
 #include "CImguiMgr.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
-
+#include "GameInstance.h"
 LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
-CImguiMgr::CImguiMgr()
+CImguiMgr::CImguiMgr(ENGINE_DESC EngineDesc):engineDesc{EngineDesc}
 {
 }
 
@@ -58,6 +58,9 @@ void CImguiMgr::Update_Imgui()
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+	ImGuizmo::BeginFrame();
+	ImGuizmo::Enable(true);
+	ImGuizmo::SetRect(0, 0, (_float)engineDesc.iWinSizeX, (_float)engineDesc.iWinSizeY);
 
 }
 
@@ -65,11 +68,9 @@ HRESULT CImguiMgr::Render_Imgui()
 {
 	if (!ImGui::GetCurrentContext()) return E_FAIL;
 
-	//pGraphicDev->SetRenderState(D3DRS_ZENABLE, FALSE);
 	ImGui::Render();
 	
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-	//pGraphicDev->SetRenderState(D3DRS_ZENABLE, TRUE);
 	return S_OK;
 }
 
@@ -96,10 +97,10 @@ void CImguiMgr::After_DeviceReset()
 	ImGui_ImplDX11_CreateDeviceObjects();
 }
 
-unique_ptr<CImguiMgr> CImguiMgr::Create()
+unique_ptr<CImguiMgr> CImguiMgr::Create(ENGINE_DESC EngineDesc)
 {
 
-	return unique_ptr<CImguiMgr>(new CImguiMgr());
+	return unique_ptr<CImguiMgr>(new CImguiMgr(EngineDesc));
 }
 
 

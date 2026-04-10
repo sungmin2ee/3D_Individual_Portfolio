@@ -18,6 +18,47 @@ HRESULT Model::Initialize_Prototype() {
     return S_OK;
 }
 
+void Model::Update_Box()
+{
+    Calculate_Box();
+}
+
+void Model::Calculate_Box()
+{
+    if (m_vMeshes.empty() || m_vMeshes[0].vertices_.empty())
+        return;
+
+
+    _float3 firstPos = m_vMeshes[0].vertices_[0].position;
+    _float minX = firstPos.x, minY = firstPos.y, minZ = firstPos.z;
+    _float maxX = firstPos.x, maxY = firstPos.y, maxZ = firstPos.z;
+
+    for (auto& mesh : m_vMeshes) {
+        for (auto& vertex : mesh.vertices_) {
+            if (vertex.position.x < minX) {
+                minX = vertex.position.x;
+            }
+            if (vertex.position.y < minY) {
+                minY = vertex.position.y;
+            }
+            if (vertex.position.z < minZ) {
+                minZ = vertex.position.z;
+            }
+            if (vertex.position.x > maxX) {
+                maxX = vertex.position.x;
+            }
+            if (vertex.position.y > maxY) {
+                maxY = vertex.position.y;
+            }
+            if (vertex.position.z > maxZ) {
+                maxZ = vertex.position.z;
+            }
+        }
+    }
+    max = { maxX, maxY, maxZ};
+    min = { minX, minY, minZ};
+}
+
 unique_ptr<Model> Model::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext, const _wstring& strPrototypeTag)
 {
     auto	pInstance = unique_ptr<Model>(new Model(pDevice, pContext, strPrototypeTag));

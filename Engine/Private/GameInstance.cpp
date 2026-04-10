@@ -6,11 +6,14 @@
 #include "Prototype_Manager.h"
 #include "Object_Manager.h"
 #include "DInput_Manager.h"
+#include "Collider_Manager.h"
 #include "Renderer.h"
 #include "CImguiMgr.h"
 #include "ModelLoader.h"
 #include "Model.h"
 #include "Camera.h"
+#include "Helper.h"
+#include "Layer.h"
 
 CGameInstance::CGameInstance()
 {
@@ -55,7 +58,7 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, ComPtr<I
     if (nullptr == m_pModelLoader)
         return E_FAIL;
 
-    m_pImguiMgr = CImguiMgr::Create();
+    m_pImguiMgr = CImguiMgr::Create(EngineDesc);
     if (nullptr == m_pImguiMgr)
         return E_FAIL;
     m_pImguiMgr->Ready_Imgui(EngineDesc.hWnd, pOutDevice, pOutContext);
@@ -65,6 +68,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, ComPtr<I
         return E_FAIL;
     float aspect = (float)EngineDesc.iWinSizeX / EngineDesc.iWinSizeY;
     m_pCamera->SetLens(XM_PIDIV4, aspect, 0.1f, 1000.f);
+
+    m_pHelper = CHelper::Create(EngineDesc);
+    m_pCollider_Manager = Collider_Manager::Create();
     return S_OK;
 }
 
@@ -182,6 +188,11 @@ HRESULT CGameInstance::Add_GameObject_toLayer(uint32_t iPrototypeLevelIndex, con
     return m_pObject_Manager->Add_GameObject_toLayer(iPrototypeLevelIndex, strPrototypeTag, iLayerLevelIndex, strLayerTag, pArg);
 }
 
+CLayer* CGameInstance::Find_Layer(uint32_t iLayerLevelIndex, const _wstring& strLayerTag)
+{
+    return m_pObject_Manager->Find_Layer(iLayerLevelIndex, strLayerTag);
+}
+
 #pragma endregion
 
 #pragma region RENDERER
@@ -258,11 +269,39 @@ const XMFLOAT4X4 CGameInstance::GetView() {
 const XMFLOAT4X4 CGameInstance::GetProj() {
     return m_pCamera->GetProj();
 }
+const XMMATRIX CGameInstance::GetProjXM()
+{
+    return m_pCamera->GetProjXM();
+}
+const XMMATRIX CGameInstance::GetViewXM()
+{
+    return m_pCamera->GetViewXM();
+}
+const XMFLOAT3 CGameInstance::GetPosition()
+{
+    return m_pCamera->GetPosition();
+}
 const  XMVECTOR CGameInstance::GetPositionXM() {
     return m_pCamera->GetPositionXM();
 }
+void CGameInstance::GetMousePointRay( _float3* pRayPos, _float3* pRayDir)
+{
+    m_pHelper->GetMousePointRay( pRayPos, pRayDir);
+}
 #pragma endregion
 
+#pragma region COLLIDER_MANAGER
+
+void CGameInstance::Add_Collider(weak_ptr<class CCollider> collider) {
+    m_pCollider_Manager->Add_Collider(collider);
+}
+
+
+vector<weak_ptr<class CCollider>>& CGameInstance::Get_Colliders() {
+    return m_pCollider_Manager->Get_Colliders();
+}
+
+#pragma endregion
 
 void CGameInstance::Release_Engine()
 {

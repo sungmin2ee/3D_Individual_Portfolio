@@ -44,6 +44,8 @@ public:
 #pragma region GAMEOBJECT_MANAGER
 	HRESULT Add_GameObject_toLayer(uint32_t iPrototypeLevelIndex, const _wstring& strPrototypeTag,
 		uint32_t iLayerLevelIndex, const _wstring& strLayerTag, void* pArg = nullptr);
+
+	class CLayer* Find_Layer(uint32_t iLayerLevelIndex, const _wstring& strLayerTag);
 #pragma endregion
 
 #pragma region RENDERER
@@ -78,8 +80,20 @@ public:
 #pragma region CAMERA
 	const XMFLOAT4X4 GetView();
 	const XMFLOAT4X4 GetProj();
+	const XMMATRIX GetProjXM();
+	const XMMATRIX GetViewXM();
+	const XMFLOAT3 GetPosition();
 	const XMVECTOR GetPositionXM();
 
+#pragma endregion
+
+#pragma region HELPER
+	void GetMousePointRay(_float3* pRayPos, _float3* pRayDir);
+#pragma endregion
+
+#pragma region COLLIDER_MANAGER
+	void Add_Collider(weak_ptr<class CCollider> collider);
+	vector<weak_ptr<class CCollider>>& Get_Colliders();
 #pragma endregion
 private:
 	unique_ptr<class CGraphic_Device>				m_pGraphic_Device = { nullptr };
@@ -92,8 +106,9 @@ private:
 	unique_ptr<class CImguiMgr>						m_pImguiMgr = { nullptr };
 	unique_ptr<class ModelLoader>					m_pModelLoader = { nullptr };
 	unique_ptr<class CCamera> 						m_pCamera = nullptr;
+	unique_ptr<class CHelper> 						m_pHelper = nullptr;
+	unique_ptr<class Collider_Manager> 				m_pCollider_Manager = nullptr;
 
-	ComPtr<ID3D11RasterizerState> m_pRasterizerState = { nullptr };
 
 public:
 

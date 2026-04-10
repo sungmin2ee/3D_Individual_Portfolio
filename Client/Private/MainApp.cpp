@@ -3,6 +3,8 @@
 #include "Level_Loading.h"
 #include "ImguiHandler.h"
 #include "Helper.h"
+#include "VIBuffer_Cube.h"
+#include "Obb.h"
 
 CMainApp::CMainApp()
 {
@@ -29,6 +31,8 @@ HRESULT CMainApp::Initialize()
 
 	
 	if (FAILED(CGameInstance::Get().Initialize_Engine(EngineDesc, m_pDevice, m_pContext)))
+		return E_FAIL;
+	if (FAILED(Ready_Prototypes()))
 		return E_FAIL;
 	if (FAILED(Start_Level(LEVEL::LOGO)))
 		return E_FAIL;
@@ -68,6 +72,18 @@ HRESULT CMainApp::Start_Level(LEVEL eStartLevelIndex)
 		CLevel_Loading::Create(m_pDevice, m_pContext, eStartLevelIndex))))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT CMainApp::Ready_Prototypes()
+{
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Cube_Buffer"),
+		VIBuffer_Cube::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_OBB"),
+		Obb::Create(m_pDevice, m_pContext,CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Cube_Buffer"))))))
+		return E_FAIL;
 	return S_OK;
 }
 

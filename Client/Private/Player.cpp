@@ -3,6 +3,7 @@
 #include "Shader.h"
 #include "GameInstance.h"
 #include "Obb.h"
+#include "GameObject.h"
 #include <d3dcompiler.h>
 #pragma comment(lib, "d3dcompiler.lib")
 CPlayer::CPlayer(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
@@ -49,17 +50,11 @@ HRESULT CPlayer::Initialize(void* pArg)
 	}
 	m_pTransformCom->Scaling(0.001f, 0.001f, 0.001f);
 	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), 270.f);
+	m_pModelCom->Calculate_Box();
 
-	m_pObbCom = Obb::Create(m_pDevice, m_pContext);
-	m_pObbCom->myOBB.Center = XMFLOAT3(0.f, 0.f, 0.f);
-
-	// 2. Extents: 중심에서 각 면까지의 거리 (반지름 개념)
-	// 가로 0.5m, 세로 1.0m, 두께 0.5m인 박스라면:
-	m_pObbCom->myOBB.Extents = XMFLOAT3(10.f, 10.0f, 10.f);
-
-	// 3. Orientation: 회전값 (사원수)
-	// 처음에는 회전이 없으므로 Identity(단위 행렬의 회전값)를 넣습니다.
-	m_pObbCom->myOBB.Orientation = XMFLOAT4(0.f, 0.f, 0.f, 1.f);
+	m_pObbCom = static_pointer_cast<Obb>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC),L"Prototype_OBB"));
+	CGameInstance::Get().Add_Collider(m_pObbCom);
+	m_pObbCom->SetOwner(this);
 	return S_OK;
 }
 
@@ -120,8 +115,35 @@ void CPlayer::Update(_float fTimeDelta)
 		ImGui::Text("%04d: Some text", n);
 	ImGui::EndChild();
 	ImGui::End();
+	_float3 min = m_pModelCom->GetMin();
+	_float3 max = m_pModelCom->GetMax();
+	_float3 scale = m_pTransformCom->Get_Scaled();
+	XMVECTOR xmMin = XMLoadFloat3(&min);
+	XMVECTOR xmMax = XMLoadFloat3(&max);
+	XMVECTOR xmScale = XMLoadFloat3(&scale);
+	XMVECTOR mid = (xmMin + (xmMax - xmMin) * 0.5);
 
-	int a = 10;
+	_float4x4 mat = m_pTransformCom->GetWorld();
+	_matrix world = XMLoadFloat4x4(&mat);
+	XMVECTOR centerWorld = XMVector3TransformCoord(mid, world);
+	XMStoreFloat3(&m_pObbCom->myOBB.Center, centerWorld);
+
+	// 2. Extents: 중심에서 각 면까지의 거리 (반지름 개념)
+	// 가로 0.5m, 세로 1.0m, 두께 0.5m인 박스라면:
+
+	m_pObbCom->myOBB.Extents = XMFLOAT3((max.x - min.x) * 0.5f * scale.x, (max.y - min.y) * 0.5f * scale.y, (max.z - min.z) * 0.5f * scale.z);
+
+	// 3. Orientation: 회전값 (사원수)
+	// 처음에는 회전이 없으므로 Identity(단위 행렬의 회전값)를 넣습니다.
+
+
+	// 스케일 제거 (중요)
+	XMVECTOR scale1, rot, trans;
+	XMMatrixDecompose(&scale1, &rot, &trans, world);
+	
+	// Orientation에 넣기
+	XMStoreFloat4(&m_pObbCom->myOBB.Orientation, rot);
+	m_pObbCom->Update_OBB();
 }
 
 void CPlayer::Late_Update(_float fTimeDelta)
@@ -157,24 +179,9 @@ HRESULT CPlayer::Render()
 
     XMStoreFloat4x4(&cb.socket, XMMatrixIdentity());
 
-    //m_pContext->UpdateSubresource(m_pConstantBuffer.Get(), 0, nullptr, &cb, 0, 0);
-    //m_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-    //// =========================
-    //// Pipeline
-    //// =========================
-    //m_pContext->IASetInputLayout(m_pLayout.Get());
-    //m_pContext->VSSetConstantBuffers(0, 1, m_pConstantBuffer.GetAddressOf());
-    //m_pContext->VSSetShader(m_pVS.Get(), 0, 0);
-    //m_pContext->PSSetShader(m_pPS.Get(), 0, 0);
-
-    //m_pContext->PSSetSamplers(0, 1, m_pSamplerState.GetAddressOf());
-    //context->RSSetState(m_pRasterizerState.Get());
-
 	m_pShaderCom->Bind_Matrix(cb);
-    
-	//m_pModelCom->Draw();
-	m_pObbCom->Render_Debug();
+	m_pModelCom->Draw();
+	m_pObbCom->Render();
 	return S_OK;
 }
 unique_ptr<CPlayer> CPlayer::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
