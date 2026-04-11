@@ -72,6 +72,10 @@ private:
 public:
 	static unique_ptr<CCamera> Create();
 
+	void Mouse_Move();
+
+	void Mouse_Fix();
+
 };
 
 NS_END

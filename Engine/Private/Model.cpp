@@ -1,7 +1,8 @@
 #include "Model.h"
+#include "GameInstance.h"
 
-Model::Model(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> context, const _wstring& strPrototypeTag)
-    :CComponent(device,context), m_pDevice{ device }, m_pContext{ context }, prototypeTag{ strPrototypeTag }
+Model::Model(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> context, const string& filename)
+    :CComponent(device,context), m_pDevice{ device }, m_pContext{ context }
 {
 
 }
@@ -15,6 +16,7 @@ HRESULT Model::Initialize(void* pArg) {
 }
 HRESULT Model::Initialize_Prototype() {
 
+  
     return S_OK;
 }
 
@@ -59,9 +61,13 @@ void Model::Calculate_Box()
     min = { minX, minY, minZ};
 }
 
-unique_ptr<Model> Model::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext, const _wstring& strPrototypeTag)
+unique_ptr<Model> Model::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext, const string& filename)
 {
-    auto	pInstance = unique_ptr<Model>(new Model(pDevice, pContext, strPrototypeTag));
+
+    auto	pInstance = unique_ptr<Model>(new Model(pDevice, pContext, filename));
+    
+    CGameInstance::Get().Load(filename);
+    pInstance->Set_Meshes(std::move(CGameInstance::Get().Get_Meshes()));
 
     if (FAILED(pInstance->Initialize_Prototype()))
     {

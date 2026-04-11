@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include "GameInstance.h"
 
 CCamera::CCamera()
 {
@@ -225,3 +226,52 @@ unique_ptr<CCamera> CCamera::Create()
 
 	return unique_ptr<CCamera>(new CCamera());
 }
+void CCamera::Mouse_Move()
+{
+	XMVECTOR E = XMLoadFloat3(&mPosition);
+	XMVECTOR L = XMLoadFloat3(&mLook);
+	XMVECTOR R = XMLoadFloat3(&mRight);
+
+	XMVECTOR worldUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+
+	LONG dx = CGameInstance::Get().Get_DIMouseMove(DIMS_X);
+	LONG dy = CGameInstance::Get().Get_DIMouseMove(DIMS_Y);
+
+	if (dy != 0)
+	{
+		float pitchLimit = XMConvertToRadians(89.0f);
+		float currentPitch = asinf(XMVectorGetY(L));
+		float newPitch = currentPitch + XMConvertToRadians(dy * 0.1f);
+
+		if (newPitch < pitchLimit && newPitch > -pitchLimit)
+		{
+			_matrix rot = XMMatrixRotationAxis(R, XMConvertToRadians(dy * 0.1f));
+			L = XMVector3TransformNormal(L, rot);
+		}
+	}
+
+	if (dx != 0)
+	{
+		_matrix rot = XMMatrixRotationAxis(worldUp, XMConvertToRadians(dx * 0.1f));
+		L = XMVector3TransformNormal(L, rot);
+	}
+
+	L = XMVector3Normalize(L);
+	R = XMVector3Normalize(XMVector3Cross(worldUp, L));
+	XMVECTOR U = XMVector3Cross(L, R);
+
+	XMVECTOR A = E + L;
+
+	XMStoreFloat3(&mLook, L);
+	XMStoreFloat3(&mRight, R);
+	XMStoreFloat3(&mUp, U);
+	XMStoreFloat3(&mAt, A);
+}
+//void CCamera::Mouse_Fix()
+//{
+//    POINT       ptMouse{ WINCX >> 1, WINCY >> 1 };
+//
+//    ClientToScreen(g_hWnd, &ptMouse);
+//    SetCursorPos(ptMouse.x, ptMouse.y);
+//
+//}

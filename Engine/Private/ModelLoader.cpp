@@ -15,7 +15,7 @@ ModelLoader::~ModelLoader() {
 	// empty
 }
 
-unique_ptr<Model> ModelLoader::Load(string filename) {
+bool ModelLoader::Load(string filename) {
 	this->Close();
 	Assimp::Importer importer;
 	importer.SetPropertyBool(AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false);
@@ -27,20 +27,19 @@ unique_ptr<Model> ModelLoader::Load(string filename) {
 		aiProcess_GenUVCoords | //UV 좌표 생성
 		aiProcess_GenNormals | // 법선 생성
 		aiProcess_ConvertToLeftHanded |
-		aiProcess_LimitBoneWeights | aiProcess_PopulateArmatureData
+		aiProcess_LimitBoneWeights | aiProcess_PopulateArmatureData | aiProcess_PreTransformVertices
 	);
 
 	if (pScene == nullptr)
-		return nullptr;
-
+		return false;
+	if (!pScene->HasMeshes()) {
+		MSG_BOX("이 FBX 파일에는 메쉬 데이터가 정의되어 있지 않습니다.");
+		return false;
+	}
 	this->directory_ = filename.substr(0, filename.find_last_of("/\\"));
 
 	processNode(pScene->mRootNode, pScene);
-
-	auto model = Model::Create(m_pDevice, m_pContext, StringToWString(filename));
- 	model->Set_Meshes(std::move(this->meshes_));
-	
-	return model;
+	return true;
 }
 
 //void ModelLoader::Draw() {
@@ -162,6 +161,8 @@ void ModelLoader::Close() {
 }
 
 void ModelLoader::processNode(aiNode* node, const aiScene* scene) {
+
+
 	for (UINT i = 0; i < node->mNumMeshes; i++) {
 		aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
 		meshes_.push_back(this->processMesh(mesh, scene));

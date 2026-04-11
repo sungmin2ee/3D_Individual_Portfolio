@@ -89,6 +89,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
     if (GetAsyncKeyState('D') & 0x8000) {
         m_pCamera->Strafe(10.0f * fTimeDelta);
     }
+    m_pCamera->Mouse_Move();
     m_pCamera->UpdateViewMatrix();
 
     m_pImguiMgr->Update_Imgui();
@@ -206,13 +207,19 @@ HRESULT CGameInstance::Add_RenderObject(RENDERGROUP eRenderGroup, shared_ptr<CGa
 
 #pragma region MODEL_LOADER
 
-unique_ptr<Model>CGameInstance::Load(string filename) {
+bool CGameInstance::Load(string filename) {
     
     return m_pModelLoader->Load(filename);
 }
 void CGameInstance::Close () {
 
     return m_pModelLoader->Close();
+}
+
+vector<Mesh>& CGameInstance::Get_Meshes()
+{
+    return m_pModelLoader->Get_Meshes();
+    // TODO: 여기에 return 문을 삽입합니다.
 }
 
 #pragma endregion

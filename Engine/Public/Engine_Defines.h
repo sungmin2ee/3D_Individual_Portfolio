@@ -24,6 +24,8 @@ using namespace DirectX;
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
+#include <filesystem>
+#include <nlohmann/json.hpp>
 //#ifdef _DEBUG
 //#pragma comment(lib, "DirectXTex/DirectXTex_debug.lib")
 //#pragma comment(lib, "FX11/Effects11d.lib")

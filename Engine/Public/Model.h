@@ -8,7 +8,7 @@ NS_BEGIN(Engine)
 class ENGINE_DLL Model: public CComponent
 {
 private:
-	Model(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> context, const _wstring& strPrototypeTag);
+	Model(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> context, const string& filename);
 public:
 	~Model();
 
@@ -17,13 +17,12 @@ private:
 	ComPtr<ID3D11Device>					m_pDevice = { nullptr };
 	ComPtr<ID3D11DeviceContext>		        m_pContext = { nullptr };
 	vector<class Mesh>						m_vMeshes;
-	const _wstring							prototypeTag = L"";
-	
+
 public:
 	void Update_Box();
 	void Calculate_Box();
 	void Set_Meshes(vector<Mesh> meshes) { m_vMeshes = meshes; }
-	static unique_ptr<Model> Create(ComPtr<ID3D11Device> dev, ComPtr<ID3D11DeviceContext> context, const _wstring& strPrototypeTag);
+	static unique_ptr<Model> Create(ComPtr<ID3D11Device> dev, ComPtr<ID3D11DeviceContext> context, const string& filename);
 	const _float3 GetMin() { return min; }
 	const _float3 GetMax() { return max; }
 public:

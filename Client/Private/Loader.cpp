@@ -36,17 +36,17 @@ HRESULT CLoader::Initialize(LEVEL eNextLevelIndex)
 	InitializeCriticalSection(&m_CriticalSection);
 
 	m_eNextLevelIndex = eNextLevelIndex;
-
+	Load_Models_From_Directory(LEVEL::LOGO, "Static");
 	//if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO),
 	//	TEXT("Prototype_Player_Model"), CGameInstance::Get().Load("../../Resources/Models/Joe5.fbx"))))
 	//{
 	//	return E_FAIL;
 	//}
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO),
-		TEXT("Prototype_Player_Model"), CGameInstance::Get().Load("../../Resources/Models/Joe5.fbx"))))
-	{
-		return E_FAIL;
-	}
+	//if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO),
+	//	TEXT("Prototype_Player_Model"), CGameInstance::Get().Load("../../Resources/Models/Joe5.fbx"))))
+	//{
+	//	return E_FAIL;
+	//}
 
 	m_hThread = (HANDLE)_beginthreadex(nullptr, 0, ThreadMain, this, 0, nullptr);
 	if (0 == m_hThread)
@@ -173,4 +173,62 @@ unique_ptr<CLoader> CLoader::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11D
 		MSG_BOX("Failed to Created : CLoader");
 
 	return pInstance;
+}
+namespace fs = std::filesystem;
+using json = nlohmann::json;
+
+void CLoader::Load_Models_From_Directory(LEVEL eNextLevelIndex, const string& strSceneName) {
+    // 1. 경로 설정 (예: "../../Resources/Scene_Logo/")
+    string strPath = "../../Resources/Models/" + strSceneName + "/Anim/";
+	json sceneJson;
+
+	string strLevelKey = "Scene_" + strSceneName;
+    // 2. 해당 폴더 내부를 순회
+    for (const auto& entry : fs::directory_iterator(strPath)) {
+        if (entry.path().extension() == ".fbx") { // FBX 파일만 골라내기
+            string strFileName = entry.path().stem().string(); // 확장자 뺀 파일명 (예: "Player")
+            string strFullPath = entry.path().string();        // 전체 경로
+			_wstring wFileName = StringToWString(strFileName);
+            // 3. 모델 원본(Prototype) 생성
+            auto pModelProto = Model::Create(m_pDevice, m_pContext, strFullPath);
+            wstring wstrProtoTag = L"Prototype_Model_" + wFileName;
+            CGameInstance::Get().Add_Prototype(ETOUI(eNextLevelIndex),wstrProtoTag, unique_ptr<CPrototype>(std::move(pModelProto)));
+
+			json modelData;
+			modelData["Model"] = "Prototype_Model_" + strFileName;
+			modelData["IsAnim"] = true;           
+
+			sceneJson[strLevelKey]["Model"].push_back(modelData);
+        }
+	
+    }
+
+
+	string strPath1 = "../../Resources/Models/" + strSceneName + "/NonAnim/";
+
+	// 2. 해당 폴더 내부를 순회
+	for (const auto& entry : fs::directory_iterator(strPath1)) {
+		if (entry.path().extension() == ".fbx") { // FBX 파일만 골라내기
+			string strFileName = entry.path().stem().string(); // 확장자 뺀 파일명 (예: "Player")
+			string strFullPath = entry.path().string();        // 전체 경로
+			_wstring wFileName = StringToWString(strFileName);
+			// 3. 모델 원본(Prototype) 생성
+			auto pModelProto = Model::Create(m_pDevice, m_pContext, strFullPath);
+			wstring wstrProtoTag = L"Prototype_Model_" + wFileName;
+			CGameInstance::Get().Add_Prototype(ETOUI(eNextLevelIndex), wstrProtoTag, unique_ptr<CPrototype>(std::move(pModelProto)));
+
+			json modelData;
+			modelData["Model"] = "Prototype_Model_" + strFileName;
+			modelData["IsAnim"] = false;           // 일단 기본값
+
+			sceneJson[strLevelKey]["Model"].push_back(modelData);
+		}
+
+	}
+	string savePath = "../../Resources/Data/" + strSceneName + "_List.json";
+	std::ofstream file(savePath);
+	if (file.is_open()) {
+		file << sceneJson.dump(4); // 4는 들여쓰기(Tab) 간격입니다.
+		file.close();
+	}
 }

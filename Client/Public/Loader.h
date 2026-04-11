@@ -43,6 +43,8 @@ private:
 
 public:
 	static unique_ptr<CLoader> Create(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext, LEVEL eNextLevelIndex);
+	void Load_Models_From_Directory(LEVEL eNextLevelIndex,const string& strSceneName);
+	HRESULT Load_Data(string Scene);
 };
 
 NS_END

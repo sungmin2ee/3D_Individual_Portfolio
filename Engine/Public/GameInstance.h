@@ -57,8 +57,9 @@ public:
 #pragma endregion
 
 #pragma region MODEL_LOADER
-	unique_ptr<class Model> Load(string filename);
+	bool Load(string filename);
 	void Close();
+	vector<class Mesh>& Get_Meshes();
 #pragma endregion
 #pragma region INPUT_MANAGER
 	_byte	Get_DIKeyState(_ubyte byKeyID);

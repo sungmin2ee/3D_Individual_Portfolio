@@ -106,7 +106,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;IMGUI_API=__declspec(dllimport);IMGUI_DEFINE_MATH_OPERATORS;_HAS_STD_BYTE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>..\Public\;../../EngineSDK/Inc/;$(SolutionDir)ThirdParty\assimp_6.0.4\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Public\;../../EngineSDK/Inc/;$(SolutionDir)ThirdParty\assimp_6.0.4\include;$(SolutionDir)ThirdParty\nlohmann_3.12.0\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
