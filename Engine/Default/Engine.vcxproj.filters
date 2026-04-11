@@ -216,6 +216,7 @@
     <ClInclude Include="..\Public\Collider.h">
       <Filter>06.Component\Collider</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CModelObject.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Graphic_Device.cpp">
@@ -344,6 +345,7 @@
     <ClCompile Include="..\Private\Collider.cpp">
       <Filter>06.Component\Collider</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\CModelObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\..\VertexShader.hlsl">

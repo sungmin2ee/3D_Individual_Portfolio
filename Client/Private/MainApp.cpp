@@ -5,6 +5,8 @@
 #include "Helper.h"
 #include "VIBuffer_Cube.h"
 #include "Obb.h"
+#include "Shader.h"
+#include "CModelObject.h"
 
 CMainApp::CMainApp()
 {
@@ -18,7 +20,7 @@ CMainApp::~CMainApp()
 HRESULT CMainApp::Initialize()
 {
 
-	
+
 
 
 	ENGINE_DESC EngineDesc{};
@@ -29,7 +31,7 @@ HRESULT CMainApp::Initialize()
 	EngineDesc.iWinSizeY = g_iWinSizeY;
 	EngineDesc.iNumLevels = ETOUI(LEVEL::END);
 
-	
+
 	if (FAILED(CGameInstance::Get().Initialize_Engine(EngineDesc, m_pDevice, m_pContext)))
 		return E_FAIL;
 	if (FAILED(Ready_Prototypes()))
@@ -67,7 +69,7 @@ HRESULT CMainApp::Render()
 
 HRESULT CMainApp::Start_Level(LEVEL eStartLevelIndex)
 {
-	
+
 	if (FAILED(CGameInstance::Get().Change_Level(static_cast<uint32_t>(LEVEL::LOADING),
 		CLevel_Loading::Create(m_pDevice, m_pContext, eStartLevelIndex))))
 		return E_FAIL;
@@ -77,6 +79,10 @@ HRESULT CMainApp::Start_Level(LEVEL eStartLevelIndex)
 
 HRESULT CMainApp::Ready_Prototypes()
 {
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_NonAnimShander"),
+		Shader::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Cube_Buffer"),
 		VIBuffer_Cube::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -84,6 +90,10 @@ HRESULT CMainApp::Ready_Prototypes()
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_OBB"),
 		Obb::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_ModelObject"),
+		CModelObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	return S_OK;
 }
 

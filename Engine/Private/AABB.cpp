@@ -3,8 +3,8 @@
 #include "Helper.h"
 #include "VIbuffer_Cube.h"
 
-AABB::AABB(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext, shared_ptr<VIBuffer_Cube> bf):CCollider(pDevice, pContext)
-, m_pBuffer{ bf }
+AABB::AABB(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext):CCollider(pDevice, pContext)
+
 {
 }
 
@@ -82,9 +82,9 @@ HRESULT AABB::Initialize_Prototype() {
 //
 //}
 
-unique_ptr<AABB> AABB::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext, shared_ptr<class VIBuffer_Cube> bf)
+unique_ptr<AABB> AABB::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 {
-    auto		pInstance = unique_ptr<AABB>(new AABB(pDevice, pContext, bf));
+    auto		pInstance = unique_ptr<AABB>(new AABB(pDevice, pContext));
 
     if (FAILED(pInstance->Initialize_Prototype()))
     {
@@ -99,6 +99,10 @@ shared_ptr<CPrototype> AABB::Clone(void* pArg)
     return nullptr;
 }
 
+void AABB::Update(_matrix TransformMatrix)
+{
+
+}
 void AABB::Update_AABB()
 {
     _float3 rayPos;

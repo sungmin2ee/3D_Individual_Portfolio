@@ -2,7 +2,7 @@
 #include "GameInstance.h"
 #include "Helper.h"
 #include "VIBuffer_Cube.h"
-Obb::Obb(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext): CCollider(pDevice, pContext)
+Obb::Obb(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext) : CCollider(pDevice, pContext)
 
 {
 }
@@ -14,7 +14,7 @@ Obb::~Obb()
 HRESULT Obb::Initialize(void* pArg) {
     auto ppBuffer = static_cast<shared_ptr<VIBuffer_Cube>*>(pArg);
     m_pBuffer = *ppBuffer;
-   
+
 
     return S_OK;
 }
@@ -48,10 +48,10 @@ HRESULT Obb::Render()
 
 
 HRESULT Obb::Initialize_Prototype() {
-   
-   
-   // __super::Initialize_Prototype();
-   
+
+
+    // __super::Initialize_Prototype();
+
     return S_OK;
 }
 
@@ -92,6 +92,11 @@ shared_ptr<CPrototype> Obb::Clone(void* pArg)
 bool Obb::Intersects(shared_ptr<CCollider> pTarget)
 {
     return false;
+}
+
+void Obb::Update(_matrix TransformMatrix)
+{
+
 }
 
 bool Obb::IntersectsRay(float* pOutDist)

@@ -22,6 +22,7 @@
     <ClInclude Include="..\Public\AABB.h" />
     <ClInclude Include="..\Public\Camera.h" />
     <ClInclude Include="..\Public\CImguiMgr.h" />
+    <ClInclude Include="..\Public\CModelObject.h" />
     <ClInclude Include="..\Public\Collider.h" />
     <ClInclude Include="..\Public\Collider_Manager.h" />
     <ClInclude Include="..\Public\Component.h" />
@@ -72,6 +73,7 @@
     <ClCompile Include="..\Private\AABB.cpp" />
     <ClCompile Include="..\Private\Camera.cpp" />
     <ClCompile Include="..\Private\CImguiMgr.cpp" />
+    <ClCompile Include="..\Private\CModelObject.cpp" />
     <ClCompile Include="..\Private\Collider.cpp" />
     <ClCompile Include="..\Private\Collider_Manager.cpp" />
     <ClCompile Include="..\Private\Component.cpp" />
