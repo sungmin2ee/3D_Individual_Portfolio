@@ -20,10 +20,17 @@ HRESULT AABB::Initialize(void* pArg) {
 
 HRESULT AABB::Render()
 {
+    if (nullptr == m_pBuffer)
+        return E_FAIL;
+    _float4 vRenderColor = m_bIsSelected ? _float4(1.f, 0.f, 0.f, 1.f) : _float4(0.f, 1.f, 0.f, 1.f);
+
+    m_pBuffer->Render();
+    // 2. 이제 그려!
     //__super::Render();
+
     return S_OK;
 }
-
+  
 
 HRESULT AABB::Initialize_Prototype() {
 
@@ -127,7 +134,7 @@ bool AABB::Intersects(shared_ptr<CCollider> pTarget)
     return false;
 }
 
-bool AABB::IntersectsRay()
+bool AABB::IntersectsRay(_float* pOutDist)
 {
     float dist = 0.f;
     _float3 rayPos;
@@ -139,5 +146,17 @@ bool AABB::IntersectsRay()
         XMLoadFloat3(&rayDir),
         dist
     );
+    *pOutDist = 0;
+    //for (int i = 0; i < 8; ++i)
+    //{
+    //    pVertices[i].vPos = corners[i];
+    //    if (hit) {
+    //        pVertices[i].vColor = XMFLOAT4(1, 0, 0, 1); // 노란색
+    //    }
+    //    else {
+    //        pVertices[i].vColor = XMFLOAT4(0, 1, 0, 1); // 노란색
+    //    }
+    //}
+
     return hit;
 }

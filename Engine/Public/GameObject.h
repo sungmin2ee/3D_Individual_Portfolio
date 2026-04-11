@@ -26,6 +26,7 @@ public:
 	virtual void Update(_float fTimeDelta);
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
+	CTransform* Get_Transform() { return m_pTransformCom.get(); }
 
 protected:
 	ComPtr<ID3D11Device>			m_pDevice = { nullptr };

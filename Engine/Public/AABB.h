@@ -23,7 +23,9 @@ public:
 	void Update_AABB();
 	void SetWorld(_float4x4 world) { m_WorldMatrix = world; }
 	virtual bool Intersects(shared_ptr<CCollider> pTarget) override;
-	virtual bool IntersectsRay() override;
+	virtual bool IntersectsRay(_float* pOutDist) override;
+	void Set_WorldMatrix(_matrix matWorld) { XMStoreFloat4x4(&m_WorldMatrix, matWorld); }
+
 
 public:
 	BoundingBox myAABB;

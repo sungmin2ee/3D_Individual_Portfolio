@@ -26,7 +26,8 @@ namespace Engine
 	};
 	struct CB_MATRIX
 	{
-		XMMATRIX matVP;
+		_float4x4 matWVP;
+		_float4 vColor;
 	};
 
 

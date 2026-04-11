@@ -82,7 +82,7 @@ HRESULT CMainApp::Ready_Prototypes()
 		return E_FAIL;
 
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_OBB"),
-		Obb::Create(m_pDevice, m_pContext,CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Cube_Buffer"))))))
+		Obb::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	return S_OK;
 }

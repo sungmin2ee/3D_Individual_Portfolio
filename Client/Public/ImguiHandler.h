@@ -20,6 +20,10 @@ public:
 	static unique_ptr<CImguiHandler> Create(ENGINE_DESC desc);
 private:
 	ENGINE_DESC m_Desc;
+	CGameObject* m_pSelected = nullptr;
+	_float4 position = {};
+	_float3 rotation = {};
+	ImGuizmo::OPERATION m_CurrentOperation;
 };
 
 NS_END

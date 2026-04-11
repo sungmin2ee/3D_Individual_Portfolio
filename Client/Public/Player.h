@@ -8,6 +8,7 @@ class Model;
 class CGameObject;
 class Shader;
 class Obb;
+class VIBuffer_Cube;
 NS_END
 
 NS_BEGIN(Client)
@@ -32,11 +33,12 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-
+	//Prototype_Cube_Buffer
 private:
 	shared_ptr<Model> m_pModelCom = { nullptr };
 	shared_ptr<Shader> m_pShaderCom = { nullptr };
 	shared_ptr<Obb> m_pObbCom = { nullptr };
+	shared_ptr<VIBuffer_Cube> m_pObbBfCom = { nullptr };
 	uint32_t			m_iData = {};
 	MatrixBuffer cb = {};
 	ComPtr<ID3D11Buffer>							m_pConstantBuffer = { nullptr };

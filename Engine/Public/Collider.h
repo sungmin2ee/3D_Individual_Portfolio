@@ -10,8 +10,11 @@ public:
 	virtual ~CCollider();
 
 	virtual bool Intersects(shared_ptr<CCollider> pTarget) = 0;
-	virtual bool IntersectsRay() = 0;
+	virtual bool IntersectsRay(_float* pOutDist) = 0;
+	void SetSelected(bool flag) { m_bIsSelected = flag; }
 	//virtual void Update_Collider(_fmatrix WorldMatrix) = 0;
+protected:
+	bool m_bIsSelected = false;
 };
 NS_END
 

@@ -79,9 +79,12 @@ void CTransform::Rotation(_fvector vAxis, _float fAngle)
 {
     _float3     vScaled = Get_Scaled();
 
-    _vector     vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f) * vScaled.x;
-    _vector     vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f) * vScaled.y;
-    _vector     vLook = XMVectorSet(0.f, 0.f, 1.f, 0.f) * vScaled.z;
+    //_vector     vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f) * vScaled.x;
+    //_vector     vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f) * vScaled.y;
+    //_vector     vLook = XMVectorSet(0.f, 0.f, 1.f, 0.f) * vScaled.z;
+    _vector vRight = Get_State(STATE::RIGHT);
+    _vector vUp = Get_State(STATE::UP);
+    _vector vLook = Get_State(STATE::LOOK);
 
     _matrix     RotationMatrix = XMMatrixRotationAxis(vAxis, XMConvertToRadians(fAngle));
 

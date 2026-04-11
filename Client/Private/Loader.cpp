@@ -47,6 +47,7 @@ HRESULT CLoader::Initialize(LEVEL eNextLevelIndex)
 	{
 		return E_FAIL;
 	}
+
 	m_hThread = (HANDLE)_beginthreadex(nullptr, 0, ThreadMain, this, 0, nullptr);
 	if (0 == m_hThread)
 		return E_FAIL;

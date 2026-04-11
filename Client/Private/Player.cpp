@@ -52,8 +52,11 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), 270.f);
 	m_pModelCom->Calculate_Box();
 
-	m_pObbCom = static_pointer_cast<Obb>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC),L"Prototype_OBB"));
+	m_pObbBfCom = static_pointer_cast<VIBuffer_Cube>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), L"Prototype_Cube_Buffer"));
+
+	m_pObbCom = static_pointer_cast<Obb>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC),L"Prototype_OBB", &m_pObbBfCom));
 	CGameInstance::Get().Add_Collider(m_pObbCom);
+	//m_pObbCom->SetBuffer(m_pObbBfCom);
 	m_pObbCom->SetOwner(this);
 	return S_OK;
 }
@@ -63,87 +66,109 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 	int a = 10;
 }
 
+//void CPlayer::Update(_float fTimeDelta)
+//{
+//	if (GetAsyncKeyState('E') & 0x8000) {
+//		m_pTransformCom->Go_Right(fTimeDelta);
+//		//BoundingOrientedBox localOBB = m_LocalOBB;
+//		//localOBB.Transform(m_pObbCom->myOBB, worldMatrix);
+//		//m_pObbCom->myOBB.Transform(m_pObbCom->myOBB, );
+//	}
+//	
+//	_float3 min = m_pModelCom->GetMin();
+//	_float3 max = m_pModelCom->GetMax();
+//	_float3 scale = m_pTransformCom->Get_Scaled();
+//	XMVECTOR xmMin = XMLoadFloat3(&min);
+//	XMVECTOR xmMax = XMLoadFloat3(&max);
+//	XMVECTOR xmScale = XMLoadFloat3(&scale);
+//	XMVECTOR mid = (xmMin + (xmMax - xmMin) * 0.5);
+//
+//	_float4x4 mat = m_pTransformCom->GetWorld();
+//	_matrix world = XMLoadFloat4x4(&mat);
+//	XMVECTOR centerWorld = XMVector3TransformCoord(mid, world);
+//	XMStoreFloat3(&m_pObbCom->myOBB.Center, centerWorld);
+//
+//	// 2. Extents: 중심에서 각 면까지의 거리 (반지름 개념)
+//	// 가로 0.5m, 세로 1.0m, 두께 0.5m인 박스라면:
+//
+//
+//	m_pObbCom->myOBB.Extents = XMFLOAT3((max.x - min.x) * 0.5f,
+//		(max.y - min.y) * 0.5f,
+//		(max.z - min.z) * 0.5f);
+//
+//	// Orientation (회전) 추출
+//	XMVECTOR vScale, vRot, vTrans;
+//	XMMatrixDecompose(&vScale, &vRot, &vTrans, world);
+//	XMStoreFloat4(&m_pObbCom->myOBB.Orientation, vRot);
+//
+//	// 3. [추가] 렌더링용 월드 행렬 생성
+//	// 큐브 버퍼(1x1x1)를 (실제 모델 크기 * 현재 스케일)만큼 키웁니다.
+//	_float3 fScale = m_pTransformCom->Get_Scaled();
+//	_matrix matOBBWorld = XMMatrixScaling(m_pObbCom->myOBB.Extents.x * 2.f * fScale.x,
+//		m_pObbCom->myOBB.Extents.y * 2.f * fScale.y,
+//		m_pObbCom->myOBB.Extents.z * 2.f * fScale.z);
+//
+//	// 회전과 위치 적용
+//	matOBBWorld *= XMMatrixRotationQuaternion(vRot);
+//	matOBBWorld *= XMMatrixTranslationFromVector(centerWorld);
+//
+//	// [중요] 이제 Update_OBB(Map 방식) 대신 행렬만 세팅합니다.
+//	m_pObbCom->Set_WorldMatrix(matOBBWorld);
+//
+//
+//
+//	//m_pObbCom->myOBB.Extents = XMFLOAT3((max.x - min.x) * 0.5f * scale.x, (max.y - min.y) * 0.5f * scale.y, (max.z - min.z) * 0.5f * scale.z);
+//
+//	//// 3. Orientation: 회전값 (사원수)
+//	//// 처음에는 회전이 없으므로 Identity(단위 행렬의 회전값)를 넣습니다.
+//
+//
+//	//// 스케일 제거 (중요)
+//	//XMVECTOR scale1, rot, trans;
+//	//XMMatrixDecompose(&scale1, &rot, &trans, world);
+//	//
+//	//// Orientation에 넣기
+//	//XMStoreFloat4(&m_pObbCom->myOBB.Orientation, rot);
+//	m_pObbCom->Update_OBB();
+//}
 void CPlayer::Update(_float fTimeDelta)
 {
-	if (GetAsyncKeyState('E') & 0x8000) {
-		m_pTransformCom->Go_Right(fTimeDelta);
-		//BoundingOrientedBox localOBB = m_LocalOBB;
-		//localOBB.Transform(m_pObbCom->myOBB, worldMatrix);
-		//m_pObbCom->myOBB.Transform(m_pObbCom->myOBB, );
-	}
-	_float fps = 1 / fTimeDelta;
-	ImGui::Begin("My Second Tool");
-	ImGui::Text("Current FPS: %.2f", fps);
-	ImGui::Separator(); // 구분선
-	if (ImGui::TreeNode("Configuration##2")) {
 
-		/*ImGui::Begin("Operation");
-		if (ImGui::RadioButton("Translate", m_CurrentGizmoOperation == ImGuizmo::TRANSLATE))
-			m_CurrentGizmoOperation = ImGuizmo::TRANSLATE;
-		ImGui::SameLine();
-		if (ImGui::RadioButton("Rotate", m_CurrentGizmoOperation == ImGuizmo::ROTATE))
-			m_CurrentGizmoOperation = ImGuizmo::ROTATE;
-		ImGui::SameLine();
-		if (ImGui::RadioButton("Scale", m_CurrentGizmoOperation == ImGuizmo::SCALE))
-			m_CurrentGizmoOperation = ImGuizmo::SCALE;*/
-
-		ImGui::TreePop();
-		ImGui::Spacing();
-	}
-	if (ImGui::BeginMenuBar())
-	{
-		if (ImGui::BeginMenu("File"))
-		{
-			if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
-			if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
-			ImGui::EndMenu();
-		}
-		ImGui::EndMenuBar();
-	}
-	XMFLOAT4 m_vColor = { 0.3f, 0.3f, 0.3f, 1.0f };
-	// Edit a color (stored as ~4 floats)
-	ImGui::ColorEdit4("Color", (float*)&m_vColor);
-
-	// Plot some values
-	const float my_values[] = { 0.2f, 0.1f, 1.0f, 0.5f, 0.9f, 2.2f };
-	ImGui::PlotLines("Frame Times", my_values, IM_ARRAYSIZE(my_values));
-
-	// Display contents in a scrolling region
-	ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
-	ImGui::BeginChild("Scrolling");
-	for (int n = 0; n < 50; n++)
-		ImGui::Text("%04d: Some text", n);
-	ImGui::EndChild();
-	ImGui::End();
 	_float3 min = m_pModelCom->GetMin();
 	_float3 max = m_pModelCom->GetMax();
 	_float3 scale = m_pTransformCom->Get_Scaled();
-	XMVECTOR xmMin = XMLoadFloat3(&min);
-	XMVECTOR xmMax = XMLoadFloat3(&max);
-	XMVECTOR xmScale = XMLoadFloat3(&scale);
-	XMVECTOR mid = (xmMin + (xmMax - xmMin) * 0.5);
 
 	_float4x4 mat = m_pTransformCom->GetWorld();
 	_matrix world = XMLoadFloat4x4(&mat);
+
+	// 1. Center 계산: 로컬 중심점(mid)을 월드 행렬로 변환
+	XMVECTOR xmMin = XMLoadFloat3(&min);
+	XMVECTOR xmMax = XMLoadFloat3(&max);
+	XMVECTOR mid = (xmMin + xmMax) * 0.5f;
 	XMVECTOR centerWorld = XMVector3TransformCoord(mid, world);
 	XMStoreFloat3(&m_pObbCom->myOBB.Center, centerWorld);
 
-	// 2. Extents: 중심에서 각 면까지의 거리 (반지름 개념)
-	// 가로 0.5m, 세로 1.0m, 두께 0.5m인 박스라면:
+	// 2. Extents 계산: (모델 크기 * 트랜스폼 스케일)의 절반
+	// myOBB 자체가 월드에서 클릭되어야 하므로 여기서 스케일을 미리 곱해야 합니다.
+	m_pObbCom->myOBB.Extents.x = (max.x - min.x) * 0.5f * scale.x;
+	m_pObbCom->myOBB.Extents.y = (max.y - min.y) * 0.5f * scale.y;
+	m_pObbCom->myOBB.Extents.z = (max.z - min.z) * 0.5f * scale.z;
 
-	m_pObbCom->myOBB.Extents = XMFLOAT3((max.x - min.x) * 0.5f * scale.x, (max.y - min.y) * 0.5f * scale.y, (max.z - min.z) * 0.5f * scale.z);
+	// 3. Orientation 추출: 월드 행렬에서 회전값만 가져옴
+	XMVECTOR vScale, vRot, vTrans;
+	XMMatrixDecompose(&vScale, &vRot, &vTrans, world);
+	XMStoreFloat4(&m_pObbCom->myOBB.Orientation, vRot);
 
-	// 3. Orientation: 회전값 (사원수)
-	// 처음에는 회전이 없으므로 Identity(단위 행렬의 회전값)를 넣습니다.
+	// 4. 렌더링용 월드 행렬 (m_WorldMatrix) 갱신
+	// VIBuffer_Cube는 -0.5 ~ 0.5 (크기 1)이므로, Extents * 2를 하면 딱 맞습니다.
+	_matrix matOBBWorld = XMMatrixScaling(m_pObbCom->myOBB.Extents.x * 2.f,
+		m_pObbCom->myOBB.Extents.y * 2.f,
+		m_pObbCom->myOBB.Extents.z * 2.f);
+	matOBBWorld *= XMMatrixRotationQuaternion(vRot);
+	matOBBWorld *= XMMatrixTranslationFromVector(centerWorld);
 
+	m_pObbCom->Set_WorldMatrix(matOBBWorld);
 
-	// 스케일 제거 (중요)
-	XMVECTOR scale1, rot, trans;
-	XMMatrixDecompose(&scale1, &rot, &trans, world);
-	
-	// Orientation에 넣기
-	XMStoreFloat4(&m_pObbCom->myOBB.Orientation, rot);
-	m_pObbCom->Update_OBB();
 }
 
 void CPlayer::Late_Update(_float fTimeDelta)

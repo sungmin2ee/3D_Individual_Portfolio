@@ -1,6 +1,7 @@
 cbuffer cbMatrix : register(b0)
 {
-    matrix g_matVP;
+    matrix g_matWVP;
+    float4 g_vColor;
 };
 
 struct VS_IN
@@ -18,8 +19,8 @@ struct VS_OUT
 VS_OUT VS_MAIN(VS_IN In)
 {
     VS_OUT Out;
-    Out.vPosition = mul(float4(In.vPos, 1.f), g_matVP);
-    Out.vColor = In.vColor;
+    Out.vPosition = mul(float4(In.vPos, 1.f), g_matWVP);
+    Out.vColor = In.vColor * g_vColor;
     return Out;
 }
 

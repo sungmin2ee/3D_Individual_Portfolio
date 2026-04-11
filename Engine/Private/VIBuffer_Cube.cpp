@@ -8,29 +8,9 @@ VIBuffer_Cube::VIBuffer_Cube(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceCo
     pVertices = nullptr;
 }
 
-VIBuffer_Cube::VIBuffer_Cube(const VIBuffer_Cube& rhs)
-    : CVIBuffer(rhs)
-    , m_pVS(rhs.m_pVS)
-    , m_pPS(rhs.m_pPS)
-    , m_pLayout(rhs.m_pLayout)
-    , m_pSamplerState(rhs.m_pSamplerState)
-    , m_pConstantBuffer(rhs.m_pConstantBuffer)
-{
-    // 1. 개수 복사
-    m_iNumVertices = rhs.m_iNumVertices;
-    m_iNumIndices = rhs.m_iNumIndices;
-
-    // 2. 새로운 메모리 동적 할당 (Deep Copy)
-    pVertices = new VOBB[m_iNumVertices];
-    memcpy(pVertices, rhs.pVertices, sizeof(VOBB) * m_iNumVertices);
-
-    pIndices = new uint16_t[m_iNumIndices];
-    memcpy(pIndices, rhs.pIndices, sizeof(uint16_t) * m_iNumIndices);
-}
 VIBuffer_Cube::~VIBuffer_Cube()
 {
-    Safe_Delete_Array(pVertices);
-    Safe_Delete_Array(pIndices);
+
 }
 
 
@@ -44,6 +24,19 @@ HRESULT VIBuffer_Cube::Initialize_Prototype()
     m_eIndexFormat = DXGI_FORMAT_R16_UINT;
     m_ePrimitiveType = D3D_PRIMITIVE_TOPOLOGY_LINELIST;
 
+    pVertices = new VOBB[m_iNumVertices];
+
+    pVertices[0].vPos = _float3(-0.5f, 0.5f, -0.5f);
+    pVertices[1].vPos = _float3(0.5f, 0.5f, -0.5f);
+    pVertices[2].vPos = _float3(0.5f, -0.5f, -0.5f);
+    pVertices[3].vPos = _float3(-0.5f, -0.5f, -0.5f);
+    pVertices[4].vPos = _float3(-0.5f, 0.5f, 0.5f);
+    pVertices[5].vPos = _float3(0.5f, 0.5f, 0.5f);
+    pVertices[6].vPos = _float3(0.5f, -0.5f, 0.5f);
+    pVertices[7].vPos = _float3(-0.5f, -0.5f, 0.5f);
+
+    for (int i = 0; i < 8; ++i)
+        pVertices[i].vColor = _float4(1.f, 1.f, 1.f, 1.f);
 #pragma region VERTEX_BUFFER
     /*
      UINT ByteWidth;
@@ -55,14 +48,11 @@ HRESULT VIBuffer_Cube::Initialize_Prototype()
     */
     D3D11_BUFFER_DESC           VertexBufferDesc{};
     VertexBufferDesc.ByteWidth = m_iNumVertices * m_iVertexStride;
-    VertexBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
+    VertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
     VertexBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
     VertexBufferDesc.StructureByteStride = m_iVertexStride;
-    VertexBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+    VertexBufferDesc.CPUAccessFlags = 0;
     VertexBufferDesc.MiscFlags = 0;
-
-    pVertices = new VOBB[m_iNumVertices];
-    ZeroMemory(pVertices, sizeof(VOBB) * m_iNumVertices);
 
 
 
@@ -196,12 +186,10 @@ HRESULT VIBuffer_Cube::Initialize_Prototype()
     hr = m_pDevice->CreateSamplerState(&sampDesc, &m_pSamplerState);
     if (FAILED(hr)) return E_FAIL;
 
-    D3D11_BUFFER_DESC cbDesc{};
-    cbDesc.ByteWidth = sizeof(CB_MATRIX);
-    cbDesc.Usage = D3D11_USAGE_DEFAULT;
-    cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+   
 
-    m_pDevice->CreateBuffer(&cbDesc, nullptr, &m_pConstantBuffer);
+    Safe_Delete_Array(pVertices);
+    Safe_Delete_Array(pIndices);
 
 #pragma endregion
 
@@ -211,7 +199,13 @@ HRESULT VIBuffer_Cube::Initialize_Prototype()
 
 HRESULT VIBuffer_Cube::Initialize(void* pArg)
 {
+    m_pConstantBuffer = nullptr;
+    D3D11_BUFFER_DESC cbDesc{};
+    cbDesc.ByteWidth = sizeof(CB_MATRIX);
+    cbDesc.Usage = D3D11_USAGE_DEFAULT;
+    cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
+    m_pDevice->CreateBuffer(&cbDesc, nullptr, &m_pConstantBuffer);
     return S_OK;
 }
 
@@ -230,11 +224,12 @@ unique_ptr<VIBuffer_Cube> VIBuffer_Cube::Create(ComPtr<ID3D11Device> pDevice, Co
     return pInstance;
 }
 
-
 shared_ptr<CPrototype> VIBuffer_Cube::Clone(void* pArg)
 {
-    auto		pInstance = shared_ptr<VIBuffer_Cube>(new VIBuffer_Cube(*this));
+    // 1. 복사 생성자를 호출하여 포인터들을 일단 똑같이 복사함
+    auto pInstance = shared_ptr<VIBuffer_Cube>(new VIBuffer_Cube(*this));
 
+    // 2. Initialize에서 나만의 "상수 버퍼"를 새로 생성함
     if (FAILED(pInstance->Initialize(pArg)))
     {
         MSG_BOX("Failed to Cloned : VIBuffer_Cube");
@@ -246,39 +241,47 @@ shared_ptr<CPrototype> VIBuffer_Cube::Clone(void* pArg)
 
 HRESULT VIBuffer_Cube::Render()
 {
-    CB_MATRIX cb{};
-    cb.matVP = XMMatrixTranspose(
-        CGameInstance::Get().GetViewXM() *
-        CGameInstance::Get().GetProjXM()
-    );
 
-    m_pContext->UpdateSubresource(m_pConstantBuffer.Get(), 0, nullptr, &cb, 0, 0);
-    m_pContext->VSSetConstantBuffers(0, 1, m_pConstantBuffer.GetAddressOf());
-
-
-
-    D3D11_MAPPED_SUBRESOURCE mapped;
-    m_pContext->Map(m_pVB.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
-    memcpy(mapped.pData, pVertices, sizeof(VOBB) * 8);
-    m_pContext->Unmap(m_pVB.Get(), 0);
-
-    // 4. 파이프라인 세팅
-    UINT stride = sizeof(VOBB);
-    UINT offset = 0;
-
-    m_pContext->IASetVertexBuffers(0, 1, m_pVB.GetAddressOf(), &stride, &offset);
-    m_pContext->IASetIndexBuffer(m_pIB.Get(), DXGI_FORMAT_R16_UINT, 0);
-    m_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+    if (FAILED(Bind_Resources()))
+        return E_FAIL;
 
     m_pContext->IASetInputLayout(m_pLayout.Get());
+
+    m_pContext->VSSetConstantBuffers(0, 1, m_pConstantBuffer.GetAddressOf());
+
     m_pContext->VSSetShader(m_pVS.Get(), 0, 0);
     m_pContext->PSSetShader(m_pPS.Get(), 0, 0);
 
-    // (선 안 보이면 이거 추가)
-   // m_pContext->OMSetDepthStencilState(nullptr, 0);
+    return __super::Render();
+    
+}
 
-    // 5. Draw
-    m_pContext->DrawIndexed(24, 0, 0);
+HRESULT VIBuffer_Cube::Bind_ConstantBuffer(const CB_MATRIX& cbData)
+{
+    // 1. 데이터 업데이트
+    m_pContext->UpdateSubresource(
+        m_pConstantBuffer.Get(),
+        0,
+        nullptr,
+        &cbData,
+        0,
+        0
+    );
+
+    // 2. VS에 바인딩
+    m_pContext->VSSetConstantBuffers(0, 1, m_pConstantBuffer.GetAddressOf());
+
     return S_OK;
 }
 
+void VIBuffer_Cube::UpdateConstantBuffer(const CB_MATRIX& data)
+{
+    m_pContext->UpdateSubresource(
+        m_pConstantBuffer.Get(),
+        0,
+        nullptr,
+        &data,
+        0,
+        0
+    );
+}

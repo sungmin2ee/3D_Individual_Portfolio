@@ -58,9 +58,9 @@ void CImguiMgr::Update_Imgui()
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
-	ImGuizmo::BeginFrame();
+	/*ImGuizmo::BeginFrame();
 	ImGuizmo::Enable(true);
-	ImGuizmo::SetRect(0, 0, (_float)engineDesc.iWinSizeX, (_float)engineDesc.iWinSizeY);
+	ImGuizmo::SetRect(0, 0, (_float)engineDesc.iWinSizeX, (_float)engineDesc.iWinSizeY);*/
 
 }
 

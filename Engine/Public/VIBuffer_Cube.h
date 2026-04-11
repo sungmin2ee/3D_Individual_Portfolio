@@ -11,7 +11,7 @@ private:
 	VIBuffer_Cube(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext);
 
 public:
-	VIBuffer_Cube(const VIBuffer_Cube& rhs);
+	//VIBuffer_Cube(const VIBuffer_Cube& rhs);
 	virtual ~VIBuffer_Cube();
 
 public:
@@ -22,6 +22,8 @@ public:
 	static unique_ptr<VIBuffer_Cube> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
 	virtual shared_ptr<CPrototype> Clone(void* pArg) override;
 	virtual HRESULT  Render();
+	HRESULT Bind_ConstantBuffer(const CB_MATRIX& cbData);
+	void UpdateConstantBuffer(const CB_MATRIX& data);
 public:
 	uint16_t* pIndices;
 	VOBB* pVertices;
