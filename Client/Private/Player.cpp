@@ -36,13 +36,13 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	if (FAILED(__super::Initialize(pDesc)))
 		return E_FAIL;
-	m_pModelCom = static_pointer_cast<Model>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::LOGO), L"Prototype_Model_master_room_corner_backroom"));
+	m_pModelCom = static_pointer_cast<Model>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), L"Prototype_Model_NonAnim"));
 	if (nullptr == m_pModelCom)
 	{
 		MSG_BOX("Player의 모델 컴포넌트 클론 실패!");
 		return E_FAIL;
 	}
-	m_pShaderCom = static_pointer_cast<Shader>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::LOGO), L"Prototype_NonAnimShander"));
+	m_pShaderCom = static_pointer_cast<Shader>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), L"Prototype_NonAnimShander"));
 	if (nullptr == m_pShaderCom)
 	{
 		MSG_BOX("쉐이더 컴포넌트 클론 실패!");

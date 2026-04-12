@@ -36,7 +36,7 @@ HRESULT CLoader::Initialize(LEVEL eNextLevelIndex)
 	InitializeCriticalSection(&m_CriticalSection);
 
 	m_eNextLevelIndex = eNextLevelIndex;
-	Load_Models_From_Directory(LEVEL::LOGO, "Static");
+	Load_Models_From_Directory(LEVEL::STATIC, "Static");
 	//if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO),
 	//	TEXT("Prototype_Player_Model"), CGameInstance::Get().Load("../../Resources/Models/Joe5.fbx"))))
 	//{
@@ -101,7 +101,7 @@ HRESULT CLoader::Loading_For_Logo()
 	}
 
 	lstrcpy(m_szLoadingText, TEXT("모델을 로딩 중 입니다."));
-
+	//Load_Models_From_Directory(LEVEL::LOGO, "Logo");
 	//if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO),
 	//	TEXT("Prototype_Player_Model"), CGameInstance::Get().Load("../../Resources/Models/Joe5.fbx"))))
 	//{
@@ -110,9 +110,7 @@ HRESULT CLoader::Loading_For_Logo()
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩 중 입니다."));
 	
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO), TEXT("Prototype_NonAnimShander"),
-		Shader::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+	
 	
 	for (size_t i = 0; i < 99999999; i++)
 	{
@@ -146,7 +144,7 @@ HRESULT CLoader::Loading_For_GamePlay()
 
 	lstrcpy(m_szLoadingText, TEXT("모델을 로딩 중 입니다."));
 
-
+	//Load_Models_From_Directory(LEVEL::GAMEPLAY, "Gameplay");
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩 중 입니다."));
 	for (size_t i = 0; i < 99999999; i++)

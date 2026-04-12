@@ -20,7 +20,7 @@ CMainApp::~CMainApp()
 HRESULT CMainApp::Initialize()
 {
 
-
+	
 
 
 	ENGINE_DESC EngineDesc{};
@@ -31,13 +31,13 @@ HRESULT CMainApp::Initialize()
 	EngineDesc.iWinSizeY = g_iWinSizeY;
 	EngineDesc.iNumLevels = ETOUI(LEVEL::END);
 
-
 	if (FAILED(CGameInstance::Get().Initialize_Engine(EngineDesc, m_pDevice, m_pContext)))
 		return E_FAIL;
 	if (FAILED(Ready_Prototypes()))
 		return E_FAIL;
 	if (FAILED(Start_Level(LEVEL::LOGO)))
 		return E_FAIL;
+
 	m_pImguiHandler = CImguiHandler::Create(EngineDesc);
 	if (nullptr == m_pImguiHandler)
 		return E_FAIL;
@@ -69,7 +69,7 @@ HRESULT CMainApp::Render()
 
 HRESULT CMainApp::Start_Level(LEVEL eStartLevelIndex)
 {
-
+	
 	if (FAILED(CGameInstance::Get().Change_Level(static_cast<uint32_t>(LEVEL::LOADING),
 		CLevel_Loading::Create(m_pDevice, m_pContext, eStartLevelIndex))))
 		return E_FAIL;

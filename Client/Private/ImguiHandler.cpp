@@ -13,9 +13,49 @@ CImguiHandler::CImguiHandler(ENGINE_DESC desc): m_Desc(desc)
 CImguiHandler::~CImguiHandler()
 {
 }
+void CImguiHandler::Initialize(uint32_t curlevel,const string& strSceneName) {
+	modelsName.clear();
+	using json = nlohmann::json;
 
+	string path = "../../Resources/Data/" + strSceneName + "_List.json";
+	std::ifstream file(path);
+
+	if (!file.is_open())
+	{
+		return;
+	}
+	json j;
+	file >> j;
+	string nodeName = "";
+	nodeName = "Scene_" + strSceneName;
+	for (auto& model : j[nodeName]["Model"])
+	{
+		bool isAnim = model.value("IsAnim", false);
+		modelsName.push_back(model.value("Model", ""));
+	}
+}
 void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 {
+
+	if (!loaded && curlevel > ETOUI(LEVEL::LOADING)) {
+		curLevel = CGameInstance::Get().GetCurLevelIndex();
+		switch (curlevel) {
+			case ETOUI(LEVEL::LOGO):
+			{
+				SceneName = "Logo";
+				break;
+			}
+			case ETOUI(LEVEL::GAMEPLAY): {
+				SceneName = "Gameplay";
+				break;
+			}
+		}
+		Initialize(curlevel, SceneName);
+		loaded = true;
+	}
+	if (curLevel != curlevel) {
+		loaded = false;
+	}
 	switch (curlevel) {
 	case ETOUI(LEVEL::LOGO):
 	{
@@ -27,52 +67,45 @@ void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 	}
 	break;
 	}
-}
-/* _float fps = 1 / fTimeDelta;
-	ImGui::Begin("My Second Tool");
-	ImGui::Text("Current FPS: %.2f", fps);
-	ImGui::Separator(); // 구분선
-	if (ImGui::TreeNode("Configuration##2")) {
 
-		/*ImGui::Begin("Operation");
-		if (ImGui::RadioButton("Translate", m_CurrentGizmoOperation == ImGuizmo::TRANSLATE))
-			m_CurrentGizmoOperation = ImGuizmo::TRANSLATE;
-		ImGui::SameLine();
-		if (ImGui::RadioButton("Rotate", m_CurrentGizmoOperation == ImGuizmo::ROTATE))
-			m_CurrentGizmoOperation = ImGuizmo::ROTATE;
-		ImGui::SameLine();
-		if (ImGui::RadioButton("Scale", m_CurrentGizmoOperation == ImGuizmo::SCALE))
-			m_CurrentGizmoOperation = ImGuizmo::SCALE;
-
-ImGui::TreePop();
-ImGui::Spacing();
-	}
-	if (ImGui::BeginMenuBar())
+	ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
+	if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
 	{
-		if (ImGui::BeginMenu("File"))
+		char buffer[64] = "";
+		if (ImGui::BeginTabItem("Model"))
 		{
-			if (ImGui::MenuItem("Open..", "Ctrl+O")) {  }
-			if (ImGui::MenuItem("Save", "Ctrl+S")) {  }
-			ImGui::EndMenu();
+			ImGui::InputText("UTF-8 input", buffer, IM_COUNTOF(buffer));
+			
+			for (int i = 0; i < modelsName.size(); ++i)
+			{
+				ImGui::PushID(i);  
+
+				ImGui::Text("%s", modelsName[i].c_str());
+
+				if (ImGui::Button("Select"))
+				{
+					m_SelectedIndex = i;
+					m_ModelDesc.pModelPrototypeTag = StringToWString(modelsName[i]);
+				}
+
+				ImGui::PopID();
+			}
+			ImGui::EndTabItem();
 		}
-		ImGui::EndMenuBar();
+		if (ImGui::BeginTabItem("Shader"))
+		{
+			ImGui::Text("This is the Broccoli tab!\nblah blah blah blah blah");
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Collider"))
+		{
+			ImGui::Text("This is the Cucumber tab!\nblah blah blah blah blah");
+			ImGui::EndTabItem();
+		}
+		ImGui::EndTabBar();
 	}
-	XMFLOAT4 m_vColor = { 0.3f, 0.3f, 0.3f, 1.0f };
-	// Edit a color (stored as ~4 floats)
-	ImGui::ColorEdit4("Color", (float*)&m_vColor);
+}
 
-	// Plot some values
-	const float my_values[] = { 0.2f, 0.1f, 1.0f, 0.5f, 0.9f, 2.2f };
-	ImGui::PlotLines("Frame Times", my_values, IM_ARRAYSIZE(my_values));
-
-	// Display contents in a scrolling region
-	ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
-	ImGui::BeginChild("Scrolling");
-	for (int n = 0; n < 50; n++)
-		ImGui::Text("%04d: Some text", n);
-	ImGui::EndChild();
-	ImGui::End();
-*/
 void CImguiHandler::Imgui_Logo(_float fTimeDelta)
 {
 
@@ -168,39 +201,12 @@ void CImguiHandler::Imgui_Logo(_float fTimeDelta)
 		}
 	}
 
-	
-
-	
-	
 	ImGui::End();
 
 
+			
+		
 
-
-	// B. 행렬 분해를 통해 OBB용 데이터 추출
-	//XMMATRIX world = XMLoadFloat4x4(&matWorld);
-	//XMVECTOR vScale, vRotQuat, vTrans;
-
-	//// XMMatrixDecompose가 안 된다면 반드시 DirectX::를 붙여보세요.
-	//if (DirectX::XMMatrixDecompose(&vScale, &vRotQuat, &vTrans, world))
-	//{
-	//	auto pObb = object->Get_Obb();
-
-	//	// 위치와 회전(Orientation) 업데이트
-	//	XMStoreFloat3(&pObb->myOBB.Center, vTrans);
-	//	XMStoreFloat4(&pObb->myOBB.Orientation, vRotQuat);
-
-	//	// 스케일 변화가 있다면 Extents도 갱신
-	//	_float3 vModelSize = object->Get_Model()->Get_LocalSize(); // (max-min)*0.5f
-	//	pObb->myOBB.Extents = XMFLOAT3(
-	//		vModelSize.x * XMVectorGetX(vScale),
-	//		vModelSize.y * XMVectorGetY(vScale),
-	//		vModelSize.z * XMVectorGetZ(vScale)
-	//	);
-	//}
-	//for (auto object : objects) {
-	//	if()
-	//}
 
 
 	// 2. 카메라 행렬 및 오브젝트 월드 행렬 가져오기 (float*)
@@ -214,40 +220,7 @@ void CImguiHandler::Imgui_Logo(_float fTimeDelta)
 	}
 	
 
-	//if (CGameInstance::Get().Mouse_Pressing(DIM_LB)) {
-	//	_float3 rayPos;
-	//	_float3 rayDir;
-	//	CHelper::GetMousePointRay(&rayPos, &rayDir);
-	//}
-	//if (ImGui::TreeNode("gUIZMO")) {
 
-	//	ImGui::TreePop();
-	//	ImGui::Spacing();
-	//}
-	//if (ImGui::BeginMenuBar())
-	//{
-	//	if (ImGui::BeginMenu("File"))
-	//	{
-	//		if (ImGui::MenuItem("Open..", "Ctrl+O")) { /* Do stuff */ }
-	//		if (ImGui::MenuItem("Save", "Ctrl+S")) { /* Do stuff */ }
-	//		ImGui::EndMenu();
-	//	}
-	//	ImGui::EndMenuBar();
-	//}
-	//XMFLOAT4 m_vColor = { 0.3f, 0.3f, 0.3f, 1.0f };
-	//// Edit a color (stored as ~4 floats)
-	//ImGui::ColorEdit4("Color", (float*)&m_vColor);
-
-	//// Plot some values
-	//const float my_values[] = { 0.2f, 0.1f, 1.0f, 0.5f, 0.9f, 2.2f };
-	//ImGui::PlotLines("Frame Times", my_values, IM_ARRAYSIZE(my_values));
-
-	//// Display contents in a scrolling region
-	//ImGui::TextColored(ImVec4(1, 1, 0, 1), "Important Stuff");
-	//ImGui::BeginChild("Scrolling");
-	//for (int n = 0; n < 50; n++)
-	//	ImGui::Text("%04d: Some text", n);
-	//ImGui::EndChild();
 }
 
 void CImguiHandler::Imgui_Loading(_float fTimeDelta)

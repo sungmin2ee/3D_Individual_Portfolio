@@ -14,6 +14,15 @@ namespace Engine
 		int32_t		iNumLevels;
 	}ENGINE_DESC;
 
+	typedef struct tagModelObjectDesc
+	{
+		uint32_t levelIndex;
+		_wstring pModelPrototypeTag; // "Prototype_Component_Model_Desk"
+		_wstring pShaderPrototypeTag; // "Prototype_Component_Shader_NonAnim"
+		_float4x4  worldMatrix;
+		_bool   AddCollider;
+	} MODELOBJ_DESC;
+
 	struct MatrixBuffer { // ½½·Ô b0¿ë
 		XMFLOAT4X4 world;
 		XMFLOAT4X4 view;

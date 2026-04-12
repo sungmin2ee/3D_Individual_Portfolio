@@ -6,14 +6,7 @@ NS_BEGIN(Engine)
 class ENGINE_DLL CModelObject :
     public CGameObject
 {
-    typedef struct tagModelObjectDesc : public CGameObject::GAMEOBJECT_DESC
-    {
-        uint32_t levelIndex;
-        _wstring pModelPrototypeTag; // "Prototype_Component_Model_Desk"
-        _wstring pShaderPrototypeTag; // "Prototype_Component_Shader_NonAnim"
-        _float4x4  worldMatrix;
-        _bool   AddCollider;
-    } MODELOBJ_DESC;
+
 private:
     CModelObject(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
 public:
