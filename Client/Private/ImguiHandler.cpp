@@ -55,7 +55,19 @@ void CImguiHandler::Initialize() {
 }
 void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 {
-
+	
+	switch (curlevel) {
+	case ETOUI(LEVEL::LOGO):
+		strLayerTag = L"Layer_Logo";
+		Imgui_Logo(fTimeDelta);
+		break;
+	
+	case ETOUI(LEVEL::GAMEPLAY): 
+		strLayerTag = L"Layer_GamePlay";
+		Imgui_GamePlay(fTimeDelta);
+		break;
+	
+	}
 	m_ModelDesc.levelIndex = curlevel;
 
 	ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
@@ -139,20 +151,6 @@ void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 		ImGui::EndTabBar();
 	}
 
-	switch (curlevel) {
-	case ETOUI(LEVEL::LOGO):
-	{
-		strLayerTag = L"Layer_Logo";
-		Imgui_Logo(fTimeDelta);
-	}
-	break;
-	case ETOUI(LEVEL::GAMEPLAY): {
-		strLayerTag = L"Layer_GamePlay";
-		Imgui_GamePlay(fTimeDelta);
-
-	}
-	break;
-	}
 
 	
 }

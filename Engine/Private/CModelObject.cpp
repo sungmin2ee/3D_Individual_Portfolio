@@ -81,9 +81,9 @@ HRESULT CModelObject::Initialize(void* pArg)
     return S_OK;
 }
 
-void CModelObject::Priority_Update(_float fTimeDelta)
-{
-}
+//void CModelObject::Priority_Update(_float fTimeDelta)
+//{
+//}
 
 void CModelObject::Update(_float fTimeDelta)
 {
