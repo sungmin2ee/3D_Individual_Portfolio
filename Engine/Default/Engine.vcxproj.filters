@@ -106,6 +106,9 @@
     <Filter Include="06.Component\Manager">
       <UniqueIdentifier>{12531f1b-9d5c-4c88-95dd-0a7268226fdc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06.Component\VIBuffer\Model">
+      <UniqueIdentifier>{8fec0f24-a4d8-4212-859c-7bd625ea5d95}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -216,7 +219,12 @@
     <ClInclude Include="..\Public\Collider.h">
       <Filter>06.Component\Collider</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CModelObject.h" />
+    <ClInclude Include="..\Public\VIBuffer_Model.h">
+      <Filter>06.Component\VIBuffer\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CModelObject.h">
+      <Filter>05.GameObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Graphic_Device.cpp">
@@ -345,17 +353,11 @@
     <ClCompile Include="..\Private\Collider.cpp">
       <Filter>06.Component\Collider</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CModelObject.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <FxCompile Include="..\..\VertexShader.hlsl">
-      <Filter>96.Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Shader_VtxNonAnim.hlsl">
-      <Filter>96.Shader</Filter>
-    </FxCompile>
-    <FxCompile Include="..\..\Collider.hlsl">
-      <Filter>96.Shader</Filter>
-    </FxCompile>
+    <ClCompile Include="..\Private\VIBuffer_Model.cpp">
+      <Filter>06.Component\VIBuffer\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CModelObject.cpp">
+      <Filter>05.GameObject</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

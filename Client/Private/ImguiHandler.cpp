@@ -3,8 +3,9 @@
 #include "Helper.h"
 #include "Layer.h"
 #include "Collider.h"
+#include "Model.h"
 
-CImguiHandler::CImguiHandler(ENGINE_DESC desc): m_Desc(desc)
+CImguiHandler::CImguiHandler(ENGINE_DESC desc, ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> context): m_Desc(desc), m_pDevice{device},m_pContext{context}
 {
 	m_CurrentOperation = ImGuizmo::TRANSLATE;
 
@@ -13,11 +14,13 @@ CImguiHandler::CImguiHandler(ENGINE_DESC desc): m_Desc(desc)
 CImguiHandler::~CImguiHandler()
 {
 }
-void CImguiHandler::Initialize(uint32_t curlevel,const string& strSceneName) {
-	modelsName.clear();
+void CImguiHandler::Initialize() {
+	prototypeTags.clear();
+	filePath.clear();
+	shaders.clear();
 	using json = nlohmann::json;
 
-	string path = "../../Resources/Data/" + strSceneName + "_List.json";
+	string path = "../../Resources/Data/Model_List.json";
 	std::ifstream file(path);
 
 	if (!file.is_open())
@@ -26,66 +29,57 @@ void CImguiHandler::Initialize(uint32_t curlevel,const string& strSceneName) {
 	}
 	json j;
 	file >> j;
-	string nodeName = "";
-	nodeName = "Scene_" + strSceneName;
-	for (auto& model : j[nodeName]["Model"])
+
+	for (auto& model : j["Model"])
 	{
-		bool isAnim = model.value("IsAnim", false);
-		modelsName.push_back(model.value("Model", ""));
+		prototypeTags.push_back(model.value("PrototypeTag", ""));
+		filePath.push_back(model.value("FilePath", ""));
+	}
+	
+
+	string path1 = "../../Resources/Data/Shader_List.json";
+	std::ifstream file1(path1);
+
+	if (!file1.is_open())
+	{
+		return;
+	}
+	json j1;
+	file1 >> j1;
+
+
+	for (auto& shader : j1["Shader"])
+	{
+		shaders.push_back(shader.value("PrototypeTag", ""));
 	}
 }
 void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 {
 
-	if (!loaded && curlevel > ETOUI(LEVEL::LOADING)) {
-		curLevel = CGameInstance::Get().GetCurLevelIndex();
-		switch (curlevel) {
-			case ETOUI(LEVEL::LOGO):
-			{
-				SceneName = "Logo";
-				break;
-			}
-			case ETOUI(LEVEL::GAMEPLAY): {
-				SceneName = "Gameplay";
-				break;
-			}
-		}
-		Initialize(curlevel, SceneName);
-		loaded = true;
-	}
-	if (curLevel != curlevel) {
-		loaded = false;
-	}
-	switch (curlevel) {
-	case ETOUI(LEVEL::LOGO):
-	{
-		Imgui_Logo(fTimeDelta);
-	}
-	break;
-	case ETOUI(LEVEL::GAMEPLAY): {
-		Imgui_GamePlay(fTimeDelta);
-	}
-	break;
-	}
+	m_ModelDesc.levelIndex = curlevel;
 
 	ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
 	if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
 	{
-		char buffer[64] = "";
 		if (ImGui::BeginTabItem("Model"))
 		{
-			ImGui::InputText("UTF-8 input", buffer, IM_COUNTOF(buffer));
-			
-			for (int i = 0; i < modelsName.size(); ++i)
+			static ImGuiTextFilter filter;
+			filter.Draw("Model Filter");
+
+			for (int i = 0; i < prototypeTags.size(); ++i)
 			{
-				ImGui::PushID(i);  
+				ImGui::PushID(i);
 
-				ImGui::Text("%s", modelsName[i].c_str());
-
-				if (ImGui::Button("Select"))
+				if (filter.PassFilter(prototypeTags[i].c_str()))
 				{
-					m_SelectedIndex = i;
-					m_ModelDesc.pModelPrototypeTag = StringToWString(modelsName[i]);
+					ImGui::Selectable(prototypeTags[i].c_str());
+
+					if (ImGui::Button("Select"))
+					{
+						m_SelectedIndex = i;
+						m_ModelDesc.pModelPrototypeTag = StringToWString(prototypeTags[i]);
+						m_ModelDesc.filePath = filePath[i];
+					}
 				}
 
 				ImGui::PopID();
@@ -94,7 +88,26 @@ void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 		}
 		if (ImGui::BeginTabItem("Shader"))
 		{
-			ImGui::Text("This is the Broccoli tab!\nblah blah blah blah blah");
+			static ImGuiTextFilter filter;
+			filter.Draw("Shader Filter");
+
+			for (int i = 0; i < shaders.size(); ++i)
+			{
+				ImGui::PushID(i);
+				if (filter.PassFilter(shaders[i].c_str()))
+				{
+					ImGui::Selectable(shaders[i].c_str());
+
+					if (ImGui::Button("Select"))
+					{
+						m_SelectedIndex = i;
+						m_ModelDesc.pShaderPrototypeTag = StringToWString(shaders[i]);
+					}
+				}
+
+				ImGui::PopID();
+			}
+
 			ImGui::EndTabItem();
 		}
 		if (ImGui::BeginTabItem("Collider"))
@@ -102,8 +115,46 @@ void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 			ImGui::Text("This is the Cucumber tab!\nblah blah blah blah blah");
 			ImGui::EndTabItem();
 		}
+
+		//ADD OBJECT 버튼을 누르면 모델 프로토타입을 추가후 클론 
+		if (ImGui::Button("Add_Object")) {
+			_matrix view, camWorld;
+			view = CGameInstance::Get().GetViewXM();
+			camWorld = XMMatrixInverse(nullptr, view);
+			XMStoreFloat4x4(&m_ModelDesc.worldMatrix, camWorld);
+			auto pModelProto = Model::Create(m_pDevice, m_pContext, m_ModelDesc.filePath);
+
+			CGameInstance::Get().Add_Prototype(curlevel, m_ModelDesc.pModelPrototypeTag, unique_ptr<CPrototype>(std::move(pModelProto)));
+			//if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::LOGO), TEXT("Prototype_GameObject_BackGround"),
+//	ETOUI(LEVEL::LOGO), strLayerTag, &Desc)))
+//	return E_FAIL;
+			CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), L"Prototype_ModelObject", curlevel, strLayerTag, &m_ModelDesc);
+
+
+
+		}
+
+
+
 		ImGui::EndTabBar();
 	}
+
+	switch (curlevel) {
+	case ETOUI(LEVEL::LOGO):
+	{
+		strLayerTag = L"Layer_Logo";
+		Imgui_Logo(fTimeDelta);
+	}
+	break;
+	case ETOUI(LEVEL::GAMEPLAY): {
+		strLayerTag = L"Layer_GamePlay";
+		Imgui_GamePlay(fTimeDelta);
+
+	}
+	break;
+	}
+
+	
 }
 
 void CImguiHandler::Imgui_Logo(_float fTimeDelta)
@@ -231,9 +282,9 @@ void CImguiHandler::Imgui_GamePlay(_float fTimeDelta)
 {
 }
 
-unique_ptr<CImguiHandler> CImguiHandler::Create(ENGINE_DESC desc) {
+unique_ptr<CImguiHandler> CImguiHandler::Create(ENGINE_DESC desc, ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> context) {
 
-	return  unique_ptr<CImguiHandler>(new CImguiHandler(desc));
+	return  unique_ptr<CImguiHandler>(new CImguiHandler(desc, device, context));
 
 }
 

@@ -56,10 +56,7 @@ HRESULT CLevel_Logo::Ready_Layer_Logo(const _wstring& strLayerTag)
 	//	ETOUI(LEVEL::LOGO), strLayerTag, &Desc)))
 	//	return E_FAIL;
 
-	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::LOGO), TEXT("Prototype_Player"),
-		ETOUI(LEVEL::LOGO), strLayerTag, &Desc)))
-		return E_FAIL;
-	//if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::LOGO), TEXT("Prototype_Player"),
+	//if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::LOGO), TEXT("Prototype_Test"),
 	//	ETOUI(LEVEL::LOGO), strLayerTag, &Desc)))
 	//	return E_FAIL;
 	return S_OK;

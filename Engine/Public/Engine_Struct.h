@@ -17,6 +17,7 @@ namespace Engine
 	typedef struct tagModelObjectDesc
 	{
 		uint32_t levelIndex;
+		string filePath;
 		_wstring pModelPrototypeTag; // "Prototype_Component_Model_Desk"
 		_wstring pShaderPrototypeTag; // "Prototype_Component_Shader_NonAnim"
 		_float4x4  worldMatrix;
@@ -39,45 +40,49 @@ namespace Engine
 		_float4 vColor;
 	};
 
+	//bone indexes which will influence this vertex
+	//int32_t boneIDs[MAX_BONE_INFLUENCE] = { -1,-1,-1,-1 };
+	////weights from each bone
+	//_float weights[MAX_BONE_INFLUENCE] = { 0.0f, 0.0f, 0.0f, 0.0f };
 
+	//void AddBoneData(uint32_t id, _float weight) {
+	//	if (weight <= 0.0f) return;
+	//	for (uint32_t i = 0; i < 4; ++i) {
+	//		if (weights[i] == 0.0f) { // 빈 슬롯 발견
+	//			boneIDs[i] = id;
+	//			weights[i] = weight;
+
+	//			float total = 0.0f;
+	//			for (int j = 0; j < 4; ++j)
+	//				total += weights[j];
+
+	//			// 합이 1.0이 되도록 모든 슬롯을 다시 나눕니다.
+	//			if (total > 0.0f) {
+	//				for (int j = 0; j < 4; ++j)
+	//					weights[j] /= total;
+	//			}
+	//			return;
+	//		}
+	//	}
+
+	//	// 만약 4개 이상의 뼈가 영향을 준다면, 보통 가장 작은 가중치를 버리거나 무시합니다.
+	//}
 	typedef struct VERTEX {
-		/*  FLOAT X, Y, Z;
-		  XMFLOAT2 texcoord;*/
+	
 		XMFLOAT3 position;
 		XMFLOAT3  Normal;
-		// texCoords
 		XMFLOAT2  TexCoords;
-
-		// tangent
 		XMFLOAT3  Tangent;
 
-		//bone indexes which will influence this vertex
-		int32_t boneIDs[MAX_BONE_INFLUENCE] = { -1,-1,-1,-1 };
-		//weights from each bone
-		_float weights[MAX_BONE_INFLUENCE] = { 0.0f, 0.0f, 0.0f, 0.0f };
-
-		void AddBoneData(uint32_t id, _float weight) {
-			if (weight <= 0.0f) return;
-			for (uint32_t i = 0; i < 4; ++i) {
-				if (weights[i] == 0.0f) { // 빈 슬롯 발견
-					boneIDs[i] = id;
-					weights[i] = weight;
-
-					float total = 0.0f;
-					for (int j = 0; j < 4; ++j)
-						total += weights[j];
-
-					// 합이 1.0이 되도록 모든 슬롯을 다시 나눕니다.
-					if (total > 0.0f) {
-						for (int j = 0; j < 4; ++j)
-							weights[j] /= total;
-					}
-					return;
-				}
-			}
-
-			// 만약 4개 이상의 뼈가 영향을 준다면, 보통 가장 작은 가중치를 버리거나 무시합니다.
-		}
+	
+		static constexpr uint32_t		iNumElements = { 4 };
+		static constexpr D3D11_INPUT_ELEMENT_DESC Elements[iNumElements] =
+		{
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "NORMAL",   0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT,    0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+			{ "TANGENT",  0, DXGI_FORMAT_R32G32B32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		};
 
 	}VERTEX;
 
@@ -85,7 +90,13 @@ namespace Engine
 	typedef struct VTX_DEBUG {
 		XMFLOAT3 vPos;
 		XMFLOAT4 vColor;
-	}VOBB;
+
+		static constexpr uint32_t		iNumElements = { 2 };
+		static constexpr D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements] = {
+		  { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "COLOR",    0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, D3D11_APPEND_ALIGNED_ELEMENT, D3D11_INPUT_PER_VERTEX_DATA, 0 }
+		};
+	}VCOLLIDER;
 
 	struct Texture {
 		std::string type;

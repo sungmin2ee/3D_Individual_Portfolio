@@ -44,6 +44,7 @@ void CGameObject::Priority_Update(_float fTimeDelta)
 
 void CGameObject::Update(_float fTimeDelta)
 {
+	int a = 10;
 }
 
 void CGameObject::Late_Update(_float fTimeDelta)

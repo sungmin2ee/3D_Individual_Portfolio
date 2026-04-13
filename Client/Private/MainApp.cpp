@@ -7,6 +7,8 @@
 #include "Obb.h"
 #include "Shader.h"
 #include "CModelObject.h"
+#include "Model.h"
+
 
 CMainApp::CMainApp()
 {
@@ -38,9 +40,10 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Start_Level(LEVEL::LOGO)))
 		return E_FAIL;
 
-	m_pImguiHandler = CImguiHandler::Create(EngineDesc);
+	m_pImguiHandler = CImguiHandler::Create(EngineDesc, m_pDevice, m_pContext);
 	if (nullptr == m_pImguiHandler)
 		return E_FAIL;
+	m_pImguiHandler->Initialize();
 	return S_OK;
 }
 
@@ -79,10 +82,13 @@ HRESULT CMainApp::Start_Level(LEVEL eStartLevelIndex)
 
 HRESULT CMainApp::Ready_Prototypes()
 {
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_NonAnimShander"),
-		Shader::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
 
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxNonAnim"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxNonAnim.hlsl"), VERTEX::Elements, VERTEX::iNumElements))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Shader_Collider"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Collider.hlsl"), VCOLLIDER::Elements, VCOLLIDER::iNumElements))))
+		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Cube_Buffer"),
 		VIBuffer_Cube::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -93,6 +99,7 @@ HRESULT CMainApp::Ready_Prototypes()
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_ModelObject"),
 		CModelObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+	//CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Model_Joe5"), Model::Create(m_pDevice,m_pContext,"../../Resources/Models/Joe5.fbx"));
 
 	return S_OK;
 }

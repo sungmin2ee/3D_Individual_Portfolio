@@ -31,8 +31,6 @@ public:
 public:
 	BoundingBox myAABB;
 private:
-	shared_ptr<class VIBuffer_Cube>					m_pBuffer = nullptr;
-
 	_float4x4										m_WorldMatrix = {};
 
 };

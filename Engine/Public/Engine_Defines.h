@@ -4,6 +4,8 @@
 
 #include <DirectXMath.h>
 #include <d3dcompiler.h>
+
+#include "Fx11/d3dx11effect.h"
 #include <DirectXCollision.h>
 using namespace DirectX;
 

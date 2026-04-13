@@ -8,13 +8,23 @@
 CModelObject::CModelObject(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext) :CGameObject{ pDevice, pContext }
 {
 }
+CModelObject::CModelObject(const CModelObject& Prototype) :CGameObject{ Prototype.m_pDevice,  Prototype.m_pContext }
 
+{
+}
 CModelObject::~CModelObject()
 {
 }
 
 HRESULT CModelObject::Initialize_Prototype()
 {
+    D3D11_SAMPLER_DESC sampDesc{};
+    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+
+    m_pDevice->CreateSamplerState(&sampDesc, &m_pSamplerState);
     return S_OK;
 }
 
@@ -46,15 +56,18 @@ HRESULT CModelObject::Initialize(void* pArg)
     {
         MODELOBJ_DESC* pDesc = (MODELOBJ_DESC*)pArg;
         m_pTransformCom->SetWorld(pDesc->worldMatrix);
+
+        m_pTransformCom->Scaling(0.001f, 0.001f, 0.001f);
+        m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), 270.f);
+
         // 2. 인자로 들어온 태그를 사용하여 모델 컴포넌트 클론
         m_pModelCom = static_pointer_cast<Model>(CGameInstance::Get().Clone_Prototype(pDesc->levelIndex, pDesc->pModelPrototypeTag));
         m_pModelCom->Calculate_Box();
         // 3. 쉐이더 컴포넌트 클론
-        m_pShaderCom = static_pointer_cast<Shader>(CGameInstance::Get().Clone_Prototype(pDesc->levelIndex, pDesc->pShaderPrototypeTag));
+        m_pShaderCom = static_pointer_cast<CShader>(CGameInstance::Get().Clone_Prototype(0, pDesc->pShaderPrototypeTag));
 
-        m_pCubeBfCom = static_pointer_cast<VIBuffer_Cube>(CGameInstance::Get().Clone_Prototype(0, L"Prototype_Cube_Buffer"));
 
-        m_pColliderCom = static_pointer_cast<Obb>(CGameInstance::Get().Clone_Prototype(0, L"Prototype_OBB", &m_pCubeBfCom));
+        m_pColliderCom = static_pointer_cast<Obb>(CGameInstance::Get().Clone_Prototype(0, L"Prototype_OBB"));
 
         if (pDesc->AddCollider) {
             CGameInstance::Get().Add_Collider(m_pColliderCom);
@@ -115,34 +128,40 @@ void CModelObject::Update(_float fTimeDelta)
 
 void CModelObject::Late_Update(_float fTimeDelta)
 {
-    //CGameInstance::Get().Add_RenderObject(RENDERGROUP::BLEND, SHARED_THIS(CModelObject));
+    CGameInstance::Get().Add_RenderObject(RENDERGROUP::BLEND, SHARED_THIS(CModelObject));
 }
 
 HRESULT CModelObject::Render()
 {
-    if (nullptr == m_pModelCom || nullptr == m_pShaderCom)
-        return E_FAIL;
 
-    // 1. Matrix 업데이트
     MatrixBuffer cb;
-    _float4x4 matWorld = m_pTransformCom->GetWorld();
-    XMStoreFloat4x4(&cb.world, XMMatrixTranspose(XMLoadFloat4x4(&matWorld)));
+    _float4x4 mat = m_pTransformCom->GetWorld();
+    //XMMATRIX matWorld = m_pTransformCom->m_WorldMatrix;
+    //  스케일 추가 (FBX 안보일 때 필수)
 
-    _float4x4 matView = CGameInstance::Get().GetView();
-    XMStoreFloat4x4(&cb.view, XMMatrixTranspose(XMLoadFloat4x4(&matView)));
+   // XMStoreFloat4x4(&cb.world, XMMatrixTranspose(matWorld));
+    cb.view = CGameInstance::Get().GetView();
+    XMMATRIX matView = XMLoadFloat4x4(&cb.view);
 
-    _float4x4 matProj = CGameInstance::Get().GetProj();
-    XMStoreFloat4x4(&cb.projection, XMMatrixTranspose(XMLoadFloat4x4(&matProj)));
+    cb.projection = CGameInstance::Get().GetProj();
+    XMMATRIX matProj = XMLoadFloat4x4(&cb.projection);
 
     XMStoreFloat4x4(&cb.socket, XMMatrixIdentity());
 
-    // 2. 바인딩 및 그리기
-    m_pShaderCom->Bind_Matrix(cb);
+    _float4x4		IdentityMatrix = {};
+    XMStoreFloat4x4(&IdentityMatrix, XMMatrixIdentity());
 
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &mat)))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &cb.view)))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &cb.projection)))
+        return E_FAIL;
 
-    m_pModelCom->Draw();
+    if (FAILED(m_pShaderCom->Begin(0)))
+        return E_FAIL;
 
-
+    m_pModelCom->Draw(m_pShaderCom.get());
     m_pColliderCom->Render();
     return S_OK;
 }

@@ -2,7 +2,7 @@
 
 #include "GameInstance.h"
 #include "BackGround.h"
-#include "Player.h"
+#include "Test.h"
 #include "Model.h"
 #include "Shader.h"
 
@@ -123,9 +123,9 @@ HRESULT CLoader::Loading_For_Logo()
 		CBackGround::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	
- 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO), TEXT("Prototype_Player"),
-		CPlayer::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+ 	//if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO), TEXT("Prototype_Test"),
+	//	Test::Create(m_pDevice, m_pContext))))
+	//	return E_FAIL;
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
@@ -177,56 +177,55 @@ using json = nlohmann::json;
 
 void CLoader::Load_Models_From_Directory(LEVEL eNextLevelIndex, const string& strSceneName) {
     // 1. 경로 설정 (예: "../../Resources/Scene_Logo/")
-    string strPath = "../../Resources/Models/" + strSceneName + "/Anim/";
+    string strPath = "../../Resources/Models/";
 	json sceneJson;
 
-	string strLevelKey = "Scene_" + strSceneName;
     // 2. 해당 폴더 내부를 순회
     for (const auto& entry : fs::directory_iterator(strPath)) {
         if (entry.path().extension() == ".fbx") { // FBX 파일만 골라내기
             string strFileName = entry.path().stem().string(); // 확장자 뺀 파일명 (예: "Player")
-            string strFullPath = entry.path().string();        // 전체 경로
-			_wstring wFileName = StringToWString(strFileName);
-            // 3. 모델 원본(Prototype) 생성
-            auto pModelProto = Model::Create(m_pDevice, m_pContext, strFullPath);
-            wstring wstrProtoTag = L"Prototype_Model_" + wFileName;
-            CGameInstance::Get().Add_Prototype(ETOUI(eNextLevelIndex),wstrProtoTag, unique_ptr<CPrototype>(std::move(pModelProto)));
 
 			json modelData;
-			modelData["Model"] = "Prototype_Model_" + strFileName;
-			modelData["IsAnim"] = true;           
+			modelData["FilePath"] = strPath + strFileName + ".fbx";
+			modelData["PrototypeTag"] = "Prototype_Model_" + strFileName;
 
-			sceneJson[strLevelKey]["Model"].push_back(modelData);
+			sceneJson["Model"].push_back(modelData);
         }
 	
     }
-
-
-	string strPath1 = "../../Resources/Models/" + strSceneName + "/NonAnim/";
-
-	// 2. 해당 폴더 내부를 순회
-	for (const auto& entry : fs::directory_iterator(strPath1)) {
-		if (entry.path().extension() == ".fbx") { // FBX 파일만 골라내기
-			string strFileName = entry.path().stem().string(); // 확장자 뺀 파일명 (예: "Player")
-			string strFullPath = entry.path().string();        // 전체 경로
-			_wstring wFileName = StringToWString(strFileName);
-			// 3. 모델 원본(Prototype) 생성
-			auto pModelProto = Model::Create(m_pDevice, m_pContext, strFullPath);
-			wstring wstrProtoTag = L"Prototype_Model_" + wFileName;
-			CGameInstance::Get().Add_Prototype(ETOUI(eNextLevelIndex), wstrProtoTag, unique_ptr<CPrototype>(std::move(pModelProto)));
-
-			json modelData;
-			modelData["Model"] = "Prototype_Model_" + strFileName;
-			modelData["IsAnim"] = false;           // 일단 기본값
-
-			sceneJson[strLevelKey]["Model"].push_back(modelData);
-		}
-
-	}
-	string savePath = "../../Resources/Data/" + strSceneName + "_List.json";
+	string savePath = "../../Resources/Data/Model_List.json";
 	std::ofstream file(savePath);
 	if (file.is_open()) {
 		file << sceneJson.dump(4); // 4는 들여쓰기(Tab) 간격입니다.
 		file.close();
 	}
+
+
+
+
+	string strPath1 = "../Bin/ShaderFiles/";
+	json shaderJson;
+
+	// 2. 해당 폴더 내부를 순회
+	for (const auto& entry : fs::directory_iterator(strPath1)) {
+		if (entry.path().extension() == ".hlsl") { // hlsl 파일만 골라내기
+			string strShaderName = entry.path().stem().string(); // 확장자 뺀 파일명 (예: "Player")
+
+			json shaderData;
+			shaderData["FilePath"] = strPath1 + strShaderName;
+			shaderData["PrototypeTag"] = "Prototype_Component_" + strShaderName;
+
+			shaderJson["Shader"].push_back(shaderData);
+		}
+
+	}
+	string savePath1 = "../../Resources/Data/Shader_List.json";
+	std::ofstream file1(savePath1);
+	if (file1.is_open()) {
+		file1 << shaderJson.dump(4); // 4는 들여쓰기(Tab) 간격입니다.
+		file1.close();
+	}
+
+
+
 }

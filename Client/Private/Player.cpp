@@ -27,6 +27,18 @@ HRESULT CPlayer::Initialize_Prototype()
 
 HRESULT CPlayer::Initialize(void* pArg)
 {
+
+
+	D3D11_SAMPLER_DESC sampDesc{};
+	sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+
+	m_pDevice->CreateSamplerState(&sampDesc, &m_pSamplerState);
+
+
+
 	auto		pDesc = static_cast<PLAYER_DESC*>(pArg);
 	m_iData = pDesc->iData;
 
@@ -36,13 +48,13 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	if (FAILED(__super::Initialize(pDesc)))
 		return E_FAIL;
-	m_pModelCom = static_pointer_cast<Model>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), L"Prototype_Model_NonAnim"));
+	m_pModelCom = static_pointer_cast<Model>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), L"Prototype_Model_Joe5"));
 	if (nullptr == m_pModelCom)
 	{
 		MSG_BOX("Player의 모델 컴포넌트 클론 실패!");
 		return E_FAIL;
 	}
-	m_pShaderCom = static_pointer_cast<Shader>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), L"Prototype_NonAnimShander"));
+	m_pShaderCom = static_pointer_cast<CShader>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), L"Prototype_Component_Shader_VtxNonAnim"));
 	if (nullptr == m_pShaderCom)
 	{
 		MSG_BOX("쉐이더 컴포넌트 클론 실패!");
@@ -196,16 +208,26 @@ HRESULT CPlayer::Render()
    // XMStoreFloat4x4(&cb.world, XMMatrixTranspose(matWorld));
     cb.view = CGameInstance::Get().GetView();
     XMMATRIX matView = XMLoadFloat4x4(&cb.view);
-    XMStoreFloat4x4(&cb.view, XMMatrixTranspose(matView));
+    //XMStoreFloat4x4(&cb.view, XMMatrixTranspose(matView));
 
     cb.projection = CGameInstance::Get().GetProj();
     XMMATRIX matProj = XMLoadFloat4x4(&cb.projection);
-    XMStoreFloat4x4(&cb.projection, XMMatrixTranspose(matProj));
+    //XMStoreFloat4x4(&cb.projection, XMMatrixTranspose(matProj));
 
-    XMStoreFloat4x4(&cb.socket, XMMatrixIdentity());
+    //XMStoreFloat4x4(&cb.socket, XMMatrixIdentity());
 
-	m_pShaderCom->Bind_Matrix(cb);
-	m_pModelCom->Draw();
+	m_pContext->PSSetSamplers(0, 1, m_pSamplerState.GetAddressOf());
+
+	m_pShaderCom->Bind_Matrix("g_WorldMatrix", &cb.world);
+	m_pShaderCom->Bind_Matrix("g_ViewMatrix", &cb.view);
+	m_pShaderCom->Bind_Matrix("g_ProjMatrix", &cb.projection);
+
+
+	m_pShaderCom->Begin(0);
+
+	//m_pShaderCom->Bind_Matrix(cb);
+	m_pModelCom->Draw(m_pShaderCom.get());
+	//m_pModelCom->Draw();
 	m_pObbCom->Render();
 	return S_OK;
 }

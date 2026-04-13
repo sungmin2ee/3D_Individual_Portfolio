@@ -12,9 +12,6 @@ Obb::~Obb()
 
 }
 HRESULT Obb::Initialize(void* pArg) {
-    auto ppBuffer = static_cast<shared_ptr<VIBuffer_Cube>*>(pArg);
-    m_pBuffer = *ppBuffer;
-
 
     return S_OK;
 }
@@ -22,24 +19,31 @@ HRESULT Obb::Initialize(void* pArg) {
 HRESULT Obb::Render()
 {
 
+    if (FAILED(m_pShaderCom->Begin(0)))
+        return E_FAIL;
+
+
     if (nullptr == m_pBuffer)
         return E_FAIL;
 
-    CB_MATRIX cb{};
 
-    _float4x4 view1, proj1;
-    view1 = CGameInstance::Get().GetView();
-    proj1 = CGameInstance::Get().GetProj();
-    _matrix world = XMLoadFloat4x4(&m_WorldMatrix);
-    _matrix view = XMLoadFloat4x4(&view1);
-    _matrix proj = XMLoadFloat4x4(&proj1);
+    _float4x4 view, proj;
+    view = CGameInstance::Get().GetView();
+    proj = CGameInstance::Get().GetProj();
 
-    _matrix wvp = world * view * proj;
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &view)))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &proj)))
+        return E_FAIL;
 
-    XMStoreFloat4x4(&cb.matWVP, XMMatrixTranspose(wvp));
-    cb.vColor = m_bIsSelected ? _float4(1, 0, 0, 1) : _float4(0, 1, 0, 1);
+    _float4 vColor = m_bIsSelected ? _float4(1, 0, 0, 1) : _float4(0, 1, 0, 1);
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &vColor, sizeof(_float4))))
+        return E_FAIL;
+    //XMStoreFloat4x4(&cb.matWVP, XMMatrixTranspose(wvp));
 
-    m_pBuffer->UpdateConstantBuffer(cb);
+    //m_pBuffer->UpdateConstantBuffer(cb);
 
     m_pBuffer->Render();
 
@@ -49,9 +53,8 @@ HRESULT Obb::Render()
 
 HRESULT Obb::Initialize_Prototype() {
 
-
-    // __super::Initialize_Prototype();
-
+    if (FAILED(__super::Initialize()))
+        return E_FAIL;
     return S_OK;
 }
 
@@ -68,26 +71,14 @@ unique_ptr<Obb> Obb::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceCon
 }
 shared_ptr<CPrototype> Obb::Clone(void* pArg)
 {
-    auto pInstance = make_shared<Obb>(*this);
+    auto		pInstance = shared_ptr<Obb>(new Obb(*this));
 
-
-
-    if (FAILED(pInstance->Initialize(pArg))) return nullptr;
-
+    if (FAILED(pInstance->Initialize(pArg))) 
+        return nullptr;
 
     return pInstance;
 }
 
-//void Obb::Update_OBB()
-//{
-//    _vector vCenter = XMLoadFloat3(&myOBB.Center);
-//    _vector vExtents = XMLoadFloat3(&myOBB.Extents);
-//    _vector vQuat = XMLoadFloat4(&myOBB.Orientation);
-//
-//    _matrix matWorld = XMMatrixAffineTransformation(vExtents * 2.f, XMVectorSet(0, 0, 0, 1), vQuat, vCenter);
-//    XMStoreFloat4x4(&m_WorldMatrix, matWorld);
-//
-//}
 
 bool Obb::Intersects(shared_ptr<CCollider> pTarget)
 {

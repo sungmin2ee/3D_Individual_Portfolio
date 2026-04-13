@@ -78,6 +78,9 @@
     <ClInclude Include="..\Public\ImguiHandler.h">
       <Filter>97.ImguiHandler</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Test.h">
+      <Filter>02.GameObject\09.Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -106,6 +109,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ImguiHandler.cpp">
       <Filter>97.ImguiHandler</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Test.cpp">
+      <Filter>02.GameObject\09.Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

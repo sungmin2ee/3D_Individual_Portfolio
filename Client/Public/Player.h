@@ -6,7 +6,7 @@
 NS_BEGIN(Engine)
 class Model;
 class CGameObject;
-class Shader;
+class CShader;
 class Obb;
 class VIBuffer_Cube;
 NS_END
@@ -36,7 +36,7 @@ public:
 	//Prototype_Cube_Buffer
 private:
 	shared_ptr<Model> m_pModelCom = { nullptr };
-	shared_ptr<Shader> m_pShaderCom = { nullptr };
+	shared_ptr<CShader> m_pShaderCom = { nullptr };
 	shared_ptr<Obb> m_pObbCom = { nullptr };
 	shared_ptr<VIBuffer_Cube> m_pObbBfCom = { nullptr };
 	uint32_t			m_iData = {};

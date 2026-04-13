@@ -2,6 +2,7 @@
 
 #include "Component.h"
 #include "Mesh.h"
+#include "Shader.h"
 
 
 NS_BEGIN(Engine)
@@ -30,6 +31,8 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual shared_ptr<CPrototype> Clone(void* pArg);
 	void Draw();
+
+	void Draw(CShader* pShader);
 
 
 	_float3 max = { 0.f,0.f,0.f };

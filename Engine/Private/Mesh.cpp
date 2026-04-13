@@ -13,14 +13,14 @@ void Mesh::Draw()
 {
     UINT stride = sizeof(VERTEX);
     UINT offset = 0;
-
+    m_pContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
     m_pContext->IASetVertexBuffers(0, 1, VertexBuffer_.GetAddressOf(), &stride, &offset);
     m_pContext->IASetIndexBuffer(IndexBuffer_.Get(), DXGI_FORMAT_R32_UINT, 0);
 
     // Safety check
-    if (!textures_.empty()) {
-        m_pContext->PSSetShaderResources(0, 1, textures_[0].texture.GetAddressOf());
-    }
+    //if (!textures_.empty()) {
+    //    m_pContext->PSSetShaderResources(0, 1, textures_[0].texture.GetAddressOf());
+    //}
 
     m_pContext->DrawIndexed(static_cast<UINT>(indices_.size()), 0, 0);
 }

@@ -1,5 +1,6 @@
 #include "Model.h"
 #include "GameInstance.h"
+#include "../../Client/Public/Player.h"
 
 Model::Model(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> context, const string& filename)
     :CComponent(device,context), m_pDevice{ device }, m_pContext{ context }
@@ -95,5 +96,25 @@ shared_ptr<CPrototype> Model::Clone(void* pArg)
 void Model::Draw() {
     for (size_t i = 0; i < m_vMeshes.size(); ++i) {
         m_vMeshes[i].Draw();
+    }
+}
+
+
+void Model::Draw(CShader* pShader) {
+    // 1. 월드 행렬 바인딩
+
+    for (auto& mesh : m_vMeshes) {
+        // 2. 메쉬 고유의 텍스처 바인딩 (Mesh에 Get_Diffuse() 등이 있다고 가정)
+        // 현재 Mesh::Draw 내부에 PSSetShaderResources가 있지만 
+        // CShader의 Bind_Texture를 사용하는 것이 일관성에 좋습니다.
+        if (!mesh.textures_.empty()) {
+            pShader->Bind_Texture("g_DiffuseTexture", mesh.textures_[0].texture);
+        }
+
+        // 3. 변경된 텍스처/상태를 GPU에 적용
+        pShader->Apply_Pass();
+
+        // 4. Vertex/Index Buffer 세팅 및 DrawIndexed
+        mesh.Draw();
     }
 }
