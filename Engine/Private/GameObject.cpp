@@ -29,11 +29,18 @@ HRESULT CGameObject::Initialize(void* pArg)
 	if (nullptr == pArg)
 		return S_OK;
 
-	auto		pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
-	lstrcpy(m_szName, pDesc->pGameObjectTag);
-
 	if (FAILED(m_pTransformCom->Initialize(pArg)))
 		return E_FAIL;
+
+	auto		pDesc = static_cast<MODELOBJ_DESC*>(pArg);
+	m_ModelDesc.pModelPrototypeTag = pDesc->pModelPrototypeTag;
+	m_ModelDesc.pShaderPrototypeTag = pDesc->pShaderPrototypeTag;
+	m_ModelDesc.levelIndex = pDesc->levelIndex;
+	m_ModelDesc.filePath = pDesc->filePath;
+	m_ModelDesc.collide = pDesc->collide;
+	m_ModelDesc.worldMatrix = pDesc->worldMatrix;
+	//lstrcpy(m_szName, pDesc->pModelPrototypeTag);
+
 
 	return S_OK;
 }

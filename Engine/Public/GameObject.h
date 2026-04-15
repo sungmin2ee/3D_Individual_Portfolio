@@ -26,16 +26,15 @@ public:
 	virtual void Update(_float fTimeDelta);
 	virtual void Late_Update(_float fTimeDelta);
 	virtual HRESULT Render();
+	MODELOBJ_DESC& Get_Desc() { return m_ModelDesc; }
 	CTransform* Get_Transform() { return m_pTransformCom.get(); }
-
 protected:
 	ComPtr<ID3D11Device>			m_pDevice = { nullptr };
 	ComPtr<ID3D11DeviceContext>		m_pContext = { nullptr };
 	shared_ptr<class CTransform>	m_pTransformCom = { nullptr };
 
 protected:
-	_tchar					m_szName[MAX_PATH] = {};
-
+	MODELOBJ_DESC m_ModelDesc;
 public:
 	virtual shared_ptr<CPrototype> Clone(void* pArg) = 0;
 };

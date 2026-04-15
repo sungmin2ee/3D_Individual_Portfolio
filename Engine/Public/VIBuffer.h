@@ -18,7 +18,7 @@ public:
 protected:
 	ComPtr<ID3D11Buffer>			m_pVB = { nullptr };
 	ComPtr<ID3D11Buffer>			m_pIB = { nullptr };
-	ComPtr<ID3D11SamplerState>		m_pSamplerState = { nullptr };
+	//ComPtr<ID3D11SamplerState>		m_pSamplerState = { nullptr };
 
 protected:
 	uint32_t					m_iNumVertexBuffers = {};

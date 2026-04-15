@@ -24,6 +24,7 @@ private:
 	CGameObject* m_pSelected = nullptr;
 	_float4 position = {};
 	_float3 rotation = {};
+	_float3 scale = {};
 	ImGuizmo::OPERATION m_CurrentOperation;
 
 	vector<string> prototypeTags;
@@ -33,6 +34,7 @@ private:
 	ComPtr<ID3D11Device>			m_pDevice = { nullptr };
 	ComPtr<ID3D11DeviceContext>		m_pContext = { nullptr };
 	_wstring strLayerTag = L"";
+
 };
 
 NS_END

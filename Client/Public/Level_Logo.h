@@ -6,7 +6,6 @@
 
 NS_BEGIN(Engine)
 class CGameObject;
-class CCamera;
 NS_END
 
 NS_BEGIN(Client)

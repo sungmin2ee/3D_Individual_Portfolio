@@ -18,13 +18,14 @@ CModelObject::~CModelObject()
 
 HRESULT CModelObject::Initialize_Prototype()
 {
-    D3D11_SAMPLER_DESC sampDesc{};
-    sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 
-    m_pDevice->CreateSamplerState(&sampDesc, &m_pSamplerState);
+    //D3D11_SAMPLER_DESC sampDesc{};
+    //sampDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    //sampDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+    //sampDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+    //sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+
+    //m_pDevice->CreateSamplerState(&sampDesc, &m_pSamplerState);
     return S_OK;
 }
 
@@ -42,7 +43,12 @@ shared_ptr<CPrototype> CModelObject::Clone(void* pArg)
     return pInstance;
 }
 unique_ptr<CModelObject> CModelObject::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext) {
-    return unique_ptr<CModelObject>(new CModelObject(pDevice, pContext));
+    auto pInstance = unique_ptr<CModelObject>(new CModelObject(pDevice, pContext));
+
+    if (FAILED(pInstance->Initialize_Prototype())) {
+        return nullptr;
+    }
+    return pInstance;
 }
 
 
@@ -56,9 +62,8 @@ HRESULT CModelObject::Initialize(void* pArg)
     {
         MODELOBJ_DESC* pDesc = (MODELOBJ_DESC*)pArg;
         m_pTransformCom->SetWorld(pDesc->worldMatrix);
-
         m_pTransformCom->Scaling(0.001f, 0.001f, 0.001f);
-        m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), 270.f);
+        //m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), 270.f);
 
         // 2. 인자로 들어온 태그를 사용하여 모델 컴포넌트 클론
         m_pModelCom = static_pointer_cast<Model>(CGameInstance::Get().Clone_Prototype(pDesc->levelIndex, pDesc->pModelPrototypeTag));
@@ -68,11 +73,13 @@ HRESULT CModelObject::Initialize(void* pArg)
 
 
         m_pColliderCom = static_pointer_cast<Obb>(CGameInstance::Get().Clone_Prototype(0, L"Prototype_OBB"));
+        CGameInstance::Get().Add_Collider(m_pColliderCom);
 
-        if (pDesc->AddCollider) {
-            CGameInstance::Get().Add_Collider(m_pColliderCom);
+        if (pDesc->collide) {
+
         }
         m_pColliderCom->SetOwner(this);
+        ExpandCollider();
         //m_pTransformCom->
         //pDesc->vInitialPosition;
         // 4. (선택사항) 필요하다면 콜라이더도 여기서 생성
@@ -81,49 +88,17 @@ HRESULT CModelObject::Initialize(void* pArg)
     return S_OK;
 }
 
-//void CModelObject::Priority_Update(_float fTimeDelta)
-//{
-//}
+void CModelObject::Priority_Update(_float fTimeDelta)
+{
+    
+}
 
 void CModelObject::Update(_float fTimeDelta)
 {
     if (m_pColliderCom->GetSelected()) {
-        _float3 min = m_pModelCom->GetMin();
-        _float3 max = m_pModelCom->GetMax();
-        _float3 scale = m_pTransformCom->Get_Scaled();
-
-        _float4x4 mat = m_pTransformCom->GetWorld();
-        _matrix world = XMLoadFloat4x4(&mat);
-
-        // 1. Center 계산: 로컬 중심점(mid)을 월드 행렬로 변환
-        XMVECTOR xmMin = XMLoadFloat3(&min);
-        XMVECTOR xmMax = XMLoadFloat3(&max);
-        XMVECTOR mid = (xmMin + xmMax) * 0.5f;
-        XMVECTOR centerWorld = XMVector3TransformCoord(mid, world);
-        XMStoreFloat3(&m_pColliderCom->myOBB.Center, centerWorld);
-
-        // 2. Extents 계산: (모델 크기 * 트랜스폼 스케일)의 절반
-        // myOBB 자체가 월드에서 클릭되어야 하므로 여기서 스케일을 미리 곱해야 합니다.
-        m_pColliderCom->myOBB.Extents.x = (max.x - min.x) * 0.5f * scale.x;
-        m_pColliderCom->myOBB.Extents.y = (max.y - min.y) * 0.5f * scale.y;
-        m_pColliderCom->myOBB.Extents.z = (max.z - min.z) * 0.5f * scale.z;
-
-        // 3. Orientation 추출: 월드 행렬에서 회전값만 가져옴
-        XMVECTOR vScale, vRot, vTrans;
-        XMMatrixDecompose(&vScale, &vRot, &vTrans, world);
-        XMStoreFloat4(&m_pColliderCom->myOBB.Orientation, vRot);
-
-        // 4. 렌더링용 월드 행렬 (m_WorldMatrix) 갱신
-        // VIBuffer_Cube는 -0.5 ~ 0.5 (크기 1)이므로, Extents * 2를 하면 딱 맞습니다.
-        _matrix matOBBWorld = XMMatrixScaling(m_pColliderCom->myOBB.Extents.x * 2.f,
-            m_pColliderCom->myOBB.Extents.y * 2.f,
-            m_pColliderCom->myOBB.Extents.z * 2.f);
-        matOBBWorld *= XMMatrixRotationQuaternion(vRot);
-        matOBBWorld *= XMMatrixTranslationFromVector(centerWorld);
-
-        m_pColliderCom->Set_WorldMatrix(matOBBWorld);
+        ExpandCollider();
     }
-
+    
 }
 
 void CModelObject::Late_Update(_float fTimeDelta)
@@ -133,7 +108,7 @@ void CModelObject::Late_Update(_float fTimeDelta)
 
 HRESULT CModelObject::Render()
 {
-
+    _float3 scale = m_pTransformCom->Get_Scaled();
     MatrixBuffer cb;
     _float4x4 mat = m_pTransformCom->GetWorld();
     //XMMATRIX matWorld = m_pTransformCom->m_WorldMatrix;
@@ -164,4 +139,42 @@ HRESULT CModelObject::Render()
     m_pModelCom->Draw(m_pShaderCom.get());
     m_pColliderCom->Render();
     return S_OK;
+}
+
+void CModelObject::ExpandCollider()
+{
+    _float3 min = m_pModelCom->GetMin();
+    _float3 max = m_pModelCom->GetMax();
+    _float3 scale = m_pTransformCom->Get_Scaled();
+
+    _float4x4 mat = m_pTransformCom->GetWorld();
+    _matrix world = XMLoadFloat4x4(&mat);
+
+    // 1. Center 계산: 로컬 중심점(mid)을 월드 행렬로 변환
+    XMVECTOR xmMin = XMLoadFloat3(&min);
+    XMVECTOR xmMax = XMLoadFloat3(&max);
+    XMVECTOR mid = (xmMin + xmMax) * 0.5f;
+    XMVECTOR centerWorld = XMVector3TransformCoord(mid, world);
+    XMStoreFloat3(&m_pColliderCom->myOBB.Center, centerWorld);
+
+    // 2. Extents 계산: (모델 크기 * 트랜스폼 스케일)의 절반
+    // myOBB 자체가 월드에서 클릭되어야 하므로 여기서 스케일을 미리 곱해야 합니다.
+    m_pColliderCom->myOBB.Extents.x = (max.x - min.x) * 0.5f * scale.x;
+    m_pColliderCom->myOBB.Extents.y = (max.y - min.y) * 0.5f * scale.y;
+    m_pColliderCom->myOBB.Extents.z = (max.z - min.z) * 0.5f * scale.z;
+
+    // 3. Orientation 추출: 월드 행렬에서 회전값만 가져옴
+    XMVECTOR vScale, vRot, vTrans;
+    XMMatrixDecompose(&vScale, &vRot, &vTrans, world);
+    XMStoreFloat4(&m_pColliderCom->myOBB.Orientation, vRot);
+
+    // 4. 렌더링용 월드 행렬 (m_WorldMatrix) 갱신
+    // VIBuffer_Cube는 -0.5 ~ 0.5 (크기 1)이므로, Extents * 2를 하면 딱 맞습니다.
+    _matrix matOBBWorld = XMMatrixScaling(m_pColliderCom->myOBB.Extents.x * 2.f,
+        m_pColliderCom->myOBB.Extents.y * 2.f,
+        m_pColliderCom->myOBB.Extents.z * 2.f);
+    matOBBWorld *= XMMatrixRotationQuaternion(vRot);
+    matOBBWorld *= XMMatrixTranslationFromVector(centerWorld);
+
+    m_pColliderCom->Set_WorldMatrix(matOBBWorld);
 }

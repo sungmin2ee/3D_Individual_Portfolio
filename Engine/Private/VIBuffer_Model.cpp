@@ -13,7 +13,6 @@ CVIBuffer_Model::~CVIBuffer_Model()
 
 HRESULT CVIBuffer_Model::Initialize_Prototype()
 {
-    HRESULT hr;
 
     m_iNumVertexBuffers = 1;
     m_iNumVertices = 4;
@@ -89,7 +88,7 @@ HRESULT CVIBuffer_Model::Initialize_Prototype()
     sampDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 
-    hr = m_pDevice->CreateSamplerState(&sampDesc, &m_pSamplerState);
+   // hr = m_pDevice->CreateSamplerState(&sampDesc, &m_pSamplerState);
     return S_OK;
 }
 

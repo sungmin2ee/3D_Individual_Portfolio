@@ -16,12 +16,12 @@ namespace Engine
 
 	typedef struct tagModelObjectDesc
 	{
-		uint32_t levelIndex;
-		string filePath;
-		_wstring pModelPrototypeTag; // "Prototype_Component_Model_Desk"
-		_wstring pShaderPrototypeTag; // "Prototype_Component_Shader_NonAnim"
-		_float4x4  worldMatrix;
-		_bool   AddCollider;
+		uint32_t levelIndex = 0;
+		string filePath = "";
+		_wstring pModelPrototypeTag = L""; // "Prototype_Component_Model_Desk"
+		_wstring pShaderPrototypeTag= L""; // "Prototype_Component_Shader_NonAnim"
+		_float4x4  worldMatrix = {};
+		_bool   collide = false;
 	} MODELOBJ_DESC;
 
 	struct MatrixBuffer { // ½½·Ô b0¿ë

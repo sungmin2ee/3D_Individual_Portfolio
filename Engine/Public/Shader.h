@@ -27,7 +27,6 @@ public:
 	static unique_ptr<CShader> Create(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext, const _tchar* pShaderFilePath, const D3D11_INPUT_ELEMENT_DESC* pInputElements, uint32_t iNumElements);
 
 private:
-	ComPtr<ID3D11Buffer>							m_pConstantBuffer = { nullptr };
 
 
 

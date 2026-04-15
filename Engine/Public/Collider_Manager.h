@@ -11,10 +11,13 @@ public:
 	virtual ~Collider_Manager();
 
 	void Add_Collider(weak_ptr<CCollider> collider);
+	void Add_ComputingCollider(weak_ptr<CCollider> collider);
 	static unique_ptr<Collider_Manager> Create();
 	vector<weak_ptr<CCollider>> &Get_Colliders() { return colliders; }
+	vector<weak_ptr<CCollider>> &Get_ComputingColliders() { return computingCollider; }
 private:
 	vector<weak_ptr<CCollider>> colliders;
+	vector<weak_ptr<CCollider>> computingCollider;
 };
 
 NS_END

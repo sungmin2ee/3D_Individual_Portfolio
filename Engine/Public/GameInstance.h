@@ -96,6 +96,12 @@ public:
 	void Add_Collider(weak_ptr<class CCollider> collider);
 	vector<weak_ptr<class CCollider>>& Get_Colliders();
 #pragma endregion
+
+#pragma region SAVELOAD_MANAGER
+	HRESULT Save(uint32_t level);
+	HRESULT Load(uint32_t level);
+#pragma endregion
+
 private:
 	unique_ptr<class CGraphic_Device>				m_pGraphic_Device = { nullptr };
 	unique_ptr<class CTimer_Manager>				m_pTimer_Manager = { nullptr };
@@ -109,6 +115,7 @@ private:
 	unique_ptr<class CCamera> 						m_pCamera = nullptr;
 	unique_ptr<class CHelper> 						m_pHelper = nullptr;
 	unique_ptr<class Collider_Manager> 				m_pCollider_Manager = nullptr;
+	unique_ptr<class SaveLoad_Manager> 			m_pSaveLoad_Manager = nullptr;
 
 
 public:
@@ -116,6 +123,8 @@ public:
 public:
 	void Release_Engine();
 
+private:
+	_bool m_bMouse = false;
 };
 
 NS_END

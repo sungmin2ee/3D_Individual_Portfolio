@@ -124,7 +124,14 @@ void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 		}
 		if (ImGui::BeginTabItem("Collider"))
 		{
-			ImGui::Text("This is the Cucumber tab!\nblah blah blah blah blah");
+			if (ImGui::Button("Don't Collide"))
+			{
+				m_ModelDesc.collide = false;
+			}
+			if (ImGui::Button("Collide"))
+			{
+				m_ModelDesc.collide = true;
+			}
 			ImGui::EndTabItem();
 		}
 
@@ -142,7 +149,12 @@ void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 //	return E_FAIL;
 			CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), L"Prototype_ModelObject", curlevel, strLayerTag, &m_ModelDesc);
 
-
+			//uint32_t levelIndex;
+			//string filePath;
+			//_wstring pModelPrototypeTag; // "Prototype_Component_Model_Desk"
+			//_wstring pShaderPrototypeTag; // "Prototype_Component_Shader_NonAnim"
+			//_float4x4  worldMatrix;
+			//_bool   AddCollider;
 
 		}
 
@@ -151,7 +163,7 @@ void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 		ImGui::EndTabBar();
 	}
 
-
+	// 저장 
 	
 }
 
@@ -192,6 +204,7 @@ void CImguiHandler::Imgui_Logo(_float fTimeDelta)
 			if (m_pSelected == pCollider->GetOwner()) {
 				pCollider->SetSelected(true);
 				XMStoreFloat4(&position, m_pSelected->Get_Transform()->Get_State(STATE::POSITION));
+				scale = m_pSelected->Get_Transform()->Get_Scaled();
 
 			}
 		}
@@ -207,9 +220,9 @@ void CImguiHandler::Imgui_Logo(_float fTimeDelta)
 	//	}
 	//}
 
-
 	if (ImGui::CollapsingHeader("Transform")) {
 		if (m_pSelected) {
+			_float3 sca = m_pSelected->Get_Transform()->Get_Scaled();
 
 			if (CGameInstance::Get().Key_Down('1')) m_CurrentOperation = ImGuizmo::TRANSLATE;
 			if (CGameInstance::Get().Key_Down('2')) m_CurrentOperation = ImGuizmo::ROTATE;
@@ -220,7 +233,6 @@ void CImguiHandler::Imgui_Logo(_float fTimeDelta)
 			_float4x4 matWorld = m_pSelected->Get_Transform()->GetWorld();
 			_float4x4 view = CGameInstance::Get().GetView();
 			_float4x4 projection = CGameInstance::Get().GetProj();
-			
 			bool bModified = false;
 			bModified |= ImGui::DragFloat("Pos X", &position.x, 0.1f);
 			bModified |= ImGui::DragFloat("Pos Y", &position.y, 0.1f);
@@ -228,33 +240,59 @@ void CImguiHandler::Imgui_Logo(_float fTimeDelta)
 			bModified |= ImGui::DragFloat("Rot X", &rotation.x, 0.1f);
 			bModified |= ImGui::DragFloat("Rot Y", &rotation.y, 0.1f);
 			bModified |= ImGui::DragFloat("Rot Z", &rotation.z, 0.1f);
+			bModified |= ImGui::DragFloat("Scale X", &scale.x, 0.001f);
+			bModified |= ImGui::DragFloat("Scale Y", &scale.y, 0.001f);
+			bModified |= ImGui::DragFloat("Scale Z", &scale.z, 0.001f);
 
-
+			
 			if (bModified) {
 		
-
+				m_pSelected->Get_Transform()->Scale_Non_Cumulate(scale.x,scale.y,scale.z);
+				m_pSelected->Get_Transform()->Set_Rotation(rotation);
 				m_pSelected->Get_Transform()->Set_State(STATE::POSITION, XMLoadFloat4(&position));
-				m_pSelected->Get_Transform()->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), rotation.x);
-				m_pSelected->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), rotation.y);
-				m_pSelected->Get_Transform()->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f),rotation.z);
-				rotation = { 0.f,0.f,0.f };
+				//m_pSelected->Get_Transform()->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), rotation.x);
+				//m_pSelected->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), rotation.y);
+				//m_pSelected->Get_Transform()->Rotation(XMVectorSet(0.f, 0.f, 1.f, 0.f),rotation.z);
+				//rotation = { 0.f,0.f,0.f };
 
 			}
 			// 기즈모 조작
 			ImGuizmo::Manipulate((float*)&view, (float*)&projection, m_CurrentOperation, ImGuizmo::LOCAL, (float*)&matWorld);
 
 			if (ImGuizmo::IsUsing()) {
+				// 1. 기즈모로 변한 matWorld를 실제 트랜스폼에 적용
 				m_pSelected->Get_Transform()->SetWorld(matWorld);
+
+				// 2. 중요: 변한 행렬에서 Scale, Rotation, Translation을 다시 추출해서 ImGui 변수에 동기화
+				_float3 vScale, vRotation, vPos;
+				ImGuizmo::DecomposeMatrixToComponents((float*)&matWorld, (float*)&vPos, (float*)&vRotation, (float*)&vScale);
+
+				// ImGui와 연결된 변수들 갱신
+				position = _float4(vPos.x, vPos.y, vPos.z, 1.f);
+				rotation = vRotation; // (ImGuizmo는 Degree 값을 줍니다)
+				scale = vScale;
+				_float3 sca = m_pSelected->Get_Transform()->Get_Scaled();
 			
 			}
 		}
 	}
 
+
+
 	ImGui::End();
 
 
 			
-		
+	if (m_pSelected) {
+		if (CGameInstance::Get().Key_Pressing(DIK_LCONTROL)) {
+			if (CGameInstance::Get().Key_Down(DIK_V)) {
+				MODELOBJ_DESC desc = m_pSelected->Get_Desc();
+				desc.worldMatrix = m_pSelected->Get_Transform()->GetWorld();
+				CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), L"Prototype_ModelObject", CGameInstance::Get().GetCurLevelIndex(), strLayerTag, &desc);
+
+			}
+		}
+	}
 
 
 

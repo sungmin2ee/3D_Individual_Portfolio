@@ -4,7 +4,6 @@
 
 #include "Level_Loading.h"
 #include "BackGround.h"
-#include "Camera.h"
 
 CLevel_Logo::CLevel_Logo(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: CLevel{ pDevice, pContext }
@@ -27,14 +26,17 @@ HRESULT CLevel_Logo::Initialize()
 void CLevel_Logo::Update(_float fTimeDelta)
 {
 
-	if (GetKeyState(VK_RETURN) & 0x8000)
-	{
-		if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
-			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::GAMEPLAY))))
-			return;
-
-		return;
+	if (CGameInstance::Get().Get_DIKeyState(DIK_CAPITAL)) {
+		CGameInstance::Get().Save(ETOUI(LEVEL::LOGO));
 	}
+	//if (GetKeyState(VK_RETURN) & 0x8000)
+	//{
+	//	if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
+	//		CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::GAMEPLAY))))
+	//		return;
+
+	//	return;
+	//}
 }
 
 HRESULT CLevel_Logo::Render()
@@ -51,6 +53,7 @@ HRESULT CLevel_Logo::Ready_Layer_Logo(const _wstring& strLayerTag)
 	CBackGround::BACKGROUND_DESC		Desc{};
 	Desc.iData = 10;
 
+	//CGameInstance::Get().Load(ETOUI(LEVEL::LOGO));
 	
 	//if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::LOGO), TEXT("Prototype_GameObject_BackGround"),
 	//	ETOUI(LEVEL::LOGO), strLayerTag, &Desc)))

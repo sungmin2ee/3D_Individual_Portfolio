@@ -79,12 +79,12 @@ void CTransform::Rotation(_fvector vAxis, _float fAngle)
 {
     _float3     vScaled = Get_Scaled();
 
-    //_vector     vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f) * vScaled.x;
-    //_vector     vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f) * vScaled.y;
-    //_vector     vLook = XMVectorSet(0.f, 0.f, 1.f, 0.f) * vScaled.z;
-    _vector vRight = Get_State(STATE::RIGHT);
-    _vector vUp = Get_State(STATE::UP);
-    _vector vLook = Get_State(STATE::LOOK);
+    _vector     vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f) * vScaled.x;
+    _vector     vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f) * vScaled.y;
+    _vector     vLook = XMVectorSet(0.f, 0.f, 1.f, 0.f) * vScaled.z;
+    //_vector vRight = Get_State(STATE::RIGHT);
+    //_vector vUp = Get_State(STATE::UP);
+    //_vector vLook = Get_State(STATE::LOOK);
 
     _matrix     RotationMatrix = XMMatrixRotationAxis(vAxis, XMConvertToRadians(fAngle));
 
@@ -95,6 +95,25 @@ void CTransform::Rotation(_fvector vAxis, _float fAngle)
     /*XMVector4Transform();
     XMVector3TransformCoord();*/
 
+}
+void CTransform::Set_Rotation(_float3 vRotationDeg)
+{
+    _float3 vScale = Get_Scaled();
+
+    _matrix matRot = XMMatrixRotationRollPitchYaw(
+        XMConvertToRadians(vRotationDeg.x),
+        XMConvertToRadians(vRotationDeg.y),
+        XMConvertToRadians(vRotationDeg.z)
+    );
+
+    _vector vPos = Get_State(STATE::POSITION);
+
+    _matrix matWorld = XMMatrixScaling(vScale.x, vScale.y, vScale.z) * matRot;
+    matWorld.r[3] = vPos; // 위치 복구
+
+    _float4x4 world;
+    XMStoreFloat4x4(&world, matWorld);
+    SetWorld(world);
 }
 
 void CTransform::Turn(_fvector vAxis, _float fTimeDelta)
@@ -133,7 +152,20 @@ void CTransform::Scaling(_float fScaleX, _float fScaleY, _float fScaleZ)
 }
 
 
+void CTransform::Scale_Non_Cumulate(_float fScaleX, _float fScaleY, _float fScaleZ)
+{
+    _vector     vRight = XMVector3Normalize(Get_State(STATE::RIGHT));
+    _vector     vUp = XMVector3Normalize(Get_State(STATE::UP));
+    _vector     vLook = XMVector3Normalize(Get_State(STATE::LOOK));
 
+    if (XMVector3Length(vRight).m128_f32[0] < 0.0001f) vRight = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+    if (XMVector3Length(vUp).m128_f32[0] < 0.0001f)    vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
+    if (XMVector3Length(vLook).m128_f32[0] < 0.0001f)  vLook = XMVectorSet(0.f, 0.f, 1.f, 0.f);
+
+    Set_State(STATE::RIGHT, vRight * fScaleX);
+    Set_State(STATE::UP, vUp  * fScaleY);
+    Set_State(STATE::LOOK, vLook * fScaleZ);
+}
 void CTransform::Chase(_fvector vGoal, _float fTimeDelta, _float fLimit)
 {
     _vector     vPosition = Get_State(STATE::POSITION);

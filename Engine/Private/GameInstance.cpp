@@ -14,6 +14,7 @@
 #include "Camera.h"
 #include "Helper.h"
 #include "Layer.h"
+#include "SaveLoad_Manager.h"
 
 CGameInstance::CGameInstance()
 {
@@ -71,6 +72,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, ComPtr<I
 
     m_pHelper = CHelper::Create(EngineDesc);
     m_pCollider_Manager = Collider_Manager::Create();
+
+    m_pSaveLoad_Manager = SaveLoad_Manager::Create(pOutDevice, pOutContext);
+
     return S_OK;
 }
 
@@ -89,7 +93,12 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
     if (GetAsyncKeyState('D') & 0x8000) {
         m_pCamera->Strafe(10.0f * fTimeDelta);
     }
-    m_pCamera->Mouse_Move();
+    if (Key_Down(DIK_TAB)) {
+        m_bMouse = !m_bMouse;
+    }
+    if (m_bMouse) {
+        m_pCamera->Mouse_Move();
+    }
     m_pCamera->UpdateViewMatrix();
 
     m_pImguiMgr->Update_Imgui();
@@ -310,6 +319,17 @@ vector<weak_ptr<class CCollider>>& CGameInstance::Get_Colliders() {
 
 #pragma endregion
 
+#pragma region COLLIDER_MANAGER
+
+HRESULT CGameInstance::Save(uint32_t level) {
+    return m_pSaveLoad_Manager->Save(level);
+}
+HRESULT CGameInstance::Load(uint32_t level) {
+    return m_pSaveLoad_Manager->Load(level);
+}
+
+#pragma endregion
+
 void CGameInstance::Release_Engine()
 {
     m_pRenderer.reset();
@@ -323,6 +343,7 @@ void CGameInstance::Release_Engine()
 
     m_pPrototype_Manager.reset();
     m_pModelLoader.reset();
+    m_pSaveLoad_Manager.reset();
     m_pImguiMgr.reset();
     m_pGraphic_Device->Shutdown();
 

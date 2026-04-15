@@ -26,6 +26,10 @@ HRESULT Obb::Render()
     if (nullptr == m_pBuffer)
         return E_FAIL;
 
+    if (nullptr == m_pShaderCom) {
+        return E_FAIL;
+    }
+
 
     _float4x4 view, proj;
     view = CGameInstance::Get().GetView();
@@ -44,7 +48,7 @@ HRESULT Obb::Render()
     //XMStoreFloat4x4(&cb.matWVP, XMMatrixTranspose(wvp));
 
     //m_pBuffer->UpdateConstantBuffer(cb);
-
+    m_pBuffer->Bind_Resources();
     m_pBuffer->Render();
 
     return S_OK;
