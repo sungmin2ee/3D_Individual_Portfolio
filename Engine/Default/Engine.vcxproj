@@ -48,6 +48,7 @@
     <ClInclude Include="..\Public\Prototype.h" />
     <ClInclude Include="..\Public\Prototype_Manager.h" />
     <ClInclude Include="..\Public\Renderer.h" />
+    <ClInclude Include="..\Public\SaveLoad_Manager.h" />
     <ClInclude Include="..\Public\Shader.h" />
     <ClInclude Include="..\Public\TextureLoader.h" />
     <ClInclude Include="..\Public\Timer.h" />
@@ -94,6 +95,7 @@
     <ClCompile Include="..\Private\Prototype.cpp" />
     <ClCompile Include="..\Private\Prototype_Manager.cpp" />
     <ClCompile Include="..\Private\Renderer.cpp" />
+    <ClCompile Include="..\Private\SaveLoad_Manager.cpp" />
     <ClCompile Include="..\Private\Shader.cpp" />
     <ClCompile Include="..\Private\TextureLoader.cpp" />
     <ClCompile Include="..\Private\Timer.cpp" />

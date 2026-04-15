@@ -109,6 +109,9 @@
     <Filter Include="06.Component\VIBuffer\Model">
       <UniqueIdentifier>{8fec0f24-a4d8-4212-859c-7bd625ea5d95}</UniqueIdentifier>
     </Filter>
+    <Filter Include="92.SaveLoad">
+      <UniqueIdentifier>{d6ffea2c-c4f2-4ed1-886b-c391775e99ab}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -224,6 +227,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\CModelObject.h">
       <Filter>05.GameObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SaveLoad_Manager.h">
+      <Filter>92.SaveLoad</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -358,6 +364,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\CModelObject.cpp">
       <Filter>05.GameObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SaveLoad_Manager.cpp">
+      <Filter>92.SaveLoad</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
