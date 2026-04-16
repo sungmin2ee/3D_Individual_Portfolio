@@ -88,6 +88,22 @@ HRESULT CShader::Bind_Matrix(const _char* pConstantName, const _float4x4* pMatri
     return pMatrixVariable->SetMatrix(reinterpret_cast<const _float*>(pMatrix));
 }
 
+HRESULT CShader::Bind_SRV(const _char* pConstantName, ComPtr<ID3D11ShaderResourceView> pSRV)
+{
+    if (nullptr == m_pEffect)
+        return E_FAIL;
+
+    ID3DX11EffectVariable* pVariable = m_pEffect->GetVariableByName(pConstantName);
+    if (nullptr == pVariable)
+        return E_FAIL;
+
+    ID3DX11EffectShaderResourceVariable* pShaderResourceVariable = pVariable->AsShaderResource();
+    if (nullptr == pShaderResourceVariable)
+        return E_FAIL;
+
+    return pShaderResourceVariable->SetResource(pSRV.Get());
+}
+
 HRESULT CShader::Bind_RawValue(const _char* pConstantName, const void* pData, uint32_t iSize)
 {
     if (nullptr == m_pEffect) return E_FAIL;

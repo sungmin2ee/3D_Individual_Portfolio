@@ -50,10 +50,12 @@
     <ClInclude Include="..\Public\Renderer.h" />
     <ClInclude Include="..\Public\SaveLoad_Manager.h" />
     <ClInclude Include="..\Public\Shader.h" />
+    <ClInclude Include="..\public\Texture.h" />
     <ClInclude Include="..\Public\TextureLoader.h" />
     <ClInclude Include="..\Public\Timer.h" />
     <ClInclude Include="..\Public\Timer_Manager.h" />
     <ClInclude Include="..\Public\Transform.h" />
+    <ClInclude Include="..\Public\UIObject.h" />
     <ClInclude Include="..\Public\VIBuffer.h" />
     <ClInclude Include="..\Public\VIBuffer_Cube.h" />
     <ClInclude Include="..\Public\VIBuffer_Model.h" />
@@ -97,10 +99,12 @@
     <ClCompile Include="..\Private\Renderer.cpp" />
     <ClCompile Include="..\Private\SaveLoad_Manager.cpp" />
     <ClCompile Include="..\Private\Shader.cpp" />
+    <ClCompile Include="..\private\Texture.cpp" />
     <ClCompile Include="..\Private\TextureLoader.cpp" />
     <ClCompile Include="..\Private\Timer.cpp" />
     <ClCompile Include="..\Private\Timer_Manager.cpp" />
     <ClCompile Include="..\Private\Transform.cpp" />
+    <ClCompile Include="..\Private\UIObject.cpp" />
     <ClCompile Include="..\Private\VIBuffer.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Cube.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Model.cpp" />
@@ -164,6 +168,11 @@
     <IncludePath>$(SolutionDir)ThirdParty\imgui\imgui-1.83;$(SolutionDir)ThirdParty\fmod\inc;$(SolutionDir)ThirdParty\imgui\ImGuizmo-1.83;$(SolutionDir)ThirdParty\nlohmann_3.12.0\include;$(SolutionDir)ThirdParty\assimp_6.0.4\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)ThirdParty\fmod\lib\x64;$(SolutionDir)ThirdParty\assimp_6.0.4\lib;$(WindowsSdkDir)Lib\$(WindowsSdkVersion)\um\x64;$(SolutionDir)ThirdParty\effect/;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <LibraryPath>$(SolutionDir)ThirdParty\fmod\lib\x64;$(SolutionDir)ThirdParty\assimp_6.0.4\lib;$(WindowsSdkDir)Lib\$(WindowsSdkVersion)\um\x64;$(SolutionDir)ThirdParty\effect/;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)ThirdParty\imgui\imgui-1.83;$(SolutionDir)ThirdParty\fmod\inc;$(SolutionDir)ThirdParty\imgui\ImGuizmo-1.83;$(SolutionDir)ThirdParty\nlohmann_3.12.0\include;$(SolutionDir)ThirdParty\assimp_6.0.4\include;$(IncludePath)</IncludePath>
+    <OutDir>..\Bin\</OutDir>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -212,7 +221,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>d3d11.lib;dxguid.lib;dinput8.lib;assimp-vc143-mt.lib;Effects11d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxguid.lib;dinput8.lib;assimp-vc143-mt.lib;Effects11d.lib;DirectXTKd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>cd /d $(SolutionDir)
@@ -225,16 +234,18 @@ call Copy.bat</Command>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;ENGINE_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;ENGINE_EXPORTS;_WINDOWS;_USRDLL;IMGUI_DEFINE_MATH_OPERATORS;IMGUI_API=__declspec(dllexport);%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalIncludeDirectories>../public/</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>d3d11.lib;dxguid.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxguid.lib;dinput8.lib;assimp-vc143-mt.lib;Effects11.lib;DirectXTK.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

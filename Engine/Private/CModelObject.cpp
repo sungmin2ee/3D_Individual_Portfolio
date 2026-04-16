@@ -26,6 +26,8 @@ HRESULT CModelObject::Initialize_Prototype()
     //sampDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
 
     //m_pDevice->CreateSamplerState(&sampDesc, &m_pSamplerState);
+    //m_pTransformCom->Scaling(0.001f, 0.001f, 0.001f);
+
     return S_OK;
 }
 
@@ -62,7 +64,6 @@ HRESULT CModelObject::Initialize(void* pArg)
     {
         MODELOBJ_DESC* pDesc = (MODELOBJ_DESC*)pArg;
         m_pTransformCom->SetWorld(pDesc->worldMatrix);
-        m_pTransformCom->Scaling(0.001f, 0.001f, 0.001f);
         //m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), 270.f);
 
         // 2. 인자로 들어온 태그를 사용하여 모델 컴포넌트 클론
@@ -108,7 +109,6 @@ void CModelObject::Late_Update(_float fTimeDelta)
 
 HRESULT CModelObject::Render()
 {
-    _float3 scale = m_pTransformCom->Get_Scaled();
     MatrixBuffer cb;
     _float4x4 mat = m_pTransformCom->GetWorld();
     //XMMATRIX matWorld = m_pTransformCom->m_WorldMatrix;

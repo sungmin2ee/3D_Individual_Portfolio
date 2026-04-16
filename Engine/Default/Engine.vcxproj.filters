@@ -64,9 +64,6 @@
     <Filter Include="97.Assimp\ModelLoader">
       <UniqueIdentifier>{2c666ee2-351f-43db-983a-f70b7a71c5a1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="96.Shader">
-      <UniqueIdentifier>{ca4fe118-a508-4062-abe6-383aac7ed521}</UniqueIdentifier>
-    </Filter>
     <Filter Include="95.Camera">
       <UniqueIdentifier>{6bbb1fd7-889b-4ce6-93df-ac16dc96ab0e}</UniqueIdentifier>
     </Filter>
@@ -111,6 +108,15 @@
     </Filter>
     <Filter Include="92.SaveLoad">
       <UniqueIdentifier>{d6ffea2c-c4f2-4ed1-886b-c391775e99ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Component\Texture">
+      <UniqueIdentifier>{b4922a52-a714-45f2-9f75-6eca6b341cd6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Component\Shader">
+      <UniqueIdentifier>{ca4fe118-a508-4062-abe6-383aac7ed521}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.GameObject\UIObject">
+      <UniqueIdentifier>{ac3c21cf-abc8-46bf-8878-d966b56bf7bc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -190,7 +196,7 @@
       <Filter>97.Assimp</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Shader.h">
-      <Filter>96.Shader</Filter>
+      <Filter>06.Component\Shader</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer.h">
       <Filter>06.Component\VIBuffer</Filter>
@@ -230,6 +236,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\SaveLoad_Manager.h">
       <Filter>92.SaveLoad</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Texture.h">
+      <Filter>06.Component\Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIObject.h">
+      <Filter>05.GameObject\UIObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -291,7 +303,7 @@
       <Filter>97.Assimp</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Shader.cpp">
-      <Filter>96.Shader</Filter>
+      <Filter>06.Component\Shader</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer.cpp">
       <Filter>06.Component\VIBuffer</Filter>
@@ -367,6 +379,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\SaveLoad_Manager.cpp">
       <Filter>92.SaveLoad</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Texture.cpp">
+      <Filter>06.Component\Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIObject.cpp">
+      <Filter>05.GameObject\UIObject</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

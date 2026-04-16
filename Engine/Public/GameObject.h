@@ -18,7 +18,7 @@ protected:
 	CGameObject(const CGameObject& Prototype);
 public:
 	virtual ~CGameObject() = default;
-
+	
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
@@ -28,6 +28,8 @@ public:
 	virtual HRESULT Render();
 	MODELOBJ_DESC& Get_Desc() { return m_ModelDesc; }
 	CTransform* Get_Transform() { return m_pTransformCom.get(); }
+	void Set_Dead() { m_bDead = true; }
+	_bool Get_Dead() { return m_bDead; }
 protected:
 	ComPtr<ID3D11Device>			m_pDevice = { nullptr };
 	ComPtr<ID3D11DeviceContext>		m_pContext = { nullptr };
@@ -35,6 +37,7 @@ protected:
 
 protected:
 	MODELOBJ_DESC m_ModelDesc;
+	_bool			m_bDead = false;
 public:
 	virtual shared_ptr<CPrototype> Clone(void* pArg) = 0;
 };

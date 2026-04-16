@@ -46,7 +46,7 @@ void CLevel_Loading::Update(_float fTimeDelta)
 		case LEVEL::LOGO:
 			pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
 			break;
-		case LEVEL::GAMEPLAY:
+		case LEVEL::SHELTER:
 			pNewLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
 
 			break;

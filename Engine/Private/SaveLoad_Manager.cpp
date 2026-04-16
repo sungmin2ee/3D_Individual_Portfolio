@@ -34,8 +34,13 @@ HRESULT SaveLoad_Manager::Save(uint32_t levelIndex)
 
 		break;
 	case 3:
-		strLayerTag = L"Layer_Gameplay";
-
+		strLayerTag = L"Layer_Shelter";
+		break;
+	case 4:
+		strLayerTag = L"Layer_Stage1";
+		break;
+	case 5:
+		strLayerTag = L"Layer_Stage2";
 		break;
 	}
 
@@ -97,9 +102,15 @@ HRESULT SaveLoad_Manager::Load(uint32_t levelIndex)
 
 		break;
 	case 3:
-		strLayerTag = L"Layer_Gameplay";
-
+		strLayerTag = L"Layer_Shelter";
 		break;
+	case 4:
+		strLayerTag = L"Layer_Stage1";
+		break;
+	case 5:
+		strLayerTag = L"Layer_Stage2";
+		break;
+
 	}
 	string path = "../../Resources/Data/" + WStringToString(strLayerTag) + "_GameObjects.json";
 	ifstream file(path);
@@ -131,11 +142,14 @@ HRESULT SaveLoad_Manager::Load(uint32_t levelIndex)
 
 		//모델 프로토타입이 있나?
 		//모델부터 로드해야됨 
-		auto pModelProto = Model::Create(m_pDevice, m_pContext, desc.filePath);
-
-		if (FAILED(CGameInstance::Get().Add_Prototype(levelIndex, desc.pModelPrototypeTag, unique_ptr<CPrototype>(std::move(pModelProto))))) {
-			return E_FAIL;
+		if (CGameInstance::Get().Find_Prototype(desc.levelIndex, desc.pModelPrototypeTag) == nullptr) {
+			auto pModelProto = Model::Create(m_pDevice, m_pContext, desc.filePath);
+			if (FAILED(CGameInstance::Get().Add_Prototype(levelIndex, desc.pModelPrototypeTag, unique_ptr<CPrototype>(std::move(pModelProto))))) {
+				return E_FAIL;
+			}
 		}
+
+		
 		if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(0, L"Prototype_ModelObject", levelIndex, strLayerTag, &desc))) {
 			return E_FAIL;
 		}

@@ -50,6 +50,7 @@ public:
 
 	void LookAt(_fvector vAt);
 	void Scaling(_float fScaleX, _float fScaleY, _float fScaleZ);
+	void Set_Scale(_float fScaleX, _float fScaleY, _float fScaleZ);
 	void Scale_Non_Cumulate(_float fScaleX, _float fScaleY, _float fScaleZ);
 	void Chase(_fvector vGoal, _float fTimeDelta, _float fLimit);
 	_float4x4 GetWorld() { return m_WorldMatrix; }

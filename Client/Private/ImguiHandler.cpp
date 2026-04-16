@@ -62,14 +62,14 @@ void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 		Imgui_Logo(fTimeDelta);
 		break;
 	
-	case ETOUI(LEVEL::GAMEPLAY): 
-		strLayerTag = L"Layer_GamePlay";
+	case ETOUI(LEVEL::SHELTER): 
+		strLayerTag = L"Layer_Shelter";
 		Imgui_GamePlay(fTimeDelta);
 		break;
 	
 	}
 	m_ModelDesc.levelIndex = curlevel;
-
+	ImGui::Begin("Map Editor");
 	ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
 	if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
 	{
@@ -140,13 +140,15 @@ void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 			_matrix view, camWorld;
 			view = CGameInstance::Get().GetViewXM();
 			camWorld = XMMatrixInverse(nullptr, view);
-			XMStoreFloat4x4(&m_ModelDesc.worldMatrix, camWorld);
-			auto pModelProto = Model::Create(m_pDevice, m_pContext, m_ModelDesc.filePath);
+			XMMATRIX scale = XMMatrixScaling(0.001f, 0.001f, 0.001f);
+			XMMATRIX world = scale * camWorld;
+			XMStoreFloat4x4(&m_ModelDesc.worldMatrix, world);
+			
+			if (CGameInstance::Get().Find_Prototype(m_ModelDesc.levelIndex, m_ModelDesc.pModelPrototypeTag) == nullptr) {
+				auto pModelProto = Model::Create(m_pDevice, m_pContext, m_ModelDesc.filePath);
+				CGameInstance::Get().Add_Prototype(curlevel, m_ModelDesc.pModelPrototypeTag, unique_ptr<CPrototype>(std::move(pModelProto)));
+			}
 
-			CGameInstance::Get().Add_Prototype(curlevel, m_ModelDesc.pModelPrototypeTag, unique_ptr<CPrototype>(std::move(pModelProto)));
-			//if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::LOGO), TEXT("Prototype_GameObject_BackGround"),
-//	ETOUI(LEVEL::LOGO), strLayerTag, &Desc)))
-//	return E_FAIL;
 			CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), L"Prototype_ModelObject", curlevel, strLayerTag, &m_ModelDesc);
 
 			//uint32_t levelIndex;
@@ -162,6 +164,8 @@ void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 
 		ImGui::EndTabBar();
 	}
+
+	ImGui::End();
 
 	// ÀúÀå 
 	
@@ -287,10 +291,13 @@ void CImguiHandler::Imgui_Logo(_float fTimeDelta)
 		if (CGameInstance::Get().Key_Pressing(DIK_LCONTROL)) {
 			if (CGameInstance::Get().Key_Down(DIK_V)) {
 				MODELOBJ_DESC desc = m_pSelected->Get_Desc();
-				desc.worldMatrix = m_pSelected->Get_Transform()->GetWorld();
+				//desc.worldMatrix = m_pSelected->Get_Transform()->GetWorld();
 				CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), L"Prototype_ModelObject", CGameInstance::Get().GetCurLevelIndex(), strLayerTag, &desc);
 
 			}
+		}
+		if (CGameInstance::Get().Key_Down(DIK_DELETE)) {
+			m_pSelected->Set_Dead();
 		}
 	}
 

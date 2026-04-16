@@ -18,7 +18,9 @@ public:
 	void Update_Engine(_float fTimeDelta);
 	HRESULT Draw();
 	void Clear_Resources(uint32_t iClearLevelIndex);
-
+	_float2 Get_ViewportSize() const {
+		return m_vViewportSize;
+	}
 #pragma region TIMER_MANAGER
 	_float Get_TimeDelta(const _wstring& strTimerTag);
 	void Compute_TimeDelta(const _wstring& strTimerTag);
@@ -39,6 +41,7 @@ public:
 #pragma region PROTOTYPE_MANAGER
 	HRESULT Add_Prototype(uint32_t iLevelIndex, const _wstring& strPrototypeTag, unique_ptr<class CPrototype> pPrototype);
 	shared_ptr<CPrototype> Clone_Prototype(uint32_t iLevelIndex, const _wstring& strPrototypeTag, void* pArg = nullptr);
+	CPrototype* Find_Prototype(uint32_t iLevelIndex, const _wstring& strPrototypeTag);
 #pragma endregion
 
 #pragma region GAMEOBJECT_MANAGER
@@ -125,6 +128,8 @@ public:
 
 private:
 	_bool m_bMouse = false;
+	_float2											m_vViewportSize = {};
+
 };
 
 NS_END

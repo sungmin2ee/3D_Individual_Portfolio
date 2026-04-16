@@ -17,6 +17,17 @@ void CLayer::Priority_Update(_float fTimeDelta)
         if (nullptr != pGameObject)
             pGameObject->Priority_Update(fTimeDelta);
     }
+    list<shared_ptr<CGameObject>>::iterator iter = m_GameObjects.begin();
+    for (iter ; iter != m_GameObjects.end();)
+    {
+        if ((*iter)->Get_Dead()) {
+            iter = m_GameObjects.erase(iter);
+        }
+        else {
+            iter++;
+        }
+    }
+  
 }
 
 void CLayer::Update(_float fTimeDelta)

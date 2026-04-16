@@ -20,6 +20,7 @@ public:
 	HRESULT Add_Prototype(uint32_t iLevelIndex, const _wstring& strPrototypeTag, unique_ptr<CPrototype> pPrototype);
 	shared_ptr<CPrototype> Clone_Prototype(uint32_t iLevelIndex, const _wstring& strPrototypeTag, void* pArg);
 	void Clear(uint32_t iClearLevelIndex);
+	CPrototype* Find_Prototype(uint32_t iLevelIndex, const _wstring& strPrototypeTag);
 
 private:
 	uint32_t	m_iNumLevels = {};
@@ -28,7 +29,6 @@ private:
 	typedef map<const _wstring, unique_ptr<CPrototype>>				PROTOTYPES;
 
 private:
-	CPrototype* Find_Prototype(uint32_t iLevelIndex, const _wstring& strPrototypeTag);
 
 public:
 	static unique_ptr<CPrototype_Manager> Create(uint32_t iNumLevels);

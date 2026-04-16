@@ -69,7 +69,7 @@ HRESULT CLoader::Loading()
 		hr = Loading_For_Logo();
 		break;
 
-	case LEVEL::GAMEPLAY:
+	case LEVEL::SHELTER:
 		hr = Loading_For_GamePlay();
 		break;
 	}

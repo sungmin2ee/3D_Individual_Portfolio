@@ -150,7 +150,12 @@ void CTransform::Scaling(_float fScaleX, _float fScaleY, _float fScaleZ)
     Set_State(STATE::UP, Get_State(STATE::UP) * fScaleY);
     Set_State(STATE::LOOK, Get_State(STATE::LOOK) * fScaleZ);
 }
-
+void CTransform::Set_Scale(_float fScaleX, _float fScaleY, _float fScaleZ)
+{
+    Set_State(STATE::RIGHT, XMVector3Normalize(Get_State(STATE::RIGHT)) * fScaleX);
+    Set_State(STATE::UP, XMVector3Normalize(Get_State(STATE::UP)) * fScaleY);
+    Set_State(STATE::LOOK, XMVector3Normalize(Get_State(STATE::LOOK)) * fScaleZ);
+}
 
 void CTransform::Scale_Non_Cumulate(_float fScaleX, _float fScaleY, _float fScaleZ)
 {
