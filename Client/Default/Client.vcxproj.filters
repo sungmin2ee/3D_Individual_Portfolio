@@ -13,9 +13,6 @@
     <Filter Include="01.Levels">
       <UniqueIdentifier>{e76a50fd-a3fe-4472-bd3c-6217cc6bdb8d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\GamePlay">
-      <UniqueIdentifier>{899091c6-f0f6-465d-86c8-0f05aba72f86}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\Loading">
       <UniqueIdentifier>{3e79cb57-a720-47f4-a876-c1fa5cc90ee4}</UniqueIdentifier>
     </Filter>
@@ -36,6 +33,21 @@
     </Filter>
     <Filter Include="97.ImguiHandler">
       <UniqueIdentifier>{4721d10c-98c2-43b0-ab68-12825102d29e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\01.Camera">
+      <UniqueIdentifier>{fcae4e99-ffce-4fbe-a9c6-82282901bae0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\Shelter">
+      <UniqueIdentifier>{303d98b8-933b-414d-9968-81c01e169d05}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\Stage1">
+      <UniqueIdentifier>{ba5c6d18-74a1-4389-ae20-24f77a597bfb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\Stage2">
+      <UniqueIdentifier>{691643ed-e087-4e3c-afcb-7dfbb99c2736}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Inventory">
+      <UniqueIdentifier>{89c7534c-cec4-4b3c-ba94-10d1d27dc5b8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -69,9 +81,6 @@
     <ClInclude Include="..\Public\BackGround.h">
       <Filter>02.GameObject\00.BackGround</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Level_GamePlay.h">
-      <Filter>01.Levels\GamePlay</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Player.h">
       <Filter>02.GameObject\09.Player</Filter>
     </ClInclude>
@@ -80,6 +89,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\Test.h">
       <Filter>02.GameObject\09.Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Camera_Free.h">
+      <Filter>02.GameObject\01.Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Shelter.h">
+      <Filter>01.Levels\Shelter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Inventory.h">
+      <Filter>02.GameObject\Inventory</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -101,9 +119,6 @@
     <ClCompile Include="..\Private\BackGround.cpp">
       <Filter>02.GameObject\00.BackGround</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Level_GamePlay.cpp">
-      <Filter>01.Levels\GamePlay</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
       <Filter>02.GameObject\09.Player</Filter>
     </ClCompile>
@@ -112,6 +127,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\Test.cpp">
       <Filter>02.GameObject\09.Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Camera_Free.cpp">
+      <Filter>02.GameObject\01.Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Shelter.cpp">
+      <Filter>01.Levels\Shelter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Inventory.cpp">
+      <Filter>02.GameObject\Inventory</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

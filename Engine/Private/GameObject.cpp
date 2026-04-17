@@ -62,3 +62,21 @@ HRESULT CGameObject::Render()
 {
 	return S_OK;
 }
+
+HRESULT CGameObject::Add_Component(const _wstring& strComponentTag, shared_ptr<CComponent> pComponent)
+{
+	if (nullptr != Find_Component(strComponentTag))
+		return E_FAIL;
+
+	m_Components.emplace(strComponentTag, pComponent);
+	return S_OK;
+}
+
+shared_ptr<class CComponent> CGameObject::Find_Component(const _wstring& strComponentTag)
+{
+	auto	iter = m_Components.find(strComponentTag);
+	if (iter == m_Components.end())
+		return nullptr;
+
+	return iter->second;
+}

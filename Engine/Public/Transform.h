@@ -32,13 +32,19 @@ public:
 	void Set_State(STATE eState, _fvector vState) {
 		XMStoreFloat4(reinterpret_cast<_float4*>(&m_WorldMatrix.m[ETOUI(eState)][0]), vState);
 	}
+	const _float4x4* Get_WorldMatrixPtr() const {
+		return &m_WorldMatrix;
+	}
 
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
 
+public:
+	HRESULT Bind_ShaderResource(shared_ptr<class CShader> pShader, const _char* pConstantName);
 
 public:
+
 	void Go_Straight(_float fTimeDelta);
 	void Go_Backward(_float fTimeDelta);
 	void Go_Left(_float fTimeDelta);

@@ -15,6 +15,7 @@
 #include "Helper.h"
 #include "Layer.h"
 #include "SaveLoad_Manager.h"
+#include "PipeLine.h"
 
 CGameInstance::CGameInstance()
 {
@@ -74,6 +75,10 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, ComPtr<I
     m_pCollider_Manager = Collider_Manager::Create();
 
     m_pSaveLoad_Manager = SaveLoad_Manager::Create(pOutDevice, pOutContext);
+
+    m_pPipeLine = CPipeLine::Create();
+    if (nullptr == m_pPipeLine)
+        return E_FAIL;
 
     return S_OK;
 }
@@ -334,8 +339,30 @@ HRESULT CGameInstance::Load(uint32_t level) {
 
 #pragma endregion
 
+#pragma region PIPELINE 
+const _float4x4* CGameInstance::Get_Transform(D3DTS eState)
+{
+    return m_pPipeLine->Get_Transform(eState);
+}
+const _float4x4* CGameInstance::Get_Transform_Inverse(D3DTS eState)
+{
+    return m_pPipeLine->Get_Transform_Inverse(eState);
+}
+const _float4* CGameInstance::Get_CamPosition()
+{
+    return m_pPipeLine->Get_CamPosition();
+}
+void CGameInstance::Set_Transform(D3DTS eState, _fmatrix TransformMatrix)
+{
+    m_pPipeLine->Set_Transform(eState, TransformMatrix);
+}
+
+#pragma endregion
+
 void CGameInstance::Release_Engine()
 {
+    m_pPipeLine.reset();
+
     m_pRenderer.reset();
 
     m_pLevel_Manager.reset();

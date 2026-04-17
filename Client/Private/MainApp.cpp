@@ -82,6 +82,41 @@ HRESULT CMainApp::Start_Level(LEVEL eStartLevelIndex)
 
 HRESULT CMainApp::Ready_Prototypes()
 {
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxTex"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxTex.hlsl"), VTXTEX::Elements, VTXTEX::iNumElements))))
+		return E_FAIL;
+	/* Prototype_Component_VIBuffer_Rect */
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect"),
+		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/*Inventory Textures*/
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Inventory"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Bin/Resources/Textures/Inventory.png"), 1))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_clear_border"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Bin/Resources/Textures/clear_border.png"), 1))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_equip_border"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Bin/Resources/Textures/equip_border.png"), 1))))
+		return E_FAIL;
+	//Icons
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_equip_border"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Bin/Resources/Textures/equip_border.png"), 1))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_equip_border"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Bin/Resources/Textures/equip_border.png"), 1))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_equip_border"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Bin/Resources/Textures/equip_border.png"), 1))))
+		return E_FAIL;
+
+
 
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxNonAnim"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxNonAnim.hlsl"), VERTEX::Elements, VERTEX::iNumElements))))

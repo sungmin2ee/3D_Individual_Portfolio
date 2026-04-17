@@ -105,6 +105,14 @@ public:
 	HRESULT Load(uint32_t level);
 #pragma endregion
 
+
+#pragma region PIPELINE
+	const _float4x4* Get_Transform(D3DTS eState);
+	const _float4x4* Get_Transform_Inverse(D3DTS eState);
+	const _float4* Get_CamPosition();
+	void Set_Transform(D3DTS eState, _fmatrix TransformMatrix);
+#pragma endregion
+
 private:
 	unique_ptr<class CGraphic_Device>				m_pGraphic_Device = { nullptr };
 	unique_ptr<class CTimer_Manager>				m_pTimer_Manager = { nullptr };
@@ -118,7 +126,8 @@ private:
 	unique_ptr<class CCamera> 						m_pCamera = nullptr;
 	unique_ptr<class CHelper> 						m_pHelper = nullptr;
 	unique_ptr<class Collider_Manager> 				m_pCollider_Manager = nullptr;
-	unique_ptr<class SaveLoad_Manager> 			m_pSaveLoad_Manager = nullptr;
+	unique_ptr<class SaveLoad_Manager> 				m_pSaveLoad_Manager = nullptr;
+	unique_ptr<class CPipeLine>						m_pPipeLine = { nullptr };
 
 
 public:

@@ -102,9 +102,9 @@ HRESULT CVIBuffer_Rect::Initialize(void* pArg)
     return S_OK;
 }
 
-shared_ptr<CVIBuffer_Rect> CVIBuffer_Rect::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
+unique_ptr<CVIBuffer_Rect> CVIBuffer_Rect::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 {
-    auto		pInstance = shared_ptr<CVIBuffer_Rect>(new CVIBuffer_Rect(pDevice, pContext));
+    auto		pInstance = unique_ptr<CVIBuffer_Rect>(new CVIBuffer_Rect(pDevice, pContext));
 
     if (FAILED(pInstance->Initialize_Prototype()))
     {

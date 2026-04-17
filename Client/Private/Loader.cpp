@@ -102,11 +102,6 @@ HRESULT CLoader::Loading_For_Logo()
 
 	lstrcpy(m_szLoadingText, TEXT("모델을 로딩 중 입니다."));
 	//Load_Models_From_Directory(LEVEL::LOGO, "Logo");
-	//if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO),
-	//	TEXT("Prototype_Player_Model"), CGameInstance::Get().Load("../../Resources/Models/Joe5.fbx"))))
-	//{
-	//	return E_FAIL;
-	//}
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩 중 입니다."));
 	
@@ -122,10 +117,7 @@ HRESULT CLoader::Loading_For_Logo()
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO), TEXT("Prototype_GameObject_BackGround"),
 		CBackGround::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	
- 	//if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO), TEXT("Prototype_Test"),
-	//	Test::Create(m_pDevice, m_pContext))))
-	//	return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
@@ -176,7 +168,6 @@ namespace fs = std::filesystem;
 using json = nlohmann::json;
 
 void CLoader::Load_Models_From_Directory(LEVEL eNextLevelIndex, const string& strSceneName) {
-    // 1. 경로 설정 (예: "../../Resources/Scene_Logo/")
     string strPath = "../../Resources/Models/";
 	json sceneJson;
 

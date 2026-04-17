@@ -1,4 +1,5 @@
 #include "Transform.h"
+#include "Shader.h"
 
 CTransform::CTransform(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
     : CComponent{ pDevice, pContext }
@@ -33,6 +34,11 @@ HRESULT CTransform::Initialize(void* pArg)
     m_fRotationPerSec = pDesc->fRotationPerSec;
 
     return S_OK;
+}
+
+HRESULT CTransform::Bind_ShaderResource(shared_ptr<class CShader> pShader, const _char* pConstantName)
+{
+    return pShader->Bind_Matrix(pConstantName, &m_WorldMatrix);
 }
 
 void CTransform::Go_Straight(_float fTimeDelta)
