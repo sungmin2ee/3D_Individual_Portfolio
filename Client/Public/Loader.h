@@ -39,7 +39,9 @@ private: /* For.Loading */
 
 private:
 	HRESULT Loading_For_Logo();
-	HRESULT Loading_For_GamePlay();
+	HRESULT Loading_For_Shelter();
+	HRESULT Loading_For_Stage1();
+	HRESULT Loading_For_Stage2();
 
 public:
 	static unique_ptr<CLoader> Create(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext, LEVEL eNextLevelIndex);

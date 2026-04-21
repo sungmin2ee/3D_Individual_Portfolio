@@ -198,29 +198,18 @@ HRESULT CPlayer::Render()
     // =========================
     // Matrix 설정
     // =========================
-    MatrixBuffer cb;
-	_float4x4 mat = m_pTransformCom->GetWorld();
-	_matrix world = XMLoadFloat4x4(&mat);
-	 XMStoreFloat4x4(&cb.world,XMMatrixTranspose(world));
+	_float4x4 world = m_pTransformCom->GetWorld();
 	//XMMATRIX matWorld = m_pTransformCom->m_WorldMatrix;
     //  스케일 추가 (FBX 안보일 때 필수)
+	const _float4x4* view = CGameInstance::Get().Get_Transform(D3DTS::VIEW);
+	const _float4x4* proj = CGameInstance::Get().Get_Transform(D3DTS::PROJ);
 
-   // XMStoreFloat4x4(&cb.world, XMMatrixTranspose(matWorld));
-    cb.view = CGameInstance::Get().GetView();
-    XMMATRIX matView = XMLoadFloat4x4(&cb.view);
-    //XMStoreFloat4x4(&cb.view, XMMatrixTranspose(matView));
+	//이거 나중에 확인
+	//m_pContext->PSSetSamplers(0, 1, m_pSamplerState.GetAddressOf());
 
-    cb.projection = CGameInstance::Get().GetProj();
-    XMMATRIX matProj = XMLoadFloat4x4(&cb.projection);
-    //XMStoreFloat4x4(&cb.projection, XMMatrixTranspose(matProj));
-
-    //XMStoreFloat4x4(&cb.socket, XMMatrixIdentity());
-
-	m_pContext->PSSetSamplers(0, 1, m_pSamplerState.GetAddressOf());
-
-	m_pShaderCom->Bind_Matrix("g_WorldMatrix", &cb.world);
-	m_pShaderCom->Bind_Matrix("g_ViewMatrix", &cb.view);
-	m_pShaderCom->Bind_Matrix("g_ProjMatrix", &cb.projection);
+	m_pShaderCom->Bind_Matrix("g_WorldMatrix", &world);
+	m_pShaderCom->Bind_Matrix("g_ViewMatrix", view);
+	m_pShaderCom->Bind_Matrix("g_ProjMatrix", proj);
 
 
 	m_pShaderCom->Begin(0);

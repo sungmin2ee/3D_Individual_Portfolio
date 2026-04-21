@@ -18,7 +18,7 @@ HRESULT CTexture::Initialize_Prototype(const _tchar* pTextureFilePath, uint32_t 
 
     for (size_t i = 0; i < m_iNumTextures; i++)
     {
-        ID3D11ShaderResourceView* pSRV = { nullptr };
+        ComPtr<ID3D11ShaderResourceView> pSRV = { nullptr };
 
         _tchar          szTextureFilePath[MAX_PATH] = {};
 

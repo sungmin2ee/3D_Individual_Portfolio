@@ -1,12 +1,12 @@
 #include "Level_Logo.h"
 #include "GameInstance.h"
-
+#include "Camera_Free.h"
 
 #include "Level_Shelter.h"
-#include "BackGround.h"
+#include "Inventory.h"
 
 CLevel_Shelter::CLevel_Shelter(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
-	: CLevel{ pDevice, pContext }
+	: CLevel{ pDevice, pContext }, m_pDevice{ pDevice }, m_pContext{ pContext }
 {
 }
 
@@ -20,7 +20,8 @@ HRESULT CLevel_Shelter::Initialize()
 		return E_FAIL;
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
-	//if(FAILED(CGameInstance::Get().Add_Prototype()))
+
+
 
 	return S_OK;
 }
@@ -45,14 +46,38 @@ HRESULT CLevel_Shelter::Render()
 
 HRESULT CLevel_Shelter::Ready_Layer_UI(const _wstring& strLayerTag)
 {
+	CInventory::INVENTORY_DESC pDesc;
 
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), TEXT("Prototype_Inventory"),
+		ETOUI(LEVEL::SHELTER), strLayerTag,&pDesc)))
+		return E_FAIL;
+
+
+	//if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), L"Prototype_Inventory", ETOUI(LEVEL::SHELTER), strLayerTag)))
+	//	return E_FAIL;
+	
 	//CGameInstance::Get().Load(ETOUI(LEVEL::SHELTER));
+
 
 	return S_OK;
 }
 
 HRESULT CLevel_Shelter::Ready_Layer_Camera(const _wstring& strLayerTag)
 {
+	CCamera_Free::CAMERA_FREE_DESC		FreeDesc{};
+	FreeDesc.vEye = _float4(0.f, 10.f, -5.f, 1.f);
+	FreeDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+	FreeDesc.fFovy = XMConvertToRadians(60.f);
+	FreeDesc.fNear = 0.1f;
+	FreeDesc.fFar = 1000.f;
+	FreeDesc.fMouseSensor = 0.05f;
+	FreeDesc.fSpeedPerSec = 10.f;
+	FreeDesc.fRotationPerSec = 180.f;
+
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_Camera_Free"),
+		ETOUI(LEVEL::SHELTER), strLayerTag, &FreeDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 

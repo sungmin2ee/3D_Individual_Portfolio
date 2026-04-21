@@ -121,6 +121,9 @@
     <Filter Include="08.PipeLine">
       <UniqueIdentifier>{1c7bf0cf-e6ee-452e-807d-97e63c13e234}</UniqueIdentifier>
     </Filter>
+    <Filter Include="09.Item_Manager">
+      <UniqueIdentifier>{b83c23bc-28e2-4340-aab4-d340636f4cfb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -249,8 +252,8 @@
     <ClInclude Include="..\Public\PipeLine.h">
       <Filter>08.PipeLine</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\ECamera.h">
-      <Filter>95.Camera</Filter>
+    <ClInclude Include="..\Public\Item_Manager.h">
+      <Filter>09.Item_Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -398,8 +401,8 @@
     <ClCompile Include="..\Private\PipeLine.cpp">
       <Filter>08.PipeLine</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\ECamera.cpp">
-      <Filter>95.Camera</Filter>
+    <ClCompile Include="..\Private\Item_Manager.cpp">
+      <Filter>09.Item_Manager</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

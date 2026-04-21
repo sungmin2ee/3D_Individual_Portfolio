@@ -9,7 +9,7 @@ class ENGINE_DLL CShader : public CComponent
 private:
 	CShader(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
 public:
-	~CShader();
+	virtual ~CShader();
 private:
 	virtual HRESULT Initialize_Prototype(const _tchar* pShaderFilePath,
 		const D3D11_INPUT_ELEMENT_DESC* pInputElements, uint32_t iNumElements);

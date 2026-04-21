@@ -31,15 +31,16 @@ HRESULT Obb::Render()
     }
 
 
-    _float4x4 view, proj;
-    view = CGameInstance::Get().GetView();
-    proj = CGameInstance::Get().GetProj();
+    const _float4x4* view;
+    const _float4x4* proj;
+    view = CGameInstance::Get().Get_Transform(D3DTS::VIEW);
+    proj = CGameInstance::Get().Get_Transform(D3DTS::PROJ);
 
     if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
         return E_FAIL;
-    if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &view)))
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", view)))
         return E_FAIL;
-    if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &proj)))
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", proj)))
         return E_FAIL;
 
     _float4 vColor = m_bIsSelected ? _float4(1, 0, 0, 1) : _float4(0, 1, 0, 1);

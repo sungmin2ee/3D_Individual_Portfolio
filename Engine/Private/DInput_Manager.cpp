@@ -19,7 +19,7 @@ CDInput_Manager::~CDInput_Manager()
 {
 }
 
-HRESULT CDInput_Manager::Ready_InputDev(HINSTANCE hInst, HWND hWnd)
+HRESULT CDInput_Manager::Initialize(HINSTANCE hInst, HWND hWnd)
 {
 
 	// DInput 컴객체를 생성하는 함수
@@ -100,7 +100,7 @@ void CDInput_Manager::Update_InputDev(void)
 		DIMOUSESTATE mouseDevState;
 		m_pMouse->GetDeviceState(sizeof(mouseDevState), &mouseDevState);
 
-		for (int i = 0; i < DIM_END; ++i)
+		for (int i = 0; i < ETOUI(DIMM::END); ++i)
 		{
 			bool nowPressed = mouseDevState.rgbButtons[i] & 0x80;
 
@@ -121,8 +121,14 @@ void CDInput_Manager::Update_InputDev(void)
 }
 
 
-unique_ptr<CDInput_Manager> CDInput_Manager::Create()
+unique_ptr<CDInput_Manager> CDInput_Manager::Create(HINSTANCE hInst, HWND hWnd)
 {
 
-	return unique_ptr<CDInput_Manager>(new CDInput_Manager());
+	auto	pInstance = unique_ptr<CDInput_Manager>(new CDInput_Manager());
+
+	if (FAILED(pInstance->Initialize(hInst, hWnd)))
+		MSG_BOX("Failed to Created : CDInput_Manager");
+
+	return pInstance;
 }
+

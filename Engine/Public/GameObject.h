@@ -10,7 +10,7 @@ class ENGINE_DLL CGameObject abstract : public CPrototype
 public:
 	typedef struct tagGameObjectDesc : public CTransform::TRANSFORM_DESC
 	{
-		const _tchar* pGameObjectTag;
+		_wstring pGameObjectTag;
 	}GAMEOBJECT_DESC;
 
 protected:
@@ -30,6 +30,7 @@ public:
 	CTransform* Get_Transform() { return m_pTransformCom.get(); }
 	void Set_Dead() { m_bDead = true; }
 	_bool Get_Dead() { return m_bDead; }
+	_wstring Get_Tag() { return m_sObjectTag; }
 
 protected:
 	HRESULT Add_Component(const _wstring& strComponentTag, shared_ptr<CComponent> pComponent);
@@ -44,6 +45,7 @@ protected:
 	MODELOBJ_DESC m_ModelDesc;
 	_bool			m_bDead = false;
 	map<const _wstring, shared_ptr<class CComponent>>		m_Components;
+	_wstring m_sObjectTag = L"";
 public:
 	virtual shared_ptr<CPrototype> Clone(void* pArg) = 0;
 };

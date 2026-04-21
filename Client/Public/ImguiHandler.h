@@ -1,13 +1,18 @@
 #pragma once
 #include "Client_Defines.h"
 #include "Engine_Defines.h"
+
+NS_BEGIN(Engine)
+	class CGameObject;
+NS_END
+
 NS_BEGIN(Client)
 class CImguiHandler
 {
 private:
 	CImguiHandler(ENGINE_DESC desc, ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> context);
 public:
-	~CImguiHandler();
+	virtual ~CImguiHandler();
 
 public:
 	void Handle_Imgui(uint32_t curlevel, _float fTimeDelta);

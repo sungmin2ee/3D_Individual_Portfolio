@@ -1,82 +1,40 @@
 #pragma once
-#include "Engine_Defines.h"
+
+#include "GameObject.h"
 
 NS_BEGIN(Engine)
 
-class  CCamera
+class ENGINE_DLL CCamera abstract : public CGameObject
 {
-private:
-	CCamera();
 public:
-	~CCamera();
+	typedef struct tagCameraDesc : public CGameObject::GAMEOBJECT_DESC
+	{
+		_float4			vEye, vAt;
+		_float			fFovy, fNear, fFar;
+	} CAMERA_DESC;
 
+protected:
+	CCamera(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
+	CCamera(const CCamera& Prototype);
 public:
-
-	XMVECTOR GetPositionXM() const;
-	XMFLOAT3 GetPosition()const;
-	void SetPosition(float x, float y, float z);
-	void SetPosition(const XMFLOAT3& v);
-	XMVECTOR GetRightXM()const;
-	XMFLOAT3 GetRight()const;
-	XMVECTOR GetUpXM() const;
-	XMFLOAT3 GetUp()const;
-	XMVECTOR GetLookXM()const;
-	XMFLOAT3 GetLook()const;
-	_float GetNearZ() const;
-	_float GetFarZ() const;
-	_float GetAspect() const;
-	_float GetFovY() const;
-	_float GetFovX() const;
-	_float GetNearWindowWidth() const;
-	_float GetNearWindowHeight() const;
-	_float GetFarWindowWidth() const;
-	_float GetFarWindowHeight() const;
-	// 절 두 체 를 설 정 한 다 .
-	void SetLens(float fovY, float aspect, float zn ,float zf);
-	// 카 메 라 위치와 시선 및 위쪽 방향으로 카메라 공간을 설정한다.
-	void LookAt(FXMVECTOR pos, FXMVECTOR target, FXMVECTOR worldUp);
-	void LookAt(const XMFLOAT3& pos, const XMFLOAT3& target,const XMFLOAT3& up);
-	// 시야 행렬과 투영 행렬을 돌려준다.
-	XMMATRIX View()const;
-	XMMATRIX Proj()const;
-	XMMATRIX ViewProj()const;
-	//카 메 라 를 거리 d만큼 횡이동, 축이동한다 .
-	void Strafe(float d);
-	void Walk(float d);
-	//?WI 라를 회전한다.
-	void Pitch(float angle);
-	void RotateY(float angle);
-	void UpdateViewMatrix();
-
-	const XMFLOAT4X4 GetView() { return mView; }
-	const XMFLOAT4X4 GetProj() { return mProj; }
-	XMMATRIX GetViewXM() { return XMLoadFloat4x4(&mView); }
-	XMMATRIX GetProjXM(){ return XMLoadFloat4x4(&mProj); }
-private:
-	//세 계 공 간 기준의 카메라 좌표계
-	XMFLOAT3 mPosition;
-	XMFLOAT3 mRight;
-	XMFLOAT3 mUp;
-	XMFLOAT3 mAt;
-	XMFLOAT3 mLook;
-	_float mNearZ;
-	_float mFarZ;
-	_float mAspect;
-	_float mFovY;
-	_float mNearWindowHeight;
-	_float mFarWindowHeight;
-	//시 야 행 렬 과 투 영 행렬
-	XMFLOAT4X4 mView;
-	XMFLOAT4X4 mProj;
+	virtual ~CCamera() = default;
 
 public:
-	static unique_ptr<CCamera> Create();
+	virtual HRESULT Initialize_Prototype();
+	virtual HRESULT Initialize(void* pArg);
+	virtual void Priority_Update(_float fTimeDelta);
+	virtual void Update(_float fTimeDelta);
+	virtual void Late_Update(_float fTimeDelta);
+	virtual HRESULT Render();
 
-	void Mouse_Move();
+protected:
+	_float			m_fFovy{}, m_fNear{}, m_fFar{};
 
-	void Mouse_Fix();
+protected:
+	void Update_PipeLine();
 
+public:
+	virtual shared_ptr<CPrototype> Clone(void* pArg) = 0;
 };
 
 NS_END
-

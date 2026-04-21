@@ -10,7 +10,6 @@ CImguiMgr::CImguiMgr(ENGINE_DESC EngineDesc):engineDesc{EngineDesc}
 
 CImguiMgr::~CImguiMgr()
 {
-	Free();
 }
 
 HRESULT CImguiMgr::Ready_Imgui(HWND hWnd, ComPtr<ID3D11Device>& pOutDevice, ComPtr<ID3D11DeviceContext>& pOutContext)

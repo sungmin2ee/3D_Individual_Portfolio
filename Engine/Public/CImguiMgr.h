@@ -23,7 +23,7 @@ public:
 	
 public:
 	static unique_ptr<CImguiMgr> Create(ENGINE_DESC EngineDesc);
-private:
+public:
 	virtual void	Free();
 private:
 	ENGINE_DESC engineDesc;

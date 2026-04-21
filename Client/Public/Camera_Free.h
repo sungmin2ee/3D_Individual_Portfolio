@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "ECamera.h"
+#include "Camera.h"
 
 NS_BEGIN(Engine)
 
@@ -10,10 +10,10 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CCamera_Free final : public ECamera
+class CCamera_Free final : public CCamera
 {
 public:
-	typedef struct tagCameraFreeDesc : public ECamera::CAMERA_DESC
+	typedef struct tagCameraFreeDesc : public CCamera::CAMERA_DESC
 	{
 		_float		fMouseSensor;
 	}CAMERA_FREE_DESC;

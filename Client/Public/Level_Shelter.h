@@ -28,6 +28,10 @@ private:
 
 public:
 	static unique_ptr<CLevel_Shelter> Create(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext);
+
+private:
+	ComPtr<ID3D11Device> m_pDevice = nullptr;
+	ComPtr<ID3D11DeviceContext> m_pContext = nullptr;
 };
 
 NS_END

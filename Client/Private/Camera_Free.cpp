@@ -3,13 +3,13 @@
 #include "GameInstance.h"
 
 CCamera_Free::CCamera_Free(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
-	: ECamera{ pDevice, pContext }
+	: CCamera{ pDevice, pContext }
 
 {
 }
 
 CCamera_Free::CCamera_Free(const CCamera_Free& Prototype)
-	: ECamera{ Prototype }
+	: CCamera{ Prototype }
 {
 }
 
@@ -40,24 +40,36 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 
 void CCamera_Free::Priority_Update(_float fTimeDelta)
 {
-	if (GetKeyState('W') & 0x8000)
+	if (CGameInstance::Get().Get_DIKeyState(DIK_W) & 0x80)
 	{
 		m_pTransformCom->Go_Straight(fTimeDelta);
 	}
 
-	if (GetKeyState('S') & 0x8000)
+	if (CGameInstance::Get().Get_DIKeyState(DIK_S) & 0x80)
 	{
 		m_pTransformCom->Go_Backward(fTimeDelta);
 	}
 
-	if (GetKeyState('A') & 0x8000)
+	if (CGameInstance::Get().Get_DIKeyState(DIK_A) & 0x80)
 	{
 		m_pTransformCom->Go_Left(fTimeDelta);
 	}
 
-	if (GetKeyState('D') & 0x8000)
+	if (CGameInstance::Get().Get_DIKeyState(DIK_D) & 0x80)
 	{
 		m_pTransformCom->Go_Right(fTimeDelta);
+	}
+
+	int32_t		iMouseMove = { };
+
+	if (iMouseMove = CGameInstance::Get().Get_DIMouseMove(DIMM::X))
+	{
+		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), iMouseMove * fTimeDelta * m_fMouseSensor);
+	}
+
+	if (iMouseMove = CGameInstance::Get().Get_DIMouseMove(DIMM::Y))
+	{
+		m_pTransformCom->Turn(m_pTransformCom->Get_State(STATE::RIGHT), iMouseMove * fTimeDelta * m_fMouseSensor);
 	}
 
 	__super::Update_PipeLine();

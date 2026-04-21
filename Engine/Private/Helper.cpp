@@ -21,8 +21,8 @@ void CHelper::GetMousePointRay(_float3* pRayPos, _float3* pRayDir)
     float py = (-2.0f * pt.y / engineDesc.iWinSizeY) + 1.0f;
 
     // 3. 투영 행렬 정보를 가져옴
-    _float4x4 projf = CGameInstance::Get().GetProj();
-    XMMATRIX proj = XMLoadFloat4x4(&projf);
+    const _float4x4* projf = CGameInstance::Get().Get_Transform(D3DTS::PROJ);
+    XMMATRIX proj = XMLoadFloat4x4(projf);
 
     // 4. View 공간에서의 방향 계산
     // 투영 행렬의 성분을 이용해 NDC를 View 공간으로 되돌림
@@ -34,8 +34,8 @@ void CHelper::GetMousePointRay(_float3* pRayPos, _float3* pRayDir)
     XMVECTOR rayDir = XMVectorSet(xView, yView, 1.0f, 0.0f);
 
     // 6. View 공간 -> World 공간 변환
-    _float4x4 viewf = CGameInstance::Get().GetView();
-    XMMATRIX view = XMLoadFloat4x4(&viewf);
+    const _float4x4* viewf = CGameInstance::Get().Get_Transform(D3DTS::VIEW);
+    XMMATRIX view = XMLoadFloat4x4(viewf);
     XMMATRIX invView = XMMatrixInverse(nullptr, view);
 
     // 방향 벡터 변환 (위치 이동 제외를 위해 TransformNormal 사용)
@@ -43,7 +43,10 @@ void CHelper::GetMousePointRay(_float3* pRayPos, _float3* pRayDir)
     rayDir = XMVector3Normalize(rayDir);
 
     // 7. Ray Origin은 카메라의 월드 위치
-    XMVECTOR rayOrigin = CGameInstance::Get().GetPositionXM();
+
+    const _float4* camPos = CGameInstance::Get().Get_CamPosition();
+
+    _vector rayOrigin = XMLoadFloat4(camPos);
 
     // 8. 결과 저장
     XMStoreFloat3(pRayPos, rayOrigin);

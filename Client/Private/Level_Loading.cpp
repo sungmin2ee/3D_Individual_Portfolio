@@ -5,6 +5,8 @@
 
 #include "Level_Logo.h"
 #include "Level_Shelter.h"
+//#include "Level_Stage1.h"
+//#include "Level_Stage2.h"
 
 
 CLevel_Loading::CLevel_Loading(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
@@ -14,6 +16,7 @@ CLevel_Loading::CLevel_Loading(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11Device
 
 CLevel_Loading::~CLevel_Loading()
 {
+
 }
 
 HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelIndex)
@@ -49,7 +52,14 @@ void CLevel_Loading::Update(_float fTimeDelta)
 		case LEVEL::SHELTER:
 			pNewLevel = CLevel_Shelter::Create(m_pDevice, m_pContext);
 			break;
+		//case LEVEL::STAGE1:
+		//	pNewLevel = CLevel_Shelter::Create(m_pDevice, m_pContext);
+		//	break;
+		//case LEVEL::STAGE2:
+		//	pNewLevel = CLevel_Shelter::Create(m_pDevice, m_pContext);
+		//	break;
 		}
+
 
 		if (FAILED(CGameInstance::Get().Change_Level(ETOUI(m_eNextLevelIndex), std::move(pNewLevel))))
 			return;

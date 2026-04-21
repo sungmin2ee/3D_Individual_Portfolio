@@ -135,15 +135,17 @@
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\public\Camera_Free.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
+    <ClInclude Include="..\public\EquipBorder.h" />
     <ClInclude Include="..\Public\ImguiHandler.h" />
     <ClInclude Include="..\public\Inventory.h" />
+    <ClInclude Include="..\public\ItemFrame.h" />
+    <ClInclude Include="..\public\ItemIcon.h" />
     <ClInclude Include="..\Public\Level_Loading.h" />
     <ClInclude Include="..\Public\Level_Logo.h" />
     <ClInclude Include="..\Public\Level_Shelter.h" />
     <ClInclude Include="..\Public\Loader.h" />
     <ClInclude Include="..\Public\MainApp.h" />
     <ClInclude Include="..\Public\Player.h" />
-    <ClInclude Include="..\Public\Test.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
@@ -152,15 +154,17 @@
   <ItemGroup>
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />
+    <ClCompile Include="..\private\EquipBorder.cpp" />
     <ClCompile Include="..\private\Inventory.cpp" />
     <ClCompile Include="..\Private\ImguiHandler.cpp" />
+    <ClCompile Include="..\private\ItemFrame.cpp" />
+    <ClCompile Include="..\private\ItemIcon.cpp" />
     <ClCompile Include="..\Private\Level_Loading.cpp" />
     <ClCompile Include="..\Private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Level_Shelter.cpp" />
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
-    <ClCompile Include="..\Private\Test.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
   <ItemGroup>

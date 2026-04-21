@@ -2,9 +2,13 @@
 
 #include "GameInstance.h"
 #include "BackGround.h"
-#include "Test.h"
 #include "Model.h"
 #include "Shader.h"
+#include "Inventory.h"
+#include "Camera_Free.h"
+#include "ItemFrame.h"
+#include "ItemIcon.h"
+#include "EquipBorder.h"
 
 CLoader::CLoader(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: m_pDevice{ pDevice }
@@ -70,7 +74,13 @@ HRESULT CLoader::Loading()
 		break;
 
 	case LEVEL::SHELTER:
-		hr = Loading_For_GamePlay();
+		hr = Loading_For_Shelter();
+		break;
+	case LEVEL::STAGE1:
+		hr = Loading_For_Stage1();
+		break;
+	case LEVEL::STAGE2:
+		hr = Loading_For_Stage2();
 		break;
 	}
 
@@ -125,7 +135,7 @@ HRESULT CLoader::Loading_For_Logo()
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_For_GamePlay()
+HRESULT CLoader::Loading_For_Shelter()
 {
 
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
@@ -144,14 +154,33 @@ HRESULT CLoader::Loading_For_GamePlay()
 		int a = 10;
 	}
 	lstrcpy(m_szLoadingText, TEXT("객체원형 생성 중 입니다."));
-	for (size_t i = 0; i < 99999999; i++)
-	{
-		int a = 10;
-	}
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_Inventory", CInventory::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_ItemFrame", CItemFrame::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_ItemIcon", CItemIcon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_EquipBorder", CEquipBorder::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_Camera_Free"),
+		CCamera_Free::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
 
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Stage1()
+{
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Stage2()
+{
 	return S_OK;
 }
 

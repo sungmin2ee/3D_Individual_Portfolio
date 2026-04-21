@@ -58,15 +58,12 @@ void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 	
 	switch (curlevel) {
 	case ETOUI(LEVEL::LOGO):
-		strLayerTag = L"Layer_Logo";
 		Imgui_Logo(fTimeDelta);
 		break;
 	
 	case ETOUI(LEVEL::SHELTER): 
-		strLayerTag = L"Layer_Shelter";
 		Imgui_GamePlay(fTimeDelta);
 		break;
-	
 	}
 	m_ModelDesc.levelIndex = curlevel;
 	ImGui::Begin("Map Editor");
@@ -134,12 +131,24 @@ void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 			}
 			ImGui::EndTabItem();
 		}
-
+		if (ImGui::BeginTabItem("Layer"))
+		{
+			if (ImGui::Button("UI_Layer"))
+			{
+				strLayerTag = L"UI_Layer";
+			}
+			if (ImGui::Button("Collide_Layer"))
+			{
+				strLayerTag = L"Collide_Layer";
+			}
+			ImGui::EndTabItem();
+		}
 		//ADD OBJECT 버튼을 누르면 모델 프로토타입을 추가후 클론 
 		if (ImGui::Button("Add_Object")) {
-			_matrix view, camWorld;
-			view = CGameInstance::Get().GetViewXM();
-			camWorld = XMMatrixInverse(nullptr, view);
+			_matrix camView, camWorld;
+			const _float4x4* view = CGameInstance::Get().Get_Transform(D3DTS::VIEW);
+			camView = XMLoadFloat4x4(view);
+			camWorld = XMMatrixInverse(nullptr, camView);
 			XMMATRIX scale = XMMatrixScaling(0.001f, 0.001f, 0.001f);
 			XMMATRIX world = scale * camWorld;
 			XMStoreFloat4x4(&m_ModelDesc.worldMatrix, world);
@@ -186,7 +195,7 @@ void CImguiHandler::Imgui_Logo(_float fTimeDelta)
 	
 	CGameInstance::Get().GetMousePointRay(&rayPos, &rayDir);
 
-	if (CGameInstance::Get().Mouse_Down(DIM_RB)) {
+	if (CGameInstance::Get().Mouse_Down(DIMK::RBUTTON)) {
 		_float fMinDist = 100000.f;
 		for (auto& collider : CGameInstance::Get().Get_Colliders()) {
 			auto pCollider = collider.lock();
@@ -235,8 +244,8 @@ void CImguiHandler::Imgui_Logo(_float fTimeDelta)
 			ImGuizmo::BeginFrame();
 			ImGuizmo::SetRect(0, 0, g_iWinSizeX, g_iWinSizeY); // 화면 해상도에 맞게
 			_float4x4 matWorld = m_pSelected->Get_Transform()->GetWorld();
-			_float4x4 view = CGameInstance::Get().GetView();
-			_float4x4 projection = CGameInstance::Get().GetProj();
+			const _float4x4* view = CGameInstance::Get().Get_Transform(D3DTS::VIEW);
+			const _float4x4* projection = CGameInstance::Get().Get_Transform(D3DTS::PROJ);
 			bool bModified = false;
 			bModified |= ImGui::DragFloat("Pos X", &position.x, 0.1f);
 			bModified |= ImGui::DragFloat("Pos Y", &position.y, 0.1f);

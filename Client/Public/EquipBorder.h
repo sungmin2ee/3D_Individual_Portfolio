@@ -10,19 +10,19 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CInventory final : public CUIObject
+class CEquipBorder final : public CUIObject
 {
 public:
-	typedef struct tagInventoryDesc : public CUIObject::UIOBJECT_DESC
+	typedef struct tagBorderDesc : public CUIObject::UIOBJECT_DESC
 	{
-		uint32_t		iData;
-	}INVENTORY_DESC;
+		_bool    bInitialRender;
+	}BORDER_DESC;
 
 private:
-	CInventory(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
-	CInventory(const CInventory& Prototype);
+	CEquipBorder(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
+	CEquipBorder(const CEquipBorder& Prototype);
 public:
-	virtual ~CInventory();
+	virtual ~CEquipBorder();
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -31,7 +31,7 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-	
+
 private:
 	shared_ptr<CVIBuffer_Rect>	m_pVIBufferCom = { nullptr };
 	shared_ptr<CTexture>		m_pTextureCom = { nullptr };
@@ -39,17 +39,12 @@ private:
 
 private:
 	HRESULT Ready_Components();
-	HRESULT Ready_ItemFrames();
-	void ReArrange();
+
 public:
-	static unique_ptr<CInventory> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
+	static unique_ptr<CEquipBorder> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
 	virtual shared_ptr<CPrototype> Clone(void* pArg) override;
 
 private:
-	vector<pair<_float, _float>> framePos;
-	vector<CGameObject> Icons;
-	uint32_t itemCount = 0;
-
 };
 
 NS_END

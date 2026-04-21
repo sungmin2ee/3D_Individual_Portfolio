@@ -22,6 +22,8 @@ HRESULT CGameObject::Initialize_Prototype()
 
 HRESULT CGameObject::Initialize(void* pArg)
 {
+	auto        pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
+	m_sObjectTag = pDesc->pGameObjectTag;
 	m_pTransformCom = CTransform::Create(m_pDevice, m_pContext);
 	if (nullptr == m_pTransformCom)
 		return E_FAIL;
@@ -32,13 +34,13 @@ HRESULT CGameObject::Initialize(void* pArg)
 	if (FAILED(m_pTransformCom->Initialize(pArg)))
 		return E_FAIL;
 
-	auto		pDesc = static_cast<MODELOBJ_DESC*>(pArg);
-	m_ModelDesc.pModelPrototypeTag = pDesc->pModelPrototypeTag;
-	m_ModelDesc.pShaderPrototypeTag = pDesc->pShaderPrototypeTag;
-	m_ModelDesc.levelIndex = pDesc->levelIndex;
-	m_ModelDesc.filePath = pDesc->filePath;
-	m_ModelDesc.collide = pDesc->collide;
-	m_ModelDesc.worldMatrix = pDesc->worldMatrix;
+	//auto		pDesc = static_cast<MODELOBJ_DESC*>(pArg);
+	//m_ModelDesc.pModelPrototypeTag = pDesc->pModelPrototypeTag;
+	//m_ModelDesc.pShaderPrototypeTag = pDesc->pShaderPrototypeTag;
+	//m_ModelDesc.levelIndex = pDesc->levelIndex;
+	//m_ModelDesc.filePath = pDesc->filePath;
+	//m_ModelDesc.collide = pDesc->collide;
+	//m_ModelDesc.worldMatrix = pDesc->worldMatrix;
 	//lstrcpy(m_szName, pDesc->pModelPrototypeTag);
 
 

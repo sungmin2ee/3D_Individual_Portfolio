@@ -11,7 +11,7 @@ class ENGINE_DLL Model: public CComponent
 private:
 	Model(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> context, const string& filename);
 public:
-	~Model();
+	virtual ~Model();
 
 
 private:

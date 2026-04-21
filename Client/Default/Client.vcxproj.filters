@@ -49,6 +49,15 @@
     <Filter Include="02.GameObject\Inventory">
       <UniqueIdentifier>{89c7534c-cec4-4b3c-ba94-10d1d27dc5b8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\Inventory\ItemFrame">
+      <UniqueIdentifier>{94d98f2a-1bb1-4df9-b438-4451e347bba8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Inventory\ItemIcon">
+      <UniqueIdentifier>{732d27f0-a88d-4c31-92ea-aa5737330dcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\Inventory\EquipBorder">
+      <UniqueIdentifier>{a9135561-4af1-4332-9d99-807af66b3a9b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -87,9 +96,6 @@
     <ClInclude Include="..\Public\ImguiHandler.h">
       <Filter>97.ImguiHandler</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Test.h">
-      <Filter>02.GameObject\09.Player</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Camera_Free.h">
       <Filter>02.GameObject\01.Camera</Filter>
     </ClInclude>
@@ -98,6 +104,15 @@
     </ClInclude>
     <ClInclude Include="..\public\Inventory.h">
       <Filter>02.GameObject\Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ItemFrame.h">
+      <Filter>02.GameObject\Inventory\ItemFrame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ItemIcon.h">
+      <Filter>02.GameObject\Inventory\ItemIcon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\EquipBorder.h">
+      <Filter>02.GameObject\Inventory\EquipBorder</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -125,9 +140,6 @@
     <ClCompile Include="..\Private\ImguiHandler.cpp">
       <Filter>97.ImguiHandler</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Test.cpp">
-      <Filter>02.GameObject\09.Player</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Camera_Free.cpp">
       <Filter>02.GameObject\01.Camera</Filter>
     </ClCompile>
@@ -136,6 +148,15 @@
     </ClCompile>
     <ClCompile Include="..\private\Inventory.cpp">
       <Filter>02.GameObject\Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ItemFrame.cpp">
+      <Filter>02.GameObject\Inventory\ItemFrame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ItemIcon.cpp">
+      <Filter>02.GameObject\Inventory\ItemIcon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\EquipBorder.cpp">
+      <Filter>02.GameObject\Inventory\EquipBorder</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

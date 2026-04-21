@@ -56,13 +56,23 @@ unique_ptr<CModelObject> CModelObject::Create(ComPtr<ID3D11Device> pDevice, ComP
 
 HRESULT CModelObject::Initialize(void* pArg)
 {
+
+    auto		pDesc = static_cast<MODELOBJ_DESC*>(pArg);
+    m_ModelDesc.pModelPrototypeTag = pDesc->pModelPrototypeTag;
+    m_ModelDesc.pShaderPrototypeTag = pDesc->pShaderPrototypeTag;
+    m_ModelDesc.levelIndex = pDesc->levelIndex;
+    m_ModelDesc.filePath = pDesc->filePath;
+    m_ModelDesc.collide = pDesc->collide;
+    m_ModelDesc.worldMatrix = pDesc->worldMatrix;
+
+
     // 1. 부모(Transform 생성 등) 초기화
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
     if (nullptr != pArg)
     {
-        MODELOBJ_DESC* pDesc = (MODELOBJ_DESC*)pArg;
+
         m_pTransformCom->SetWorld(pDesc->worldMatrix);
         //m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), 270.f);
 
@@ -109,28 +119,27 @@ void CModelObject::Late_Update(_float fTimeDelta)
 
 HRESULT CModelObject::Render()
 {
-    MatrixBuffer cb;
+
+    const _float4x4* view;
+    const _float4x4* proj;
+    view = CGameInstance::Get().Get_Transform(D3DTS::VIEW);
+    proj = CGameInstance::Get().Get_Transform(D3DTS::PROJ);
+
+
     _float4x4 mat = m_pTransformCom->GetWorld();
     //XMMATRIX matWorld = m_pTransformCom->m_WorldMatrix;
     //  스케일 추가 (FBX 안보일 때 필수)
 
    // XMStoreFloat4x4(&cb.world, XMMatrixTranspose(matWorld));
-    cb.view = CGameInstance::Get().GetView();
-    XMMATRIX matView = XMLoadFloat4x4(&cb.view);
-
-    cb.projection = CGameInstance::Get().GetProj();
-    XMMATRIX matProj = XMLoadFloat4x4(&cb.projection);
-
-    XMStoreFloat4x4(&cb.socket, XMMatrixIdentity());
 
     _float4x4		IdentityMatrix = {};
     XMStoreFloat4x4(&IdentityMatrix, XMMatrixIdentity());
 
     if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &mat)))
         return E_FAIL;
-    if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &cb.view)))
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", view)))
         return E_FAIL;
-    if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &cb.projection)))
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", proj)))
         return E_FAIL;
 
     if (FAILED(m_pShaderCom->Begin(0)))

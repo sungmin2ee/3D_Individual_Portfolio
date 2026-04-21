@@ -57,6 +57,8 @@ public:
 
 #pragma region IMGUI_MANAGER
 	bool WinProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+
+	void Free();
 #pragma endregion
 
 #pragma region MODEL_LOADER
@@ -65,31 +67,23 @@ public:
 	vector<class Mesh>& Get_Meshes();
 #pragma endregion
 #pragma region INPUT_MANAGER
-	_byte	Get_DIKeyState(_ubyte byKeyID);
+	_byte	Get_DIKeyState(uint8_t byKeyID);
 
-	_byte	Get_DIMouseState(MOUSEKEYSTATE eMouse);
+	_byte	Get_DIMouseState(DIMK eMouse);
 
 	// 현재 마우스의 특정 축 좌표를 반환
-	_long	Get_DIMouseMove(MOUSEMOVESTATE eMouseState);
+	_long	Get_DIMouseMove(DIMM eMouseState);
 
-	bool Key_Pressing(_ubyte byKeyID);
-	bool Key_Up(_ubyte byKeyID);	
-	bool Key_Down(_ubyte byKeyID);
+	bool Key_Pressing(uint8_t byKeyID);
+	bool Key_Up(uint8_t byKeyID);
+	bool Key_Down(uint8_t byKeyID);
 
-	bool Mouse_Pressing(MOUSEKEYSTATE eMouseState);
-	bool Mouse_Up(MOUSEKEYSTATE eMouseState);
-	bool Mouse_Down(MOUSEKEYSTATE eMouseState);
+	bool Mouse_Pressing(DIMK eMouseState);
+	bool Mouse_Up(DIMK eMouseState);
+	bool Mouse_Down(DIMK eMouseState);
 #pragma endregion
 
-#pragma region CAMERA
-	const XMFLOAT4X4 GetView();
-	const XMFLOAT4X4 GetProj();
-	const XMMATRIX GetProjXM();
-	const XMMATRIX GetViewXM();
-	const XMFLOAT3 GetPosition();
-	const XMVECTOR GetPositionXM();
 
-#pragma endregion
 
 #pragma region HELPER
 	void GetMousePointRay(_float3* pRayPos, _float3* pRayDir);
@@ -113,6 +107,15 @@ public:
 	void Set_Transform(D3DTS eState, _fmatrix TransformMatrix);
 #pragma endregion
 
+#pragma region ITEM_MANAGER
+	map<_wstring, uint32_t>& Get_Items();
+	void Add_Item(_wstring item);
+	void Sub_Item(_wstring item);
+	void Set_Changed(_bool flag);
+	_bool Get_Changed();
+	pair< _wstring, string>  Get_WhichHow();
+
+#pragma endregion
 private:
 	unique_ptr<class CGraphic_Device>				m_pGraphic_Device = { nullptr };
 	unique_ptr<class CTimer_Manager>				m_pTimer_Manager = { nullptr };
@@ -123,11 +126,11 @@ private:
 	unique_ptr<class CRenderer>						m_pRenderer = { nullptr };
 	unique_ptr<class CImguiMgr>						m_pImguiMgr = { nullptr };
 	unique_ptr<class ModelLoader>					m_pModelLoader = { nullptr };
-	unique_ptr<class CCamera> 						m_pCamera = nullptr;
 	unique_ptr<class CHelper> 						m_pHelper = nullptr;
 	unique_ptr<class Collider_Manager> 				m_pCollider_Manager = nullptr;
 	unique_ptr<class SaveLoad_Manager> 				m_pSaveLoad_Manager = nullptr;
 	unique_ptr<class CPipeLine>						m_pPipeLine = { nullptr };
+	unique_ptr<class CItem_Manager> 				m_pItem_Manager = nullptr;
 
 
 public:
@@ -136,7 +139,6 @@ public:
 	void Release_Engine();
 
 private:
-	_bool m_bMouse = false;
 	_float2											m_vViewportSize = {};
 
 };
