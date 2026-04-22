@@ -17,6 +17,7 @@ public:
 	_bool &Get_Changed() { return m_bListChanged; }
 	void Set_Changed(_bool flag) { m_bListChanged = flag; }
 	pair< _wstring, string>&Get_WhichHow() { return itemChanged; }
+	vector<pair<_wstring, _wstring>>&Get_ItemInfo() { return itemInfo; }
 public:
 	static unique_ptr<CItem_Manager> Create();
 
@@ -26,6 +27,7 @@ private:
 	map<_wstring, uint32_t> items;
 	_bool m_bListChanged = false;
 	pair<  _wstring, string> itemChanged;
+	vector<pair<_wstring, _wstring>> itemInfo;
 };
 
 NS_END

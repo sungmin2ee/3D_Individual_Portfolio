@@ -49,6 +49,7 @@ private:
 	vector<pair<_float, _float>> framePos;
 	vector<CGameObject> Icons;
 	uint32_t itemCount = 0;
+	_wstring m_selectedItemDesc;
 
 };
 

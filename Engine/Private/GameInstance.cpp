@@ -17,6 +17,7 @@
 #include "SaveLoad_Manager.h"
 #include "PipeLine.h"
 #include "Item_Manager.h"
+#include "Font_Manager.h"
 
 CGameInstance::CGameInstance()
 {
@@ -81,7 +82,10 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, ComPtr<I
     m_pItem_Manager = CItem_Manager::Create();
     if (nullptr == m_pItem_Manager)
         return E_FAIL;
-    
+    m_pFont_Manager = CFont_Manager::Create(pOutDevice, pOutContext);
+    if (nullptr == m_pFont_Manager)
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -105,12 +109,16 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 HRESULT CGameInstance::Draw()
 {
+    m_pFont_Manager->Begin();
+
     if (FAILED(m_pRenderer->Draw()))
         return E_FAIL;
 
     /* 현재 장면에 그려야할 객체들의 렌더콜을 수행해준다. */
     if (FAILED(m_pLevel_Manager->Render()))
         return E_FAIL;
+
+    m_pFont_Manager->End(); // Batch 끝 (실제 출력)
 
     if (FAILED(m_pImguiMgr->Render_Imgui()))
         return E_FAIL;
@@ -347,13 +355,33 @@ _bool CGameInstance::Get_Changed()
 {
     return m_pItem_Manager->Get_Changed();
 }
-pair< _wstring, string>  CGameInstance::Get_WhichHow()
+pair< _wstring, string>  &CGameInstance::Get_WhichHow()
 {
     return m_pItem_Manager->Get_WhichHow();
 }
+vector<pair<_wstring, _wstring>>&CGameInstance::Get_ItemInfo()
+{
+    return m_pItem_Manager->Get_ItemInfo();
+}
+
 #pragma endregion
 
+#pragma region FONT_MANAGER 
 
+void CGameInstance::Begin()
+{
+    m_pFont_Manager->Begin();
+}
+void CGameInstance::End()
+{
+    m_pFont_Manager->End();
+}
+void CGameInstance::RenderText(uint32_t fontIndex, const _wstring& text, _float posX, _float posY, _vector color, _float scale)
+{
+    m_pFont_Manager->RenderText(fontIndex,text, posX, posY, color,scale);
+}
+
+#pragma endregion
 
 void CGameInstance::Release_Engine()
 {
@@ -363,6 +391,7 @@ void CGameInstance::Release_Engine()
 
 
     m_pHelper.reset();
+    m_pFont_Manager.reset();
     m_pItem_Manager.reset();
     m_pSaveLoad_Manager.reset();
     m_pCollider_Manager.reset();

@@ -124,6 +124,9 @@
     <Filter Include="09.Item_Manager">
       <UniqueIdentifier>{b83c23bc-28e2-4340-aab4-d340636f4cfb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="10.Font">
+      <UniqueIdentifier>{d8ea077f-4f0f-455a-8c62-bbee660767a4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -254,6 +257,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Item_Manager.h">
       <Filter>09.Item_Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Font_Manager.h">
+      <Filter>10.Font</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -403,6 +409,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Item_Manager.cpp">
       <Filter>09.Item_Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Font_Manager.cpp">
+      <Filter>10.Font</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

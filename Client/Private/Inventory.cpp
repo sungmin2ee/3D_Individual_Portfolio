@@ -58,40 +58,50 @@ void CInventory::Priority_Update(_float fTimeDelta)
 
 
 
+	if (m_bRender) {
+		CLayer* layer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::SHELTER), L"UI_ICons");
 
-	CLayer* layer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::SHELTER), L"UI_ICons");
+		if (layer != nullptr) {
+			list<shared_ptr<CGameObject>> icons = layer->GetObjects();
+			CLayer* borderlayer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::SHELTER), L"UI_EquipBorder");
+			shared_ptr<CGameObject> border = borderlayer->GetObjectFirst();
+			if (!icons.empty()) {
+				for (auto& icon : icons) {
+					POINT ptMouse;
+					GetCursorPos(&ptMouse);
+					ScreenToClient(g_hWnd, &ptMouse);
 
-	if (layer != nullptr) {
-		list<shared_ptr<CGameObject>> icons = layer->GetObjects();
-		if (!icons.empty()) {
-			for (auto& icon : icons) {
-				POINT ptMouse;
-				GetCursorPos(&ptMouse);
-				ScreenToClient(g_hWnd, &ptMouse);
+					auto pUI = dynamic_pointer_cast<CUIObject>(icon);
+					_float minX, maxX, minY, maxY;
+					minX = pUI->Get_fX() - (pUI->Get_fSizeX() * 0.5f);
+					maxX = pUI->Get_fX() + (pUI->Get_fSizeX() * 0.5f);
+					minY = pUI->Get_fY() - (pUI->Get_fSizeY() * 0.5f);
+					maxY = pUI->Get_fY() + (pUI->Get_fSizeY() * 0.5f);
 
-				auto pUI = dynamic_pointer_cast<CUIObject>(icon);
-				_float minX, maxX, minY, maxY;
-				minX = pUI->Get_fX() - (pUI->Get_fSizeX() * 0.5f);
-				maxX = pUI->Get_fX() + (pUI->Get_fSizeX() * 0.5f);
-				minY = pUI->Get_fY() - (pUI->Get_fSizeY() * 0.5f);
-				maxY = pUI->Get_fY() + (pUI->Get_fSizeY() * 0.5f);
-
-				if (ptMouse.x >= minX && ptMouse.x <= maxX && ptMouse.y >= minY && ptMouse.y <= maxY) {
-					if (CGameInstance::Get().Mouse_Down(DIMK::LBUTTON)) {
-					CLayer* borderlayer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::SHELTER), L"UI_EquipBorder");
-					list<shared_ptr<CGameObject>> borders = borderlayer->GetObjects();
-					for (auto& border : borders) {
-						auto pBorder = dynamic_pointer_cast<CUIObject>(border);
-						pBorder->Set_fX(pUI->Get_fX());
-						pBorder->Set_fY(pUI->Get_fY());
-						pBorder->Set_Render(true);
-					}
-					//CGameInstance::Get().Sub_Item(pUI->Get_Tag());
+					if (ptMouse.x >= minX && ptMouse.x <= maxX && ptMouse.y >= minY && ptMouse.y <= maxY) {
+						if (CGameInstance::Get().Mouse_Down(DIMK::LBUTTON)) {
+							auto pBorder = dynamic_pointer_cast<CUIObject>(border);
+							pBorder->Set_fX(pUI->Get_fX());
+							pBorder->Set_fY(pUI->Get_fY());
+							pBorder->Set_Render(true);
+							vector<pair<_wstring, _wstring>> infos = CGameInstance::Get().Get_ItemInfo();
+							for (auto& info : infos) {
+								if (pUI->Get_Tag() == info.first) {
+									m_selectedItemDesc = info.second;
+								}
+							}
+							//CGameInstance::Get().Sub_Item(pUI->Get_Tag());
+						}
 					}
 				}
 			}
+			else {
+				auto pBorder = dynamic_pointer_cast<CUIObject>(border);
+				pBorder->Set_Render(false);
+			}
 		}
 	}
+	
 	
 
 	
@@ -106,7 +116,7 @@ void CInventory::Update(_float fTimeDelta)
 		CGameInstance::Get().Add_Item(L"Prototype_Component_Texture_icon_lockpick");
 	}
 	if (CGameInstance::Get().Key_Down(DIK_2)) {
-		CGameInstance::Get().Add_Item(L"Prototype_Component_Texture_icon_medicine");
+		CGameInstance::Get().Add_Item(L"Prototype_Component_Texture_icon_bandage");
 	}
 	if (CGameInstance::Get().Key_Down(DIK_3)) {
 		CGameInstance::Get().Add_Item(L"Prototype_Component_Texture_icon_metal");
@@ -115,7 +125,7 @@ void CInventory::Update(_float fTimeDelta)
 		CGameInstance::Get().Sub_Item(L"Prototype_Component_Texture_icon_lockpick");
 	}
 	if (CGameInstance::Get().Key_Down(DIK_5)) {
-		CGameInstance::Get().Sub_Item(L"Prototype_Component_Texture_icon_medicine");
+		CGameInstance::Get().Sub_Item(L"Prototype_Component_Texture_icon_bandage");
 	}
 	if (CGameInstance::Get().Key_Down(DIK_6)) {
 		CGameInstance::Get().Sub_Item(L"Prototype_Component_Texture_icon_metal");
@@ -123,6 +133,13 @@ void CInventory::Update(_float fTimeDelta)
 	__super::Update(fTimeDelta);
 	if (CGameInstance::Get().Key_Down(DIK_E)) {
 		m_bRender = !m_bRender;
+		CLayer* borderlayer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::SHELTER), L"UI_EquipBorder");
+		if (m_bRender == false) {
+			shared_ptr<CGameObject> border = borderlayer->GetObjectFirst();
+			auto pBorder = dynamic_pointer_cast<CUIObject>(border);
+			pBorder->Set_Render(m_bRender);
+			m_selectedItemDesc = L"";
+		}
 	}
 	if (CGameInstance::Get().Get_Changed()) {
 		pair< _wstring, string> itemTag = CGameInstance::Get().Get_WhichHow();
@@ -192,6 +209,11 @@ HRESULT CInventory::Render()
 	if (FAILED(m_pVIBufferCom->Render()))
 		return E_FAIL;
 
+	if (!m_selectedItemDesc.empty()) {
+		CGameInstance::Get().RenderText(0,m_selectedItemDesc, (m_fX - m_fSizeX * 0.5f +50.f), (m_fY + 130.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.7f);
+	}
+
+	CGameInstance::Get().RenderText(1,L"인벤토리", (m_fX - m_fSizeX * 0.5f + 30.f), (m_fY - m_fSizeY* 0.5f - 40.f), DirectX::Colors::Gold, 0.9f);
 
 	return S_OK;
 }

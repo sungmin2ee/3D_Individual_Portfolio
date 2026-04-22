@@ -14,6 +14,7 @@ public:
 public:
 	HRESULT Add_GameObject(shared_ptr<CGameObject> pGameObject);
 	list<shared_ptr<CGameObject>> &GetObjects() { return m_GameObjects; }
+	shared_ptr<CGameObject> &GetObjectFirst() { return m_GameObjects.front(); }
 	void Priority_Update(_float fTimeDelta);
 	void Update(_float fTimeDelta);
 	void Late_Update(_float fTimeDelta);

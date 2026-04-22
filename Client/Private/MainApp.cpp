@@ -111,8 +111,8 @@ HRESULT CMainApp::Ready_Prototypes()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/icon_lockpick.png"), 1))))
 		return E_FAIL;
 
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_icon_medicine"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/icon_medicine.png"), 1))))
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_icon_bandage"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/icon_bandage.png"), 1))))
 		return E_FAIL;
 
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_icon_metal"),

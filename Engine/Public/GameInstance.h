@@ -113,9 +113,18 @@ public:
 	void Sub_Item(_wstring item);
 	void Set_Changed(_bool flag);
 	_bool Get_Changed();
-	pair< _wstring, string>  Get_WhichHow();
+	pair< _wstring, string>&  Get_WhichHow();
+	vector<pair<_wstring, _wstring>>& Get_ItemInfo();
 
 #pragma endregion
+
+#pragma region FONT_MANAGER
+	void Begin();
+	void End();
+	void RenderText(uint32_t fontIndex, const _wstring& text, _float posX, _float posY, _vector color, _float scale);
+#pragma endregion
+
+
 private:
 	unique_ptr<class CGraphic_Device>				m_pGraphic_Device = { nullptr };
 	unique_ptr<class CTimer_Manager>				m_pTimer_Manager = { nullptr };
@@ -131,6 +140,7 @@ private:
 	unique_ptr<class SaveLoad_Manager> 				m_pSaveLoad_Manager = nullptr;
 	unique_ptr<class CPipeLine>						m_pPipeLine = { nullptr };
 	unique_ptr<class CItem_Manager> 				m_pItem_Manager = nullptr;
+	unique_ptr<class CFont_Manager> 				m_pFont_Manager = nullptr;
 
 
 public:
