@@ -16,7 +16,7 @@
 #include "Layer.h"
 #include "SaveLoad_Manager.h"
 #include "PipeLine.h"
-#include "Item_Manager.h"
+
 #include "Font_Manager.h"
 
 CGameInstance::CGameInstance()
@@ -359,7 +359,7 @@ pair< _wstring, string>  &CGameInstance::Get_WhichHow()
 {
     return m_pItem_Manager->Get_WhichHow();
 }
-vector<pair<_wstring, _wstring>>&CGameInstance::Get_ItemInfo()
+vector<CItem_Manager::ITEMINFO_DESC>&CGameInstance::Get_ItemInfo()
 {
     return m_pItem_Manager->Get_ItemInfo();
 }

@@ -50,6 +50,7 @@ private:
 	vector<CGameObject> Icons;
 	uint32_t itemCount = 0;
 	_wstring m_selectedItemDesc;
+	_wstring m_selectedItemName;
 
 };
 

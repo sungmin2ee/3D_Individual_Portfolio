@@ -5,6 +5,13 @@ NS_BEGIN(Engine)
 
 class CItem_Manager
 {
+public:
+	typedef struct tagItemInfoDesc 	{
+		_wstring itemName;
+		_wstring itemTag;
+		_wstring itemDesc;
+	}ITEMINFO_DESC;
+
 private:
 	CItem_Manager();
 public:
@@ -17,7 +24,7 @@ public:
 	_bool &Get_Changed() { return m_bListChanged; }
 	void Set_Changed(_bool flag) { m_bListChanged = flag; }
 	pair< _wstring, string>&Get_WhichHow() { return itemChanged; }
-	vector<pair<_wstring, _wstring>>&Get_ItemInfo() { return itemInfo; }
+	vector<ITEMINFO_DESC>&Get_ItemInfo() { return itemInfo; }
 public:
 	static unique_ptr<CItem_Manager> Create();
 
@@ -27,7 +34,7 @@ private:
 	map<_wstring, uint32_t> items;
 	_bool m_bListChanged = false;
 	pair<  _wstring, string> itemChanged;
-	vector<pair<_wstring, _wstring>> itemInfo;
+	vector<ITEMINFO_DESC> itemInfo;
 };
 
 NS_END

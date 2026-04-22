@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Prototype_Manager.h"
-
+#include "Item_Manager.h"
 NS_BEGIN(Engine)
 
 class ENGINE_DLL CGameInstance
@@ -114,8 +114,8 @@ public:
 	void Set_Changed(_bool flag);
 	_bool Get_Changed();
 	pair< _wstring, string>&  Get_WhichHow();
-	vector<pair<_wstring, _wstring>>& Get_ItemInfo();
-
+	vector<CItem_Manager::ITEMINFO_DESC>& Get_ItemInfo();
+	
 #pragma endregion
 
 #pragma region FONT_MANAGER

@@ -84,10 +84,12 @@ void CInventory::Priority_Update(_float fTimeDelta)
 							pBorder->Set_fX(pUI->Get_fX());
 							pBorder->Set_fY(pUI->Get_fY());
 							pBorder->Set_Render(true);
-							vector<pair<_wstring, _wstring>> infos = CGameInstance::Get().Get_ItemInfo();
+							
+							vector<CItem_Manager::ITEMINFO_DESC> infos = CGameInstance::Get().Get_ItemInfo();
 							for (auto& info : infos) {
-								if (pUI->Get_Tag() == info.first) {
-									m_selectedItemDesc = info.second;
+								if (pUI->Get_Tag() == info.itemTag) {
+									m_selectedItemDesc = info.itemDesc;
+									m_selectedItemName = info.itemName;
 								}
 							}
 							//CGameInstance::Get().Sub_Item(pUI->Get_Tag());
@@ -139,6 +141,7 @@ void CInventory::Update(_float fTimeDelta)
 			auto pBorder = dynamic_pointer_cast<CUIObject>(border);
 			pBorder->Set_Render(m_bRender);
 			m_selectedItemDesc = L"";
+			m_selectedItemName = L"";
 		}
 	}
 	if (CGameInstance::Get().Get_Changed()) {
@@ -210,7 +213,8 @@ HRESULT CInventory::Render()
 		return E_FAIL;
 
 	if (!m_selectedItemDesc.empty()) {
-		CGameInstance::Get().RenderText(0,m_selectedItemDesc, (m_fX - m_fSizeX * 0.5f +50.f), (m_fY + 130.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.7f);
+		CGameInstance::Get().RenderText(0,m_selectedItemDesc, (m_fX - m_fSizeX * 0.5f +50.f), (m_fY + 160.f), XMVectorSet(1.f, 1.f, 1.f, 1.f), 0.7f);
+		CGameInstance::Get().RenderText(1,m_selectedItemName, (m_fX - m_fSizeX * 0.5f +50.f), (m_fY + 130.f), DirectX::Colors::Gold, 0.6f);
 	}
 
 	CGameInstance::Get().RenderText(1,L"인벤토리", (m_fX - m_fSizeX * 0.5f + 30.f), (m_fY - m_fSizeY* 0.5f - 40.f), DirectX::Colors::Gold, 0.9f);
@@ -312,7 +316,12 @@ void CInventory::ReArrange()
 			index++;
 		}
 	}
-
+	CLayer* borderlayer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::SHELTER), L"UI_EquipBorder");
+	shared_ptr<CGameObject> border = borderlayer->GetObjectFirst();
+	auto pBorder = dynamic_pointer_cast<CUIObject>(border);
+	pBorder->Set_Render(false);
+	m_selectedItemDesc = L"";
+	m_selectedItemName = L"";
 }
 
 unique_ptr<CInventory> CInventory::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
