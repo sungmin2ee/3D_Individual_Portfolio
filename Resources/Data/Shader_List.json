@@ -1,0 +1,24 @@
+{
+    "Shader": [
+        {
+            "FilePath": "../../Client/Bin/ShaderFiles/Shader_Collider",
+            "PrototypeTag": "Prototype_Component_Shader_Collider"
+        },
+        {
+            "FilePath": "../../Client/Bin/ShaderFiles/Shader_VtxNonAnim",
+            "PrototypeTag": "Prototype_Component_Shader_VtxNonAnim"
+        },
+        {
+            "FilePath": "../../Client/Bin/ShaderFiles/Shader_VtxNorTex",
+            "PrototypeTag": "Prototype_Component_Shader_VtxNorTex"
+        },
+        {
+            "FilePath": "../../Client/Bin/ShaderFiles/Shader_VtxTex",
+            "PrototypeTag": "Prototype_Component_Shader_VtxTex"
+        },
+        {
+            "FilePath": "../../Client/Bin/ShaderFiles/VertexShader",
+            "PrototypeTag": "Prototype_Component_VertexShader"
+        }
+    ]
+}
