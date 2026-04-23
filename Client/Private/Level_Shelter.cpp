@@ -75,7 +75,7 @@ HRESULT CLevel_Shelter::Ready_Layer_Camera(const _wstring& strLayerTag)
 	FreeDesc.fRotationPerSec = 180.f;
 
 
-	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_Camera_Free"),
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Camera_Free"),
 		ETOUI(LEVEL::SHELTER), strLayerTag, &FreeDesc)))
 		return E_FAIL;
 	return S_OK;

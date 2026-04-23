@@ -22,6 +22,8 @@
     <ClInclude Include="..\Public\AABB.h" />
     <ClInclude Include="..\Public\Camera.h" />
     <ClInclude Include="..\Public\CImguiMgr.h" />
+    <ClInclude Include="..\public\CMesh.h" />
+    <ClInclude Include="..\public\CModel.h" />
     <ClInclude Include="..\Public\CModelObject.h" />
     <ClInclude Include="..\Public\Collider.h" />
     <ClInclude Include="..\Public\Collider_Manager.h" />
@@ -80,6 +82,8 @@
     <ClCompile Include="..\Private\AABB.cpp" />
     <ClCompile Include="..\Private\Camera.cpp" />
     <ClCompile Include="..\Private\CImguiMgr.cpp" />
+    <ClCompile Include="..\private\CMesh.cpp" />
+    <ClCompile Include="..\private\CModel.cpp" />
     <ClCompile Include="..\Private\CModelObject.cpp" />
     <ClCompile Include="..\Private\Collider.cpp" />
     <ClCompile Include="..\Private\Collider_Manager.cpp" />
@@ -227,7 +231,7 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalDependencies>d3d11.lib;dxguid.lib;dinput8.lib;assimp-vc143-mt.lib;Effects11d.lib;DirectXTKd.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxguid.lib;dinput8.lib;assimp-vc143-mtd.lib;Effects11d.lib;DirectXTKd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>cd /d $(SolutionDir)

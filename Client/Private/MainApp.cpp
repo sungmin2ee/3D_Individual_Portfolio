@@ -8,6 +8,7 @@
 #include "Shader.h"
 #include "CModelObject.h"
 #include "Model.h"
+#include "Camera_Free.h"
 
 
 CMainApp::CMainApp()
@@ -139,6 +140,12 @@ HRESULT CMainApp::Ready_Prototypes()
 		return E_FAIL;
 	//CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Model_Joe5"), Model::Create(m_pDevice,m_pContext,"../../Resources/Models/Joe5.fbx"));
 
+
+	//camera
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Camera_Free"),
+		CCamera_Free::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 	return S_OK;
 }
 

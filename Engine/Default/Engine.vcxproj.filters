@@ -127,6 +127,15 @@
     <Filter Include="10.Font">
       <UniqueIdentifier>{d8ea077f-4f0f-455a-8c62-bbee660767a4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06.Component\Shader\files">
+      <UniqueIdentifier>{45a42de5-8f1f-48b4-807a-c6dd4adb115f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Component\Model">
+      <UniqueIdentifier>{8e918e89-823b-466d-aa38-5344ebda93b3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Component\Model\Mesh">
+      <UniqueIdentifier>{bf18b14a-a77c-4321-911b-e2397b4ae428}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -260,6 +269,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Font_Manager.h">
       <Filter>10.Font</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CModel.h">
+      <Filter>06.Component\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CMesh.h">
+      <Filter>06.Component\Model\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -412,6 +427,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Font_Manager.cpp">
       <Filter>10.Font</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CModel.cpp">
+      <Filter>06.Component\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CMesh.cpp">
+      <Filter>06.Component\Model\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

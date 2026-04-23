@@ -5,7 +5,7 @@
 #include "Model.h"
 #include "Shader.h"
 #include "Inventory.h"
-#include "Camera_Free.h"
+
 #include "ItemFrame.h"
 #include "ItemIcon.h"
 #include "EquipBorder.h"
@@ -162,9 +162,7 @@ HRESULT CLoader::Loading_For_Shelter()
 		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_EquipBorder", CEquipBorder::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_Camera_Free"),
-		CCamera_Free::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+
 
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
@@ -223,7 +221,7 @@ void CLoader::Load_Models_From_Directory(LEVEL eNextLevelIndex, const string& st
 
 
 
-	string strPath1 = "../Bin/ShaderFiles/";
+	string strPath1 = "../../Client/Bin/ShaderFiles/";
 	json shaderJson;
 
 	// 2. 해당 폴더 내부를 순회
