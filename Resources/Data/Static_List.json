@@ -1,0 +1,15 @@
+{
+    "Scene_Static": {
+        "Model": [
+            {
+                "FileName": "Joe5",
+                "IsAnim": true,
+                "Model": "Prototype_Model_Joe5"
+            },
+            {
+                "IsAnim": false,
+                "Model": "Prototype_Model_master_room_corner_backroom"
+            }
+        ]
+    }
+}
