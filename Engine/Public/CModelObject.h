@@ -23,7 +23,7 @@ public:
 
     void ExpandCollider();
 protected:
-    shared_ptr<class Model>   m_pModelCom = nullptr;
+    shared_ptr<class CModel>   m_pModelCom = nullptr;
     shared_ptr<class CShader>  m_pShaderCom = nullptr;
     shared_ptr<class Obb> m_pColliderCom = nullptr;
     // CGameObject을(를) 통해 상속됨

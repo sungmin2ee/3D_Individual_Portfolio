@@ -11,6 +11,7 @@ CMesh::~CMesh()
 
 HRESULT CMesh::Initialize(const aiMesh* pAIMesh)
 {
+    m_iMaterialIndex = pAIMesh->mMaterialIndex;
     m_iNumVertexBuffers = 1;
     m_iNumVertices = pAIMesh->mNumVertices;
     m_iVertexStride = sizeof(VTXMESH);
@@ -91,9 +92,9 @@ HRESULT CMesh::Initialize(const aiMesh* pAIMesh)
     return S_OK;
 }
 
-HRESULT CMesh::Initialize_Binary(const vector<VTXMESH>& vertices, const vector<uint32_t>& indices)
+HRESULT CMesh::Initialize_Binary(uint32_t matIndex, const vector<VTXMESH>& vertices, const vector<uint32_t>& indices)
 {
-
+    m_iMaterialIndex = matIndex;
     m_iNumVertexBuffers = 1;
     m_iNumVertices = vertices.size();
     m_iVertexStride = sizeof(VTXMESH);
@@ -101,7 +102,8 @@ HRESULT CMesh::Initialize_Binary(const vector<VTXMESH>& vertices, const vector<u
     m_iIndexStride = 4;
     m_eIndexFormat = DXGI_FORMAT_R32_UINT;
     m_ePrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-
+    vertices_ = vertices;
+    indices_ = indices;
 #pragma region VERTEX_BUFFER
 
     D3D11_BUFFER_DESC           VertexBufferDesc{};
@@ -162,11 +164,11 @@ shared_ptr<CMesh> CMesh::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11Devic
     return pInstance;
 }
 
-shared_ptr<CMesh> CMesh::Create_Binary(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext, const vector<VTXMESH>& vertices, const vector<uint32_t>& indices)
+shared_ptr<CMesh> CMesh::Create_Binary(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext, const vector<VTXMESH>& vertices, const vector<uint32_t>& indices, uint32_t matIndex)
 {
     auto		pInstance = shared_ptr<CMesh>(new CMesh(pDevice, pContext));
 
-    if (FAILED(pInstance->Initialize_Binary(vertices, indices)))
+    if (FAILED(pInstance->Initialize_Binary(matIndex, vertices, indices)))
     {
         MSG_BOX("Failed to Created : CMesh");
         return nullptr;

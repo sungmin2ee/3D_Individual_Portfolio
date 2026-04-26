@@ -1,7 +1,7 @@
 #include "CModelObject.h"
 #include "GameInstance.h"
 #include "Shader.h"
-#include "Model.h"
+#include "CModel.h"
 #include "Obb.h"
 #include "VIBuffer_Cube.h"
 
@@ -77,7 +77,7 @@ HRESULT CModelObject::Initialize(void* pArg)
         //m_pTransformCom->Rotation(XMVectorSet(1.f, 0.f, 0.f, 0.f), 270.f);
 
         // 2. 인자로 들어온 태그를 사용하여 모델 컴포넌트 클론
-        m_pModelCom = static_pointer_cast<Model>(CGameInstance::Get().Clone_Prototype(pDesc->levelIndex, pDesc->pModelPrototypeTag));
+        m_pModelCom = static_pointer_cast<CModel>(CGameInstance::Get().Clone_Prototype(pDesc->levelIndex, pDesc->pModelPrototypeTag));
         m_pModelCom->Calculate_Box();
         // 3. 쉐이더 컴포넌트 클론
         m_pShaderCom = static_pointer_cast<CShader>(CGameInstance::Get().Clone_Prototype(0, pDesc->pShaderPrototypeTag));
@@ -148,7 +148,21 @@ HRESULT CModelObject::Render()
     if (FAILED(m_pShaderCom->Begin(0)))
         return E_FAIL;
 
-    m_pModelCom->Draw(m_pShaderCom.get());
+    uint32_t	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+    for (size_t i = 0; i < iNumMeshes; i++)
+    {
+        if (FAILED(m_pModelCom->Bind_Materials(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
+            return E_FAIL;
+        //if (FAILED(m_pModelCom->Bind_Materials(m_pShaderCom, "g_NormalTexture", i, aiTextureType_Normals, 0)))
+        //	return E_FAIL;
+
+        if (FAILED(m_pShaderCom->Begin(0)))
+            return E_FAIL;
+
+
+        m_pModelCom->Render(i);
+    }
     m_pColliderCom->Render();
     return S_OK;
 }

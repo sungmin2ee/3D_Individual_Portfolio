@@ -38,8 +38,8 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelIndex)
 
 void CLevel_Loading::Update(_float fTimeDelta)
 {
-	if (true == m_pLoader->isFinished() &&
-		GetKeyState(VK_END) & 0x8000)
+	if (true == m_pLoader->isFinished()/* &&
+		GetKeyState(DIK_A) & 0x8000*/)
 	{
 
 		unique_ptr<CLevel>		pNewLevel = { nullptr };

@@ -30,7 +30,7 @@ void CLevel_Logo::Update(_float fTimeDelta)
 	if (CGameInstance::Get().Get_DIKeyState(DIK_CAPITAL)) {
 		CGameInstance::Get().Save(ETOUI(LEVEL::LOGO));
 	}
-	if (CGameInstance::Get().Key_Down(DIK_END))
+	if (CGameInstance::Get().Key_Down(DIK_INSERT))
 	{
 		if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
 			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::SHELTER))))
@@ -54,7 +54,7 @@ HRESULT CLevel_Logo::Ready_Layer_Logo(const _wstring& strLayerTag)
 	CBackGround::BACKGROUND_DESC		Desc{};
 	Desc.iData = 10;
 
-	CGameInstance::Get().Load(ETOUI(LEVEL::LOGO));
+//	CGameInstance::Get().Load(ETOUI(LEVEL::LOGO));
 	
 	CCamera_Free::CAMERA_FREE_DESC		FreeDesc{};
 	FreeDesc.vEye = _float4(0.f, 10.f, -5.f, 1.f);

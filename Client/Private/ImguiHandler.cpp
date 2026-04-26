@@ -3,7 +3,7 @@
 #include "Helper.h"
 #include "Layer.h"
 #include "Collider.h"
-#include "Model.h"
+#include "cModel.h"
 
 CImguiHandler::CImguiHandler(ENGINE_DESC desc, ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> context): m_Desc(desc), m_pDevice{device},m_pContext{context}
 {
@@ -154,7 +154,7 @@ void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 			XMStoreFloat4x4(&m_ModelDesc.worldMatrix, world);
 			
 			if (CGameInstance::Get().Find_Prototype(m_ModelDesc.levelIndex, m_ModelDesc.pModelPrototypeTag) == nullptr) {
-				auto pModelProto = Model::Create(m_pDevice, m_pContext, m_ModelDesc.filePath);
+				auto pModelProto = CModel::Create(m_pDevice, m_pContext,MODEL::NONANIM, m_ModelDesc.filePath);
 				CGameInstance::Get().Add_Prototype(curlevel, m_ModelDesc.pModelPrototypeTag, unique_ptr<CPrototype>(std::move(pModelProto)));
 			}
 

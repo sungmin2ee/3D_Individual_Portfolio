@@ -136,6 +136,9 @@
     <Filter Include="06.Component\Model\Mesh">
       <UniqueIdentifier>{bf18b14a-a77c-4321-911b-e2397b4ae428}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06.Component\Model\Material">
+      <UniqueIdentifier>{d3e7f1e4-6f9a-4c62-a166-383a0cc8b026}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -275,6 +278,9 @@
     </ClInclude>
     <ClInclude Include="..\public\CMesh.h">
       <Filter>06.Component\Model\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Material.h">
+      <Filter>06.Component\Model\Material</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -433,6 +439,9 @@
     </ClCompile>
     <ClCompile Include="..\private\CMesh.cpp">
       <Filter>06.Component\Model\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Material.cpp">
+      <Filter>06.Component\Model\Material</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
