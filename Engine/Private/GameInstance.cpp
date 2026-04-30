@@ -95,7 +95,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
     m_pPipeLine->Update();
     m_pObject_Manager->Priority_Update(fTimeDelta);
-
+    m_pCollider_Manager->Update();
 
     m_pImguiMgr->Update_Imgui();
     m_pObject_Manager->Update(fTimeDelta);
@@ -204,7 +204,12 @@ CLayer* CGameInstance::Find_Layer(uint32_t iLayerLevelIndex, const _wstring& str
 {
     return m_pObject_Manager->Find_Layer(iLayerLevelIndex, strLayerTag);
 }
-
+uint32_t CGameInstance::Get_NumLevels() {
+    return m_pObject_Manager->Get_NumLevels();
+}
+map<const _wstring, unique_ptr<class CLayer>>* CGameInstance::Get_Layers() {
+    return m_pObject_Manager->Get_Layers();
+}
 #pragma endregion
 
 #pragma region RENDERER

@@ -21,12 +21,13 @@ public:
 	void Update(_float fTimeDelta);
 	void Late_Update(_float fTimeDelta);
 	void Clear(uint32_t iClearLevelIndex);
-
+	uint32_t Get_NumLevels() { return m_iNumLevels; }
 public:
 	HRESULT Add_GameObject_toLayer(uint32_t iPrototypeLevelIndex, const _wstring& strPrototypeTag,
 		uint32_t iLayerLevelIndex, const _wstring& strLayerTag, void* pArg);
 
 	class CLayer* Find_Layer(uint32_t iLayerLevelIndex, const _wstring& strLayerTag);
+	map<const _wstring, unique_ptr<class CLayer>>* Get_Layers() { return m_pLayers.get(); }
 private:
 	uint32_t		m_iNumLevels = {};
 private:

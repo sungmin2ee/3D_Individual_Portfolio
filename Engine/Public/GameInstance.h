@@ -49,6 +49,8 @@ public:
 		uint32_t iLayerLevelIndex, const _wstring& strLayerTag, void* pArg = nullptr);
 
 	class CLayer* Find_Layer(uint32_t iLayerLevelIndex, const _wstring& strLayerTag);
+	map<const _wstring, unique_ptr<class CLayer>>* Get_Layers();
+	uint32_t Get_NumLevels();
 #pragma endregion
 
 #pragma region RENDERER

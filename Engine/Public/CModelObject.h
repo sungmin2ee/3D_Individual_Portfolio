@@ -33,6 +33,6 @@ public:
     shared_ptr<CPrototype> Clone(void* pArg) override;
 private:
     //ComPtr<ID3D11SamplerState> m_pSamplerState;
-
+    uint32_t modelType = {};
 };
 NS_END

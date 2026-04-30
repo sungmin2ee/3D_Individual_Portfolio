@@ -10,6 +10,8 @@ private:
 public:
 	virtual ~Collider_Manager();
 
+public:
+	void Update();
 	void Add_Collider(weak_ptr<CCollider> collider);
 	void Add_ComputingCollider(weak_ptr<CCollider> collider);
 	static unique_ptr<Collider_Manager> Create();

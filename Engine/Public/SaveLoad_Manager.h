@@ -18,7 +18,8 @@ public:
 	static unique_ptr<SaveLoad_Manager> Create(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext);
 
 private:
-	_wstring strLayerTag = L"";
+	string							LevelName = "";
+	_wstring						strLayerTag = L"";
 	ComPtr<ID3D11Device>			m_pDevice = { nullptr };
 	ComPtr<ID3D11DeviceContext>		m_pContext = { nullptr };
 };

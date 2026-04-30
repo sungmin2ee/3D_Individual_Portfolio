@@ -20,6 +20,9 @@ HRESULT CLevel_Shelter::Initialize()
 		return E_FAIL;
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::SHELTER)))) {
+		return E_FAIL;
+	}
 
 
 
@@ -29,7 +32,7 @@ HRESULT CLevel_Shelter::Initialize()
 void CLevel_Shelter::Update(_float fTimeDelta)
 {
 
-	if (CGameInstance::Get().Get_DIKeyState(DIK_CAPITAL)) {
+	if (CGameInstance::Get().Key_Down(DIK_CAPITAL)) {
 		CGameInstance::Get().Save(ETOUI(LEVEL::SHELTER));
 	}
 
@@ -56,7 +59,6 @@ HRESULT CLevel_Shelter::Ready_Layer_UI(const _wstring& strLayerTag)
 	//if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), L"Prototype_Inventory", ETOUI(LEVEL::SHELTER), strLayerTag)))
 	//	return E_FAIL;
 	
-	//CGameInstance::Get().Load(ETOUI(LEVEL::SHELTER));
 
 
 	return S_OK;
@@ -65,13 +67,13 @@ HRESULT CLevel_Shelter::Ready_Layer_UI(const _wstring& strLayerTag)
 HRESULT CLevel_Shelter::Ready_Layer_Camera(const _wstring& strLayerTag)
 {
 	CCamera_Free::CAMERA_FREE_DESC		FreeDesc{};
-	FreeDesc.vEye = _float4(0.f, 10.f, -5.f, 1.f);
+	FreeDesc.vEye = _float4(0.f, 0.f, -1.f, 1.f);
 	FreeDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
 	FreeDesc.fFovy = XMConvertToRadians(60.f);
 	FreeDesc.fNear = 0.1f;
 	FreeDesc.fFar = 1000.f;
-	FreeDesc.fMouseSensor = 0.05f;
-	FreeDesc.fSpeedPerSec = 10.f;
+	FreeDesc.fMouseSensor = 0.02f;
+	FreeDesc.fSpeedPerSec = 2.f;
 	FreeDesc.fRotationPerSec = 180.f;
 
 

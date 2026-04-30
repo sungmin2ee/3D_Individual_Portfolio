@@ -34,7 +34,7 @@ public:
 
 private:
 	_float		m_fMouseSensor = {};
-
+	_bool		mouseMove = false;
 private:
 	HRESULT Ready_Components();
 

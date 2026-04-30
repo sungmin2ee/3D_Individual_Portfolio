@@ -64,8 +64,8 @@ HRESULT CModelObject::Initialize(void* pArg)
     m_ModelDesc.filePath = pDesc->filePath;
     m_ModelDesc.collide = pDesc->collide;
     m_ModelDesc.worldMatrix = pDesc->worldMatrix;
-
-
+    m_ModelDesc.modelType = pDesc->modelType;
+    modelType = pDesc->modelType;
     // 1. 부모(Transform 생성 등) 초기화
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
@@ -78,7 +78,7 @@ HRESULT CModelObject::Initialize(void* pArg)
 
         // 2. 인자로 들어온 태그를 사용하여 모델 컴포넌트 클론
         m_pModelCom = static_pointer_cast<CModel>(CGameInstance::Get().Clone_Prototype(pDesc->levelIndex, pDesc->pModelPrototypeTag));
-        m_pModelCom->Calculate_Box();
+        m_pModelCom->Calculate_Box(modelType);
         // 3. 쉐이더 컴포넌트 클론
         m_pShaderCom = static_pointer_cast<CShader>(CGameInstance::Get().Clone_Prototype(0, pDesc->pShaderPrototypeTag));
 
@@ -109,7 +109,9 @@ void CModelObject::Update(_float fTimeDelta)
     if (m_pColliderCom->GetSelected()) {
         ExpandCollider();
     }
-    
+    if (modelType == 1) {
+        m_pModelCom->Play_Animation(fTimeDelta);
+    }
 }
 
 void CModelObject::Late_Update(_float fTimeDelta)
@@ -156,10 +158,12 @@ HRESULT CModelObject::Render()
             return E_FAIL;
         //if (FAILED(m_pModelCom->Bind_Materials(m_pShaderCom, "g_NormalTexture", i, aiTextureType_Normals, 0)))
         //	return E_FAIL;
-
+        if (modelType == 1) {
+            if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i)))
+                return E_FAIL;
+        }
         if (FAILED(m_pShaderCom->Begin(0)))
             return E_FAIL;
-
 
         m_pModelCom->Render(i);
     }

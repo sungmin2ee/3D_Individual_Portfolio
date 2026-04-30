@@ -54,7 +54,7 @@ HRESULT CLevel_Logo::Ready_Layer_Logo(const _wstring& strLayerTag)
 	CBackGround::BACKGROUND_DESC		Desc{};
 	Desc.iData = 10;
 
-//	CGameInstance::Get().Load(ETOUI(LEVEL::LOGO));
+	CGameInstance::Get().Load(ETOUI(LEVEL::LOGO));
 	
 	CCamera_Free::CAMERA_FREE_DESC		FreeDesc{};
 	FreeDesc.vEye = _float4(0.f, 10.f, -5.f, 1.f);

@@ -28,3 +28,17 @@ unique_ptr<Collider_Manager> Collider_Manager::Create()
 {
 	return unique_ptr<Collider_Manager>(new Collider_Manager());
 }
+
+void Collider_Manager::Update()
+{
+	vector<weak_ptr<CCollider>>::iterator iter = colliders.begin();
+	
+	for (iter; iter != colliders.end();) {
+		if ((*iter).expired()) {
+			iter = colliders.erase(iter);
+		}
+		else {
+			iter++;
+		}
+	}
+}

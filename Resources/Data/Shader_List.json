@@ -5,6 +5,14 @@
             "PrototypeTag": "Prototype_Component_Shader_Collider"
         },
         {
+            "FilePath": "../../Client/Bin/ShaderFiles/Shader_VtxAnimMesh",
+            "PrototypeTag": "Prototype_Component_Shader_VtxAnimMesh"
+        },
+        {
+            "FilePath": "../../Client/Bin/ShaderFiles/Shader_VtxBlur",
+            "PrototypeTag": "Prototype_Component_Shader_VtxBlur"
+        },
+        {
             "FilePath": "../../Client/Bin/ShaderFiles/Shader_VtxMesh",
             "PrototypeTag": "Prototype_Component_Shader_VtxMesh"
         },

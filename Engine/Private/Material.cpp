@@ -35,13 +35,13 @@ HRESULT CMaterial::Initialize(const aiMaterial* pAIMaterial, const _string& strM
 				return E_FAIL;
 
 			_splitpath_s(strTexturePath.C_Str(), nullptr, 0, nullptr, 0, szFileName, MAX_PATH, szExt, MAX_PATH);
-
+			_char  ext[MAX_PATH] = ".dds";
 			_char	szFullPath[MAX_PATH] = {};
 			string Dir = "../../Resources/Textures/";
 			strcpy_s(szFullPath, szDrive);
 			strcat_s(szFullPath, Dir.c_str());
 			strcat_s(szFullPath, szFileName);
-			strcat_s(szFullPath, szExt);
+			strcat_s(szFullPath, ext);
 
 			HRESULT         hr = {};
 			ComPtr<ID3D11ShaderResourceView>		pSRV = { nullptr };
@@ -53,10 +53,10 @@ HRESULT CMaterial::Initialize(const aiMaterial* pAIMaterial, const _string& strM
 
 
 
-			if (false == strcmp(szExt, ".dds"))
+			if (false == strcmp(ext, ".dds"))
 				hr = CreateDDSTextureFromFile(m_pDevice.Get(), szFinalPath, nullptr, &pSRV);
 
-			else if (false == strcmp(szExt, ".tga"))
+			else if (false == strcmp(ext, ".tga"))
 				hr = E_FAIL;
 			else
 				hr = CreateWICTextureFromFile(m_pDevice.Get(), szFinalPath, nullptr, &pSRV);
@@ -121,6 +121,11 @@ HRESULT CMaterial::Initialize_Binary(const vector<string> texturePaths[AI_TEXTUR
 
 HRESULT CMaterial::Bind_ShaderResource(shared_ptr<class CShader> pShader, const _char* pConstantName, aiTextureType eMaterialType, uint32_t iTextureIndex)
 {
+	//if (m_Materials[1].size() == 0)
+	//	return S_OK;
+		//return pShader->Bind_SRV(pConstantName,
+		//	nullptr);
+
 	return pShader->Bind_SRV(pConstantName,
 		m_Materials[eMaterialType][iTextureIndex]);
 	

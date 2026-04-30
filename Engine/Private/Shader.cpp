@@ -116,6 +116,23 @@ HRESULT CShader::Bind_RawValue(const _char* pConstantName, const void* pData, ui
     return pVariable->SetRawValue(pData, 0, iSize);
 }
 
+HRESULT CShader::Bind_Matrices(const _char* pConstantName, const _float4x4* pMatrices, uint32_t iNumMatrices)
+{
+    if (nullptr == m_pEffect)
+        return E_FAIL;
+
+    ID3DX11EffectVariable* pVariable = m_pEffect->GetVariableByName(pConstantName);
+    if (nullptr == pVariable)
+        return E_FAIL;
+
+    ID3DX11EffectMatrixVariable* pMatrixVariable = pVariable->AsMatrix();
+    if (nullptr == pMatrixVariable)
+        return E_FAIL;
+
+    return pMatrixVariable->SetMatrixArray(reinterpret_cast<const _float*>(pMatrices), 0, iNumMatrices);
+}
+
+
 HRESULT CShader::Bind_Texture(const _char* name, ComPtr<ID3D11ShaderResourceView> pSRV) {
     auto pVar = m_pEffect->GetVariableByName(name)->AsShaderResource();
     if (!pVar) return E_FAIL;

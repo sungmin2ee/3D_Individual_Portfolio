@@ -280,7 +280,7 @@ HRESULT CInventory::Ready_ItemFrames()
 				ETOUI(LEVEL::SHELTER),
 				TEXT("Prototype_ItemFrame"),
 				ETOUI(LEVEL::SHELTER),
-				L"UI_Layer",
+				L"Layer_UI",
 				&pDesc)))
 				return E_FAIL;
 

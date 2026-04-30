@@ -17,9 +17,8 @@ public:
 public:
 	void Handle_Imgui(uint32_t curlevel, _float fTimeDelta);
 	void Initialize();
-	void Imgui_Logo(_float fTimeDelta);
-	void Imgui_Loading(_float fTimeDelta);
-	void Imgui_GamePlay(_float fTimeDelta);
+	void Imgui_Editor(_float fTimeDelta);
+
 
 public:
 	static unique_ptr<CImguiHandler> Create(ENGINE_DESC desc, ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> context);
@@ -39,7 +38,7 @@ private:
 	ComPtr<ID3D11Device>			m_pDevice = { nullptr };
 	ComPtr<ID3D11DeviceContext>		m_pContext = { nullptr };
 	_wstring strLayerTag = L"";
-
+	MODEL modelType = {};
 };
 
 NS_END

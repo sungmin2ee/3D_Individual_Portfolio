@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\AABB.h" />
+    <ClInclude Include="..\Public\Bone.h" />
     <ClInclude Include="..\Public\Camera.h" />
     <ClInclude Include="..\Public\CImguiMgr.h" />
     <ClInclude Include="..\public\CMesh.h" />
@@ -81,6 +82,7 @@
     <ClCompile Include="..\..\ThirdParty\imgui\ImGuizmo-1.83\ImGuizmo.cpp" />
     <ClCompile Include="..\..\ThirdParty\imgui\ImGuizmo-1.83\ImSequencer.cpp" />
     <ClCompile Include="..\Private\AABB.cpp" />
+    <ClCompile Include="..\Private\Bone.cpp" />
     <ClCompile Include="..\Private\Camera.cpp" />
     <ClCompile Include="..\Private\CImguiMgr.cpp" />
     <ClCompile Include="..\private\CMesh.cpp" />

@@ -3,7 +3,7 @@
 #include "Helper.h"
 #include "Layer.h"
 #include "Collider.h"
-#include "cModel.h"
+#include "CModel.h"
 
 CImguiHandler::CImguiHandler(ENGINE_DESC desc, ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> context): m_Desc(desc), m_pDevice{device},m_pContext{context}
 {
@@ -56,15 +56,7 @@ void CImguiHandler::Initialize() {
 void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 {
 	
-	switch (curlevel) {
-	case ETOUI(LEVEL::LOGO):
-		Imgui_Logo(fTimeDelta);
-		break;
-	
-	case ETOUI(LEVEL::SHELTER): 
-		Imgui_GamePlay(fTimeDelta);
-		break;
-	}
+	Imgui_Editor(fTimeDelta);
 	m_ModelDesc.levelIndex = curlevel;
 	ImGui::Begin("Map Editor");
 	ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
@@ -131,18 +123,37 @@ void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 			}
 			ImGui::EndTabItem();
 		}
+		if (ImGui::BeginTabItem("ANIM?"))
+		{
+			if (ImGui::Button("NON_ANIM"))
+			{
+				modelType = MODEL::NONANIM;
+				m_ModelDesc.pShaderPrototypeTag = L"Prototype_Component_Shader_VtxMesh";
+			}
+			if (ImGui::Button("ANIM"))
+			{
+				modelType = MODEL::ANIM;
+				m_ModelDesc.pShaderPrototypeTag = L"Prototype_Component_Shader_VtxAnimMesh";
+			}
+			ImGui::EndTabItem();
+		}
 		if (ImGui::BeginTabItem("Layer"))
 		{
 			if (ImGui::Button("UI_Layer"))
 			{
 				strLayerTag = L"UI_Layer";
 			}
-			if (ImGui::Button("Collide_Layer"))
+			if (ImGui::Button("Outside_Layer"))
 			{
-				strLayerTag = L"Collide_Layer";
+				strLayerTag = L"Outside_Layer";
+			}
+			if (ImGui::Button("Inside_Layer"))
+			{
+				strLayerTag = L"Inside_Layer";
 			}
 			ImGui::EndTabItem();
 		}
+
 		//ADD OBJECT 버튼을 누르면 모델 프로토타입을 추가후 클론 
 		if (ImGui::Button("Add_Object")) {
 			_matrix camView, camWorld;
@@ -152,9 +163,14 @@ void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 			XMMATRIX scale = XMMatrixScaling(0.001f, 0.001f, 0.001f);
 			XMMATRIX world = scale * camWorld;
 			XMStoreFloat4x4(&m_ModelDesc.worldMatrix, world);
-			
+			_matrix		PreTransformMatrix = XMMatrixIdentity();
+
+			/* For.Prototype_Component_Model_Fiona */
+			PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+			m_ModelDesc.pretransformMatrix = PreTransformMatrix;
+			m_ModelDesc.modelType = ETOUI(modelType);
 			if (CGameInstance::Get().Find_Prototype(m_ModelDesc.levelIndex, m_ModelDesc.pModelPrototypeTag) == nullptr) {
-				auto pModelProto = CModel::Create(m_pDevice, m_pContext,MODEL::NONANIM, m_ModelDesc.filePath);
+				auto pModelProto = CModel::Create(m_pDevice, m_pContext, m_ModelDesc.modelType, m_ModelDesc.filePath,m_ModelDesc.pretransformMatrix);
 				CGameInstance::Get().Add_Prototype(curlevel, m_ModelDesc.pModelPrototypeTag, unique_ptr<CPrototype>(std::move(pModelProto)));
 			}
 
@@ -180,7 +196,7 @@ void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 	
 }
 
-void CImguiHandler::Imgui_Logo(_float fTimeDelta)
+void CImguiHandler::Imgui_Editor(_float fTimeDelta)
 {
 
 
@@ -233,19 +249,51 @@ void CImguiHandler::Imgui_Logo(_float fTimeDelta)
 	//	}
 	//}
 
+	ImGuizmo::BeginFrame();
+
+	ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
+	ImGuizmo::SetRect(0, 0, g_iWinSizeX, g_iWinSizeY);
+	if (m_pSelected) {
+
+		if (CGameInstance::Get().Key_Down('1')) m_CurrentOperation = ImGuizmo::TRANSLATE;
+		if (CGameInstance::Get().Key_Down('2')) m_CurrentOperation = ImGuizmo::ROTATE;
+		if (CGameInstance::Get().Key_Down('3')) m_CurrentOperation = ImGuizmo::SCALE;
+
+		_float4x4 matWorld = m_pSelected->Get_Transform()->GetWorld();
+		const _float4x4* view = CGameInstance::Get().Get_Transform(D3DTS::VIEW);
+		const _float4x4* projection = CGameInstance::Get().Get_Transform(D3DTS::PROJ);
+		ImGuizmo::Manipulate(
+			(float*)view,
+			(float*)projection,
+			m_CurrentOperation,
+			ImGuizmo::LOCAL,
+			(float*)&matWorld
+		);
+		if (ImGuizmo::IsUsing()) {
+			// 1. 기즈모로 변한 matWorld를 실제 트랜스폼에 적용
+			m_pSelected->Get_Transform()->SetWorld(matWorld);
+
+			// 2. 중요: 변한 행렬에서 Scale, Rotation, Translation을 다시 추출해서 ImGui 변수에 동기화
+			_float3 vScale, vRotation, vPos;
+			ImGuizmo::DecomposeMatrixToComponents((float*)&matWorld, (float*)&vPos, (float*)&vRotation, (float*)&vScale);
+
+			// ImGui와 연결된 변수들 갱신
+			position = _float4(vPos.x, vPos.y, vPos.z, 1.f);
+			rotation = vRotation; // (ImGuizmo는 Degree 값을 줍니다)
+			scale = vScale;
+			_float3 sca = m_pSelected->Get_Transform()->Get_Scaled();
+		}
+
+	}
+
+	
+
 	if (ImGui::CollapsingHeader("Transform")) {
 		if (m_pSelected) {
 			_float3 sca = m_pSelected->Get_Transform()->Get_Scaled();
 
-			if (CGameInstance::Get().Key_Down('1')) m_CurrentOperation = ImGuizmo::TRANSLATE;
-			if (CGameInstance::Get().Key_Down('2')) m_CurrentOperation = ImGuizmo::ROTATE;
-			if (CGameInstance::Get().Key_Down('3')) m_CurrentOperation = ImGuizmo::SCALE;
 			// ImGuizmo 세팅 (매 프레임 호출 필수)
-			ImGuizmo::BeginFrame();
-			ImGuizmo::SetRect(0, 0, g_iWinSizeX, g_iWinSizeY); // 화면 해상도에 맞게
-			_float4x4 matWorld = m_pSelected->Get_Transform()->GetWorld();
-			const _float4x4* view = CGameInstance::Get().Get_Transform(D3DTS::VIEW);
-			const _float4x4* projection = CGameInstance::Get().Get_Transform(D3DTS::PROJ);
+			
 			bool bModified = false;
 			bModified |= ImGui::DragFloat("Pos X", &position.x, 0.1f);
 			bModified |= ImGui::DragFloat("Pos Y", &position.y, 0.1f);
@@ -270,23 +318,8 @@ void CImguiHandler::Imgui_Logo(_float fTimeDelta)
 
 			}
 			// 기즈모 조작
-			ImGuizmo::Manipulate((float*)&view, (float*)&projection, m_CurrentOperation, ImGuizmo::LOCAL, (float*)&matWorld);
 
-			if (ImGuizmo::IsUsing()) {
-				// 1. 기즈모로 변한 matWorld를 실제 트랜스폼에 적용
-				m_pSelected->Get_Transform()->SetWorld(matWorld);
-
-				// 2. 중요: 변한 행렬에서 Scale, Rotation, Translation을 다시 추출해서 ImGui 변수에 동기화
-				_float3 vScale, vRotation, vPos;
-				ImGuizmo::DecomposeMatrixToComponents((float*)&matWorld, (float*)&vPos, (float*)&vRotation, (float*)&vScale);
-
-				// ImGui와 연결된 변수들 갱신
-				position = _float4(vPos.x, vPos.y, vPos.z, 1.f);
-				rotation = vRotation; // (ImGuizmo는 Degree 값을 줍니다)
-				scale = vScale;
-				_float3 sca = m_pSelected->Get_Transform()->Get_Scaled();
-			
-			}
+		
 		}
 	}
 
@@ -307,6 +340,7 @@ void CImguiHandler::Imgui_Logo(_float fTimeDelta)
 		}
 		if (CGameInstance::Get().Key_Down(DIK_DELETE)) {
 			m_pSelected->Set_Dead();
+			m_pSelected = nullptr;
 		}
 	}
 
@@ -326,13 +360,7 @@ void CImguiHandler::Imgui_Logo(_float fTimeDelta)
 
 }
 
-void CImguiHandler::Imgui_Loading(_float fTimeDelta)
-{
-}
 
-void CImguiHandler::Imgui_GamePlay(_float fTimeDelta)
-{
-}
 
 unique_ptr<CImguiHandler> CImguiHandler::Create(ENGINE_DESC desc, ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> context) {
 

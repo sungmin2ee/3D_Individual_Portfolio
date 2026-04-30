@@ -1,6 +1,6 @@
 #include "SaveLoad_Manager.h"
 #include "GameInstance.h"
-#include "Model.h"
+#include "CModel.h"
 #include "Layer.h"
 namespace fs = std::filesystem;
 using json = nlohmann::json;
@@ -22,62 +22,66 @@ HRESULT SaveLoad_Manager::Initialize()
 HRESULT SaveLoad_Manager::Save(uint32_t levelIndex)
 {
 	switch (levelIndex) {
-	case 0:
-		strLayerTag = L"Layer_Static";
-		break;
-	case 1:
-		strLayerTag = L"Layer_Loading";
-
-		break;
 	case 2:
-		strLayerTag = L"Layer_Logo";
-
+		LevelName = "LOGO";
 		break;
 	case 3:
-		strLayerTag = L"Layer_Shelter";
+		LevelName = "SHELTER";
+
 		break;
 	case 4:
-		strLayerTag = L"Layer_Stage1";
+		LevelName = "STAGE1";
 		break;
 	case 5:
-		strLayerTag = L"Layer_Stage2";
+		LevelName = "STAGE2";
 		break;
 	}
-
-	CLayer* layer = CGameInstance::Get().Find_Layer(levelIndex, strLayerTag);
-	json Main;
-	for (auto object : layer->GetObjects()) {
-		//월드 행렬
-		json j;
-
-		MODELOBJ_DESC desc = object->Get_Desc();
-		_vector right, up, look, pos;
-
-		right = object->Get_Transform()->Get_State(STATE::RIGHT);
-		up = object->Get_Transform()->Get_State(STATE::UP);
-		look = object->Get_Transform()->Get_State(STATE::LOOK);
-		pos = object->Get_Transform()->Get_State(STATE::POSITION);
-		
-		_float4 rightf, upf, lookf, posf;
-		XMStoreFloat4(&rightf, right);
-		XMStoreFloat4(&upf, up);
-		XMStoreFloat4(&lookf, look);
-		XMStoreFloat4(&posf, pos);
-		j["PrototypeTag"] = WStringToString(desc.pModelPrototypeTag);
-		j["FilePath"] = desc.filePath;
-		j["ShaderTag"] = WStringToString(desc.pShaderPrototypeTag);
-		j["Collide"] = desc.collide;
-		j["LevelIndex"] = desc.levelIndex;
-		j["Right"] = {rightf.x,rightf.y, rightf.z, rightf.w};
-		j["Up"] = {upf.x, upf.y, upf.z, upf.w};
-		j["Look"] = {lookf.x, lookf.y, lookf.z, lookf.w};
-		j["Position"] = {posf.x, posf.y, posf.z, posf.w};
-
-		//오브젝트 이름 예: Prototype_Model_Joe5
-		Main["GameObjects"].push_back(j);
-	}
 	
-	string savePath1 = "../../Resources/Data/" + WStringToString(strLayerTag) + "_GameObjects.json";
+	json Main;
+	auto layers = CGameInstance::Get().Get_Layers();
+	
+	map<const _wstring, unique_ptr<class CLayer>>::iterator iter = layers[levelIndex].begin();
+	for (iter; iter != layers[levelIndex].end(); iter++) {
+		if (iter->first != L"Layer_Camera" && iter->first != L"Layer_UI"&& iter->first != L"UI_EquipBorder"&& iter->first != L"UI_ICons") {
+			for (auto object : iter->second->GetObjects()) {
+				//월드 행렬
+				json j;
+
+				MODELOBJ_DESC desc = object->Get_Desc();
+				_vector right, up, look, pos;
+
+				right = object->Get_Transform()->Get_State(STATE::RIGHT);
+				up = object->Get_Transform()->Get_State(STATE::UP);
+				look = object->Get_Transform()->Get_State(STATE::LOOK);
+				pos = object->Get_Transform()->Get_State(STATE::POSITION);
+
+				_float4 rightf, upf, lookf, posf;
+				XMStoreFloat4(&rightf, right);
+				XMStoreFloat4(&upf, up);
+				XMStoreFloat4(&lookf, look);
+				XMStoreFloat4(&posf, pos);
+				j["PrototypeTag"] = WStringToString(desc.pModelPrototypeTag);
+				j["FilePath"] = desc.filePath;
+				j["ShaderTag"] = WStringToString(desc.pShaderPrototypeTag);
+				j["Layer"] = WStringToString(iter->first);
+				j["Collide"] = desc.collide;
+				j["ModelType"] = desc.modelType;
+				j["LevelIndex"] = desc.levelIndex;
+				j["Right"] = { rightf.x,rightf.y, rightf.z, rightf.w };
+				j["Up"] = { upf.x, upf.y, upf.z, upf.w };
+				j["Look"] = { lookf.x, lookf.y, lookf.z, lookf.w };
+				j["Position"] = { posf.x, posf.y, posf.z, posf.w };
+
+				//오브젝트 이름 예: Prototype_Model_Joe5
+				Main["GameObjects"].push_back(j);
+			}
+		}
+		
+	}
+	//CLayer* layer = CGameInstance::Get().Find_Layer(levelIndex, strLayerTag);
+	
+	
+	string savePath1 = "../../Resources/Data/" + LevelName + "_GameObjects.json";
 	std::ofstream file1(savePath1);
 	if (file1.is_open()) {
 		file1 << Main.dump(4); // 4는 들여쓰기(Tab) 간격입니다.
@@ -90,30 +94,27 @@ HRESULT SaveLoad_Manager::Save(uint32_t levelIndex)
 HRESULT SaveLoad_Manager::Load(uint32_t levelIndex)
 {
 	switch (levelIndex) {
-	case 0:
-		strLayerTag = L"Layer_Static";
-		break;
-	case 1:
-		strLayerTag = L"Layer_Loading";
-
-		break;
 	case 2:
-		strLayerTag = L"Layer_Logo";
-
+		LevelName = "LOGO";
 		break;
 	case 3:
-		strLayerTag = L"Layer_Shelter";
+		LevelName = "SHELTER";
+
 		break;
 	case 4:
-		strLayerTag = L"Layer_Stage1";
+		LevelName = "STAGE1";
 		break;
 	case 5:
-		strLayerTag = L"Layer_Stage2";
+		LevelName = "STAGE2";
 		break;
-
 	}
-	string path = "../../Resources/Data/" + WStringToString(strLayerTag) + "_GameObjects.json";
+
+	string path = "../../Resources/Data/" + LevelName + "_GameObjects.json";
 	ifstream file(path);
+	if (!file.is_open()) {
+		return E_FAIL;
+	}
+
 	json j;
 	file >> j;
 
@@ -124,7 +125,10 @@ HRESULT SaveLoad_Manager::Load(uint32_t levelIndex)
 		desc.pModelPrototypeTag = StringToWString(gameObject.value("PrototypeTag", ""));
 		desc.filePath = gameObject.value("FilePath", "");
 		desc.pShaderPrototypeTag = StringToWString(gameObject.value("ShaderTag", ""));
+		strLayerTag = StringToWString(gameObject.value("Layer", ""));
 		desc.collide = gameObject["Collide"].get<bool>();
+		desc.modelType = gameObject["ModelType"].get<float>();
+
 		_float fRight[4], fUp[4], fLook[4], fPos[4];
 		for (int i = 0; i < 4; ++i) {
 			fRight[i] = gameObject["Right"][i].get<float>();
@@ -139,11 +143,18 @@ HRESULT SaveLoad_Manager::Load(uint32_t levelIndex)
 		matWorld.r[2] = XMLoadFloat4((_float4*)fLook);   // Look
 		matWorld.r[3] = XMLoadFloat4((_float4*)fPos);    // Position
 		XMStoreFloat4x4(&desc.worldMatrix,matWorld);
+		//XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(180.f));
+		//XMMATRIX matWorld1 = XMLoadFloat4x4(&desc.worldMatrix);
+		//XMMATRIX matResult = XMMatrixIdentity();
+		//matResult = matRot* matWorld1;
+		//XMStoreFloat4x4(&desc.worldMatrix, matResult);
+		desc.pretransformMatrix= XMMatrixIdentity();
 
+		//desc.pretransformMatrix = XMMatrixRotationY(XMConvertToRadians(0.f));
 		//모델 프로토타입이 있나?
 		//모델부터 로드해야됨 
 		if (CGameInstance::Get().Find_Prototype(desc.levelIndex, desc.pModelPrototypeTag) == nullptr) {
-			auto pModelProto = Model::Create(m_pDevice, m_pContext, desc.filePath);
+			auto pModelProto = CModel::Create(m_pDevice, m_pContext,desc.modelType, desc.filePath,desc.pretransformMatrix);
 			if (FAILED(CGameInstance::Get().Add_Prototype(levelIndex, desc.pModelPrototypeTag, unique_ptr<CPrototype>(std::move(pModelProto))))) {
 				return E_FAIL;
 			}
@@ -153,9 +164,6 @@ HRESULT SaveLoad_Manager::Load(uint32_t levelIndex)
 		if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(0, L"Prototype_ModelObject", levelIndex, strLayerTag, &desc))) {
 			return E_FAIL;
 		}
-
-
-
 	}
 
 	return S_OK;

@@ -20,6 +20,7 @@ public:
 	HRESULT Bind_SRV(const _char* pConstantName, ComPtr<ID3D11ShaderResourceView> pSRV);
 
 	HRESULT Bind_RawValue(const _char* pConstantName, const void* pData, uint32_t iSize);
+	HRESULT Bind_Matrices(const _char* pConstantName, const _float4x4* pMatrices, uint32_t iNumMatrices);
 
 	HRESULT Bind_Texture(const _char* name, ComPtr<ID3D11ShaderResourceView> pSRV);
 	HRESULT Apply_Pass();

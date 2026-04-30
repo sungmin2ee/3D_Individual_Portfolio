@@ -1,6 +1,10 @@
 {
     "Model": [
         {
+            "FilePath": "../../Resources/Models/Bed.fbx",
+            "PrototypeTag": "Prototype_Model_Bed"
+        },
+        {
             "FilePath": "../../Resources/Models/BigGreenTree.fbx",
             "PrototypeTag": "Prototype_Model_BigGreenTree"
         },
@@ -11,6 +15,14 @@
         {
             "FilePath": "../../Resources/Models/deadZombie1.fbx",
             "PrototypeTag": "Prototype_Model_deadZombie1"
+        },
+        {
+            "FilePath": "../../Resources/Models/FloorBack.fbx",
+            "PrototypeTag": "Prototype_Model_FloorBack"
+        },
+        {
+            "FilePath": "../../Resources/Models/FloorFront.fbx",
+            "PrototypeTag": "Prototype_Model_FloorFront"
         },
         {
             "FilePath": "../../Resources/Models/footPathGrass.fbx",
@@ -73,48 +85,72 @@
             "PrototypeTag": "Prototype_Model_policeCar2"
         },
         {
+            "FilePath": "../../Resources/Models/post_office_01.fbx",
+            "PrototypeTag": "Prototype_Model_post_office_01"
+        },
+        {
+            "FilePath": "../../Resources/Models/RightWallBack.fbx",
+            "PrototypeTag": "Prototype_Model_RightWallBack"
+        },
+        {
             "FilePath": "../../Resources/Models/roundGrass.fbx",
             "PrototypeTag": "Prototype_Model_roundGrass"
         },
         {
-            "FilePath": "../../Resources/Models/shelter1_1.fbx",
-            "PrototypeTag": "Prototype_Model_shelter1_1"
+            "FilePath": "../../Resources/Models/Shelter1_1.fbx",
+            "PrototypeTag": "Prototype_Model_Shelter1_1"
         },
         {
-            "FilePath": "../../Resources/Models/shelter1_2.fbx",
-            "PrototypeTag": "Prototype_Model_shelter1_2"
+            "FilePath": "../../Resources/Models/Shelter1_2.fbx",
+            "PrototypeTag": "Prototype_Model_Shelter1_2"
         },
         {
-            "FilePath": "../../Resources/Models/shelter2_1.fbx",
-            "PrototypeTag": "Prototype_Model_shelter2_1"
+            "FilePath": "../../Resources/Models/Shelter2_1.fbx",
+            "PrototypeTag": "Prototype_Model_Shelter2_1"
         },
         {
-            "FilePath": "../../Resources/Models/shelter2_2.fbx",
-            "PrototypeTag": "Prototype_Model_shelter2_2"
+            "FilePath": "../../Resources/Models/Shelter2_2.fbx",
+            "PrototypeTag": "Prototype_Model_Shelter2_2"
         },
         {
-            "FilePath": "../../Resources/Models/shelter3_1.fbx",
-            "PrototypeTag": "Prototype_Model_shelter3_1"
+            "FilePath": "../../Resources/Models/Shelter3_1.fbx",
+            "PrototypeTag": "Prototype_Model_Shelter3_1"
         },
         {
-            "FilePath": "../../Resources/Models/shelter3_2.fbx",
-            "PrototypeTag": "Prototype_Model_shelter3_2"
+            "FilePath": "../../Resources/Models/Shelter3_2.fbx",
+            "PrototypeTag": "Prototype_Model_Shelter3_2"
         },
         {
-            "FilePath": "../../Resources/Models/shelter4_1.fbx",
-            "PrototypeTag": "Prototype_Model_shelter4_1"
+            "FilePath": "../../Resources/Models/Shelter4_1.fbx",
+            "PrototypeTag": "Prototype_Model_Shelter4_1"
         },
         {
-            "FilePath": "../../Resources/Models/shelter4_2.fbx",
-            "PrototypeTag": "Prototype_Model_shelter4_2"
+            "FilePath": "../../Resources/Models/Shelter4_2.fbx",
+            "PrototypeTag": "Prototype_Model_Shelter4_2"
+        },
+        {
+            "FilePath": "../../Resources/Models/Shelter_background.fbx",
+            "PrototypeTag": "Prototype_Model_Shelter_background"
+        },
+        {
+            "FilePath": "../../Resources/Models/shelter_communal_area.fbx",
+            "PrototypeTag": "Prototype_Model_shelter_communal_area"
+        },
+        {
+            "FilePath": "../../Resources/Models/shelter_cooking_station_visuals_L1.fbx",
+            "PrototypeTag": "Prototype_Model_shelter_cooking_station_visuals_L1"
         },
         {
             "FilePath": "../../Resources/Models/shelter_fence.fbx",
             "PrototypeTag": "Prototype_Model_shelter_fence"
         },
         {
-            "FilePath": "../../Resources/Models/shelter_roof.fbx",
-            "PrototypeTag": "Prototype_Model_shelter_roof"
+            "FilePath": "../../Resources/Models/Shelter_Roof.fbx",
+            "PrototypeTag": "Prototype_Model_Shelter_Roof"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stairs.fbx",
+            "PrototypeTag": "Prototype_Model_Stairs"
         },
         {
             "FilePath": "../../Resources/Models/StreetLightPole.fbx",

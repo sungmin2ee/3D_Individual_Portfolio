@@ -139,6 +139,9 @@
     <Filter Include="06.Component\Model\Material">
       <UniqueIdentifier>{d3e7f1e4-6f9a-4c62-a166-383a0cc8b026}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06.Component\Model\Bone">
+      <UniqueIdentifier>{8bcdbbff-9336-46b3-b25f-539c5b0602a7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -281,6 +284,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Material.h">
       <Filter>06.Component\Model\Material</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Bone.h">
+      <Filter>06.Component\Model\Bone</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -442,6 +448,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Material.cpp">
       <Filter>06.Component\Model\Material</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bone.cpp">
+      <Filter>06.Component\Model\Bone</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
