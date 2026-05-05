@@ -27,13 +27,13 @@ HRESULT CLevel_Logo::Initialize()
 void CLevel_Logo::Update(_float fTimeDelta)
 {
 
-	if (CGameInstance::Get().Get_DIKeyState(DIK_CAPITAL)) {
+	/*if (CGameInstance::Get().Get_DIKeyState(DIK_CAPITAL)) {
 		CGameInstance::Get().Save(ETOUI(LEVEL::LOGO));
-	}
+	}*/
 	if (CGameInstance::Get().Key_Down(DIK_INSERT))
 	{
 		if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
-			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::SHELTER))))
+			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::STAGE2))))
 			return;
 
 		return;

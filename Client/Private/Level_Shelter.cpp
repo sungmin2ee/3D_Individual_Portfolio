@@ -1,6 +1,6 @@
-#include "Level_Logo.h"
 #include "GameInstance.h"
 #include "Camera_Free.h"
+#include "Level_Loading.h"
 
 #include "Level_Shelter.h"
 #include "Inventory.h"
@@ -35,7 +35,14 @@ void CLevel_Shelter::Update(_float fTimeDelta)
 	if (CGameInstance::Get().Key_Down(DIK_CAPITAL)) {
 		CGameInstance::Get().Save(ETOUI(LEVEL::SHELTER));
 	}
+	if (CGameInstance::Get().Key_Down(DIK_INSERT))
+	{
+		if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
+			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::STAGE1))))
+			return;
 
+		return;
+	}
 }
 
 HRESULT CLevel_Shelter::Render()

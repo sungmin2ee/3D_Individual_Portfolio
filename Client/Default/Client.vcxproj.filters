@@ -114,6 +114,12 @@
     <ClInclude Include="..\public\EquipBorder.h">
       <Filter>02.GameObject\Inventory\EquipBorder</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Level_Stage1.h">
+      <Filter>01.Levels\Stage1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_Stage2.h">
+      <Filter>01.Levels\Stage2</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -157,6 +163,12 @@
     </ClCompile>
     <ClCompile Include="..\private\EquipBorder.cpp">
       <Filter>02.GameObject\Inventory\EquipBorder</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Stage1.cpp">
+      <Filter>01.Levels\Stage1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Stage2.cpp">
+      <Filter>01.Levels\Stage2</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

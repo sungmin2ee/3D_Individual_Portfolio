@@ -1,12 +1,60 @@
 {
     "Model": [
         {
+            "FilePath": "../../Resources/Models/barrier_concrete.fbx",
+            "PrototypeTag": "Prototype_Model_barrier_concrete"
+        },
+        {
+            "FilePath": "../../Resources/Models/barrier_mounted_gun.fbx",
+            "PrototypeTag": "Prototype_Model_barrier_mounted_gun"
+        },
+        {
+            "FilePath": "../../Resources/Models/barrier_wooden.fbx",
+            "PrototypeTag": "Prototype_Model_barrier_wooden"
+        },
+        {
+            "FilePath": "../../Resources/Models/barrier_wooden_a.fbx",
+            "PrototypeTag": "Prototype_Model_barrier_wooden_a"
+        },
+        {
+            "FilePath": "../../Resources/Models/bar_dive.fbx",
+            "PrototypeTag": "Prototype_Model_bar_dive"
+        },
+        {
             "FilePath": "../../Resources/Models/Bed.fbx",
             "PrototypeTag": "Prototype_Model_Bed"
         },
         {
             "FilePath": "../../Resources/Models/BigGreenTree.fbx",
             "PrototypeTag": "Prototype_Model_BigGreenTree"
+        },
+        {
+            "FilePath": "../../Resources/Models/blackRoad.fbx",
+            "PrototypeTag": "Prototype_Model_blackRoad"
+        },
+        {
+            "FilePath": "../../Resources/Models/clothes_pile_b_01.fbx",
+            "PrototypeTag": "Prototype_Model_clothes_pile_b_01"
+        },
+        {
+            "FilePath": "../../Resources/Models/coach_bus.fbx",
+            "PrototypeTag": "Prototype_Model_coach_bus"
+        },
+        {
+            "FilePath": "../../Resources/Models/coffee_shop.fbx",
+            "PrototypeTag": "Prototype_Model_coffee_shop"
+        },
+        {
+            "FilePath": "../../Resources/Models/coffee_shop_01.fbx",
+            "PrototypeTag": "Prototype_Model_coffee_shop_01"
+        },
+        {
+            "FilePath": "../../Resources/Models/coffee_shop_02.fbx",
+            "PrototypeTag": "Prototype_Model_coffee_shop_02"
+        },
+        {
+            "FilePath": "../../Resources/Models/Coupe_01.fbx",
+            "PrototypeTag": "Prototype_Model_Coupe_01"
         },
         {
             "FilePath": "../../Resources/Models/DarkGreenTree.fbx",
@@ -17,6 +65,14 @@
             "PrototypeTag": "Prototype_Model_deadZombie1"
         },
         {
+            "FilePath": "../../Resources/Models/decal_window_emissive_a_04.fbx",
+            "PrototypeTag": "Prototype_Model_decal_window_emissive_a_04"
+        },
+        {
+            "FilePath": "../../Resources/Models/decal_window_emissive_a_05.fbx",
+            "PrototypeTag": "Prototype_Model_decal_window_emissive_a_05"
+        },
+        {
             "FilePath": "../../Resources/Models/FloorBack.fbx",
             "PrototypeTag": "Prototype_Model_FloorBack"
         },
@@ -25,20 +81,68 @@
             "PrototypeTag": "Prototype_Model_FloorFront"
         },
         {
+            "FilePath": "../../Resources/Models/footpath.fbx",
+            "PrototypeTag": "Prototype_Model_footpath"
+        },
+        {
             "FilePath": "../../Resources/Models/footPathGrass.fbx",
             "PrototypeTag": "Prototype_Model_footPathGrass"
+        },
+        {
+            "FilePath": "../../Resources/Models/footpath_1.fbx",
+            "PrototypeTag": "Prototype_Model_footpath_1"
+        },
+        {
+            "FilePath": "../../Resources/Models/footpath_2.fbx",
+            "PrototypeTag": "Prototype_Model_footpath_2"
         },
         {
             "FilePath": "../../Resources/Models/footpath_driveway.fbx",
             "PrototypeTag": "Prototype_Model_footpath_driveway"
         },
         {
+            "FilePath": "../../Resources/Models/footpath_right.fbx",
+            "PrototypeTag": "Prototype_Model_footpath_right"
+        },
+        {
+            "FilePath": "../../Resources/Models/garage_workshop_03.fbx",
+            "PrototypeTag": "Prototype_Model_garage_workshop_03"
+        },
+        {
             "FilePath": "../../Resources/Models/garbage_truck.fbx",
             "PrototypeTag": "Prototype_Model_garbage_truck"
         },
         {
+            "FilePath": "../../Resources/Models/garbage_truck_red_01.fbx",
+            "PrototypeTag": "Prototype_Model_garbage_truck_red_01"
+        },
+        {
             "FilePath": "../../Resources/Models/garden_deck.fbx",
             "PrototypeTag": "Prototype_Model_garden_deck"
+        },
+        {
+            "FilePath": "../../Resources/Models/general_store_a_01.fbx",
+            "PrototypeTag": "Prototype_Model_general_store_a_01"
+        },
+        {
+            "FilePath": "../../Resources/Models/general_store_a_02.fbx",
+            "PrototypeTag": "Prototype_Model_general_store_a_02"
+        },
+        {
+            "FilePath": "../../Resources/Models/general_store_c.fbx",
+            "PrototypeTag": "Prototype_Model_general_store_c"
+        },
+        {
+            "FilePath": "../../Resources/Models/general_store_c_01.fbx",
+            "PrototypeTag": "Prototype_Model_general_store_c_01"
+        },
+        {
+            "FilePath": "../../Resources/Models/general_store_c_02.fbx",
+            "PrototypeTag": "Prototype_Model_general_store_c_02"
+        },
+        {
+            "FilePath": "../../Resources/Models/ground.fbx",
+            "PrototypeTag": "Prototype_Model_ground"
         },
         {
             "FilePath": "../../Resources/Models/hedge_medium.fbx",
@@ -65,6 +169,10 @@
             "PrototypeTag": "Prototype_Model_house_tree"
         },
         {
+            "FilePath": "../../Resources/Models/HumanJoe.fbx",
+            "PrototypeTag": "Prototype_Model_HumanJoe"
+        },
+        {
             "FilePath": "../../Resources/Models/HumanJoe_visual.fbx",
             "PrototypeTag": "Prototype_Model_HumanJoe_visual"
         },
@@ -73,8 +181,48 @@
             "PrototypeTag": "Prototype_Model_Joe5"
         },
         {
+            "FilePath": "../../Resources/Models/loan_shark_three_story_01.fbx",
+            "PrototypeTag": "Prototype_Model_loan_shark_three_story_01"
+        },
+        {
+            "FilePath": "../../Resources/Models/loan_shark_three_story_02.fbx",
+            "PrototypeTag": "Prototype_Model_loan_shark_three_story_02"
+        },
+        {
+            "FilePath": "../../Resources/Models/loan_shark_three_story_03.fbx",
+            "PrototypeTag": "Prototype_Model_loan_shark_three_story_03"
+        },
+        {
+            "FilePath": "../../Resources/Models/loan_shark_three_story_04.fbx",
+            "PrototypeTag": "Prototype_Model_loan_shark_three_story_04"
+        },
+        {
             "FilePath": "../../Resources/Models/master_room_corner_backroom.fbx",
             "PrototypeTag": "Prototype_Model_master_room_corner_backroom"
+        },
+        {
+            "FilePath": "../../Resources/Models/office_building_glass_medium_b_short.fbx",
+            "PrototypeTag": "Prototype_Model_office_building_glass_medium_b_short"
+        },
+        {
+            "FilePath": "../../Resources/Models/office_building_standard_large_b.fbx",
+            "PrototypeTag": "Prototype_Model_office_building_standard_large_b"
+        },
+        {
+            "FilePath": "../../Resources/Models/pharmacy.fbx",
+            "PrototypeTag": "Prototype_Model_pharmacy"
+        },
+        {
+            "FilePath": "../../Resources/Models/pharmacy_01.fbx",
+            "PrototypeTag": "Prototype_Model_pharmacy_01"
+        },
+        {
+            "FilePath": "../../Resources/Models/pharmacy_02.fbx",
+            "PrototypeTag": "Prototype_Model_pharmacy_02"
+        },
+        {
+            "FilePath": "../../Resources/Models/pharmacy_03.fbx",
+            "PrototypeTag": "Prototype_Model_pharmacy_03"
         },
         {
             "FilePath": "../../Resources/Models/policeCar.fbx",
@@ -85,12 +233,32 @@
             "PrototypeTag": "Prototype_Model_policeCar2"
         },
         {
+            "FilePath": "../../Resources/Models/post_office.fbx",
+            "PrototypeTag": "Prototype_Model_post_office"
+        },
+        {
             "FilePath": "../../Resources/Models/post_office_01.fbx",
             "PrototypeTag": "Prototype_Model_post_office_01"
         },
         {
+            "FilePath": "../../Resources/Models/post_office_02.fbx",
+            "PrototypeTag": "Prototype_Model_post_office_02"
+        },
+        {
+            "FilePath": "../../Resources/Models/post_office_07.fbx",
+            "PrototypeTag": "Prototype_Model_post_office_07"
+        },
+        {
             "FilePath": "../../Resources/Models/RightWallBack.fbx",
             "PrototypeTag": "Prototype_Model_RightWallBack"
+        },
+        {
+            "FilePath": "../../Resources/Models/right_wall.fbx",
+            "PrototypeTag": "Prototype_Model_right_wall"
+        },
+        {
+            "FilePath": "../../Resources/Models/road_straight_four_lane_median_a_04.fbx",
+            "PrototypeTag": "Prototype_Model_road_straight_four_lane_median_a_04"
         },
         {
             "FilePath": "../../Resources/Models/roundGrass.fbx",
@@ -149,12 +317,144 @@
             "PrototypeTag": "Prototype_Model_Shelter_Roof"
         },
         {
+            "FilePath": "../../Resources/Models/small_hotel.fbx",
+            "PrototypeTag": "Prototype_Model_small_hotel"
+        },
+        {
+            "FilePath": "../../Resources/Models/small_hotel_01.fbx",
+            "PrototypeTag": "Prototype_Model_small_hotel_01"
+        },
+        {
+            "FilePath": "../../Resources/Models/spikeTree.fbx",
+            "PrototypeTag": "Prototype_Model_spikeTree"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage1.fbx",
+            "PrototypeTag": "Prototype_Model_Stage1"
+        },
+        {
+            "FilePath": "../../Resources/Models/stage1Frame.fbx",
+            "PrototypeTag": "Prototype_Model_stage1Frame"
+        },
+        {
+            "FilePath": "../../Resources/Models/stage1_1_1.fbx",
+            "PrototypeTag": "Prototype_Model_stage1_1_1"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage1_2_1.fbx",
+            "PrototypeTag": "Prototype_Model_Stage1_2_1"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage1_2_2.fbx",
+            "PrototypeTag": "Prototype_Model_Stage1_2_2"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage1_2_2_1.fbx",
+            "PrototypeTag": "Prototype_Model_Stage1_2_2_1"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage1_2_3.fbx",
+            "PrototypeTag": "Prototype_Model_Stage1_2_3"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage1_3_1.fbx",
+            "PrototypeTag": "Prototype_Model_Stage1_3_1"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage1_3_2.fbx",
+            "PrototypeTag": "Prototype_Model_Stage1_3_2"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage1_3_3.fbx",
+            "PrototypeTag": "Prototype_Model_Stage1_3_3"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage1_4_1.fbx",
+            "PrototypeTag": "Prototype_Model_Stage1_4_1"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage1_4_2.fbx",
+            "PrototypeTag": "Prototype_Model_Stage1_4_2"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage1_buidling.fbx",
+            "PrototypeTag": "Prototype_Model_Stage1_buidling"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage1_building.fbx",
+            "PrototypeTag": "Prototype_Model_Stage1_building"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage2test.fbx",
+            "PrototypeTag": "Prototype_Model_Stage2test"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage2_1_1.fbx",
+            "PrototypeTag": "Prototype_Model_Stage2_1_1"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage2_1_2.fbx",
+            "PrototypeTag": "Prototype_Model_Stage2_1_2"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage2_1_3.fbx",
+            "PrototypeTag": "Prototype_Model_Stage2_1_3"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage2_3_1.fbx",
+            "PrototypeTag": "Prototype_Model_Stage2_3_1"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage2_3_2.fbx",
+            "PrototypeTag": "Prototype_Model_Stage2_3_2"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage2_3_3.fbx",
+            "PrototypeTag": "Prototype_Model_Stage2_3_3"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage2_4_2.fbx",
+            "PrototypeTag": "Prototype_Model_Stage2_4_2"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage2_4_3.fbx",
+            "PrototypeTag": "Prototype_Model_Stage2_4_3"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage2_5_1.fbx",
+            "PrototypeTag": "Prototype_Model_Stage2_5_1"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage2_5_2.fbx",
+            "PrototypeTag": "Prototype_Model_Stage2_5_2"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage2_stair1.fbx",
+            "PrototypeTag": "Prototype_Model_Stage2_stair1"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage2_stair2.fbx",
+            "PrototypeTag": "Prototype_Model_Stage2_stair2"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage2_stair3.fbx",
+            "PrototypeTag": "Prototype_Model_Stage2_stair3"
+        },
+        {
+            "FilePath": "../../Resources/Models/Stage2_stair3_1.fbx",
+            "PrototypeTag": "Prototype_Model_Stage2_stair3_1"
+        },
+        {
             "FilePath": "../../Resources/Models/Stairs.fbx",
             "PrototypeTag": "Prototype_Model_Stairs"
         },
         {
             "FilePath": "../../Resources/Models/StreetLightPole.fbx",
             "PrototypeTag": "Prototype_Model_StreetLightPole"
+        },
+        {
+            "FilePath": "../../Resources/Models/streetlightpole_set1.fbx",
+            "PrototypeTag": "Prototype_Model_streetlightpole_set1"
         },
         {
             "FilePath": "../../Resources/Models/street_sign.fbx",
@@ -169,12 +469,24 @@
             "PrototypeTag": "Prototype_Model_sun_chair"
         },
         {
+            "FilePath": "../../Resources/Models/test.fbx",
+            "PrototypeTag": "Prototype_Model_test"
+        },
+        {
+            "FilePath": "../../Resources/Models/trafficlight_set_a_intersection.fbx",
+            "PrototypeTag": "Prototype_Model_trafficlight_set_a_intersection"
+        },
+        {
             "FilePath": "../../Resources/Models/TwoLaneRoad.fbx",
             "PrototypeTag": "Prototype_Model_TwoLaneRoad"
         },
         {
             "FilePath": "../../Resources/Models/Van.fbx",
             "PrototypeTag": "Prototype_Model_Van"
+        },
+        {
+            "FilePath": "../../Resources/Models/vehicles.fbx",
+            "PrototypeTag": "Prototype_Model_vehicles"
         },
         {
             "FilePath": "../../Resources/Models/wooden_fence.fbx",

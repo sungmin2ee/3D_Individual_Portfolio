@@ -105,10 +105,6 @@ void CLoader::Output_LoadingText()
 HRESULT CLoader::Loading_For_Logo()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
-	for (size_t i = 0; i < 99999999; i++)
-	{
-		int a = 10;
-	}
 
 	lstrcpy(m_szLoadingText, TEXT("모델을 로딩 중 입니다."));
 	//Load_Models_From_Directory(LEVEL::LOGO, "Logo");
@@ -117,10 +113,7 @@ HRESULT CLoader::Loading_For_Logo()
 	
 	
 	
-	for (size_t i = 0; i < 99999999; i++)
-	{
-		int a = 10;
-	}
+
 	lstrcpy(m_szLoadingText, TEXT("객체원형 생성 중 입니다."));
 	
 	/* Prototype_GameObject_BackGround */
@@ -139,20 +132,13 @@ HRESULT CLoader::Loading_For_Shelter()
 {
 
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
-	for (size_t i = 0; i < 99999999; i++)
-	{
-		int a = 10;
-	}
 
 	lstrcpy(m_szLoadingText, TEXT("모델을 로딩 중 입니다."));
 
 	//Load_Models_From_Directory(LEVEL::GAMEPLAY, "Gameplay");
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩 중 입니다."));
-	for (size_t i = 0; i < 99999999; i++)
-	{
-		int a = 10;
-	}
+	
 	lstrcpy(m_szLoadingText, TEXT("객체원형 생성 중 입니다."));
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_Inventory", CInventory::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -174,11 +160,64 @@ HRESULT CLoader::Loading_For_Shelter()
 
 HRESULT CLoader::Loading_For_Stage1()
 {
+	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
+	for (size_t i = 0; i < 99999999; i++)
+	{
+		int a = 10;
+	}
+
+	lstrcpy(m_szLoadingText, TEXT("모델을 로딩 중 입니다."));
+
+	//Load_Models_From_Directory(LEVEL::GAMEPLAY, "Gameplay");
+
+	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩 중 입니다."));
+
+	lstrcpy(m_szLoadingText, TEXT("객체원형 생성 중 입니다."));
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_Inventory", CInventory::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_ItemFrame", CItemFrame::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_ItemIcon", CItemIcon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_EquipBorder", CEquipBorder::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
 	return S_OK;
 }
 
 HRESULT CLoader::Loading_For_Stage2()
 {
+	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
+	
+
+	lstrcpy(m_szLoadingText, TEXT("모델을 로딩 중 입니다."));
+
+	//Load_Models_From_Directory(LEVEL::GAMEPLAY, "Gameplay");
+
+	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩 중 입니다."));
+
+	lstrcpy(m_szLoadingText, TEXT("객체원형 생성 중 입니다."));
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_Inventory", CInventory::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_ItemFrame", CItemFrame::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_ItemIcon", CItemIcon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_EquipBorder", CEquipBorder::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
 	return S_OK;
 }
 

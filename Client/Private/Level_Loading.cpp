@@ -5,7 +5,8 @@
 
 #include "Level_Logo.h"
 #include "Level_Shelter.h"
-//#include "Level_Stage1.h"
+#include "Level_Stage1.h"
+#include "Level_Stage2.h"
 //#include "Level_Stage2.h"
 
 
@@ -38,8 +39,7 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelIndex)
 
 void CLevel_Loading::Update(_float fTimeDelta)
 {
-	if (true == m_pLoader->isFinished()/* &&
-		GetKeyState(DIK_A) & 0x8000*/)
+	if (true == m_pLoader->isFinished())
 	{
 
 		unique_ptr<CLevel>		pNewLevel = { nullptr };
@@ -52,12 +52,12 @@ void CLevel_Loading::Update(_float fTimeDelta)
 		case LEVEL::SHELTER:
 			pNewLevel = CLevel_Shelter::Create(m_pDevice, m_pContext);
 			break;
-		//case LEVEL::STAGE1:
-		//	pNewLevel = CLevel_Shelter::Create(m_pDevice, m_pContext);
-		//	break;
-		//case LEVEL::STAGE2:
-		//	pNewLevel = CLevel_Shelter::Create(m_pDevice, m_pContext);
-		//	break;
+		case LEVEL::STAGE1:
+			pNewLevel = CLevel_Stage1::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL::STAGE2:
+			pNewLevel = CLevel_Stage2::Create(m_pDevice, m_pContext);
+			break;
 		}
 
 
