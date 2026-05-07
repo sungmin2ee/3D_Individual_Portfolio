@@ -4,6 +4,7 @@
 
 #include "Level_Stage2.h"
 #include "Inventory.h"
+#include "Player.h"
 
 CLevel_Stage2::CLevel_Stage2(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: CLevel{ pDevice, pContext }, m_pDevice{ pDevice }, m_pContext{ pContext }
@@ -20,9 +21,9 @@ HRESULT CLevel_Stage2::Initialize()
 		return E_FAIL;
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
-	if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::STAGE2)))) {
-		return E_FAIL;
-	}
+	//if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::STAGE2)))) {
+	//	return E_FAIL;
+	//}
 
 
 
@@ -32,9 +33,9 @@ HRESULT CLevel_Stage2::Initialize()
 void CLevel_Stage2::Update(_float fTimeDelta)
 {
 
-	if (CGameInstance::Get().Key_Down(DIK_CAPITAL)) {
-		CGameInstance::Get().Save(ETOUI(LEVEL::STAGE2));
-	}
+	//if (CGameInstance::Get().Key_Down(DIK_CAPITAL)) {
+	//	CGameInstance::Get().Save(ETOUI(LEVEL::STAGE2));
+	//}
 
 }
 
@@ -58,6 +59,15 @@ HRESULT CLevel_Stage2::Ready_Layer_UI(const _wstring& strLayerTag)
 
 	//if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), L"Prototype_Inventory", ETOUI(LEVEL::SHELTER), strLayerTag)))
 	//	return E_FAIL;
+
+		/* For.Prototype_GameObject_Player*/
+	CPlayer::PLAYER_DESC pDesc;
+	pDesc.pGameObjectTag = TEXT("Player");
+	pDesc.fSpeedPerSec = 10.f;
+	pDesc.fRotationPerSec = 180.f;
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_Player"),
+		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
+		return E_FAIL;
 
 
 

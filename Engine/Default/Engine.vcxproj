@@ -20,8 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\AABB.h" />
+    <ClInclude Include="..\public\Animation.h" />
     <ClInclude Include="..\Public\Bone.h" />
     <ClInclude Include="..\Public\Camera.h" />
+    <ClInclude Include="..\public\Channel.h" />
     <ClInclude Include="..\Public\CImguiMgr.h" />
     <ClInclude Include="..\public\CMesh.h" />
     <ClInclude Include="..\public\CModel.h" />
@@ -84,6 +86,8 @@
     <ClCompile Include="..\Private\AABB.cpp" />
     <ClCompile Include="..\Private\Bone.cpp" />
     <ClCompile Include="..\Private\Camera.cpp" />
+    <ClCompile Include="..\private\Animation.cpp" />
+    <ClCompile Include="..\private\Channel.cpp" />
     <ClCompile Include="..\Private\CImguiMgr.cpp" />
     <ClCompile Include="..\private\CMesh.cpp" />
     <ClCompile Include="..\private\CModel.cpp" />

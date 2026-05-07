@@ -4,6 +4,9 @@
 #include "CMesh.h"
 #include "Material.h"
 #include "Bone.h"
+#include "Animation.h"
+#include "Channel.h"
+
 
 NS_BEGIN(Engine)
 
@@ -38,18 +41,24 @@ private:
 	Assimp::Importer		m_Importer = {};
 	_float4x4				m_PreTransformMatrix = {};
 private:
-	uint32_t					m_iNumMeshes = {};
-	vector<shared_ptr<CMesh>>	m_Meshes;
+	uint32_t						m_iNumMeshes = {};
+	vector<shared_ptr<CMesh>>		m_Meshes;
 	uint32_t						m_iNumMaterials;
 	vector<shared_ptr<CMaterial>>	m_Materials;
 	vector<shared_ptr<CBone>>		m_Bones;
 
+
+	uint32_t						m_iCurrentAnimIndex = {};
+	uint32_t						m_iNumAnimations = {};
+	vector<shared_ptr<CAnimation>>	m_Animations;
+
 private:
 	HRESULT Ready_Meshes();
-	HRESULT Ready_BinaryMeshes(string binPath, uint32_t ModelType);
+	HRESULT Ready_BinaryModel(string binPath, uint32_t ModelType);
 
 	HRESULT Ready_Materials(const _string& strModelFilePath);
 	HRESULT Ready_Bones(const aiNode* pAINode, int32_t iParentBoneIndex);
+	HRESULT Ready_Animation();
 
 
 

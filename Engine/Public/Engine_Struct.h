@@ -26,6 +26,14 @@ namespace Engine
 		uint32_t   modelType = {};
 	} MODELOBJ_DESC;
 
+	typedef struct tagKeyFrame
+	{
+		XMFLOAT3	vScale;
+		XMFLOAT4	vRotation;
+		XMFLOAT3	vTranslation;
+		float		fTrackPosition;
+	}KEYFRAME;
+
 	struct MatrixBuffer { // ½½·Ô b0¿ë
 		XMFLOAT4X4 world;
 		XMFLOAT4X4 view;

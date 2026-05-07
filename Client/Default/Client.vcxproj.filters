@@ -58,6 +58,9 @@
     <Filter Include="02.GameObject\Inventory\EquipBorder">
       <UniqueIdentifier>{a9135561-4af1-4332-9d99-807af66b3a9b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaderfiles">
+      <UniqueIdentifier>{0f9bce9d-69c1-43b2-be1a-ccf1163cf473}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">

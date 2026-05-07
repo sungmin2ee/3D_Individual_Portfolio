@@ -73,7 +73,7 @@ HRESULT CMesh::Initialize(uint32_t eType, class CModel* pModel, const aiMesh* pA
     return S_OK;
 }
 template <typename T>
-HRESULT CMesh::Initialize_Binary(uint32_t matIndex, const vector<T>& vertices, const vector<uint32_t>& indices)
+HRESULT CMesh::Initialize_Binary(uint32_t matIndex, const vector<T>& vertices, const vector<uint32_t>& indices, uint32_t numBones)
 {
     m_iMaterialIndex = matIndex;
     m_iNumVertexBuffers = 1;
@@ -83,7 +83,7 @@ HRESULT CMesh::Initialize_Binary(uint32_t matIndex, const vector<T>& vertices, c
     m_iIndexStride = 4;
     m_eIndexFormat = DXGI_FORMAT_R32_UINT;
     m_ePrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-    
+    m_iNumBones = numBones;
     if constexpr (std::is_same_v<T, VTXMESH>) {
         nonAnim_vertices = vertices;
     }
@@ -140,6 +140,7 @@ HRESULT CMesh::Initialize_Binary(uint32_t matIndex, const vector<T>& vertices, c
 #pragma endregion
 
 
+    m_BoneMatrices.resize(m_iNumBones);
 
     return S_OK;
 }
@@ -152,7 +153,8 @@ HRESULT CMesh::Bind_BoneMatrices(const vector<shared_ptr<class CBone>>& Bones, s
             XMLoadFloat4x4(&m_OffsetMatrices[i]) * Bones[m_BoneIndices[i]]->Get_CombinedTransformationMatrix());
     }
 
-    pShader->Bind_Matrices(pConstantName, m_BoneMatrices.data(), m_iNumBones);
+    if (false == m_BoneMatrices.empty())
+        pShader->Bind_Matrices(pConstantName, &m_BoneMatrices.front(), m_iNumBones);
 
     return S_OK;
 }
@@ -170,11 +172,11 @@ shared_ptr<CMesh> CMesh::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11Devic
     return pInstance;
 }
 template <typename T>
-shared_ptr<CMesh> CMesh::Create_Binary(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext, const vector<T>& vertices, const vector<uint32_t>& indices, uint32_t matIndex)
+shared_ptr<CMesh> CMesh::Create_Binary(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext, const vector<T>& vertices, const vector<uint32_t>& indices, uint32_t matIndex, uint32_t numBones)
 {
     auto		pInstance = shared_ptr<CMesh>(new CMesh(pDevice, pContext));
 
-    if (FAILED(pInstance->Initialize_Binary(matIndex, vertices, indices)))
+    if (FAILED(pInstance->Initialize_Binary(matIndex, vertices, indices, numBones)))
     {
         MSG_BOX("Failed to Created : CMesh");
         return nullptr;
@@ -306,6 +308,24 @@ HRESULT CMesh::Ready_AnimMesh(CModel* pModel, const aiMesh* pAIMesh)
         }
     }
 
+    if (0 == m_iNumBones)
+    {
+        m_iNumBones = 1;
+
+        int32_t        iBoneIndex = { -1 };
+
+        iBoneIndex = pModel->Get_BoneIndex(m_szName);
+
+        if (-1 == iBoneIndex)
+            return E_FAIL;
+
+        _float4x4       OffsetMatrix;
+        XMStoreFloat4x4(&OffsetMatrix, XMMatrixIdentity());
+
+        m_BoneIndices.push_back(iBoneIndex);
+        m_OffsetMatrices.push_back(OffsetMatrix);
+        m_BoneMatrices.resize(iBoneIndex);
+    }
     D3D11_SUBRESOURCE_DATA          VertexInitialData{};
     VertexInitialData.pSysMem = pVertices;
 

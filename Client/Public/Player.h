@@ -4,8 +4,7 @@
 #include "Engine_Defines.h"
 #include "GameObject.h"
 NS_BEGIN(Engine)
-class Model;
-class CGameObject;
+class CModel;
 class CShader;
 class Obb;
 class VIBuffer_Cube;
@@ -23,6 +22,7 @@ public:
 
 private:
 	CPlayer(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
+	CPlayer(const CPlayer& Prototype);
 public:
 	virtual ~CPlayer();
 
@@ -35,22 +35,14 @@ public:
 	virtual HRESULT Render() override;
 	//Prototype_Cube_Buffer
 private:
-	shared_ptr<Model> m_pModelCom = { nullptr };
-	shared_ptr<CShader> m_pShaderCom = { nullptr };
+	shared_ptr<CModel>			m_pModelCom = { nullptr };
+	shared_ptr<CShader>			m_pShaderCom = { nullptr };
 	shared_ptr<Obb> m_pObbCom = { nullptr };
 	shared_ptr<VIBuffer_Cube> m_pObbBfCom = { nullptr };
-	uint32_t			m_iData = {};
-	MatrixBuffer cb = {};
-	ComPtr<ID3D11Buffer>							m_pConstantBuffer = { nullptr };
-	ComPtr<ID3D11Buffer>							m_pBoneBuffer = { nullptr };
-	ComPtr<ID3D11VertexShader>						m_pVS = { nullptr };
-	ComPtr<ID3D11PixelShader>						m_pPS = { nullptr };
-	ComPtr<ID3D11InputLayout>						m_pLayout = { nullptr };
-	ComPtr<ID3D11SamplerState>						m_pSamplerState = { nullptr };
-	ComPtr<ID3D11Device>							m_pDevice = { nullptr };
-	ComPtr<ID3D11DeviceContext>						m_pContext = { nullptr };
 
-	ImGuizmo::OPERATION m_CurrentGizmoOperation;
+private:
+	HRESULT Ready_Components();
+
 public:
 	static unique_ptr<CPlayer> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
 	virtual shared_ptr<CPrototype> Clone(void* pArg) override;

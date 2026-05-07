@@ -14,6 +14,8 @@
         , m_Materials{ Prototype.m_Materials }
         , m_Bones{ Prototype.m_Bones }
         , m_PreTransformMatrix{ Prototype.m_PreTransformMatrix }
+        , m_iNumAnimations{ Prototype.m_iNumAnimations }
+        , m_Animations{ Prototype.m_Animations }
     {
 
     }
@@ -60,7 +62,8 @@
         string binPath = binRoot + pureName + ".bin";
 
         if (fs::exists(binPath)) {
-            Ready_BinaryMeshes(binPath, m_eModelType);
+            Ready_BinaryModel(binPath, m_eModelType);
+            return S_OK;
             //return LoadFromBinary(binPath); // 바이너리 폴더에서 읽기
         }
         else {
@@ -86,13 +89,18 @@
             if (FAILED(Ready_Materials(strModelFilePath)))
                 return E_FAIL;
 
+            if (ETOUI(MODEL::ANIM) == m_eModelType)
+            {
+                if (FAILED(Ready_Animation()))
+                    return E_FAIL;
+            }
 
-   
             // 메쉬 정보 
             std::ofstream fout;
             fout.open(binPath, std::ios::out | std::ios::binary);
 
             if (fout.is_open()) {
+                fout.write((const char*)&m_PreTransformMatrix, sizeof(_float4x4));
                 uint32_t meshCount = static_cast<uint32_t>(m_Meshes.size());
                 fout.write((const char*)&meshCount, sizeof(uint32_t));
 
@@ -132,30 +140,24 @@
 
                         uint32_t iMaterialIndex = mesh->Get_MaterialIndex(); // CMesh에 인덱스 반환 함수가 있다고 가정
                         fout.write((const char*)&iMaterialIndex, sizeof(uint32_t));
+
+                        uint32_t NumBones = mesh->Get_NumBones(); // CMesh에 인덱스 반환 함수가 있다고 가정
+                        fout.write((const char*)&NumBones, sizeof(uint32_t));
+
+                        if (NumBones > 0) {
+                            // Offset Matrices
+                            const char* pName = mesh->Get_BoneName();
+                            int32_t iNameLen = (int32_t)strlen(pName) + 1; // 널 문자(\0) 포함
+                            // 1. 이름의 길이를 먼저 저장
+                            fout.write((const char*)&iNameLen, sizeof(int32_t));
+                            // 2. 실제 이름 데이터를 저장
+                            fout.write(pName, iNameLen);
+                            fout.write((const char*)mesh->Get_OffsetMatrices().data(), sizeof(_float4x4)* NumBones);
+                            fout.write((const char*)mesh->Get_BoneIndices().data(), sizeof(uint32_t) * NumBones);
+                        }
                     }
 
-                    //uint32_t boneCount = static_cast<uint32_t>(m_Bones.size());
-                    //fout.write((const char*)&boneCount, sizeof(uint32_t));
-
-                    //for (auto& pBone : m_Bones) {
-                    //    // 1. 이름 저장
-                    //    string strName = pBone->Get_Name();
-                    //    uint32_t iLen = (uint32_t)strName.length();
-                    //    fout.write((char*)&iLen, sizeof(uint32_t));
-                    //    fout.write(strName.c_str(), iLen);
-
-                    //    // 2. 부모 인덱스 저장
-                    //    int32_t iParentIndex = pBone->Get_ParentIndex();
-                    //    fout.write((char*)&iParentIndex, sizeof(int32_t));
-
-                    //    // 3. 변환 행렬들 저장 (Transformation, OffsetMatrix)
-                    //    _float4x4 matTransform = pBone->Get_OffsetMatrix(); // OffsetMatrix
-                    //    fout.write((char*)&matTransform, sizeof(_float4x4));
-
-                    //    // 4. 로컬 행렬도 저장 (애니메이션 초기 상태용)
-                    //    _float4x4 matLocal = pBone->Get_TransformationMatrix();
-                    //    fout.write((char*)&matLocal, sizeof(_float4x4));
-                    //}
+           
                 }
                
 
@@ -180,10 +182,52 @@
                     }
                 }
 
+
+                ////Bone 저장
+
+                uint32_t boneCount = static_cast<uint32_t>(m_Bones.size());
+                fout.write((const char*)&boneCount, sizeof(uint32_t));
+
+                for (auto& pBone : m_Bones) {
+                    // 1. 이름 저장
+                    const char* pName = pBone->Get_BoneName();
+                    int32_t iNameLen = (int32_t)strlen(pName) + 1; // 널 문자(\0) 포함
+                    fout.write((const char*)&iNameLen, sizeof(int32_t));
+                    fout.write(pName, iNameLen);
+                    // 2. 부모 인덱스 저장
+                    int32_t iParentIndex = pBone->Get_ParentBoneIndex();
+                    fout.write((char*)&iParentIndex, sizeof(int32_t));
+
+                    // 3. 변환 행렬들 저장 (Transformation, OffsetMatrix)
+                    _float4x4 matTransform = pBone->Get_TransformationMatrix(); // OffsetMatrix
+                    fout.write((char*)&matTransform, sizeof(_float4x4));
+
+                }
+                // 애니메이션 저장
+                fout.write((const char*)&m_iNumAnimations, sizeof(uint32_t));
+                for (auto& animation : m_Animations) {
+                    auto duration =animation->Get_Duration();
+                    auto numbChannels = animation->Get_NumbChannels();
+                    auto tickPerSec = animation->Get_TickPerSec();
+                    fout.write((char*)&duration, sizeof(_float));
+                    fout.write((char*)&numbChannels, sizeof(uint32_t));
+                    fout.write((char*)&tickPerSec, sizeof(_float));
+
+                    auto channels = animation->Get_Channels();
+                    for (uint32_t i = 0; i < channels.size(); i++) {
+                        int32_t index = channels[i]->Get_BoneIndex();
+                        uint32_t numKeyFrames = channels[i]->Get_NumKeyFrames();
+                        const auto& keyFrames = channels[i]->Get_KeyFrames();
+
+                        fout.write((char*)&index, sizeof(int32_t));
+                        fout.write((char*)&numKeyFrames, sizeof(uint32_t));
+                        fout.write((char*)keyFrames.data(), sizeof(KEYFRAME)* numKeyFrames);
+
+                    }
+                }
+
             }
-
         }
-
 
         return S_OK;
     }
@@ -195,6 +239,7 @@
     void CModel::Play_Animation(_float fTimeDelta)
     {
         /* 뼈들의 m_TransformationMatrix를 갱신해준다. */
+        m_Animations[m_iCurrentAnimIndex]->Update_TransformationMatrices(fTimeDelta, m_Bones);
 
         for (auto& pBone : m_Bones)
         {
@@ -237,13 +282,14 @@
         return S_OK;
     }
 
-    HRESULT CModel::Ready_BinaryMeshes(string binPath, uint32_t ModelType)
+    HRESULT CModel::Ready_BinaryModel(string binPath, uint32_t ModelType)
     {
+   
         std::ifstream fin(binPath, std::ios::in | std::ios::binary);
 
         if (fin.is_open()) {
             // 1. 전체 메쉬 개수 읽기
-
+            fin.read((char*)&m_PreTransformMatrix, sizeof(_float4x4));
             fin.read((char*)&m_iNumMeshes, sizeof(uint32_t));
 
             for (uint32_t i = 0; i < m_iNumMeshes; ++i) {
@@ -269,7 +315,7 @@
 
                     // 5. 읽어온 데이터를 사용하여 CMesh 객체 생성
                     // 이전에 만든 Create_Binary 혹은 전용 초기화 함수를 호출합니다.
-                    shared_ptr<CMesh> pMesh = CMesh::Create_Binary(m_pDevice, m_pContext, vertices, indices, matIndex);
+                    shared_ptr<CMesh> pMesh = CMesh::Create_Binary(m_pDevice, m_pContext, vertices, indices, matIndex,0);
 
                     if (pMesh != nullptr) {
                         m_Meshes.push_back(pMesh);
@@ -290,10 +336,30 @@
                     uint32_t matIndex = 0;
                     fin.read((char*)&matIndex, sizeof(uint32_t));
 
+                    uint32_t iNumBones = 0;
+                    fin.read((char*)&iNumBones, sizeof(uint32_t));
+
+                    char szBoneName[MAX_PATH] = {};
+                    vector<_float4x4> offsetMat;
+                    vector<uint32_t> BoneIndices;
+                    offsetMat.resize(iNumBones);
+                    BoneIndices.resize(iNumBones);
+
+                    if (iNumBones > 0) {
+                        int32_t iNameLen = 0;
+                        fin.read((char*)&iNameLen, sizeof(uint32_t));
+                        fin.read(szBoneName, iNameLen);
+                        fin.read((char*)offsetMat.data(), sizeof(_float4x4) * iNumBones);
+                        fin.read((char*)BoneIndices.data(), sizeof(uint32_t) * iNumBones);
+                    }
+ 
                     // 5. 읽어온 데이터를 사용하여 CMesh 객체 생성
                     // 이전에 만든 Create_Binary 혹은 전용 초기화 함수를 호출합니다.
-                    shared_ptr<CMesh> pMesh = CMesh::Create_Binary(m_pDevice, m_pContext, vertices, indices, matIndex);
-
+                    shared_ptr<CMesh> pMesh = CMesh::Create_Binary(m_pDevice, m_pContext, vertices, indices, matIndex, iNumBones);
+                    pMesh->Set_Name(szBoneName);
+                    pMesh->Set_OffsetMatrices(offsetMat);
+                    pMesh->Set_BoneIndices(BoneIndices);
+                    //pMesh->set
                     if (pMesh != nullptr) {
                         m_Meshes.push_back(pMesh);
                     }
@@ -321,7 +387,57 @@
                 auto pMaterial = CMaterial::Create_Binary(m_pDevice, m_pContext, adTexturePaths);
                 if (pMaterial) m_Materials.push_back(pMaterial);
             }
+            uint32_t boneCount = 0;
+            fin.read((char*)&boneCount, sizeof(uint32_t));
+
+            for (int32_t i = 0; i < boneCount; i++) {
+                char BoneName[MAX_PATH] = {};
+                uint32_t boneNameLen = 0;
+                fin.read((char*)&boneNameLen, sizeof(uint32_t));
+                fin.read(BoneName, boneNameLen);
+
+                uint32_t parentIndex = 0;
+                fin.read((char*)&parentIndex, sizeof(uint32_t));
+                _float4x4 matTransform;
+                fin.read((char*)&matTransform, sizeof(_float4x4));
+
+                auto    pBone = CBone::Create_Binary(BoneName, matTransform,parentIndex);
+                m_Bones.push_back(pBone);
+
+            }
+
+            //애니메이션 읽기 
+
+     
+            fin.read((char*)&m_iNumAnimations, sizeof(uint32_t));
+
+            for (uint32_t i = 0; i < m_iNumAnimations; i++) {
+                _float duration = 0;
+                uint32_t numbChannels = 0;
+                _float tickPerSec = 0;
+
+                fin.read((char*)&duration, sizeof(_float));
+                fin.read((char*)&numbChannels, sizeof(uint32_t));
+                fin.read((char*)&tickPerSec, sizeof(_float));
+                vector<shared_ptr<CChannel>> b_Channels;
+
+                for (uint32_t j = 0; j < numbChannels; j++) {
+                    int32_t boneIndex = 0;
+                    uint32_t numKeyFrames = 0;
+                    fin.read((char*)&boneIndex, sizeof(int32_t));
+                    fin.read((char*)&numKeyFrames, sizeof(uint32_t));
+                    vector<KEYFRAME> keyframes(numKeyFrames);
+                    fin.read((char*)keyframes.data(), sizeof(KEYFRAME)* numKeyFrames);
+                    auto channel = CChannel::Create_Binary(boneIndex, numKeyFrames, move(keyframes));
+                    b_Channels.push_back(channel);
+                }
+                auto animation = CAnimation::Create_Binary(duration, tickPerSec, numbChannels, b_Channels);
+                m_Animations.push_back(animation);
+            }
+
             fin.close();
+
+
         }
 
         return S_OK;
@@ -356,6 +472,22 @@
             Ready_Bones(pAINode->mChildren[i], iParentIndex);
         }
 
+        return S_OK;
+    }
+
+    HRESULT CModel::Ready_Animation()
+    {
+        m_iNumAnimations = m_pAIScene->mNumAnimations;
+
+        for (size_t i = 0; i < m_iNumAnimations; i++)
+        {
+            shared_ptr<CAnimation> pAnimation = CAnimation::Create(m_pAIScene->mAnimations[i], this);
+            if (nullptr == pAnimation)
+                return E_FAIL;
+
+            
+            m_Animations.push_back(pAnimation);
+        }
         return S_OK;
     }
 
