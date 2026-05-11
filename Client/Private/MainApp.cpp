@@ -9,6 +9,7 @@
 #include "CModelObject.h"
 #include "Model.h"
 #include "Camera_Free.h"
+#include "StateMachine.h"
 
 
 CMainApp::CMainApp()
@@ -169,5 +170,6 @@ unique_ptr<CMainApp> Client::CMainApp::Create() {
 		MSG_BOX("Failed to create MainApp");
 	return pInstance;
 }
+
 
 

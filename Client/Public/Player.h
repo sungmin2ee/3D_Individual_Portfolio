@@ -1,24 +1,19 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "Engine_Defines.h"
-#include "GameObject.h"
-NS_BEGIN(Engine)
-class CModel;
-class CShader;
-class Obb;
-class VIBuffer_Cube;
-NS_END
+#include "ContainerObject.h"
 
 NS_BEGIN(Client)
 
-class CPlayer final : public CGameObject
+class CPlayer final : public CContainerObject
 {
 public:
-	typedef struct tagPlayerDesc : public CGameObject::GAMEOBJECT_DESC
+	typedef struct tagPlayerDesc : public CContainerObject::CONTAINEROBJECT_DESC
 	{
-		uint32_t		iData;
+
 	}PLAYER_DESC;
+
+
 
 private:
 	CPlayer(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
@@ -33,15 +28,13 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-	//Prototype_Cube_Buffer
+
 private:
-	shared_ptr<CModel>			m_pModelCom = { nullptr };
-	shared_ptr<CShader>			m_pShaderCom = { nullptr };
-	shared_ptr<Obb> m_pObbCom = { nullptr };
-	shared_ptr<VIBuffer_Cube> m_pObbBfCom = { nullptr };
+	uint32_t			m_iState = {};
 
 private:
 	HRESULT Ready_Components();
+	HRESULT Ready_PartObjects();
 
 public:
 	static unique_ptr<CPlayer> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);

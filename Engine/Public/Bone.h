@@ -35,6 +35,9 @@ public:
 	const _float4x4 Get_TransformationMatrix()& {
 		return m_TransformationMatrix;
 	}
+	const _float4x4* Get_CombinedTransformationMatrixPtr() {
+		return &m_CombinedTransformationMatrix;
+	}
 private:
 	_char			m_szName[MAX_PATH] = {  };
 	_float4x4		m_TransformationMatrix = { }; /* 이 뼈만의 상태행렬 */
@@ -44,6 +47,8 @@ private:
 public:
 	static shared_ptr<CBone> Create(const aiNode* pAINode, int32_t iParentIndex);
 	static shared_ptr<CBone> Create_Binary(_char* szName, _float4x4 transformationMat, int32_t iParentIndex);
+	shared_ptr<CBone> Clone();
+
 };
 
 NS_END

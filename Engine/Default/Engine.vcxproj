@@ -31,6 +31,7 @@
     <ClInclude Include="..\Public\Collider.h" />
     <ClInclude Include="..\Public\Collider_Manager.h" />
     <ClInclude Include="..\Public\Component.h" />
+    <ClInclude Include="..\Public\ContainerObject.h" />
     <ClInclude Include="..\Public\DInput_Manager.h" />
     <ClInclude Include="..\Public\Engine_Defines.h" />
     <ClInclude Include="..\Public\Engine_Enum.h" />
@@ -48,11 +49,9 @@
     <ClInclude Include="..\Public\Level.h" />
     <ClInclude Include="..\Public\Level_Manager.h" />
     <ClInclude Include="..\Public\Material.h" />
-    <ClInclude Include="..\Public\Mesh.h" />
-    <ClInclude Include="..\Public\Model.h" />
-    <ClInclude Include="..\Public\ModelLoader.h" />
     <ClInclude Include="..\Public\Obb.h" />
     <ClInclude Include="..\Public\Object_Manager.h" />
+    <ClInclude Include="..\Public\PartObject.h" />
     <ClInclude Include="..\Public\PipeLine.h" />
     <ClInclude Include="..\Public\Prototype.h" />
     <ClInclude Include="..\Public\Prototype_Manager.h" />
@@ -60,7 +59,6 @@
     <ClInclude Include="..\Public\SaveLoad_Manager.h" />
     <ClInclude Include="..\Public\Shader.h" />
     <ClInclude Include="..\public\Texture.h" />
-    <ClInclude Include="..\Public\TextureLoader.h" />
     <ClInclude Include="..\Public\Timer.h" />
     <ClInclude Include="..\Public\Timer_Manager.h" />
     <ClInclude Include="..\Public\Transform.h" />
@@ -95,6 +93,7 @@
     <ClCompile Include="..\Private\Collider.cpp" />
     <ClCompile Include="..\Private\Collider_Manager.cpp" />
     <ClCompile Include="..\Private\Component.cpp" />
+    <ClCompile Include="..\Private\ContainerObject.cpp" />
     <ClCompile Include="..\Private\DInput_Manager.cpp" />
     <ClCompile Include="..\Private\Font_Manager.cpp" />
     <ClCompile Include="..\Private\GameInstance.cpp" />
@@ -106,11 +105,9 @@
     <ClCompile Include="..\Private\Level.cpp" />
     <ClCompile Include="..\Private\Level_Manager.cpp" />
     <ClCompile Include="..\Private\Material.cpp" />
-    <ClCompile Include="..\Private\Mesh.cpp" />
-    <ClCompile Include="..\Private\Model.cpp" />
-    <ClCompile Include="..\Private\ModelLoader.cpp" />
     <ClCompile Include="..\Private\Obb.cpp" />
     <ClCompile Include="..\Private\Object_Manager.cpp" />
+    <ClCompile Include="..\Private\PartObject.cpp" />
     <ClCompile Include="..\Private\PipeLine.cpp" />
     <ClCompile Include="..\Private\Prototype.cpp" />
     <ClCompile Include="..\Private\Prototype_Manager.cpp" />
@@ -118,7 +115,6 @@
     <ClCompile Include="..\Private\SaveLoad_Manager.cpp" />
     <ClCompile Include="..\Private\Shader.cpp" />
     <ClCompile Include="..\private\Texture.cpp" />
-    <ClCompile Include="..\Private\TextureLoader.cpp" />
     <ClCompile Include="..\Private\Timer.cpp" />
     <ClCompile Include="..\Private\Timer_Manager.cpp" />
     <ClCompile Include="..\Private\Transform.cpp" />

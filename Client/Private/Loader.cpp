@@ -10,6 +10,7 @@
 #include "ItemIcon.h"
 #include "EquipBorder.h"
 #include "Player.h"
+#include "Body_Player.h"
 
 CLoader::CLoader(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: m_pDevice{ pDevice }
@@ -205,7 +206,7 @@ HRESULT CLoader::Loading_For_Stage2()
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
 
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_Model_Joe"),
-		CModel::Create(m_pDevice, m_pContext, ETOUI(MODEL::ANIM), "../../Resources/Models/Joe5.fbx", PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, ETOUI(MODEL::ANIM), "../../Resources/Models/Player1.fbx", PreTransformMatrix))))
 		return E_FAIL;
 	//Load_Models_From_Directory(LEVEL::GAMEPLAY, "Gameplay");
 
@@ -223,8 +224,10 @@ HRESULT CLoader::Loading_For_Stage2()
 
 
 
-
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_Player"),
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Body_Player"),
+		CBody_Player::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Player"),
 		CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 

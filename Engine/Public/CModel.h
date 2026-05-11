@@ -24,14 +24,19 @@ public:
 
 	int32_t Get_BoneIndex(const _char* pBoneName);
 
+
+	const _float4x4* Get_BoneMatrixPtr(const _char* pBoneName);
 public:
 	virtual HRESULT Initialize_Prototype(uint32_t eModelType, const _string& strModelFilePath, _fmatrix PreTransformMatrix);
 	virtual HRESULT Initialize(void* pArg) override;
-	void Play_Animation(_float fTimeDelta);
+	_bool Play_Animation(_float fTimeDelta);
 	HRESULT Bind_Materials(shared_ptr<class CShader> pShader, const _char* pConstantName, uint32_t iMeshIndex, aiTextureType eMaterialType, uint32_t iTextureIndex);
 	HRESULT Bind_BoneMatrices(shared_ptr<class CShader> pShader, const _char* pConstantName, uint32_t iMeshIndex);
 
-
+	void Set_Animation(uint32_t iIndex, _bool isLoop = true) {
+		m_iCurrentAnimIndex = iIndex;
+		m_isAnimLoop = isLoop;
+	}
 public:
 	HRESULT Render(uint32_t iMeshIndex);
 
@@ -47,7 +52,7 @@ private:
 	vector<shared_ptr<CMaterial>>	m_Materials;
 	vector<shared_ptr<CBone>>		m_Bones;
 
-
+	_bool							m_isAnimLoop = { true };
 	uint32_t						m_iCurrentAnimIndex = {};
 	uint32_t						m_iNumAnimations = {};
 	vector<shared_ptr<CAnimation>>	m_Animations;

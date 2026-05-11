@@ -72,3 +72,9 @@ shared_ptr<CBone> CBone::Create_Binary(_char* szName, _float4x4 transformationMa
 
     return pInstance;
 }
+
+shared_ptr<CBone> CBone::Clone()
+{
+    return shared_ptr<CBone>(new CBone(*this));
+
+}

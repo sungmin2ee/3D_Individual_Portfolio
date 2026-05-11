@@ -55,15 +55,6 @@
     <Filter Include="98.ImGui\Gizmo">
       <UniqueIdentifier>{d36bf000-3480-481a-ac28-d5cd31ee5264}</UniqueIdentifier>
     </Filter>
-    <Filter Include="97.Assimp">
-      <UniqueIdentifier>{3dceab2d-5d2c-4ea9-8622-515bbf5d93bb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="97.Assimp\TextureLoader">
-      <UniqueIdentifier>{75d12d3b-d7bd-44d6-a688-4729f8a17603}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="97.Assimp\ModelLoader">
-      <UniqueIdentifier>{2c666ee2-351f-43db-983a-f70b7a71c5a1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="95.Camera">
       <UniqueIdentifier>{6bbb1fd7-889b-4ce6-93df-ac16dc96ab0e}</UniqueIdentifier>
     </Filter>
@@ -148,6 +139,12 @@
     <Filter Include="06.Component\Model\Animation\Channel">
       <UniqueIdentifier>{fb2e4eb1-c20f-4863-b667-f073367e6371}</UniqueIdentifier>
     </Filter>
+    <Filter Include="05.GameObject\ContainerObject">
+      <UniqueIdentifier>{f42d69f2-a2b2-4cc6-b6d8-f8ba5207a5cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.GameObject\ContainerObject\PartObject">
+      <UniqueIdentifier>{7e9b6fe6-48b3-4f34-a741-c3ea978d67e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -212,18 +209,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\CImguiMgr.h">
       <Filter>98.ImGui\Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\TextureLoader.h">
-      <Filter>97.Assimp\TextureLoader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Mesh.h">
-      <Filter>97.Assimp</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\ModelLoader.h">
-      <Filter>97.Assimp\ModelLoader</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Model.h">
-      <Filter>97.Assimp</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Shader.h">
       <Filter>06.Component\Shader</Filter>
@@ -300,6 +285,12 @@
     <ClInclude Include="..\public\Channel.h">
       <Filter>06.Component\Model\Animation\Channel</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ContainerObject.h">
+      <Filter>05.GameObject\ContainerObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\PartObject.h">
+      <Filter>05.GameObject\ContainerObject\PartObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\Graphic_Device.cpp">
@@ -346,18 +337,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\CImguiMgr.cpp">
       <Filter>98.ImGui\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\TextureLoader.cpp">
-      <Filter>97.Assimp\TextureLoader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Mesh.cpp">
-      <Filter>97.Assimp</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\ModelLoader.cpp">
-      <Filter>97.Assimp\ModelLoader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Model.cpp">
-      <Filter>97.Assimp</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Shader.cpp">
       <Filter>06.Component\Shader</Filter>
@@ -469,6 +448,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Channel.cpp">
       <Filter>06.Component\Model\Animation\Channel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ContainerObject.cpp">
+      <Filter>05.GameObject\ContainerObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\PartObject.cpp">
+      <Filter>05.GameObject\ContainerObject\PartObject</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

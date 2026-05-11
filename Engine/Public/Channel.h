@@ -14,7 +14,8 @@ public:
 public:
 	HRESULT Initialize(const aiNodeAnim* pAIChannel, class CModel* pModel);
 	HRESULT Initialize_Binary(int32_t boneIndex, uint32_t NumKeyFrames, vector<KEYFRAME> keyFrames);
-	void Update_TransformationMatrix(_float fCurrentTrackPosition, const vector<shared_ptr<class CBone>>& Bones);
+	void Update_TransformationMatrix(uint32_t& iCurrentKeyFrameIndex, _float fCurrentTrackPosition, const vector<shared_ptr<class CBone>>& Bones);
+
 
 public:
 	vector<KEYFRAME>& Get_KeyFrames() { return m_KeyFrames; }
@@ -25,7 +26,6 @@ private:
 	int32_t				m_iBoneIndex = {};
 	uint32_t			m_iNumKeyFrames = {};
 	vector<KEYFRAME>	m_KeyFrames;
-	uint32_t			m_iCurrentKeyFrameIndex = {  };
 
 public:
 	static shared_ptr<CChannel> Create(const aiNodeAnim* pAIChannel, class CModel* pModel);

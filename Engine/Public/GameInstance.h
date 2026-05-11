@@ -63,11 +63,7 @@ public:
 	void Free();
 #pragma endregion
 
-#pragma region MODEL_LOADER
-	bool Load(string filename);
-	void Close();
-	vector<class Mesh>& Get_Meshes();
-#pragma endregion
+
 #pragma region INPUT_MANAGER
 	_byte	Get_DIKeyState(uint8_t byKeyID);
 
@@ -136,7 +132,6 @@ private:
 	unique_ptr<class CDInput_Manager>				m_pInput_Manager = { nullptr };
 	unique_ptr<class CRenderer>						m_pRenderer = { nullptr };
 	unique_ptr<class CImguiMgr>						m_pImguiMgr = { nullptr };
-	unique_ptr<class ModelLoader>					m_pModelLoader = { nullptr };
 	unique_ptr<class CHelper> 						m_pHelper = nullptr;
 	unique_ptr<class Collider_Manager> 				m_pCollider_Manager = nullptr;
 	unique_ptr<class SaveLoad_Manager> 				m_pSaveLoad_Manager = nullptr;

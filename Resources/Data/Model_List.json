@@ -225,6 +225,14 @@
             "PrototypeTag": "Prototype_Model_pharmacy_03"
         },
         {
+            "FilePath": "../../Resources/Models/Player1.fbx",
+            "PrototypeTag": "Prototype_Model_Player1"
+        },
+        {
+            "FilePath": "../../Resources/Models/Player_Demo.fbx",
+            "PrototypeTag": "Prototype_Model_Player_Demo"
+        },
+        {
             "FilePath": "../../Resources/Models/policeCar.fbx",
             "PrototypeTag": "Prototype_Model_policeCar"
         },

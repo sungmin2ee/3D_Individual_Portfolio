@@ -143,7 +143,7 @@ HRESULT SaveLoad_Manager::Load(uint32_t levelIndex)
 		matWorld.r[2] = XMLoadFloat4((_float4*)fLook);   // Look
 		matWorld.r[3] = XMLoadFloat4((_float4*)fPos);    // Position
 		XMStoreFloat4x4(&desc.worldMatrix,matWorld);
-		//XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(180.f));
+		XMMATRIX matRot = XMMatrixRotationY(XMConvertToRadians(180.f));
 		//XMMATRIX matWorld1 = XMLoadFloat4x4(&desc.worldMatrix);
 		//XMMATRIX matResult = XMMatrixIdentity();
 		//matResult = matRot* matWorld1;

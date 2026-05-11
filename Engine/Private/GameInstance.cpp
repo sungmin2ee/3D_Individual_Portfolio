@@ -9,8 +9,6 @@
 #include "Collider_Manager.h"
 #include "Renderer.h"
 #include "CImguiMgr.h"
-#include "ModelLoader.h"
-#include "Model.h"
 #include "Camera.h"
 #include "Helper.h"
 #include "Layer.h"
@@ -60,9 +58,7 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, ComPtr<I
     if (nullptr == m_pInput_Manager)
         return E_FAIL;
 
-    m_pModelLoader = ModelLoader::Create(EngineDesc.hWnd, pOutDevice, pOutContext);
-    if (nullptr == m_pModelLoader)
-        return E_FAIL;
+
 
     m_pImguiMgr = CImguiMgr::Create(EngineDesc);
     if (nullptr == m_pImguiMgr)
@@ -221,22 +217,7 @@ HRESULT CGameInstance::Add_RenderObject(RENDERGROUP eRenderGroup, shared_ptr<CGa
 #pragma endregion
 
 
-#pragma region MODEL_LOADER
 
-bool CGameInstance::Load(string filename) {
-    
-    return m_pModelLoader->Load(filename);
-}
-void CGameInstance::Close () {
-
-    return m_pModelLoader->Close();
-}
-
-vector<Mesh>& CGameInstance::Get_Meshes()
-{
-    return m_pModelLoader->Get_Meshes();
-    // TODO: 여기에 return 문을 삽입합니다.
-}
 
 #pragma endregion
 
@@ -408,7 +389,6 @@ void CGameInstance::Release_Engine()
     m_pTimer_Manager.reset();
 
     m_pObject_Manager.reset();
-    m_pModelLoader.reset();
 
     m_pPrototype_Manager.reset();
     m_pInput_Manager.reset();

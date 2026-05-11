@@ -21,9 +21,9 @@ HRESULT CLevel_Stage2::Initialize()
 		return E_FAIL;
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
-	//if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::STAGE2)))) {
-	//	return E_FAIL;
-	//}
+	if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::STAGE2)))) {
+		return E_FAIL;
+	}
 
 
 
@@ -65,7 +65,7 @@ HRESULT CLevel_Stage2::Ready_Layer_UI(const _wstring& strLayerTag)
 	pDesc.pGameObjectTag = TEXT("Player");
 	pDesc.fSpeedPerSec = 10.f;
 	pDesc.fRotationPerSec = 180.f;
-	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_Player"),
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Player"),
 		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
 		return E_FAIL;
 

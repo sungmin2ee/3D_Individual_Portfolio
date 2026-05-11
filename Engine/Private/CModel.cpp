@@ -12,11 +12,18 @@
         , m_Meshes{ Prototype.m_Meshes }
         , m_iNumMaterials{ Prototype.m_iNumMaterials }
         , m_Materials{ Prototype.m_Materials }
-        , m_Bones{ Prototype.m_Bones }
         , m_PreTransformMatrix{ Prototype.m_PreTransformMatrix }
         , m_iNumAnimations{ Prototype.m_iNumAnimations }
-        , m_Animations{ Prototype.m_Animations }
     {
+        for (auto& pPrototypeBone : Prototype.m_Bones)
+        {
+            m_Bones.push_back(pPrototypeBone->Clone());
+        }
+
+        for (auto& pPrototypeAnim : Prototype.m_Animations)
+        {
+            m_Animations.push_back(pPrototypeAnim->Clone());
+        }
 
     }
 
@@ -44,6 +51,23 @@
         return iBoneIndex;
     }
 
+    const _float4x4* CModel::Get_BoneMatrixPtr(const _char* pBoneName)
+    {
+        auto    iter = find_if(m_Bones.begin(), m_Bones.end(), [&](shared_ptr<CBone> pBone)->_bool
+            {
+                if (true == pBone->Compare_Name(pBoneName))
+                    return true;
+
+                return false;
+            });
+
+        if (iter == m_Bones.end())
+            return nullptr;
+
+        return (*iter)->Get_CombinedTransformationMatrixPtr();
+    }
+
+
     HRESULT CModel::Initialize_Prototype(uint32_t eModelType, const _string& strModelFilePath, _fmatrix PreTransformMatrix)
     {
         m_eModelType = eModelType;
@@ -68,8 +92,9 @@
         }
         else {
 
-            uint32_t        iFlag = { aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast | aiProcess_SortByPType |   //점 선 삼각형 타입별로 정리
-                aiProcess_LimitBoneWeights | aiProcess_PopulateArmatureData };
+           // uint32_t        iFlag = { aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast | aiProcess_SortByPType |   //점 선 삼각형 타입별로 정리
+           //     aiProcess_LimitBoneWeights | aiProcess_PopulateArmatureData };
+            uint32_t        iFlag = { aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_Fast };
 
             if (ETOUI(MODEL::NONANIM) == m_eModelType)
                 iFlag |= aiProcess_PreTransformVertices;
@@ -81,7 +106,8 @@
 
             XMStoreFloat4x4(&m_PreTransformMatrix, PreTransformMatrix);
 
-            Ready_Bones(m_pAIScene->mRootNode, -1);
+            if (ETOUI(MODEL::ANIM) == m_eModelType)
+                  Ready_Bones(m_pAIScene->mRootNode, -1);
 
             if (FAILED(Ready_Meshes()))
                 return E_FAIL;
@@ -147,9 +173,9 @@
                         if (NumBones > 0) {
                             // Offset Matrices
                             const char* pName = mesh->Get_BoneName();
-                            int32_t iNameLen = (int32_t)strlen(pName) + 1; // 널 문자(\0) 포함
+                            uint32_t iNameLen = (uint32_t)strlen(pName) + 1; // 널 문자(\0) 포함
                             // 1. 이름의 길이를 먼저 저장
-                            fout.write((const char*)&iNameLen, sizeof(int32_t));
+                            fout.write((const char*)&iNameLen, sizeof(uint32_t));
                             // 2. 실제 이름 데이터를 저장
                             fout.write(pName, iNameLen);
                             fout.write((const char*)mesh->Get_OffsetMatrices().data(), sizeof(_float4x4)* NumBones);
@@ -206,9 +232,14 @@
                 // 애니메이션 저장
                 fout.write((const char*)&m_iNumAnimations, sizeof(uint32_t));
                 for (auto& animation : m_Animations) {
+
+                    const char* animName = animation->Get_Name();
+                    int32_t iNameLen = (int32_t)strlen(animName) + 1; // 널 문자(\0) 포함
                     auto duration =animation->Get_Duration();
                     auto numbChannels = animation->Get_NumbChannels();
                     auto tickPerSec = animation->Get_TickPerSec();
+                    fout.write((const char*)&iNameLen, sizeof(int32_t));
+                    fout.write(animName, iNameLen);
                     fout.write((char*)&duration, sizeof(_float));
                     fout.write((char*)&numbChannels, sizeof(uint32_t));
                     fout.write((char*)&tickPerSec, sizeof(_float));
@@ -236,17 +267,23 @@
     {
         return S_OK;
     }
-    void CModel::Play_Animation(_float fTimeDelta)
+    _bool CModel::Play_Animation(_float fTimeDelta)
     {
-        /* 뼈들의 m_TransformationMatrix를 갱신해준다. */
-        m_Animations[m_iCurrentAnimIndex]->Update_TransformationMatrices(fTimeDelta, m_Bones);
+        _bool           isFinished = { false };
 
+        /* 뼈들의 m_TransformationMatrix를 갱신해준다. */
+        isFinished = m_Animations[m_iCurrentAnimIndex]->Update_TransformationMatrices(fTimeDelta, m_Bones, m_isAnimLoop);
+
+      
         for (auto& pBone : m_Bones)
         {
             pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
         }
 
+        return isFinished;
+
     }
+
     HRESULT CModel::Render(uint32_t iMeshIndex)
     {
    
@@ -416,6 +453,10 @@
                 uint32_t numbChannels = 0;
                 _float tickPerSec = 0;
 
+                char animName[MAX_PATH] = {};
+                uint32_t animNameLen = 0;
+                fin.read((char*)&animNameLen, sizeof(uint32_t));
+                fin.read(animName, animNameLen);
                 fin.read((char*)&duration, sizeof(_float));
                 fin.read((char*)&numbChannels, sizeof(uint32_t));
                 fin.read((char*)&tickPerSec, sizeof(_float));
@@ -431,7 +472,7 @@
                     auto channel = CChannel::Create_Binary(boneIndex, numKeyFrames, move(keyframes));
                     b_Channels.push_back(channel);
                 }
-                auto animation = CAnimation::Create_Binary(duration, tickPerSec, numbChannels, b_Channels);
+                auto animation = CAnimation::Create_Binary(animName, duration, tickPerSec, numbChannels, b_Channels);
                 m_Animations.push_back(animation);
             }
 
@@ -534,6 +575,7 @@
         else if (modelType == 1) {
             if (m_Meshes.empty() || m_Meshes[0]->Anim_vertices.empty())
                 return;
+
 
             _float3 firstPos = m_Meshes[0]->Anim_vertices[0].vPosition;
             _float minX = firstPos.x, minY = firstPos.y, minZ = firstPos.z;

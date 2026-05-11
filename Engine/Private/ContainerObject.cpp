@@ -1,0 +1,88 @@
+#include "ContainerObject.h"
+#include "PartObject.h"
+
+#include "GameInstance.h"
+
+CContainerObject::CContainerObject(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
+	: CGameObject { pDevice, pContext }
+{
+}
+
+CContainerObject::CContainerObject(const CContainerObject& Prototype)
+	: CGameObject{ Prototype }
+{
+}
+
+CContainerObject::~CContainerObject()
+{
+}
+
+HRESULT CContainerObject::Initialize_Prototype()
+{
+	return S_OK;
+}
+
+HRESULT CContainerObject::Initialize(void* pArg)
+{
+	auto        pDesc = static_cast<CONTAINEROBJECT_DESC*>(pArg);
+
+	if (FAILED(__super::Initialize(pArg)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+void CContainerObject::Priority_Update(_float fTimeDelta)
+{
+	for (auto& Pair : m_PartObjects)
+	{
+		if (nullptr != Pair.second)
+			Pair.second->Priority_Update(fTimeDelta);
+	}
+}
+
+void CContainerObject::Update(_float fTimeDelta)
+{
+	for (auto& Pair : m_PartObjects)
+	{
+		if (nullptr != Pair.second)
+			Pair.second->Update(fTimeDelta);
+	}
+}
+
+void CContainerObject::Late_Update(_float fTimeDelta)
+{
+	for (auto& Pair : m_PartObjects)
+	{
+		if (nullptr != Pair.second)
+			Pair.second->Late_Update(fTimeDelta);
+	}
+}
+
+HRESULT CContainerObject::Render()
+{
+	return S_OK;
+}
+
+CPartObject* CContainerObject::Find_PartObject(const _wstring& strPartTag)
+{
+	auto	iter = m_PartObjects.find(strPartTag);
+	if(iter == m_PartObjects.end())
+		return nullptr;
+
+	return iter->second.get();
+}
+
+HRESULT CContainerObject::Add_PartObject(uint32_t iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strPartTag, void* pArg)
+{
+	if (nullptr != Find_PartObject(strPartTag))
+		return E_FAIL;
+
+	auto	pPartObject = dynamic_pointer_cast<CPartObject>(CGameInstance::Get().Clone_Prototype(iPrototypeLevelIndex, strPrototypeTag, pArg));
+	if (nullptr == pPartObject)
+		return E_FAIL;
+
+	m_PartObjects.emplace(strPartTag, pPartObject);
+
+	return S_OK;
+}
