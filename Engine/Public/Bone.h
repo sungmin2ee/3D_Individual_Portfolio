@@ -12,7 +12,12 @@ private:
 	CBone();
 public:
 	~CBone();
-
+public:
+	typedef struct SRT{
+		_vector vScale;
+		_vector vRotation; // ÄõÅÍ´Ï¾ð
+		_vector vTranslation;
+	}SRT_DATA;
 public:
 	_matrix Get_CombinedTransformationMatrix() {
 		return XMLoadFloat4x4(&m_CombinedTransformationMatrix);
@@ -46,6 +51,7 @@ private:
 
 public:
 	static shared_ptr<CBone> Create(const aiNode* pAINode, int32_t iParentIndex);
+	SRT_DATA Get_Current_SRT();
 	static shared_ptr<CBone> Create_Binary(_char* szName, _float4x4 transformationMat, int32_t iParentIndex);
 	shared_ptr<CBone> Clone();
 

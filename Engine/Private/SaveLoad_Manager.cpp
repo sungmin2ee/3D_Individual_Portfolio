@@ -150,7 +150,7 @@ HRESULT SaveLoad_Manager::Load(uint32_t levelIndex)
 		//XMStoreFloat4x4(&desc.worldMatrix, matResult);
 		desc.pretransformMatrix= XMMatrixIdentity();
 
-		//desc.pretransformMatrix = XMMatrixRotationY(XMConvertToRadians(0.f));
+		desc.pretransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
 		//모델 프로토타입이 있나?
 		//모델부터 로드해야됨 
 		if (CGameInstance::Get().Find_Prototype(desc.levelIndex, desc.pModelPrototypeTag) == nullptr) {

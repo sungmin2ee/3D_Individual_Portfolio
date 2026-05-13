@@ -1,6 +1,6 @@
 #pragma once
 #include "Engine_Defines.h"
-
+#include "Bone.h"
 NS_BEGIN(Engine)
 class CAnimation
 {
@@ -12,7 +12,8 @@ public:
 public:
 	HRESULT Initialize(const aiAnimation* pAiAnimation, class CModel* pModel);
 	HRESULT Initialize_Binary(_char* animName, _float duration,_float tickPerSec, uint32_t NumChannels, vector<shared_ptr<class CChannel>>channels);
-	_bool Update_TransformationMatrices(_float fTimeDelta, const vector<shared_ptr<class CBone>>& Bones, _bool isLoop);
+	_bool Update_TransformationMatrices(_float fTimeDelta, const vector<shared_ptr<class CBone>>& Bones, _bool isLoop,_bool animChanged);
+	void Update_Blending_Matrices(_float fTimeDelta, const vector<shared_ptr<class CBone>>& Bones, const vector<CBone::SRT_DATA>& snapShot, _float ratio, _bool animChanged);
 	const _char* Get_Name() { return m_szName; }
 public:
 	vector<shared_ptr<class CChannel>>& Get_Channels() { return m_Channels; }

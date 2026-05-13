@@ -206,7 +206,7 @@ HRESULT CLoader::Loading_For_Stage2()
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
 
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_Model_Joe"),
-		CModel::Create(m_pDevice, m_pContext, ETOUI(MODEL::ANIM), "../../Resources/Models/Player1.fbx", PreTransformMatrix))))
+		CModel::Create(m_pDevice, m_pContext, ETOUI(MODEL::ANIM), "../../Resources/Models/PlayerJoe.fbx", PreTransformMatrix))))
 		return E_FAIL;
 	//Load_Models_From_Directory(LEVEL::GAMEPLAY, "Gameplay");
 

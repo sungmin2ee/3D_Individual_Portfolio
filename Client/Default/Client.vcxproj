@@ -151,6 +151,7 @@
     <ClInclude Include="..\Public\MainApp.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\public\Player_Idle.h" />
+    <ClInclude Include="..\public\Player_Walk.h" />
     <ClInclude Include="..\public\State.h" />
     <ClInclude Include="..\public\StateMachine.h" />
     <ClInclude Include="Client.h" />
@@ -162,6 +163,7 @@
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\private\Body_Player.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />
+    <ClCompile Include="..\private\Player_Walk.cpp" />
     <ClCompile Include="..\private\Player_Run.cpp" />
     <ClCompile Include="..\private\Player_Idle.cpp" />
     <ClCompile Include="..\private\EquipBorder.cpp" />

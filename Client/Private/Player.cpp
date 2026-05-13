@@ -50,7 +50,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 void CPlayer::Update(_float fTimeDelta)
 {
 
-	if (GetKeyState(VK_DOWN) & 0x8000)
+	/*if (GetKeyState(VK_DOWN) & 0x8000)
 	{
 		m_pTransformCom->Go_Backward(fTimeDelta);
 	}
@@ -78,7 +78,7 @@ void CPlayer::Update(_float fTimeDelta)
 			m_iState ^= CBody_Player::PLAYER_STATE::RUN;
 
 		m_iState |= CBody_Player::PLAYER_STATE::IDLE;
-	}
+	}*/
 	__super::Update(fTimeDelta);
 }
 

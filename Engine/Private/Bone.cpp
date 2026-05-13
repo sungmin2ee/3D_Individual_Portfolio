@@ -59,6 +59,26 @@ shared_ptr<CBone> CBone::Create(const aiNode* pAINode, int32_t iParentIndex)
 
     return pInstance;
 }
+CBone::SRT_DATA CBone::Get_Current_SRT()
+{
+    SRT_DATA Out;
+
+    // m_TransformationMatrix는 이미 Update_TransformationMatrix에서 셋팅된 행렬입니다.
+    _matrix matCurrent = XMLoadFloat4x4(&m_TransformationMatrix);
+
+    // 행렬에서 S, R, T 성분을 분리해내는 함수
+    _vector vOutScale, vOutRotation, vOutTranslation;
+
+    if (XMMatrixDecompose(&vOutScale, &vOutRotation, &vOutTranslation, matCurrent))
+    {
+        Out.vScale = vOutScale;
+        Out.vRotation = vOutRotation;
+        Out.vTranslation = vOutTranslation;
+    }
+
+    return Out;
+}
+
 
 shared_ptr<CBone> CBone::Create_Binary(_char* szName, _float4x4 transformationMat, int32_t iParentIndex)
 {

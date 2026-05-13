@@ -229,8 +229,8 @@
             "PrototypeTag": "Prototype_Model_Player1"
         },
         {
-            "FilePath": "../../Resources/Models/Player_Demo.fbx",
-            "PrototypeTag": "Prototype_Model_Player_Demo"
+            "FilePath": "../../Resources/Models/PlayerJoe.fbx",
+            "PrototypeTag": "Prototype_Model_PlayerJoe"
         },
         {
             "FilePath": "../../Resources/Models/policeCar.fbx",

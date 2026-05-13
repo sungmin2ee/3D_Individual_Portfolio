@@ -17,10 +17,7 @@ class CBody_Player final : public CPartObject
 {
 public:
 	enum PLAYER_STATE {
-		IDLE = 0x00000001,
-		RUN = 0x00000002,
-		ATTACK = 0x00000004,
-		END = 0xffffffff
+		STAND,SIT,END
 	};
 	typedef struct tagBodyPlayerDesc : public CPartObject::PARTOBJECT_DESC
 	{
@@ -47,6 +44,8 @@ public:
 public:
 	shared_ptr<CModel> Get_Model() { return m_pModelCom; }
 	StateMachine<CBody_Player>* Get_StateMachine() { return m_pStateMachine.get(); }
+	PLAYER_STATE Get_CurState() { return m_eCurState; }
+	void Set_CurState(PLAYER_STATE state) { m_eCurState = state; }
 private:
 	shared_ptr<CShader>				m_pShaderCom = { nullptr };
 	shared_ptr<CModel>				m_pModelCom = { nullptr };
@@ -62,6 +61,7 @@ private:
 public:
 	static unique_ptr<CBody_Player> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
 	virtual shared_ptr<CPrototype> Clone(void* pArg) override;
+	PLAYER_STATE m_eCurState = END;
 };
 
 NS_END

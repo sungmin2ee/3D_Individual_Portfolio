@@ -36,6 +36,7 @@ public:
 	void Set_Animation(uint32_t iIndex, _bool isLoop = true) {
 		m_iCurrentAnimIndex = iIndex;
 		m_isAnimLoop = isLoop;
+		m_bAnimChanged = true;
 	}
 public:
 	HRESULT Render(uint32_t iMeshIndex);
@@ -53,10 +54,14 @@ private:
 	vector<shared_ptr<CBone>>		m_Bones;
 
 	_bool							m_isAnimLoop = { true };
+	_bool							m_bAnimChanged = { false };
 	uint32_t						m_iCurrentAnimIndex = {};
 	uint32_t						m_iNumAnimations = {};
 	vector<shared_ptr<CAnimation>>	m_Animations;
 
+	_bool							m_bIsBlending = { false };
+	_float							m_fBlendTime;
+	vector<CBone::SRT_DATA>		m_Snapshots;
 private:
 	HRESULT Ready_Meshes();
 	HRESULT Ready_BinaryModel(string binPath, uint32_t ModelType);

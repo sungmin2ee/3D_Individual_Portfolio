@@ -24,7 +24,7 @@
         {
             m_Animations.push_back(pPrototypeAnim->Clone());
         }
-
+        m_Snapshots.resize(m_Bones.size());
     }
 
     CModel::~CModel()
@@ -270,15 +270,44 @@
     _bool CModel::Play_Animation(_float fTimeDelta)
     {
         _bool           isFinished = { false };
+        if (m_bAnimChanged)
+        {
+            m_bIsBlending = true;
+            m_fBlendTime = 0.f;
+
+            for (uint32_t i = 0; i < m_Bones.size(); ++i)
+                m_Snapshots[i] = m_Bones[i]->Get_Current_SRT();
+        }
+
+        if (m_bIsBlending)
+        {
+            m_fBlendTime += fTimeDelta;
+            _float fRatio = m_fBlendTime / 0.2f; // 0.2초 동안 섞음
+            if (fRatio >= 1.f)
+            {
+                m_bIsBlending = false;
+                // 보간이 끝났으므로 정상 업데이트
+                isFinished = m_Animations[m_iCurrentAnimIndex]->Update_TransformationMatrices(fTimeDelta, m_Bones, m_isAnimLoop, m_bAnimChanged);
+            }
+            else
+            {
+                // [핵심] 새 애니메이션의 SRT를 구한 뒤 스냅샷과 섞어서 Bone에 셋팅
+                // 새 애니메이션도 시간은 흘러야 하므로 fTimeDelta 전달
+                 m_Animations[m_iCurrentAnimIndex]->Update_Blending_Matrices(fTimeDelta, m_Bones, m_Snapshots, fRatio, m_bAnimChanged);
+            }
+        }
+        else {
+            isFinished = m_Animations[m_iCurrentAnimIndex]->Update_TransformationMatrices(fTimeDelta, m_Bones, m_isAnimLoop, m_bAnimChanged);
+        }
 
         /* 뼈들의 m_TransformationMatrix를 갱신해준다. */
-        isFinished = m_Animations[m_iCurrentAnimIndex]->Update_TransformationMatrices(fTimeDelta, m_Bones, m_isAnimLoop);
 
       
         for (auto& pBone : m_Bones)
         {
             pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
         }
+        m_bAnimChanged = false;
 
         return isFinished;
 

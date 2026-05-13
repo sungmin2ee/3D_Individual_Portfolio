@@ -50,28 +50,54 @@ HRESULT CAnimation::Initialize_Binary(_char* animName, _float duration, _float t
 }
 
 
-_bool CAnimation::Update_TransformationMatrices(_float fTimeDelta, const vector<shared_ptr<class CBone>>& Bones,_bool isLoop)
+_bool CAnimation::Update_TransformationMatrices(_float fTimeDelta, const vector<shared_ptr<class CBone>>& Bones,_bool isLoop, _bool animChanged)
 {
+    
+
+    if(animChanged)
+        m_fCurrentTrackPosition = 0.f;
+
+
     m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
 
     if (m_fCurrentTrackPosition >= m_fDuration)
     {
         if (true == isLoop)
             m_fCurrentTrackPosition = 0.f;
-        else
+        else {
             return true;
+        }
     }
 
 
 
     for (uint32_t i = 0; i < m_iNumChannels; ++i)
     {
-        m_Channels[i]->Update_TransformationMatrix(m_CurrentKeyFrameIndices[i], m_fCurrentTrackPosition, Bones);
+        m_Channels[i]->Update_TransformationMatrix(m_CurrentKeyFrameIndices[i], m_fCurrentTrackPosition, Bones, animChanged);
     }
 
     return false;
 
 
+}
+
+void CAnimation::Update_Blending_Matrices(_float fTimeDelta, const vector<shared_ptr<CBone>>& Bones, const vector<CBone::SRT_DATA>& snapShot, _float ratio, _bool animChanged)
+{
+
+    if (animChanged)
+        m_fCurrentTrackPosition = 0.f;
+
+
+    m_fCurrentTrackPosition += m_fTickPerSecond * fTimeDelta;
+
+    // 루프 처리 (Update_TransformationMatrices에 있는 로직과 동일하게)
+    if (m_fCurrentTrackPosition >= m_fDuration)
+        m_fCurrentTrackPosition = 0.f;
+
+    for (uint32_t i = 0; i < m_iNumChannels; ++i)
+    {
+        m_Channels[i]->Update_Blending_Matrices(m_CurrentKeyFrameIndices[i], m_fCurrentTrackPosition, Bones, snapShot, ratio, animChanged);
+    }
 }
 
 shared_ptr<CAnimation> CAnimation::Create(const aiAnimation* pAIAnimation, CModel* pModel)
