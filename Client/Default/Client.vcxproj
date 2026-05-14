@@ -136,6 +136,7 @@
     <ClInclude Include="..\public\Body_Player.h" />
     <ClInclude Include="..\public\Camera_Free.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
+    <ClInclude Include="..\public\Player_Attack.h" />
     <ClInclude Include="..\public\Player_Run.h" />
     <ClInclude Include="..\public\EquipBorder.h" />
     <ClInclude Include="..\Public\ImguiHandler.h" />
@@ -151,7 +152,9 @@
     <ClInclude Include="..\Public\MainApp.h" />
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\public\Player_Idle.h" />
+    <ClInclude Include="..\public\Player_Stair.h" />
     <ClInclude Include="..\public\Player_Walk.h" />
+    <ClInclude Include="..\public\Stair_Collider.h" />
     <ClInclude Include="..\public\State.h" />
     <ClInclude Include="..\public\StateMachine.h" />
     <ClInclude Include="Client.h" />
@@ -163,6 +166,8 @@
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\private\Body_Player.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />
+    <ClCompile Include="..\private\Player_Attack.cpp" />
+    <ClCompile Include="..\private\Player_Stair.cpp" />
     <ClCompile Include="..\private\Player_Walk.cpp" />
     <ClCompile Include="..\private\Player_Run.cpp" />
     <ClCompile Include="..\private\Player_Idle.cpp" />
@@ -179,6 +184,7 @@
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\private\Stair_Collider.cpp" />
     <ClCompile Include="..\private\State.cpp" />
     <ClCompile Include="..\private\StateMachine.cpp" />
     <ClCompile Include="Client.cpp" />

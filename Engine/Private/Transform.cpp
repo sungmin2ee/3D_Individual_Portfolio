@@ -122,6 +122,8 @@ void CTransform::Set_Rotation(_float3 vRotationDeg)
     SetWorld(world);
 }
 
+
+
 void CTransform::Turn(_fvector vAxis, _float fTimeDelta)
 {
     _float3     vScaled = Get_Scaled();

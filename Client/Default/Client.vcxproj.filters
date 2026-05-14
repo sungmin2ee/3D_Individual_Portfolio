@@ -85,6 +85,9 @@
     <Filter Include="02.GameObject\09.Player\Weapon">
       <UniqueIdentifier>{849ae277-3042-41f4-849e-56161698b36b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\StairCollider">
+      <UniqueIdentifier>{59cc50af-5243-4304-aca8-7be0c7b1def4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -165,6 +168,15 @@
     <ClInclude Include="..\public\Player_Walk.h">
       <Filter>FSM\Player</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Player_Attack.h">
+      <Filter>FSM\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player_Stair.h">
+      <Filter>FSM\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Stair_Collider.h">
+      <Filter>02.GameObject\StairCollider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -232,6 +244,15 @@
     </ClCompile>
     <ClCompile Include="..\private\Player_Walk.cpp">
       <Filter>FSM\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_Attack.cpp">
+      <Filter>FSM\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_Stair.cpp">
+      <Filter>FSM\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Stair_Collider.cpp">
+      <Filter>02.GameObject\StairCollider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

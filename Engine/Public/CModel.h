@@ -33,10 +33,17 @@ public:
 	HRESULT Bind_Materials(shared_ptr<class CShader> pShader, const _char* pConstantName, uint32_t iMeshIndex, aiTextureType eMaterialType, uint32_t iTextureIndex);
 	HRESULT Bind_BoneMatrices(shared_ptr<class CShader> pShader, const _char* pConstantName, uint32_t iMeshIndex);
 
+	void Set_Animation(uint32_t iIndex,  _float animSpeed ,_bool isLoop = true) {
+		m_iCurrentAnimIndex = iIndex;
+		m_isAnimLoop = isLoop;
+		m_bAnimChanged = true;
+		m_fAnimSpeed = animSpeed;
+	}
 	void Set_Animation(uint32_t iIndex, _bool isLoop = true) {
 		m_iCurrentAnimIndex = iIndex;
 		m_isAnimLoop = isLoop;
 		m_bAnimChanged = true;
+		m_fAnimSpeed = 1.f;
 	}
 public:
 	HRESULT Render(uint32_t iMeshIndex);
@@ -81,11 +88,12 @@ public:
 	void Update_Box(uint32_t modelType);
 	void Calculate_Box(uint32_t modelType);
 	uint32_t Get_ModelType() { return m_eModelType; }
+	uint32_t Get_AnimIndex() { return m_iCurrentAnimIndex; }
 private:
 
 	_float3 max = { 0.f,0.f,0.f };
 	_float3 min = { 0.f,0.f,0.f };
-
+	_float m_fAnimSpeed = {1.f};
 
 
 

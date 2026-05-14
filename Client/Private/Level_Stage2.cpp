@@ -5,6 +5,7 @@
 #include "Level_Stage2.h"
 #include "Inventory.h"
 #include "Player.h"
+#include "Stair_Collider.h"
 
 CLevel_Stage2::CLevel_Stage2(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: CLevel{ pDevice, pContext }, m_pDevice{ pDevice }, m_pContext{ pContext }
@@ -20,6 +21,8 @@ HRESULT CLevel_Stage2::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
+		return E_FAIL;
+	if (FAILED(Ready_Layer_Stair_Collider(TEXT("Layer_Stair_Collider"))))
 		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::STAGE2)))) {
 		return E_FAIL;
@@ -88,7 +91,18 @@ HRESULT CLevel_Stage2::Ready_Layer_Camera(const _wstring& strLayerTag)
 
 
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Camera_Free"),
-		ETOUI(LEVEL::SHELTER), strLayerTag, &FreeDesc)))
+		ETOUI(LEVEL::STAGE2), strLayerTag, &FreeDesc)))
+		return E_FAIL;
+	return S_OK;
+}
+HRESULT CLevel_Stage2::Ready_Layer_Stair_Collider(const _wstring& strLayerTag)
+{
+	CStair_Collider::STAIR_DESC stairDesc{};
+
+	stairDesc.state = CStair_Collider::STAIR_COLLIDER::STAIR_UP;
+	stairDesc.pGameObjectTag = L"Stair_Collider";
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Stair_Collider"),
+		ETOUI(LEVEL::STAGE2), strLayerTag, &stairDesc)))
 		return E_FAIL;
 	return S_OK;
 }

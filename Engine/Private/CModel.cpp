@@ -269,6 +269,7 @@
     }
     _bool CModel::Play_Animation(_float fTimeDelta)
     {
+        fTimeDelta = fTimeDelta * m_fAnimSpeed;
         _bool           isFinished = { false };
         if (m_bAnimChanged)
         {

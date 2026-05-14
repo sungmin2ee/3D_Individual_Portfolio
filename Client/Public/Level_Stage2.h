@@ -25,6 +25,7 @@ virtual HRESULT Render() override; private:
 private:
 	HRESULT Ready_Layer_UI(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Camera(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Stair_Collider(const _wstring& strLayerTag);
 
 public:
 	static unique_ptr<CLevel_Stage2> Create(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext);

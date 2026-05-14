@@ -1,6 +1,10 @@
 {
     "Shader": [
         {
+            "FilePath": "../../Client/Bin/ShaderFiles/Shader_Blocker",
+            "PrototypeTag": "Prototype_Component_Shader_Blocker"
+        },
+        {
             "FilePath": "../../Client/Bin/ShaderFiles/Shader_Collider",
             "PrototypeTag": "Prototype_Component_Shader_Collider"
         },

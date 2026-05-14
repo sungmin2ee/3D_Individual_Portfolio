@@ -10,6 +10,7 @@
 #include "Model.h"
 #include "Camera_Free.h"
 #include "StateMachine.h"
+#include "Stair_Collider.h"
 
 
 CMainApp::CMainApp()
@@ -155,6 +156,12 @@ HRESULT CMainApp::Ready_Prototypes()
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Camera_Free"),
 		CCamera_Free::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	//Collider
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Stair_Collider"),
+		CStair_Collider::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	return S_OK;
 }
 

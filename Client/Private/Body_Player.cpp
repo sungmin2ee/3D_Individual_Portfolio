@@ -3,8 +3,10 @@
 #include "VIBuffer_Cube.h"
 #include "Obb.h"
 #include "Player_Idle.h"
+#include "Player_Stair.h"
 
 #include "GameInstance.h"
+#include "Stair_Collider.h"
 
 CBody_Player::CBody_Player(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: CPartObject{ pDevice, pContext }
@@ -36,41 +38,85 @@ HRESULT CBody_Player::Initialize(void* pArg)
 	auto	pDesc = static_cast<BODY_PLAYER_DESC*>(pArg);
 
 	m_pParentState = pDesc->pParentState;
+	pDesc->fRotationPerSec = 720.f;
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 	m_pTransformCom->Set_Scale(0.1f, 0.1f, 0.1f);
+	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
+
 	m_pStateMachine = StateMachine<CBody_Player>::Create(this, CPlayer_Idle::Create());
 	m_pModelCom->Calculate_Box(ETOUI(MODEL::ANIM));
 	CGameInstance::Get().Add_Collider(m_pObbCom);
 	m_pObbCom->SetOwner(this);
 	ExpandCollider();
+
 	return S_OK;
 }
 
 void CBody_Player::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
+
+	if (m_bDirChanged) {
+		if (m_eCurDir == CBody_Player::PLAYER_DIR::RIGHT) {
+			bodyAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
+			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
+			if (bodyAngle >= 180.f) {
+				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
+				m_bDirChanged = false;
+				m_bIsRotating = false;
+				bodyAngle = 180.f;
+				m_eCurDir = PLAYER_DIR::LEFT;
+
+			}
+		}
+		else if (m_eCurDir == CBody_Player::PLAYER_DIR::LEFT) {
+			bodyAngle -= fTimeDelta * m_pTransformCom->Get_RotSpeed();
+			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
+			if (bodyAngle <= 0.f) {
+				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
+				m_bDirChanged = false;
+				m_bIsRotating = false;
+				bodyAngle = 0.f;
+				m_eCurDir = PLAYER_DIR::RIGHT;
+
+			}
+		}
+	}
+	else {
+		if (!m_bIsRotating) {
+			if (m_eCurDir == CBody_Player::PLAYER_DIR::LEFT) {
+				if (CGameInstance::Get().Key_Down(DIK_RIGHT)) {
+					m_bDirChanged = true;
+					m_bIsRotating = true;
+				}
+			}
+			else if (m_eCurDir == CBody_Player::PLAYER_DIR::RIGHT) {
+				if (CGameInstance::Get().Key_Down(DIK_LEFT)) {
+					m_bDirChanged = true;
+					m_bIsRotating = true;
+
+				}
+			}
+		}
+
+	}
+
 }
 
 void CBody_Player::Update(_float fTimeDelta)
 {
-	//if (*m_pParentState & PLAYER_STATE::IDLE)
-	//	m_pModelCom->Set_Animation(3);
-	//
-	//if (*m_pParentState & PLAYER_STATE::RUN)
-	//	m_pModelCom->Set_Animation(4);
 
 	m_pStateMachine->Update(fTimeDelta);
+
 	if (true == m_pModelCom->Play_Animation(fTimeDelta))
 		int a = 10;
-
 	__super::Update(fTimeDelta);
-	if (m_pObbCom->GetSelected()) {
-		ExpandCollider();
-	}
+	ExpandCollider();
+
 	
 }
 
@@ -170,25 +216,65 @@ shared_ptr<CPrototype> CBody_Player::Clone(void* pArg)
 
 void CBody_Player::ExpandCollider()
 {
-	_float3 min = m_pModelCom->GetMin();
-	_float3 max = m_pModelCom->GetMax();
+	const _float4x4* boneMat = m_pModelCom->Get_BoneMatrixPtr("backpack2");
+	const _float4x4* boneMat1 = m_pModelCom->Get_BoneMatrixPtr("rightPinky1");
+	const _float4x4* boneMat2 = m_pModelCom->Get_BoneMatrixPtr("leftPinky1");
+	const _float4x4* boneMat3 = m_pModelCom->Get_BoneMatrixPtr("fringeHair");
+	const _float4x4* boneMat4 = m_pModelCom->Get_BoneMatrixPtr("toes_R");
+	const _float4x4* boneMat5 = m_pModelCom->Get_BoneMatrixPtr("toes_L");
+
+	vector<const _float4x4*> bones =
+	{
+		boneMat,
+		boneMat1,
+		boneMat2,
+		boneMat3,
+		boneMat4,
+		boneMat5
+	};
+
+	_float3 vMin = { FLT_MAX, FLT_MAX, FLT_MAX };
+	_float3 vMax = { -FLT_MAX, -FLT_MAX, -FLT_MAX };
+
+	_matrix world = XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrixPtr());
+
+	for (auto bone : bones)
+	{
+		if (!bone)
+			continue;
+
+		_matrix boneMatrix = XMLoadFloat4x4(bone);
+
+		XMVECTOR pos = boneMatrix.r[3];
+
+		pos = XMVector3TransformCoord(pos, world);
+
+		_float3 p;
+		XMStoreFloat3(&p, pos);
+
+		vMin.x = min(vMin.x, p.x);
+		vMin.y = min(vMin.y, p.y);
+		vMin.z = min(vMin.z, p.z);
+
+		vMax.x = max(vMax.x, p.x);
+		vMax.y = max(vMax.y, p.y);
+		vMax.z = max(vMax.z, p.z);
+	}
+
 	_float3 scale = m_pTransformCom->Get_Scaled();
 
-	_float4x4 mat = m_pTransformCom->GetWorld();
-	_matrix world = XMLoadFloat4x4(&mat);
 
 	// 1. Center 계산: 로컬 중심점(mid)을 월드 행렬로 변환
-	XMVECTOR xmMin = XMLoadFloat3(&min);
-	XMVECTOR xmMax = XMLoadFloat3(&max);
-	XMVECTOR mid = (xmMin + xmMax) * 0.5f;
-	XMVECTOR centerWorld = XMVector3TransformCoord(mid, world);
-	XMStoreFloat3(&m_pObbCom->myOBB.Center, centerWorld);
+	XMVECTOR mid = (XMLoadFloat3(&vMax) + XMLoadFloat3(&vMin)) * 0.5f;
+
+	
+	XMStoreFloat3(&m_pObbCom->myOBB.Center, mid);
 
 	// 2. Extents 계산: (모델 크기 * 트랜스폼 스케일)의 절반
 	// myOBB 자체가 월드에서 클릭되어야 하므로 여기서 스케일을 미리 곱해야 합니다.
-	m_pObbCom->myOBB.Extents.x = (max.x - min.x) * 0.5f * scale.x;
-	m_pObbCom->myOBB.Extents.y = (max.y - min.y) * 0.5f * scale.y;
-	m_pObbCom->myOBB.Extents.z = (max.z - min.z) * 0.5f * scale.z;
+	m_pObbCom->myOBB.Extents.x = (vMax.x - vMin.x) * 0.5f;// * scale.x;
+	m_pObbCom->myOBB.Extents.y = (vMax.y - vMin.y) * 0.5f;// * scale.y;
+	m_pObbCom->myOBB.Extents.z = (vMax.z - vMin.z) * 0.5f;// * scale.z;
 
 	// 3. Orientation 추출: 월드 행렬에서 회전값만 가져옴
 	XMVECTOR vScale, vRot, vTrans;
@@ -201,7 +287,7 @@ void CBody_Player::ExpandCollider()
 		m_pObbCom->myOBB.Extents.y * 2.f,
 		m_pObbCom->myOBB.Extents.z * 2.f);
 	matOBBWorld *= XMMatrixRotationQuaternion(vRot);
-	matOBBWorld *= XMMatrixTranslationFromVector(centerWorld);
-
+	matOBBWorld *= XMMatrixTranslationFromVector(mid);
 	m_pObbCom->Set_WorldMatrix(matOBBWorld);
 }
+
