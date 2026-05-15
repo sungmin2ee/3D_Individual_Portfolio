@@ -30,6 +30,7 @@ protected:
 
 protected:
 	class CPartObject* Find_PartObject(const _wstring& strPartTag);
+	class shared_ptr<CPartObject> Get_PartObject(const _wstring& strPartTag);
 	HRESULT Add_PartObject(uint32_t iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strPartTag, void* pArg = nullptr);
 
 public:

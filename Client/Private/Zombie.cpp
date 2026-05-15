@@ -1,32 +1,31 @@
-#include "Player.h"
+#include "Zombie.h"
 
 
-#include "Body_Player.h"
-//#include "Weapon.h"
+#include "Body_Zombie.h"
 #include "GameInstance.h"
 
-CPlayer::CPlayer(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
+CZombie::CZombie(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: CContainerObject{ pDevice, pContext }
 {
 }
 
-CPlayer::CPlayer(const CPlayer& Prototype)
+CZombie::CZombie(const CZombie& Prototype)
 	: CContainerObject{ Prototype }
 {
 }
 
-CPlayer::~CPlayer()
+CZombie::~CZombie()
 {
 }
 
-HRESULT CPlayer::Initialize_Prototype()
+HRESULT CZombie::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CPlayer::Initialize(void* pArg)
+HRESULT CZombie::Initialize(void* pArg)
 {
-	PLAYER_DESC			Desc{};
+	ZOMBIE_DESC			Desc{};
 	Desc.fSpeedPerSec = 10.f;
 	Desc.fRotationPerSec = 180.f;
 
@@ -42,14 +41,13 @@ HRESULT CPlayer::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CPlayer::Priority_Update(_float fTimeDelta)
+void CZombie::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
 }
 
-void CPlayer::Update(_float fTimeDelta)
+void CZombie::Update(_float fTimeDelta)
 {
-
 	/*if (GetKeyState(VK_DOWN) & 0x8000)
 	{
 		m_pTransformCom->Go_Backward(fTimeDelta);
@@ -67,51 +65,54 @@ void CPlayer::Update(_float fTimeDelta)
 		m_pTransformCom->Go_Straight(fTimeDelta);
 
 
-		if (m_iState & CBody_Player::PLAYER_STATE::IDLE)
-			m_iState ^= CBody_Player::PLAYER_STATE::IDLE;
+		if (m_iState & CBody_Zombie::PLAYER_STATE::IDLE)
+			m_iState ^= CBody_Zombie::PLAYER_STATE::IDLE;
 
-		m_iState |= CBody_Player::PLAYER_STATE::RUN;
+		m_iState |= CBody_Zombie::PLAYER_STATE::RUN;
 	}
 	else
 	{
-		if (m_iState & CBody_Player::PLAYER_STATE::RUN)
-			m_iState ^= CBody_Player::PLAYER_STATE::RUN;
+		if (m_iState & CBody_Zombie::PLAYER_STATE::RUN)
+			m_iState ^= CBody_Zombie::PLAYER_STATE::RUN;
 
-		m_iState |= CBody_Player::PLAYER_STATE::IDLE;
+		m_iState |= CBody_Zombie::PLAYER_STATE::IDLE;
 	}*/
 	__super::Update(fTimeDelta);
+
+	if (static_pointer_cast<CBody_Zombie>(__super::Get_PartObject(TEXT("Prototype_GameObject_Body_Zombie")))->Get_HP() <= 0) {
+		m_bDead = true;
+	}
 }
 
-void CPlayer::Late_Update(_float fTimeDelta)
+void CZombie::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
 }
 
-HRESULT CPlayer::Render()
+HRESULT CZombie::Render()
 {
 	return S_OK;
 }
 
-HRESULT CPlayer::Ready_Components()
+HRESULT CZombie::Ready_Components()
 {
 	return S_OK;
 }
 
-HRESULT CPlayer::Ready_PartObjects()
+HRESULT CZombie::Ready_PartObjects()
 {
-	
-	CBody_Player::BODY_PLAYER_DESC		BodyDesc{};
+	CBody_Zombie::BODY_ZOMBIE_DESC		BodyDesc{};
 	BodyDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrixPtr();
 	BodyDesc.pParentState = &m_iState;
 	BodyDesc.fSpeedPerSec = 0.1f;
-	if (FAILED(__super::Add_PartObject(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Body_Player"),
+	if (FAILED(__super::Add_PartObject(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Body_Zombie"),
 		TEXT("Part_Body"), &BodyDesc)))
 		return E_FAIL;
-	body = static_pointer_cast<CBody_Player>(__super::Get_PartObject(TEXT("Prototype_GameObject_Body_Player")));
+
 	//CWeapon::WEAPON_DESC		WeaponDesc{};
 	//WeaponDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrixPtr();
 	//WeaponDesc.pParentState = &m_iState;
-	//WeaponDesc.pSocketMatrix = dynamic_pointer_cast<CBody_Player>(m_PartObjects[TEXT("Part_Body")])->Get_SocketMatrixPtr("SWORD");
+	//WeaponDesc.pSocketMatrix = dynamic_pointer_cast<CBody_Zombie>(m_PartObjects[TEXT("Part_Body")])->Get_SocketMatrixPtr("SWORD");
 	//
 	//if (FAILED(__super::Add_PartObject(ETOUI(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Weapon"),
 	//	TEXT("Part_Weapon"), &WeaponDesc)))
@@ -120,13 +121,13 @@ HRESULT CPlayer::Ready_PartObjects()
 	return S_OK;
 }
 
-unique_ptr<CPlayer> CPlayer::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
+unique_ptr<CZombie> CZombie::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 {
-	auto	pInstance = unique_ptr<CPlayer>(new CPlayer(pDevice, pContext));
+	auto	pInstance = unique_ptr<CZombie>(new CZombie(pDevice, pContext));
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CPlayer");
+		MSG_BOX("Failed to Created : CZombie");
 		return nullptr;
 	}
 
@@ -134,13 +135,13 @@ unique_ptr<CPlayer> CPlayer::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11D
 }
 
 
-shared_ptr<CPrototype> CPlayer::Clone(void* pArg)
+shared_ptr<CPrototype> CZombie::Clone(void* pArg)
 {
-	auto	pInstance = shared_ptr<CGameObject>(new CPlayer(*this));
+	auto	pInstance = shared_ptr<CGameObject>(new CZombie(*this));
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CPlayer");
+		MSG_BOX("Failed to Cloned : CZombie");
 		return nullptr;
 	}
 

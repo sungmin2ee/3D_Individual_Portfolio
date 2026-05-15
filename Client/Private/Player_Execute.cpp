@@ -1,21 +1,21 @@
-#include "Player_Attack.h"
+#include "Player_Execute.h"
 #include "GameInstance.h"
 #include "Player_Run.h"
 #include "Player_Idle.h"
 #include "Player_Walk.h"
 
-CPlayer_Attack::CPlayer_Attack()
+CPlayer_Execute::CPlayer_Execute()
 {
 }
 
-CPlayer_Attack::~CPlayer_Attack()
+CPlayer_Execute::~CPlayer_Execute()
 {
 }
 
-void CPlayer_Attack::Enter(CBody_Player& owner)
+void CPlayer_Execute::Enter(CBody_Player& owner)
 {
     if (owner.Get_Weapon() == CBody_Player::PLAYER_WEAPON::HAND) {
-        owner.Get_Model()->Set_Animation(29,false);
+        owner.Get_Model()->Set_Animation(29, false);
         m_iCount++;
     }
     else if (owner.Get_Weapon() == CBody_Player::PLAYER_WEAPON::AXE) {
@@ -25,7 +25,7 @@ void CPlayer_Attack::Enter(CBody_Player& owner)
     animStart = true;
 }
 
-void CPlayer_Attack::Update(CBody_Player& owner, _float deltaTime)
+void CPlayer_Execute::Update(CBody_Player& owner, _float deltaTime)
 {
     m_fTime += deltaTime;
     if (owner.Get_Model()->Play_Animation(deltaTime) == true) {
@@ -72,18 +72,18 @@ void CPlayer_Attack::Update(CBody_Player& owner, _float deltaTime)
         }
     }
 
-   
+
 
 
 }
 
-void CPlayer_Attack::Exit(CBody_Player& owner)
+void CPlayer_Execute::Exit(CBody_Player& owner)
 {
 }
-unique_ptr<CPlayer_Attack> CPlayer_Attack::Create()
+unique_ptr<CPlayer_Execute> CPlayer_Execute::Create()
 {
     // 기본 속도를 0 혹은 생성자 인자로 넘김
-    auto pInstance = unique_ptr<CPlayer_Attack>(new CPlayer_Attack());
+    auto pInstance = unique_ptr<CPlayer_Execute>(new CPlayer_Execute());
 
     return pInstance;
 }

@@ -134,9 +134,11 @@
   <ItemGroup>
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\public\Body_Player.h" />
+    <ClInclude Include="..\public\Body_Zombie.h" />
     <ClInclude Include="..\public\Camera_Free.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\public\Player_Attack.h" />
+    <ClInclude Include="..\public\Player_Execute.h" />
     <ClInclude Include="..\public\Player_Run.h" />
     <ClInclude Include="..\public\EquipBorder.h" />
     <ClInclude Include="..\Public\ImguiHandler.h" />
@@ -157,6 +159,14 @@
     <ClInclude Include="..\public\Stair_Collider.h" />
     <ClInclude Include="..\public\State.h" />
     <ClInclude Include="..\public\StateMachine.h" />
+    <ClInclude Include="..\public\Zombie.h" />
+    <ClInclude Include="..\public\Zombie_Attack.h" />
+    <ClInclude Include="..\public\Zombie_Damaged.h" />
+    <ClInclude Include="..\public\Zombie_Dead.h" />
+    <ClInclude Include="..\Public\Zombie_Idle.h" />
+    <ClInclude Include="..\Public\Zombie_Run.h" />
+    <ClInclude Include="..\Public\Zombie_Stair.h" />
+    <ClInclude Include="..\Public\Zombie_Walk.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
@@ -165,8 +175,10 @@
   <ItemGroup>
     <ClCompile Include="..\Private\BackGround.cpp" />
     <ClCompile Include="..\private\Body_Player.cpp" />
+    <ClCompile Include="..\private\Body_Zombie.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />
     <ClCompile Include="..\private\Player_Attack.cpp" />
+    <ClCompile Include="..\private\Player_Execute.cpp" />
     <ClCompile Include="..\private\Player_Stair.cpp" />
     <ClCompile Include="..\private\Player_Walk.cpp" />
     <ClCompile Include="..\private\Player_Run.cpp" />
@@ -187,6 +199,14 @@
     <ClCompile Include="..\private\Stair_Collider.cpp" />
     <ClCompile Include="..\private\State.cpp" />
     <ClCompile Include="..\private\StateMachine.cpp" />
+    <ClCompile Include="..\private\Zombie.cpp" />
+    <ClCompile Include="..\private\Zombie_Attack.cpp" />
+    <ClCompile Include="..\private\Zombie_Damaged.cpp" />
+    <ClCompile Include="..\private\Zombie_Dead.cpp" />
+    <ClCompile Include="..\Private\Zombie_Idle.cpp" />
+    <ClCompile Include="..\Private\Zombie_Run.cpp" />
+    <ClCompile Include="..\Private\Zombie_Stair.cpp" />
+    <ClCompile Include="..\Private\Zombie_Walk.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
   <ItemGroup>

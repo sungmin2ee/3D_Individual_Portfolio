@@ -1,32 +1,32 @@
-#include "Player_Stair.h"
-#include "Player_Run.h"
-#include "Player_Walk.h"
+#include "Zombie_Stair.h"
+#include "Zombie_Run.h"
+#include "Zombie_Walk.h"
 #include "GameInstance.h"
-#include "Player_Idle.h"
-#include "Player_Attack.h"
+#include "Zombie_Idle.h"
+#include "Zombie_Attack.h"
 
-CPlayer_Stair::CPlayer_Stair()
+CZombie_Stair::CZombie_Stair()
 {
 }
 
-CPlayer_Stair::~CPlayer_Stair()
+CZombie_Stair::~CZombie_Stair()
 {
 }
 
-void CPlayer_Stair::Enter(CBody_Player& owner)
+void CZombie_Stair::Enter(CBody_Zombie& owner)
 {
     int a = ETOUI(owner.Get_CurState());
-    if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_UP) {
+    if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::STAIR_UP) {
         owner.Get_Model()->Set_Animation(13, false);
         animStart = true;
     }
-    else if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_DOWN) {
+    else if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::STAIR_DOWN) {
         owner.Get_Model()->Set_Animation(15, false);
         animStart = true;
     }
 }
 
-void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
+void CZombie_Stair::Update(CBody_Zombie& owner, _float deltaTime)
 {
 
     if (CGameInstance::Get().Key_Pressing(DIK_LEFT)) {
@@ -47,10 +47,10 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
         }
     }
     else if(CGameInstance::Get().Key_Up(DIK_LEFT) || CGameInstance::Get().Key_Up(DIK_RIGHT)){
-        if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_UP) {
+        if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::STAIR_UP) {
             m_eCurstate = IDLE_UP;
         }
-        else if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_DOWN) {
+        else if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::STAIR_DOWN) {
             m_eCurstate = IDLE_DOWN;
         }
     }
@@ -82,18 +82,18 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
 
 }
 
-void CPlayer_Stair::Exit(CBody_Player& owner)
+void CZombie_Stair::Exit(CBody_Zombie& owner)
 {
-    if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_UP) {
+    if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::STAIR_UP) {
         owner.Get_Model()->Set_Animation(14, false);
     }
-    else if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_DOWN) {
+    else if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::STAIR_DOWN) {
         owner.Get_Model()->Set_Animation(16, false);
     }
 }
-unique_ptr<CPlayer_Stair> CPlayer_Stair::Create()
+unique_ptr<CZombie_Stair> CZombie_Stair::Create()
 {
-    auto pInstance = unique_ptr<CPlayer_Stair>(new CPlayer_Stair());
+    auto pInstance = unique_ptr<CZombie_Stair>(new CZombie_Stair());
 
     return pInstance;
 }

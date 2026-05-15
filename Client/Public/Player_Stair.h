@@ -10,7 +10,7 @@ class CPlayer_Stair :
 public:
     enum STAIR_STATE { DOWN, DOWNFAST,UP, UPFAST, IDLE_DOWN, IDLE_UP,END };
 private:
-    CPlayer_Stair(_float velocity);
+    CPlayer_Stair();
 
 public:
     virtual ~CPlayer_Stair();

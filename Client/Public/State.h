@@ -7,8 +7,8 @@ NS_BEGIN(Client)
 template <typename T>
 class State {
 public:
-    State() : m_fVelocity(0.f) {}
-    State(_float fVelocity) : m_fVelocity(fVelocity) {}
+    State() {}
+    State(_float fVelocity) {}
     virtual ~State() = default;
 
     // T는 Player가 될 수도, Monster가 될 수도 있습니다.
@@ -16,8 +16,6 @@ public:
     virtual void Update(T& owner, _float deltaTime) = 0;
     virtual void Exit(T& owner) = 0;
 
-protected:
-    _float m_fVelocity = 0.f;
 };
 
 NS_END

@@ -4,7 +4,7 @@
 #include "Player_Walk.h"
 #include "Player_Attack.h"
 
-CPlayer_Idle::CPlayer_Idle(_float velocity): State<CBody_Player>(velocity)
+CPlayer_Idle::CPlayer_Idle()
 {
 }
 
@@ -66,7 +66,7 @@ void CPlayer_Idle::Exit(CBody_Player& owner)
 unique_ptr<CPlayer_Idle> CPlayer_Idle::Create()
 {
     // 기본 속도를 0 혹은 생성자 인자로 넘김
-    auto pInstance = unique_ptr<CPlayer_Idle>(new CPlayer_Idle(0.f));
+    auto pInstance = unique_ptr<CPlayer_Idle>(new CPlayer_Idle());
 
     return pInstance;
 }

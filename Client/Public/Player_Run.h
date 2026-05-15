@@ -7,10 +7,8 @@ class CPlayer_Run :
     public State<CBody_Player>
 {
 
-public:
-    enum IDLE_STATE { IDLE, SIT_IDLE };
 private:
-    CPlayer_Run(_float velocity);
+    CPlayer_Run();
 
 public:
     virtual ~CPlayer_Run();

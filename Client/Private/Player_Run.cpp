@@ -4,7 +4,7 @@
 #include "Player_Walk.h"
 #include "Player_Attack.h"
 
-CPlayer_Run::CPlayer_Run(_float velocity) : State<CBody_Player>(velocity)
+CPlayer_Run::CPlayer_Run()
 {
 }
 
@@ -65,7 +65,7 @@ void CPlayer_Run::Exit(CBody_Player& owner)
 }
 unique_ptr<CPlayer_Run> CPlayer_Run::Create()
 {
-    auto pInstance = unique_ptr<CPlayer_Run>(new CPlayer_Run(10.f));
+    auto pInstance = unique_ptr<CPlayer_Run>(new CPlayer_Run());
 
     return pInstance;
 }

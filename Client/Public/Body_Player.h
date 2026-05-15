@@ -19,6 +19,16 @@ public:
 	enum class PLAYER_STATE {
 		STAND,SIT,STAIR_UP, STAIR_DOWN,END
 	};
+	enum class PLAYER_ANIM {
+		AXE_STEALTH1, AXE_STEALTH2, AXE_ATTACK1, AXE_ATTACK2, DOOROPEN_STAND,
+		DOOR_OPEN_SNEAK, DOOR_PEEK_SNEAK_IDLE, DOOR_CLOSE__PEEK, DOOR_OPEN_PEEK,
+		DOOR_PULL_CLOSE_SNEAK, DOOR_PULL_CLOSE_STAND, IDLE, IDLE_TO_RUN, STAIR_BOTTOM_ENTER,
+		STAIR_BOTTOM_EXIT, STAIR_TOP_ENTER, STAIR_TOP_EXIT, RUN_MED, RUN_STOP, SNEAK_IDLE,
+		SNEAK_IDLE_TRANSITION, SNEAK_WALK, SNEAK_WALK_START, STAIR_IDLE_DOWN,
+		STAIR_IDLE_UP, STAIR_RUN_DOWN, STAIR_RUN_UP, STAIR_SNEAK_WALKDOWN,
+		STAIR_SNEAK_WALKUP, UNARMED_ATTACK1, UNARMED_ATTACK2, GROUND_EXECUTE1, GROUND_EXECUTE2,
+		WALK, WALKSTOP, STEALTH_KILL, END
+	};
 	enum class PLAYER_DIR {
 		LEFT, RIGHT, END
 	};
@@ -55,15 +65,21 @@ public:
 	PLAYER_WEAPON Get_Weapon() { return m_eCurWeapon; }
 	_float Get_BodyAngle() { return bodyAngle; }
 	_bool Get_Rotating() { return m_bIsRotating; }
+	_bool Is_MakingSound() { return m_bIsRotating; }
+	shared_ptr<Obb> Get_Obb() { return m_pObbCom; };
+
+
 	void Set_CurState(PLAYER_STATE state) { m_eCurState = state; }
 	void Set_CurDir(PLAYER_DIR state) { m_eCurDir = state; }
 	void Set_BodyAngle(_float angle) { bodyAngle = angle; }
 	void Set_DirChanged() { m_bDirChanged = true; }
+	void Set_MakingSound(_bool flag) { m_bIsMakingSound = flag; }
+
 private:
 	shared_ptr<CShader>				m_pShaderCom = { nullptr };
 	shared_ptr<CModel>				m_pModelCom = { nullptr };
-	shared_ptr<Obb> m_pObbCom = { nullptr };
-	shared_ptr<VIBuffer_Cube> m_pObbBfCom = { nullptr };
+	shared_ptr<Obb>					m_pObbCom = { nullptr };
+	shared_ptr<VIBuffer_Cube>		m_pObbBfCom = { nullptr };
 private:
 	const uint32_t* m_pParentState = { nullptr };
 	unique_ptr<StateMachine<CBody_Player>> m_pStateMachine = nullptr;
@@ -73,6 +89,7 @@ private:
 	_float bodyAngle = 0.f;
 	_bool  m_bDirChanged = false;
 	_bool  m_bIsRotating = false;
+	_bool  m_bIsMakingSound = false;
 private:
 	HRESULT Ready_Components();
 	void ExpandCollider();

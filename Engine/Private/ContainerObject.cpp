@@ -73,6 +73,15 @@ CPartObject* CContainerObject::Find_PartObject(const _wstring& strPartTag)
 	return iter->second.get();
 }
 
+shared_ptr<CPartObject> CContainerObject::Get_PartObject(const _wstring& strPartTag)
+{
+	auto	iter = m_PartObjects.find(strPartTag);
+	if (iter == m_PartObjects.end())
+		return nullptr;
+
+	return iter->second;
+}
+
 HRESULT CContainerObject::Add_PartObject(uint32_t iPrototypeLevelIndex, const _wstring& strPrototypeTag, const _wstring& strPartTag, void* pArg)
 {
 	if (nullptr != Find_PartObject(strPartTag))

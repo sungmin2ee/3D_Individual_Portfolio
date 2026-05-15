@@ -5,21 +5,21 @@
 
 NS_BEGIN(Client)
 
-class CPlayer final : public CContainerObject
+class CZombie final : public CContainerObject
 {
 public:
-	typedef struct tagPlayerDesc : public CContainerObject::CONTAINEROBJECT_DESC
+	typedef struct tagZombieDesc : public CContainerObject::CONTAINEROBJECT_DESC
 	{
 
-	}PLAYER_DESC;
+	}ZOMBIE_DESC;
 
 
 
 private:
-	CPlayer(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
-	CPlayer(const CPlayer& Prototype);
+	CZombie(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
+	CZombie(const CZombie& Prototype);
 public:
-	virtual ~CPlayer();
+	virtual ~CZombie();
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -29,19 +29,15 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-public:
-	CBody_Player* Get_Body() { return body.get(); }
 private:
 	uint32_t			m_iState = {};
-
-	shared_ptr<CBody_Player> body = nullptr;
 
 private:
 	HRESULT Ready_Components();
 	HRESULT Ready_PartObjects();
 
 public:
-	static unique_ptr<CPlayer> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
+	static unique_ptr<CZombie> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
 	virtual shared_ptr<CPrototype> Clone(void* pArg) override;
 };
 

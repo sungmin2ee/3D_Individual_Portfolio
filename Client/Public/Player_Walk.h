@@ -10,7 +10,7 @@ class CPlayer_Walk :
 public:
     enum IDLE_STATE { IDLE, SIT_IDLE };
 private:
-    CPlayer_Walk(_float velocity);
+    CPlayer_Walk();
 
 public:
     virtual ~CPlayer_Walk();

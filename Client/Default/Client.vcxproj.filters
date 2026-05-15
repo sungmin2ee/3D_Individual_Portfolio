@@ -28,9 +28,6 @@
     <Filter Include="02.GameObject\00.BackGround">
       <UniqueIdentifier>{a5614f95-22d8-423c-9c18-a5bdb7ab43d7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\09.Player">
-      <UniqueIdentifier>{7d9a787e-4300-4ed0-9f1d-086ab5a3bf85}</UniqueIdentifier>
-    </Filter>
     <Filter Include="97.ImguiHandler">
       <UniqueIdentifier>{4721d10c-98c2-43b0-ab68-12825102d29e}</UniqueIdentifier>
     </Filter>
@@ -45,18 +42,6 @@
     </Filter>
     <Filter Include="01.Levels\Stage2">
       <UniqueIdentifier>{691643ed-e087-4e3c-afcb-7dfbb99c2736}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Inventory">
-      <UniqueIdentifier>{89c7534c-cec4-4b3c-ba94-10d1d27dc5b8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Inventory\ItemFrame">
-      <UniqueIdentifier>{94d98f2a-1bb1-4df9-b438-4451e347bba8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Inventory\ItemIcon">
-      <UniqueIdentifier>{732d27f0-a88d-4c31-92ea-aa5737330dcb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\Inventory\EquipBorder">
-      <UniqueIdentifier>{a9135561-4af1-4332-9d99-807af66b3a9b}</UniqueIdentifier>
     </Filter>
     <Filter Include="Shaderfiles">
       <UniqueIdentifier>{0f9bce9d-69c1-43b2-be1a-ccf1163cf473}</UniqueIdentifier>
@@ -73,20 +58,44 @@
     <Filter Include="FSM\Player">
       <UniqueIdentifier>{3e201436-b57a-4127-b528-5476bb7c0050}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObject\09.Player\Body">
-      <UniqueIdentifier>{732c48d2-ac3a-452a-85f8-694390aee34f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\09.Player\Effect">
-      <UniqueIdentifier>{5536d65e-434f-4ebf-a5da-aeb53f69afb1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\09.Player\UI">
-      <UniqueIdentifier>{6f318414-42c0-4fda-ba51-3ba03d260b9f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObject\09.Player\Weapon">
-      <UniqueIdentifier>{849ae277-3042-41f4-849e-56161698b36b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObject\StairCollider">
       <UniqueIdentifier>{59cc50af-5243-4304-aca8-7be0c7b1def4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FSM\Zombie">
+      <UniqueIdentifier>{25a90272-6d48-4360-8919-4eba657f188b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\03.Zombie">
+      <UniqueIdentifier>{3758ce96-c942-49db-a17f-f08938374e11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\02.Player">
+      <UniqueIdentifier>{7d9a787e-4300-4ed0-9f1d-086ab5a3bf85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\02.Player\Body">
+      <UniqueIdentifier>{732c48d2-ac3a-452a-85f8-694390aee34f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\02.Player\Effect">
+      <UniqueIdentifier>{5536d65e-434f-4ebf-a5da-aeb53f69afb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\02.Player\UI">
+      <UniqueIdentifier>{6f318414-42c0-4fda-ba51-3ba03d260b9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\02.Player\Weapon">
+      <UniqueIdentifier>{849ae277-3042-41f4-849e-56161698b36b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Inventory">
+      <UniqueIdentifier>{89c7534c-cec4-4b3c-ba94-10d1d27dc5b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Inventory\ItemFrame">
+      <UniqueIdentifier>{94d98f2a-1bb1-4df9-b438-4451e347bba8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Inventory\ItemIcon">
+      <UniqueIdentifier>{732d27f0-a88d-4c31-92ea-aa5737330dcb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Inventory\EquipBorder">
+      <UniqueIdentifier>{a9135561-4af1-4332-9d99-807af66b3a9b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\03.Zombie\Body">
+      <UniqueIdentifier>{111e9d49-5d23-4303-97e8-15a5ddb28eb1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -121,7 +130,7 @@
       <Filter>02.GameObject\00.BackGround</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Player.h">
-      <Filter>02.GameObject\09.Player</Filter>
+      <Filter>02.GameObject\02.Player</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ImguiHandler.h">
       <Filter>97.ImguiHandler</Filter>
@@ -133,16 +142,16 @@
       <Filter>01.Levels\Shelter</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Inventory.h">
-      <Filter>02.GameObject\Inventory</Filter>
+      <Filter>02.GameObject\04.Inventory</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ItemFrame.h">
-      <Filter>02.GameObject\Inventory\ItemFrame</Filter>
+      <Filter>02.GameObject\04.Inventory\ItemFrame</Filter>
     </ClInclude>
     <ClInclude Include="..\public\ItemIcon.h">
-      <Filter>02.GameObject\Inventory\ItemIcon</Filter>
+      <Filter>02.GameObject\04.Inventory\ItemIcon</Filter>
     </ClInclude>
     <ClInclude Include="..\public\EquipBorder.h">
-      <Filter>02.GameObject\Inventory\EquipBorder</Filter>
+      <Filter>02.GameObject\04.Inventory\EquipBorder</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_Stage1.h">
       <Filter>01.Levels\Stage1</Filter>
@@ -157,7 +166,7 @@
       <Filter>FSM\Player</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Body_Player.h">
-      <Filter>02.GameObject\09.Player\Body</Filter>
+      <Filter>02.GameObject\02.Player\Body</Filter>
     </ClInclude>
     <ClInclude Include="..\public\StateMachine.h">
       <Filter>FSM</Filter>
@@ -176,6 +185,36 @@
     </ClInclude>
     <ClInclude Include="..\public\Stair_Collider.h">
       <Filter>02.GameObject\StairCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Zombie_Attack.h">
+      <Filter>FSM\Zombie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Zombie.h">
+      <Filter>02.GameObject\03.Zombie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Body_Zombie.h">
+      <Filter>02.GameObject\03.Zombie\Body</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Zombie_Run.h">
+      <Filter>FSM\Zombie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Zombie_Walk.h">
+      <Filter>FSM\Zombie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Zombie_Idle.h">
+      <Filter>FSM\Zombie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Zombie_Stair.h">
+      <Filter>FSM\Zombie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Zombie_Damaged.h">
+      <Filter>FSM\Zombie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Zombie_Dead.h">
+      <Filter>FSM\Zombie</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player_Execute.h">
+      <Filter>FSM\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -198,7 +237,7 @@
       <Filter>02.GameObject\00.BackGround</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Player.cpp">
-      <Filter>02.GameObject\09.Player</Filter>
+      <Filter>02.GameObject\02.Player</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ImguiHandler.cpp">
       <Filter>97.ImguiHandler</Filter>
@@ -210,16 +249,16 @@
       <Filter>01.Levels\Shelter</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Inventory.cpp">
-      <Filter>02.GameObject\Inventory</Filter>
+      <Filter>02.GameObject\04.Inventory</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ItemFrame.cpp">
-      <Filter>02.GameObject\Inventory\ItemFrame</Filter>
+      <Filter>02.GameObject\04.Inventory\ItemFrame</Filter>
     </ClCompile>
     <ClCompile Include="..\private\ItemIcon.cpp">
-      <Filter>02.GameObject\Inventory\ItemIcon</Filter>
+      <Filter>02.GameObject\04.Inventory\ItemIcon</Filter>
     </ClCompile>
     <ClCompile Include="..\private\EquipBorder.cpp">
-      <Filter>02.GameObject\Inventory\EquipBorder</Filter>
+      <Filter>02.GameObject\04.Inventory\EquipBorder</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_Stage1.cpp">
       <Filter>01.Levels\Stage1</Filter>
@@ -234,7 +273,7 @@
       <Filter>FSM\Player</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Body_Player.cpp">
-      <Filter>02.GameObject\09.Player\Body</Filter>
+      <Filter>02.GameObject\02.Player\Body</Filter>
     </ClCompile>
     <ClCompile Include="..\private\StateMachine.cpp">
       <Filter>FSM</Filter>
@@ -253,6 +292,36 @@
     </ClCompile>
     <ClCompile Include="..\private\Stair_Collider.cpp">
       <Filter>02.GameObject\StairCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Zombie_Attack.cpp">
+      <Filter>FSM\Zombie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Zombie.cpp">
+      <Filter>02.GameObject\03.Zombie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Body_Zombie.cpp">
+      <Filter>02.GameObject\03.Zombie\Body</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Zombie_Run.cpp">
+      <Filter>FSM\Zombie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Zombie_Stair.cpp">
+      <Filter>FSM\Zombie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Zombie_Idle.cpp">
+      <Filter>FSM\Zombie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Zombie_Walk.cpp">
+      <Filter>FSM\Zombie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Zombie_Damaged.cpp">
+      <Filter>FSM\Zombie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Zombie_Dead.cpp">
+      <Filter>FSM\Zombie</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_Execute.cpp">
+      <Filter>FSM\Player</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

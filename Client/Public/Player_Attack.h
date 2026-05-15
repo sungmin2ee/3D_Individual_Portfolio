@@ -10,7 +10,7 @@ class CPlayer_Attack :
 public:
     enum IDLE_STATE { IDLE, SIT_IDLE };
 private:
-    CPlayer_Attack(_float velocity);
+    CPlayer_Attack();
 
 public:
     virtual ~CPlayer_Attack();
@@ -25,5 +25,6 @@ public:
 private:
     _bool animStart = false;
     uint32_t m_iCount = 0;
+    _float m_fTime = 0;
 };
 NS_END
