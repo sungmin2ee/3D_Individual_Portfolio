@@ -5,6 +5,7 @@
 #include "Level_Stage2.h"
 #include "Inventory.h"
 #include "Player.h"
+#include "Zombie.h"
 #include "Stair_Collider.h"
 
 CLevel_Stage2::CLevel_Stage2(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
@@ -25,6 +26,8 @@ HRESULT CLevel_Stage2::Initialize()
 	if (FAILED(Ready_Layer_Stair_Collider(TEXT("Layer_Stair_Collider"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
+		return E_FAIL;
+	if (FAILED(Ready_Layer_Zombie(TEXT("Layer_Zombie"))))
 		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::STAGE2)))) {
 		return E_FAIL;
@@ -112,7 +115,19 @@ HRESULT CLevel_Stage2::Ready_Layer_Player(const _wstring& strLayerTag)
 		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
 		return E_FAIL;
 
-	return E_NOTIMPL;
+	return S_OK;
+}
+
+HRESULT CLevel_Stage2::Ready_Layer_Zombie(const _wstring& strLayerTag)
+{
+	CZombie::ZOMBIE_DESC pDesc;
+	pDesc.pGameObjectTag = TEXT("Zombie");
+	pDesc.fSpeedPerSec = 10.f;
+	pDesc.fRotationPerSec = 180.f;
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Zombie"),
+		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
+		return E_FAIL;
+	return S_OK;
 }
 
 unique_ptr<CLevel_Stage2> CLevel_Stage2::Create(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext)

@@ -42,22 +42,22 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 {
 
 	
-	if (CGameInstance::Get().Get_DIKeyState(DIK_W) & 0x80)
+	if (CGameInstance::Get().Get_DIKeyState(DIK_UP) & 0x80)
 	{
 		m_pTransformCom->Go_Straight(fTimeDelta);
 	}
 
-	if (CGameInstance::Get().Get_DIKeyState(DIK_S) & 0x80)
+	if (CGameInstance::Get().Get_DIKeyState(DIK_DOWN) & 0x80)
 	{
 		m_pTransformCom->Go_Backward(fTimeDelta);
 	}
 
-	if (CGameInstance::Get().Get_DIKeyState(DIK_A) & 0x80)
+	if (CGameInstance::Get().Get_DIKeyState(DIK_LEFT) & 0x80)
 	{
 		m_pTransformCom->Go_Left(fTimeDelta);
 	}
 
-	if (CGameInstance::Get().Get_DIKeyState(DIK_D) & 0x80)
+	if (CGameInstance::Get().Get_DIKeyState(DIK_RIGHT) & 0x80)
 	{
 		m_pTransformCom->Go_Right(fTimeDelta);
 	}

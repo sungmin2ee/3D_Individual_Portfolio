@@ -18,6 +18,17 @@ CBody_Zombie::CBody_Zombie(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceCont
 CBody_Zombie::CBody_Zombie(const CBody_Zombie& Prototype)
 	: CPartObject{ Prototype }
 {
+	m_pStateMachine = nullptr;
+	m_eCurState = ZOMBIE_STATE::IDLE;
+	m_eCurDir = ZOMBIE_DIR::RIGHT;
+	bodyAngle = 0.f;
+	m_bDirChanged = false;
+	m_bIsRotating = false;
+	m_bIsDamaged = false;
+	m_bPlayerInRange = false;
+	m_bPlayerDetected = false;
+	m_fAttackTime = 0.f;
+	m_iHp = 100;
 }
 
 CBody_Zombie::~CBody_Zombie()
@@ -48,6 +59,7 @@ HRESULT CBody_Zombie::Initialize(void* pArg)
 		return E_FAIL;
 	m_pTransformCom->Set_Scale(0.1f, 0.1f, 0.1f);
 	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
+	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(-0.5f, 0, 0, 1));
 
 	m_pStateMachine = StateMachine<CBody_Zombie>::Create(this, CZombie_Attack::Create());
 	m_pModelCom->Calculate_Box(ETOUI(MODEL::ANIM));
@@ -120,9 +132,10 @@ void CBody_Zombie::Update(_float fTimeDelta)
 	__super::Update(fTimeDelta);
 	ExpandCollider();
 	DetectPlayer();
-	if (m_bPlayerDetected) {
-		CheckColliding();
-	}
+	CheckColliding();
+	//if (m_bPlayerDetected) {
+	//	CheckColliding();
+	//}
 	if (m_bIsDamaged) {
 		m_fAttackTime += fTimeDelta;
 		if (m_fAttackTime >= 0.5f) {
@@ -176,7 +189,7 @@ HRESULT CBody_Zombie::Render()
 
 HRESULT CBody_Zombie::Ready_Components()
 {
-	m_pModelCom = dynamic_pointer_cast<CModel>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_Model_Joe")));
+	m_pModelCom = dynamic_pointer_cast<CModel>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_Model_Zombie1")));
 	if (FAILED(__super::Add_Component(TEXT("Com_Model"), m_pModelCom)))
 		return E_FAIL;
 
@@ -287,7 +300,7 @@ void CBody_Zombie::ExpandCollider()
 	// myOBB 자체가 월드에서 클릭되어야 하므로 여기서 스케일을 미리 곱해야 합니다.
 	m_pObbCom->myOBB.Extents.x = (vMax.x - vMin.x) * 0.5f;// * scale.x;
 	m_pObbCom->myOBB.Extents.y = (vMax.y - vMin.y) * 0.5f;// * scale.y;
-	m_pObbCom->myOBB.Extents.z = (vMax.z - vMin.z) * 0.5f;// * scale.z;
+	m_pObbCom->myOBB.Extents.z = (vMax.z - vMin.z) * 0.7f;// * scale.z;
 
 	// 3. Orientation 추출: 월드 행렬에서 회전값만 가져옴
 	XMVECTOR vScale, vRot, vTrans;
@@ -307,7 +320,7 @@ void CBody_Zombie::ExpandCollider()
 void CBody_Zombie::DetectPlayer()
 {
 	//플레이어가 소리를 냈고 플레이어의 x가 좀비의 x 플마 1? 정도에 있으면 detect는 true
-	m_bPlayerDetected = false;
+	//m_bPlayerDetected = false;
 	auto layer = CGameInstance::Get().Find_Layer(ETOUI(CGameInstance::Get().GetCurLevelIndex()), TEXT("Layer_Player"));
 	if (layer == nullptr)
 		return;

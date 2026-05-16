@@ -1,7 +1,6 @@
 #include "Zombie.h"
 
 
-#include "Body_Zombie.h"
 #include "GameInstance.h"
 
 CZombie::CZombie(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
@@ -64,7 +63,7 @@ void CZombie::Update(_float fTimeDelta)
 	{
 		m_pTransformCom->Go_Straight(fTimeDelta);
 
-
+		
 		if (m_iState & CBody_Zombie::PLAYER_STATE::IDLE)
 			m_iState ^= CBody_Zombie::PLAYER_STATE::IDLE;
 
@@ -79,7 +78,7 @@ void CZombie::Update(_float fTimeDelta)
 	}*/
 	__super::Update(fTimeDelta);
 
-	if (static_pointer_cast<CBody_Zombie>(__super::Get_PartObject(TEXT("Prototype_GameObject_Body_Zombie")))->Get_HP() <= 0) {
+	if (body->Get_HP() <= 0) {
 		m_bDead = true;
 	}
 }
@@ -108,15 +107,7 @@ HRESULT CZombie::Ready_PartObjects()
 	if (FAILED(__super::Add_PartObject(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Body_Zombie"),
 		TEXT("Part_Body"), &BodyDesc)))
 		return E_FAIL;
-
-	//CWeapon::WEAPON_DESC		WeaponDesc{};
-	//WeaponDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrixPtr();
-	//WeaponDesc.pParentState = &m_iState;
-	//WeaponDesc.pSocketMatrix = dynamic_pointer_cast<CBody_Zombie>(m_PartObjects[TEXT("Part_Body")])->Get_SocketMatrixPtr("SWORD");
-	//
-	//if (FAILED(__super::Add_PartObject(ETOUI(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Weapon"),
-	//	TEXT("Part_Weapon"), &WeaponDesc)))
-	//	return E_FAIL;
+	body = static_pointer_cast<CBody_Zombie>(__super::Get_PartObject(TEXT("Part_Body")));
 
 	return S_OK;
 }

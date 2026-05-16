@@ -2,6 +2,8 @@
 #include "Zombie_Damaged.h"
 #include "Zombie_Run.h"
 #include "GameInstance.h"
+#include "Layer.h"
+#include "Player.h"
 
 CZombie_Damaged::CZombie_Damaged()
 {
@@ -13,9 +15,17 @@ CZombie_Damaged::~CZombie_Damaged()
 
 void CZombie_Damaged::Enter(CBody_Zombie& owner)
 {
-    owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::HIT_REACT1), false);
+    auto layer = CGameInstance::Get().Find_Layer(ETOUI(CGameInstance::Get().GetCurLevelIndex()), TEXT("Layer_Player"));
+    auto player = layer->GetObjectFirst();
+    auto playerBody = static_pointer_cast<CPlayer>(player)->Get_Body();
+    if (playerBody->Get_Model()->Get_AnimIndex() == 31 || playerBody->Get_Model()->Get_AnimIndex() == 2) {
+        owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::HIT_REACT1),1.5f, false);
+        owner.Set_CurState(CBody_Zombie::ZOMBIE_STATE::HIT_REACT1);
+    }else if (playerBody->Get_Model()->Get_AnimIndex() == 32 || playerBody->Get_Model()->Get_AnimIndex() == 3) {
+        owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::HIT_REACT2), 1.5f, false);
+        owner.Set_CurState(CBody_Zombie::ZOMBIE_STATE::HIT_REACT2);
+    }
     owner.Set_Damaged();
-    owner.Set_CurState(CBody_Zombie::ZOMBIE_STATE::HIT_REACT1);
     m_iCount++;
     animStart = true;
 }
@@ -23,34 +33,55 @@ void CZombie_Damaged::Enter(CBody_Zombie& owner)
 void CZombie_Damaged::Update(CBody_Zombie& owner, _float deltaTime)
 {
     m_fTime += deltaTime;
+    auto layer = CGameInstance::Get().Find_Layer(ETOUI(CGameInstance::Get().GetCurLevelIndex()), TEXT("Layer_Player"));
+    auto player = layer->GetObjectFirst();
+    auto playerBody = static_pointer_cast<CPlayer>(player)->Get_Body();
+
 
     if (owner.Get_Model()->Play_Animation(deltaTime) == true) {
         animStart = false;
     }
     if (!animStart && owner.Get_Damaged()) {
-        if (m_iCount % 2 == 0) {
-            owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::HIT_REACT2), false);
+        if (playerBody->Get_Model()->Get_AnimIndex() == 31 || playerBody->Get_Model()->Get_AnimIndex() == 2) {
+            owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::HIT_REACT1), 1.5f, false);
+            owner.Set_CurState(CBody_Zombie::ZOMBIE_STATE::HIT_REACT1);
         }
-        else if (m_iCount % 2 == 1) {
-            owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::HIT_REACT1), false);
+        else if (playerBody->Get_Model()->Get_AnimIndex() == 32 || playerBody->Get_Model()->Get_AnimIndex() == 3) {
+            owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::HIT_REACT2), 1.5f, false);
+            owner.Set_CurState(CBody_Zombie::ZOMBIE_STATE::HIT_REACT2);
         }
         m_iCount++;
         animStart = true;
         m_fTime = 0.f;
     }
-    if (!owner.Get_Damaged() && m_fTime >= 0.5f) {
+    if (!animStart) {
         if (owner.Get_PlayerInRange()) {
-            owner.Get_StateMachine()->ChangeState(CZombie_Attack::Create());
+            if (!playerBody->Get_OnHit())
+                owner.Get_StateMachine()->ChangeState(CZombie_Attack::Create());
             return;
         }
         else {
-            owner.Get_StateMachine()->ChangeState(CZombie_Run::Create());
+            //owner.Get_StateMachine()->ChangeState(CZombie_Run::Create());
             return;
-
         }
-        
     }
-
+    //if (m_fTime >= 0.8f) {
+    //    if (owner.Get_PlayerInRange()) {
+    //        auto layer = CGameInstance::Get().Find_Layer(ETOUI(CGameInstance::Get().GetCurLevelIndex()), TEXT("Layer_Player"));
+    //        auto player = layer->GetObjectFirst();
+    //        auto playerBody = static_pointer_cast<CPlayer>(player)->Get_Body();
+    //        if(!playerBody->Get_OnHit())
+    //            owner.Get_StateMachine()->ChangeState(CZombie_Attack::Create());
+    //        return;
+    //    }
+    //    else {
+    //       // owner.Get_StateMachine()->ChangeState(CZombie_Run::Create());
+    //        return;
+    //
+    //    }
+    //    
+    //}
+    //
 
 }
 

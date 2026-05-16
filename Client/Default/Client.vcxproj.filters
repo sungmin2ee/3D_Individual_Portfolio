@@ -216,6 +216,9 @@
     <ClInclude Include="..\public\Player_Execute.h">
       <Filter>FSM\Player</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Player_Damaged.h">
+      <Filter>FSM\Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -321,6 +324,9 @@
       <Filter>FSM\Zombie</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Player_Execute.cpp">
+      <Filter>FSM\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_Damaged.cpp">
       <Filter>FSM\Player</Filter>
     </ClCompile>
   </ItemGroup>

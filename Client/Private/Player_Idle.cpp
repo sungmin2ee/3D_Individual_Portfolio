@@ -3,6 +3,7 @@
 #include "Player_Run.h"
 #include "Player_Walk.h"
 #include "Player_Attack.h"
+#include "Player_Damaged.h"
 
 CPlayer_Idle::CPlayer_Idle()
 {
@@ -14,36 +15,40 @@ CPlayer_Idle::~CPlayer_Idle()
 
 void CPlayer_Idle::Enter(CBody_Player& owner)
 {
-    if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAND ||
-        owner.Get_CurState() == CBody_Player::PLAYER_STATE::END) {
-        owner.Get_Model()->Set_Animation(11);
+
+    
+    if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAND ) {
+        owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::IDLE));
         owner.Set_CurState(CBody_Player::PLAYER_STATE::STAND);
 
-    }else if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::SIT) {
-        owner.Get_Model()->Set_Animation(19);
+        return;
+    }
+    if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::SIT) {
+        owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::SNEAK_IDLE));
         owner.Set_CurState(CBody_Player::PLAYER_STATE::SIT);
-
+        return;
     }
 
 }
 
 void CPlayer_Idle::Update(CBody_Player& owner, _float deltaTime)
 {
-
+    
     int a = owner.Get_Model()->Get_AnimIndex();
-    if (CGameInstance::Get().Key_Pressing(DIK_LEFT) || CGameInstance::Get().Key_Pressing(DIK_RIGHT)) {
+    auto b = owner.Get_CurState();
+    if (CGameInstance::Get().Key_Pressing(DIK_A) || CGameInstance::Get().Key_Pressing(DIK_D)) {
         // 만약 W키를 누르면 Run 상태로 변경
          owner.Get_StateMachine()->ChangeState(CPlayer_Walk::Create());
     }
     if (CGameInstance::Get().Key_Down(DIK_F)) {
 
         if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::SIT) {
-            owner.Get_Model()->Set_Animation(11);
+            owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::IDLE));
             animStart = false;
             owner.Set_CurState(CBody_Player::PLAYER_STATE::STAND);
         }
         else {
-            owner.Get_Model()->Set_Animation(20, false);
+            owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::SNEAK_IDLE_TRANSITION), false);
             animStart = true;
             owner.Set_CurState(CBody_Player::PLAYER_STATE::SIT);
         }
@@ -51,12 +56,19 @@ void CPlayer_Idle::Update(CBody_Player& owner, _float deltaTime)
 
     if (animStart) {
         if (owner.Get_Model()->Play_Animation(deltaTime) == true) {
-            owner.Get_Model()->Set_Animation(19);
+            owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::SNEAK_IDLE));
             animStart = false;
         }
     }
-    if (CGameInstance::Get().Mouse_Down(DIMK::LBUTTON)) {
+    if (CGameInstance::Get().Mouse_Down(DIMK::LBUTTON) && !owner.Get_Rotating()) {
         owner.Get_StateMachine()->ChangeState(CPlayer_Attack::Create());
+        return;
+
+    }
+    if (owner.Get_OnHit()) {
+        owner.Get_StateMachine()->ChangeState(CPlayer_Damaged::Create());
+        return;
+
     }
 }
 

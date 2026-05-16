@@ -26,9 +26,12 @@ void CZombie_Run::Update(CBody_Zombie& owner, _float deltaTime)
     //CHASE PLALYER
     if (owner.Get_Damaged()) {
         owner.Get_StateMachine()->ChangeState(CZombie_Damaged::Create());
+        return;
     }
-    if(owner.Get_PlayerInRange())
+    if (owner.Get_PlayerInRange()) {
         owner.Get_StateMachine()->ChangeState(CZombie_Attack::Create());
+        return;
+    }
 }
 
 void CZombie_Run::Exit(CBody_Zombie& owner)

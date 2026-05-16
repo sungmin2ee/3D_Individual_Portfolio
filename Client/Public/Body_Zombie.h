@@ -19,9 +19,9 @@ class CBody_Zombie final : public CPartObject
 public:
 	enum class ZOMBIE_STATE {
 		AXE_STEALTH1,AXE_STEALTH2,AGGRO_IDLE1,AGGRO_IDLE2,AGGRO_TRANS1,AGGRO_TRANS2,
-		LAYDOWN,ATTACK1,ATTACK2,ATTACK3,CRAWL_IDLE,CRAWL_TRANS,DEATH,DOORHIT,PATROL_IDLE,
+		LAYDOWN,ATTACK1,ATTACK2,ATTACK3,CRAWL_IDLE,CRAWL_TRANS,DEATH,DOORHIT,FAST_PATROL_IDLE,
 		SEARCH_WALK,GET_UP,HIT_REACT1,HIT_REACT2,IDLE,KNOCKDOWN,PATROL_IDLE,PATROL_STOP,
-		PATROL_TURN,PATROL_WALK,STAIR_BOTTOM_ENTER,STAIR_BOTTON_EXIT,STAIR_TOP_ENTER,
+		PATROL_TURN,PATROL_WALK,STAIR_BOTTOM_ENTER,STAIR_BOTTOM_EXIT,STAIR_TOP_ENTER,
 		STAIR_TOP_EXIT,RUN,STAIR_WALK_DOWN,STAIR_WALK_UP,STOP_WALK,UNARMED_GROUND_EXECUTE,
 		UNARMED_STEALTH,WALK_FAST,END
 	};
@@ -61,8 +61,8 @@ public:
 	_bool Get_Damaged() { return m_bIsDamaged; }
 	_bool Get_PlayerInRange() { return m_bPlayerInRange; }
 	_bool Get_PlayerDetected() { return m_bPlayerDetected; }
-	_bool Get_PlayerDetected() { return m_bPlayerDetected; }
 	uint32_t Get_HP() { return m_iHp; }
+	shared_ptr<Obb> Get_Obb() { return m_pObbCom; };
 
 
 	void Set_CurState(ZOMBIE_STATE state) { m_eCurState = state; }
@@ -90,7 +90,7 @@ private:
 	_bool  m_bPlayerInRange = false;
 	_bool  m_bPlayerDetected = false;
 	_float m_fAttackTime = 0.f;
-	uint32_t m_iHp = 0;
+	uint32_t m_iHp = 100;
 private:
 	//shared_ptr<CBody_Player> m_pPlayer = { nullptr };
 private:

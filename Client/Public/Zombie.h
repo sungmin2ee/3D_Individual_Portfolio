@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
+#include "Body_Zombie.h"
 #include "ContainerObject.h"
 
 NS_BEGIN(Client)
@@ -28,10 +29,12 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
+	CBody_Zombie* Get_Body() { return body.get(); }
 
 private:
+	shared_ptr<CBody_Zombie> body = nullptr;
 	uint32_t			m_iState = {};
-
+	
 private:
 	HRESULT Ready_Components();
 	HRESULT Ready_PartObjects();

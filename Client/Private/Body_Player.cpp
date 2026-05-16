@@ -46,7 +46,6 @@ HRESULT CBody_Player::Initialize(void* pArg)
 		return E_FAIL;
 	m_pTransformCom->Set_Scale(0.1f, 0.1f, 0.1f);
 	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
-
 	m_pStateMachine = StateMachine<CBody_Player>::Create(this, CPlayer_Idle::Create());
 	m_pModelCom->Calculate_Box(ETOUI(MODEL::ANIM));
 	CGameInstance::Get().Add_Collider(m_pObbCom);
@@ -60,56 +59,68 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
 
-	if (m_bDirChanged) {
-		if (m_eCurDir == CBody_Player::PLAYER_DIR::RIGHT) {
-			bodyAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
-			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
-			if (bodyAngle >= 180.f) {
-				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
-				m_bDirChanged = false;
-				m_bIsRotating = false;
-				bodyAngle = 180.f;
-				m_eCurDir = PLAYER_DIR::LEFT;
 
+	if (m_bIsRotating) {
+		if (m_bDirChanged && m_eCurState != PLAYER_STATE::ATTACK) {
+			if (m_eCurDir == CBody_Player::PLAYER_DIR::RIGHT) {
+				bodyAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
+				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
+				if (bodyAngle >= 180.f) {
+					m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
+					m_bDirChanged = false;
+					m_bIsRotating = false;
+					bodyAngle = 180.f;
+					m_eCurDir = PLAYER_DIR::LEFT;
+					return;
+
+				}
 			}
-		}
-		else if (m_eCurDir == CBody_Player::PLAYER_DIR::LEFT) {
-			bodyAngle -= fTimeDelta * m_pTransformCom->Get_RotSpeed();
-			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
-			if (bodyAngle <= 0.f) {
-				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
-				m_bDirChanged = false;
-				m_bIsRotating = false;
-				bodyAngle = 0.f;
-				m_eCurDir = PLAYER_DIR::RIGHT;
+			else if (m_eCurDir == CBody_Player::PLAYER_DIR::LEFT) {
+				bodyAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
+				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
+				if (bodyAngle >= 360.f) {
+					m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
+					m_bDirChanged = false;
+					m_bIsRotating = false;
+					bodyAngle = 0.f;
+					m_eCurDir = PLAYER_DIR::RIGHT;
+					return;
 
+				}
 			}
 		}
 	}
 	else {
-		if (!m_bIsRotating) {
-			if (m_eCurDir == CBody_Player::PLAYER_DIR::LEFT) {
-				if (CGameInstance::Get().Key_Down(DIK_RIGHT)) {
-					m_bDirChanged = true;
-					m_bIsRotating = true;
-				}
-			}
-			else if (m_eCurDir == CBody_Player::PLAYER_DIR::RIGHT) {
-				if (CGameInstance::Get().Key_Down(DIK_LEFT)) {
-					m_bDirChanged = true;
-					m_bIsRotating = true;
-
-				}
+		if (m_eCurDir == PLAYER_DIR::LEFT) {
+			if (CGameInstance::Get().Key_Down(DIK_D)) {
+				m_bDirChanged = true;
+				m_bIsRotating = true;
+				return;
 			}
 		}
+		else if (m_eCurDir == PLAYER_DIR::RIGHT) {
+			if (CGameInstance::Get().Key_Down(DIK_A)) {
+				m_bDirChanged = true;
+				m_bIsRotating = true;
+				return;
 
+			}
+		}
 	}
-
+	
+	
 }
 
 void CBody_Player::Update(_float fTimeDelta)
 {
-
+	if (m_bOnHit)
+	{
+		m_fOnHitTime += fTimeDelta;
+		if (m_fOnHitTime >= 1.f) {
+			m_bOnHit = false;
+			m_fOnHitTime = 0.f;
+		}
+	}
 	m_pStateMachine->Update(fTimeDelta);
 
 	if (true == m_pModelCom->Play_Animation(fTimeDelta))
@@ -265,16 +276,28 @@ void CBody_Player::ExpandCollider()
 
 
 	// 1. Center 계산: 로컬 중심점(mid)을 월드 행렬로 변환
-	XMVECTOR mid = (XMLoadFloat3(&vMax) + XMLoadFloat3(&vMin)) * 0.5f;
-
-	
+	XMVECTOR mid;
+	_float fLeftOffset = 0.01f;
+	mid = (XMLoadFloat3(&vMax) + XMLoadFloat3(&vMin)) * 0.5f;
+	//if (m_eCurState == PLAYER_STATE::ATTACK) {
+	//	if (m_eCurDir == PLAYER_DIR::LEFT) {
+	//		mid = XMVectorSetX(mid, XMVectorGetX(mid) - fLeftOffset);
+	//	}
+	//	else {
+	//		mid = XMVectorSetX(mid, XMVectorGetX(mid) + fLeftOffset);
+	//	}
+	//	XMStoreFloat3(&m_pObbCom->myOBB.Center, mid);
+	//}
+	//else {
+	//	XMStoreFloat3(&m_pObbCom->myOBB.Center, mid);
+	//}
 	XMStoreFloat3(&m_pObbCom->myOBB.Center, mid);
 
 	// 2. Extents 계산: (모델 크기 * 트랜스폼 스케일)의 절반
 	// myOBB 자체가 월드에서 클릭되어야 하므로 여기서 스케일을 미리 곱해야 합니다.
 	m_pObbCom->myOBB.Extents.x = (vMax.x - vMin.x) * 0.5f;// * scale.x;
 	m_pObbCom->myOBB.Extents.y = (vMax.y - vMin.y) * 0.5f;// * scale.y;
-	m_pObbCom->myOBB.Extents.z = (vMax.z - vMin.z) * 0.5f;// * scale.z;
+	m_pObbCom->myOBB.Extents.z = (vMax.z - vMin.z) * 0.9f;// * scale.z;
 
 	// 3. Orientation 추출: 월드 행렬에서 회전값만 가져옴
 	XMVECTOR vScale, vRot, vTrans;

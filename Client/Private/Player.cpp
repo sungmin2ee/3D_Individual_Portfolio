@@ -1,7 +1,6 @@
 #include "Player.h"
 
 
-#include "Body_Player.h"
 //#include "Weapon.h"
 #include "GameInstance.h"
 
@@ -107,7 +106,7 @@ HRESULT CPlayer::Ready_PartObjects()
 	if (FAILED(__super::Add_PartObject(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Body_Player"),
 		TEXT("Part_Body"), &BodyDesc)))
 		return E_FAIL;
-	body = static_pointer_cast<CBody_Player>(__super::Get_PartObject(TEXT("Prototype_GameObject_Body_Player")));
+	body = static_pointer_cast<CBody_Player>(__super::Get_PartObject(TEXT("Part_Body")));
 	//CWeapon::WEAPON_DESC		WeaponDesc{};
 	//WeaponDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrixPtr();
 	//WeaponDesc.pParentState = &m_iState;

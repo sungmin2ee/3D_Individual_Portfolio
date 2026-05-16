@@ -229,14 +229,6 @@
             "PrototypeTag": "Prototype_Model_Player1"
         },
         {
-            "FilePath": "../../Resources/Models/PlayerJoe.fbx",
-            "PrototypeTag": "Prototype_Model_PlayerJoe"
-        },
-        {
-            "FilePath": "../../Resources/Models/Player_Demo.fbx",
-            "PrototypeTag": "Prototype_Model_Player_Demo"
-        },
-        {
             "FilePath": "../../Resources/Models/policeCar.fbx",
             "PrototypeTag": "Prototype_Model_policeCar"
         },
@@ -507,6 +499,10 @@
         {
             "FilePath": "../../Resources/Models/wooden_fence_long.fbx",
             "PrototypeTag": "Prototype_Model_wooden_fence_long"
+        },
+        {
+            "FilePath": "../../Resources/Models/Zombie1.fbx",
+            "PrototypeTag": "Prototype_Model_Zombie1"
         }
     ]
 }

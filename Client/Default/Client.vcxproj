@@ -138,6 +138,7 @@
     <ClInclude Include="..\public\Camera_Free.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\public\Player_Attack.h" />
+    <ClInclude Include="..\public\Player_Damaged.h" />
     <ClInclude Include="..\public\Player_Execute.h" />
     <ClInclude Include="..\public\Player_Run.h" />
     <ClInclude Include="..\public\EquipBorder.h" />
@@ -178,6 +179,7 @@
     <ClCompile Include="..\private\Body_Zombie.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />
     <ClCompile Include="..\private\Player_Attack.cpp" />
+    <ClCompile Include="..\private\Player_Damaged.cpp" />
     <ClCompile Include="..\private\Player_Execute.cpp" />
     <ClCompile Include="..\private\Player_Stair.cpp" />
     <ClCompile Include="..\private\Player_Walk.cpp" />

@@ -2,7 +2,7 @@
 
 #include "Client_Defines.h"
 #include "ContainerObject.h"
-
+#include "Body_Player.h"
 NS_BEGIN(Client)
 
 class CPlayer final : public CContainerObject

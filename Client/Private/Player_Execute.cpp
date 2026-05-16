@@ -15,7 +15,7 @@ CPlayer_Execute::~CPlayer_Execute()
 void CPlayer_Execute::Enter(CBody_Player& owner)
 {
     if (owner.Get_Weapon() == CBody_Player::PLAYER_WEAPON::HAND) {
-        owner.Get_Model()->Set_Animation(29, false);
+        owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::UNARMED_ATTACK1), false);
         m_iCount++;
     }
     else if (owner.Get_Weapon() == CBody_Player::PLAYER_WEAPON::AXE) {
