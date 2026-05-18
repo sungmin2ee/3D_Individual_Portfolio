@@ -4,6 +4,9 @@
 #include "Player_Walk.h"
 #include "Player_Attack.h"
 #include "Player_Damaged.h"
+#include "Player_Execute.h"
+#include "Layer.h"
+#include "Zombie.h"
 
 CPlayer_Idle::CPlayer_Idle()
 {
@@ -40,7 +43,7 @@ void CPlayer_Idle::Update(CBody_Player& owner, _float deltaTime)
         // 만약 W키를 누르면 Run 상태로 변경
          owner.Get_StateMachine()->ChangeState(CPlayer_Walk::Create());
     }
-    if (CGameInstance::Get().Key_Down(DIK_F)) {
+    if (CGameInstance::Get().Key_Down(DIK_C)) {
 
         if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::SIT) {
             owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::IDLE));
@@ -68,8 +71,10 @@ void CPlayer_Idle::Update(CBody_Player& owner, _float deltaTime)
     if (owner.Get_OnHit()) {
         owner.Get_StateMachine()->ChangeState(CPlayer_Damaged::Create());
         return;
-
     }
+
+    owner.Execute();
+   
 }
 
 void CPlayer_Idle::Exit(CBody_Player& owner)

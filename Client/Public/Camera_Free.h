@@ -33,8 +33,12 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	void ZoomIn(class CBody_Player* playerBody);
+	void ZoomOut(class CBody_Player* playerBody);
+private:
 	_float		m_fMouseSensor = {};
 	_bool		mouseMove = false;
+	_bool		zoomIn = false;
 private:
 	HRESULT Ready_Components();
 

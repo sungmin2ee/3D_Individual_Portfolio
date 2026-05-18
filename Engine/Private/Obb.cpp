@@ -1,7 +1,7 @@
 #include "Obb.h"
 #include "GameInstance.h"
 #include "Helper.h"
-#include "VIBuffer_Cube.h"
+#include "VIBuffer_Collider.h"
 Obb::Obb(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext) : CCollider(pDevice, pContext)
 
 {

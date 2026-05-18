@@ -18,10 +18,13 @@ void CPlayer_Run::Enter(CBody_Player& owner)
     if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAND) {
         //owner.Get_Model()->Set_Animation(12,false);
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::RUN_MED), 0.7f);
+        owner.Set_MakingSound(true);
 
     }
     else if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::SIT) {
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::SNEAK_WALK));
+        owner.Set_MakingSound(false);
+
     }
 }
 
@@ -67,11 +70,13 @@ void CPlayer_Run::Update(CBody_Player& owner, _float deltaTime)
         return;
 
     }
-
+    owner.Execute();
 }
 
 void CPlayer_Run::Exit(CBody_Player& owner)
 {
+    owner.Set_MakingSound(false);
+
 }
 unique_ptr<CPlayer_Run> CPlayer_Run::Create()
 {

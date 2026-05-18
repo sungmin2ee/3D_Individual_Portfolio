@@ -4,6 +4,7 @@
 #include "GameInstance.h"
 #include "Layer.h"
 #include "Player.h"
+#include "Zombie_Fatal.h"
 
 CZombie_Damaged::CZombie_Damaged()
 {
@@ -26,6 +27,7 @@ void CZombie_Damaged::Enter(CBody_Zombie& owner)
         owner.Set_CurState(CBody_Zombie::ZOMBIE_STATE::HIT_REACT2);
     }
     owner.Set_Damaged();
+    owner.Set_HP(-20);
     m_iCount++;
     animStart = true;
 }
@@ -39,16 +41,21 @@ void CZombie_Damaged::Update(CBody_Zombie& owner, _float deltaTime)
 
 
     if (owner.Get_Model()->Play_Animation(deltaTime) == true) {
+
         animStart = false;
     }
     if (!animStart && owner.Get_Damaged()) {
         if (playerBody->Get_Model()->Get_AnimIndex() == 31 || playerBody->Get_Model()->Get_AnimIndex() == 2) {
             owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::HIT_REACT1), 1.5f, false);
             owner.Set_CurState(CBody_Zombie::ZOMBIE_STATE::HIT_REACT1);
+            owner.Set_HP(-20);
+
         }
         else if (playerBody->Get_Model()->Get_AnimIndex() == 32 || playerBody->Get_Model()->Get_AnimIndex() == 3) {
             owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::HIT_REACT2), 1.5f, false);
             owner.Set_CurState(CBody_Zombie::ZOMBIE_STATE::HIT_REACT2);
+            owner.Set_HP(-20);
+
         }
         m_iCount++;
         animStart = true;
@@ -82,6 +89,10 @@ void CZombie_Damaged::Update(CBody_Zombie& owner, _float deltaTime)
     //    
     //}
     //
+    if (owner.Get_HP() <= 21) {
+        owner.Get_StateMachine()->ChangeState(CZombie_Fatal::Create());
+        return;
+    }
 
 }
 

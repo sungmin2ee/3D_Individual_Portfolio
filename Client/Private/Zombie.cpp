@@ -78,9 +78,9 @@ void CZombie::Update(_float fTimeDelta)
 	}*/
 	__super::Update(fTimeDelta);
 
-	if (body->Get_HP() <= 0) {
-		m_bDead = true;
-	}
+	//if (body->Get_HP() <= 0) {
+	//	m_bDead = true;
+	//}
 }
 
 void CZombie::Late_Update(_float fTimeDelta)

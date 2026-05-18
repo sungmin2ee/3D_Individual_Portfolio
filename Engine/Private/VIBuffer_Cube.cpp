@@ -1,50 +1,28 @@
 #include "VIBuffer_Cube.h"
-#include "GameInstance.h"
 
-VIBuffer_Cube::VIBuffer_Cube(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
-    : CVIBuffer{ pDevice, pContext }
+CVIBuffer_Cube::CVIBuffer_Cube(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
+    : CVIBuffer { pDevice, pContext }
+{
+}
+
+CVIBuffer_Cube::~CVIBuffer_Cube()
 {
 
 }
 
-VIBuffer_Cube::~VIBuffer_Cube()
-{
 
-}
-
-
-HRESULT VIBuffer_Cube::Initialize_Prototype()
+HRESULT CVIBuffer_Cube::Initialize_Prototype()
 {
     m_iNumVertexBuffers = 1;
     m_iNumVertices = 8;
-    m_iVertexStride = sizeof(VCOLLIDER);
-    m_iNumIndices = 24;
+    m_iVertexStride = sizeof(VTXCUBE);
+    m_iNumIndices = 36;
     m_iIndexStride = 2;
     m_eIndexFormat = DXGI_FORMAT_R16_UINT;
-    m_ePrimitiveType = D3D_PRIMITIVE_TOPOLOGY_LINELIST;
+    m_ePrimitiveType = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
-    VCOLLIDER* pVertices = new VCOLLIDER[m_iNumVertices];
-
-    pVertices[0].vPos = _float3(-0.5f, 0.5f, -0.5f);
-    pVertices[1].vPos = _float3(0.5f, 0.5f, -0.5f);
-    pVertices[2].vPos = _float3(0.5f, -0.5f, -0.5f);
-    pVertices[3].vPos = _float3(-0.5f, -0.5f, -0.5f);
-    pVertices[4].vPos = _float3(-0.5f, 0.5f, 0.5f);
-    pVertices[5].vPos = _float3(0.5f, 0.5f, 0.5f);
-    pVertices[6].vPos = _float3(0.5f, -0.5f, 0.5f);
-    pVertices[7].vPos = _float3(-0.5f, -0.5f, 0.5f);
-
-    for (int i = 0; i < 8; ++i)
-        pVertices[i].vColor = _float4(1.f, 1.f, 1.f, 1.f);
 #pragma region VERTEX_BUFFER
-    /*
-     UINT ByteWidth;
-     D3D11_USAGE Usage;
-     UINT BindFlags;
-     UINT CPUAccessFlags;
-     UINT MiscFlags;
-     UINT StructureByteStride;
-    */
+   
     D3D11_BUFFER_DESC           VertexBufferDesc{};
     VertexBufferDesc.ByteWidth = m_iNumVertices * m_iVertexStride;
     VertexBufferDesc.Usage = D3D11_USAGE_DEFAULT;
@@ -53,8 +31,32 @@ HRESULT VIBuffer_Cube::Initialize_Prototype()
     VertexBufferDesc.CPUAccessFlags = 0;
     VertexBufferDesc.MiscFlags = 0;
 
+    VTXCUBE* pVertices = new VTXCUBE[m_iNumVertices];
+    ZeroMemory(pVertices, sizeof(VTXCUBE) * m_iNumVertices);
 
+    pVertices[0].vPosition = _float3(-0.5f, 0.5f, -0.5f);
+    pVertices[0].vTexcoord = pVertices[0].vPosition;
 
+    pVertices[1].vPosition = _float3(0.5f, 0.5f, -0.5f);
+    pVertices[1].vTexcoord = pVertices[1].vPosition;
+
+    pVertices[2].vPosition = _float3(0.5f, -0.5f, -0.5f);
+    pVertices[2].vTexcoord = pVertices[2].vPosition;
+
+    pVertices[3].vPosition = _float3(-0.5f, -0.5f, -0.5f);
+    pVertices[3].vTexcoord = pVertices[3].vPosition;
+
+    pVertices[4].vPosition = _float3(-0.5f, 0.5f, 0.5f);
+    pVertices[4].vTexcoord = pVertices[4].vPosition;
+
+    pVertices[5].vPosition = _float3(0.5f, 0.5f, 0.5f);
+    pVertices[5].vTexcoord = pVertices[5].vPosition;
+
+    pVertices[6].vPosition = _float3(0.5f, -0.5f, 0.5f);
+    pVertices[6].vTexcoord = pVertices[6].vPosition;
+
+    pVertices[7].vPosition = _float3(-0.5f, -0.5f, 0.5f);
+    pVertices[7].vTexcoord = pVertices[7].vPosition;
 
     D3D11_SUBRESOURCE_DATA          VertexInitialData{};
     VertexInitialData.pSysMem = pVertices;
@@ -77,44 +79,23 @@ HRESULT VIBuffer_Cube::Initialize_Prototype()
     uint16_t* pIndices = new uint16_t[m_iNumIndices];
     ZeroMemory(pIndices, sizeof(uint16_t) * m_iNumIndices);
 
+    pIndices[0] = 1; pIndices[1] = 5; pIndices[2] = 6;
+    pIndices[3] = 1; pIndices[4] = 6; pIndices[5] = 2;
 
-    pIndices[0] = 0;
-    pIndices[1] = 1;
+    pIndices[6] = 4; pIndices[7] = 0; pIndices[8] = 3;
+    pIndices[9] = 4; pIndices[10] = 3; pIndices[11] = 7;	// Y+
 
-    pIndices[2] = 1;
-    pIndices[3] = 2;
+    pIndices[12] = 4; pIndices[13] = 5; pIndices[14] = 1;
+    pIndices[15] = 4; pIndices[16] = 1; pIndices[17] = 0;
 
-    pIndices[4] = 2;
-    pIndices[5] = 3;
+    pIndices[18] = 3; pIndices[19] = 2; pIndices[20] = 6;
+    pIndices[21] = 3; pIndices[22] = 6; pIndices[23] = 7;
 
-    pIndices[6] = 3;
-    pIndices[7] = 0;
+    pIndices[24] = 7; pIndices[25] = 6; pIndices[26] = 5;
+    pIndices[27] = 7; pIndices[28] = 5; pIndices[29] = 4;
 
-    pIndices[8] = 1;
-    pIndices[9] = 5;
-
-    pIndices[10] = 2;
-    pIndices[11] = 6;
-
-    pIndices[12] = 3;
-    pIndices[13] = 7;
-
-    pIndices[14] = 0;
-    pIndices[15] = 4;
-
-    pIndices[16] = 4;
-    pIndices[17] = 5;
-
-    pIndices[18] = 5;
-    pIndices[19] = 6;
-
-    pIndices[20] = 6;
-    pIndices[21] = 7;
-
-    pIndices[22] = 7;
-    pIndices[23] = 4;
-
-
+    pIndices[30] = 0; pIndices[31] = 1; pIndices[32] = 2;
+    pIndices[33] = 0; pIndices[34] = 2; pIndices[35] = 3;
 
     D3D11_SUBRESOURCE_DATA          IndexInitialData{};
     IndexInitialData.pSysMem = pIndices;
@@ -122,47 +103,42 @@ HRESULT VIBuffer_Cube::Initialize_Prototype()
     if (FAILED(m_pDevice->CreateBuffer(&IndexBufferDesc, &IndexInitialData, &m_pIB)))
         return E_FAIL;
 
-
-   
-    Safe_Delete_Array(pVertices);
-    Safe_Delete_Array(pIndices);
-
 #pragma endregion
 
+    Safe_Delete_Array(pVertices);
+    Safe_Delete_Array(pIndices);   
 
     return S_OK;
 }
 
-HRESULT VIBuffer_Cube::Initialize(void* pArg)
+HRESULT CVIBuffer_Cube::Initialize(void* pArg)
 {
- 
+
     return S_OK;
 }
 
-
-
-unique_ptr<VIBuffer_Cube> VIBuffer_Cube::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
+unique_ptr<CVIBuffer_Cube> CVIBuffer_Cube::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 {
-    auto		pInstance = unique_ptr<VIBuffer_Cube>(new VIBuffer_Cube(pDevice, pContext));
+    auto		pInstance = unique_ptr<CVIBuffer_Cube>(new CVIBuffer_Cube(pDevice, pContext));
 
     if (FAILED(pInstance->Initialize_Prototype()))
     {
-        MSG_BOX("Failed to Created : VIBuffer_Cube");
+        MSG_BOX("Failed to Created : CVIBuffer_Cube");
         return nullptr;
     }
 
     return pInstance;
 }
 
-shared_ptr<CPrototype> VIBuffer_Cube::Clone(void* pArg)
-{
-    // 1. 복사 생성자를 호출하여 포인터들을 일단 똑같이 복사함
-    auto pInstance = shared_ptr<VIBuffer_Cube>(new VIBuffer_Cube(*this));
 
-    // 2. Initialize에서 나만의 "상수 버퍼"를 새로 생성함
+
+shared_ptr<CPrototype> CVIBuffer_Cube::Clone(void* pArg)
+{
+    auto		pInstance = shared_ptr<CVIBuffer_Cube>(new CVIBuffer_Cube(*this));
+
     if (FAILED(pInstance->Initialize(pArg)))
     {
-        MSG_BOX("Failed to Cloned : VIBuffer_Cube");
+        MSG_BOX("Failed to Cloned : CVIBuffer_Cube");
         return nullptr;
     }
 

@@ -3,7 +3,7 @@
 #include "Level_Loading.h"
 #include "ImguiHandler.h"
 #include "Helper.h"
-#include "VIBuffer_Cube.h"
+#include "VIBuffer_Collider.h"
 #include "Obb.h"
 #include "Shader.h"
 #include "CModelObject.h"
@@ -11,6 +11,7 @@
 #include "Camera_Free.h"
 #include "StateMachine.h"
 #include "Stair_Collider.h"
+#include "VIBuffer_Cube.h"
 
 
 CMainApp::CMainApp()
@@ -126,6 +127,9 @@ HRESULT CMainApp::Ready_Prototypes()
 		return E_FAIL;
 
 
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxCube"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube.hlsl"), VTXCUBE::Elements, VTXCUBE::iNumElements))))
+		return E_FAIL;
 
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxNonAnim"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxNonAnim.hlsl"), VERTEX::Elements, VERTEX::iNumElements))))
@@ -138,18 +142,25 @@ HRESULT CMainApp::Ready_Prototypes()
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Shader_Collider"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Collider.hlsl"), VCOLLIDER::Elements, VCOLLIDER::iNumElements))))
 		return E_FAIL;
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Cube_Buffer"),
-		VIBuffer_Cube::Create(m_pDevice, m_pContext))))
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Collider_Buffer"),
+		VIBuffer_Collider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Cube"),
+		CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_OBB"),
 		Obb::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_ModelObject"),
 		CModelObject::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	//CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Model_Joe5"), Model::Create(m_pDevice,m_pContext,"../../Resources/Models/Joe5.fbx"));
 
+	//sky
+
+	/* For.Prototype_Component_Texture_Sky */
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Sky"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Sky_%d.dds"), 2))))
+		return E_FAIL;
 
 	//camera
 

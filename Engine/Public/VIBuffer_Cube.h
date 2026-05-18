@@ -1,27 +1,24 @@
-
 #pragma once
 
 #include "VIBuffer.h"
 
 NS_BEGIN(Engine)
 
-class ENGINE_DLL VIBuffer_Cube  : public CVIBuffer
+class ENGINE_DLL CVIBuffer_Cube final : public CVIBuffer
 {
 private:
-	VIBuffer_Cube(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext);
-
+	CVIBuffer_Cube(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext);
+	
 public:
-	//VIBuffer_Cube(const VIBuffer_Cube& rhs);
-	virtual ~VIBuffer_Cube();
+	virtual ~CVIBuffer_Cube();
 
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
 
 public:
-	static unique_ptr<VIBuffer_Cube> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
+	static unique_ptr<CVIBuffer_Cube> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
 	virtual shared_ptr<CPrototype> Clone(void* pArg) override;
-
 
 };
 

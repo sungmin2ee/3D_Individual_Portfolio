@@ -8,7 +8,7 @@ NS_BEGIN(Engine)
 class CShader;
 class CModel;
 class Obb;
-class VIBuffer_Cube;
+class VIBuffer_Collider;
 NS_END
 
 NS_BEGIN(Client)
@@ -66,7 +66,7 @@ public:
 	_float Get_BodyAngle() { return bodyAngle; }
 	uint32_t Get_HP() { return m_iHp; }
 	_bool Get_Rotating() { return m_bIsRotating; }
-	_bool Is_MakingSound() { return m_bIsRotating; }
+	_bool Is_MakingSound() { return m_bIsMakingSound; }
 	_bool Get_OnHit() { return m_bOnHit; }
 	shared_ptr<Obb> Get_Obb() { return m_pObbCom; };
 
@@ -83,7 +83,7 @@ private:
 	shared_ptr<CShader>				m_pShaderCom = { nullptr };
 	shared_ptr<CModel>				m_pModelCom = { nullptr };
 	shared_ptr<Obb>					m_pObbCom = { nullptr };
-	shared_ptr<VIBuffer_Cube>		m_pObbBfCom = { nullptr };
+	shared_ptr<VIBuffer_Collider>		m_pObbBfCom = { nullptr };
 private:
 	const uint32_t* m_pParentState = { nullptr };
 	unique_ptr<StateMachine<CBody_Player>> m_pStateMachine = nullptr;
@@ -98,6 +98,8 @@ private:
 	uint32_t m_iHp = 100;
 	_float m_fOnHitTime = 0.f;
 
+public:
+	void Execute();
 private:
 	HRESULT Ready_Components();
 	void ExpandCollider();

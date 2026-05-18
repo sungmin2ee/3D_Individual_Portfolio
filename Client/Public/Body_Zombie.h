@@ -9,7 +9,7 @@ NS_BEGIN(Engine)
 class CShader;
 class CModel;
 class Obb;
-class VIBuffer_Cube;
+class VIBuffer_Collider;
 NS_END
 
 NS_BEGIN(Client)
@@ -61,6 +61,10 @@ public:
 	_bool Get_Damaged() { return m_bIsDamaged; }
 	_bool Get_PlayerInRange() { return m_bPlayerInRange; }
 	_bool Get_PlayerDetected() { return m_bPlayerDetected; }
+	_bool Get_DirChanged() { return m_bDirChanged; }
+	_bool Is_UsingStairs() { return m_bUsingStairs; }
+	_bool Is_Executing() { return m_bExecuting; }
+	_bool Stealth_Death() { return m_bStealthDeath; }
 	uint32_t Get_HP() { return m_iHp; }
 	shared_ptr<Obb> Get_Obb() { return m_pObbCom; };
 
@@ -71,27 +75,36 @@ public:
 	void Set_DirChanged() { m_bDirChanged = true; }
 	void Set_Damaged() { m_bIsDamaged = true; }
 	void Set_Detected(_bool flag) { m_bPlayerDetected = flag; }
-	void Set_HP(uint32_t reduce) { m_iHp -= reduce; }
+	void Set_HP(uint32_t hp) { m_iHp += hp; }
+	void Set_HPZero() { m_iHp = 0; }
+	void Set_Executing(_bool flag) { m_bExecuting = flag; }
+	void Set_Stealth_Death() { m_bStealthDeath = true; }
 
 private:
 	shared_ptr<CShader>				m_pShaderCom = { nullptr };
 	shared_ptr<CModel>				m_pModelCom = { nullptr };
 	shared_ptr<Obb> m_pObbCom = { nullptr };
-	shared_ptr<VIBuffer_Cube> m_pObbBfCom = { nullptr };
+	shared_ptr<VIBuffer_Collider> m_pObbBfCom = { nullptr };
 private:
 	const uint32_t* m_pParentState = { nullptr };
 	unique_ptr<StateMachine<CBody_Zombie>> m_pStateMachine = nullptr;
 	ZOMBIE_STATE m_eCurState = ZOMBIE_STATE::END;
 	ZOMBIE_DIR   m_eCurDir = ZOMBIE_DIR::RIGHT;
+	ZOMBIE_DIR   m_ePrevDir= ZOMBIE_DIR::END;
 	_float bodyAngle = 0.f;
 	_bool  m_bDirChanged = false;
 	_bool  m_bIsRotating = false;
 	_bool  m_bIsDamaged  = false;
 	_bool  m_bPlayerInRange = false;
 	_bool  m_bPlayerDetected = false;
+	_bool  m_bUsingStairs = false;
+	_bool  m_bExecuting = false;
+	_bool  m_bStealthDeath = false;
 	_float m_fAttackTime = 0.f;
 	uint32_t m_iHp = 100;
+	
 private:
+	void FocusPlayer();
 	//shared_ptr<CBody_Player> m_pPlayer = { nullptr };
 private:
 	HRESULT Ready_Components();

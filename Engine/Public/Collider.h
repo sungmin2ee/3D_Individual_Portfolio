@@ -2,7 +2,7 @@
 #include "Engine_Defines.h"
 #include "Component.h"
 #include "Shader.h"
-#include "VIBuffer_Cube.h"
+#include "VIBuffer_Collider.h"
 NS_BEGIN(Engine)
 class ENGINE_DLL CCollider abstract : public CComponent
 {
@@ -23,7 +23,7 @@ public:
 protected:
 	bool m_bIsSelected = false;
 	shared_ptr<CShader>  m_pShaderCom = nullptr;
-	shared_ptr<VIBuffer_Cube> m_pBuffer = nullptr;
+	shared_ptr<VIBuffer_Collider> m_pBuffer = nullptr;
 
 
 };

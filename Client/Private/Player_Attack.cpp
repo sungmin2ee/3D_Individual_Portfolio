@@ -35,6 +35,8 @@ void CPlayer_Attack::Enter(CBody_Player& owner)
        }
    }
     animStart = true;
+    owner.Set_MakingSound(true);
+
 }
 
 void CPlayer_Attack::Update(CBody_Player& owner, _float deltaTime)
@@ -102,7 +104,7 @@ void CPlayer_Attack::Update(CBody_Player& owner, _float deltaTime)
         }
     }
 
-   
+    owner.Execute();
 
 
 }
@@ -110,6 +112,7 @@ void CPlayer_Attack::Update(CBody_Player& owner, _float deltaTime)
 void CPlayer_Attack::Exit(CBody_Player& owner)
 {
     auto a = owner.Get_CurState();
+    owner.Set_MakingSound(false);
 
 }
 unique_ptr<CPlayer_Attack> CPlayer_Attack::Create()

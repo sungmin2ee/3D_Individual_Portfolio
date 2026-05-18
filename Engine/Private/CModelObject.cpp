@@ -3,7 +3,7 @@
 #include "Shader.h"
 #include "CModel.h"
 #include "Obb.h"
-#include "VIBuffer_Cube.h"
+#include "VIBuffer_Collider.h"
 
 CModelObject::CModelObject(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext) :CGameObject{ pDevice, pContext }
 {
@@ -199,7 +199,7 @@ void CModelObject::ExpandCollider()
     XMStoreFloat4(&m_pColliderCom->myOBB.Orientation, vRot);
 
     // 4. 렌더링용 월드 행렬 (m_WorldMatrix) 갱신
-    // VIBuffer_Cube는 -0.5 ~ 0.5 (크기 1)이므로, Extents * 2를 하면 딱 맞습니다.
+    // VIBuffer_Collider는 -0.5 ~ 0.5 (크기 1)이므로, Extents * 2를 하면 딱 맞습니다.
     _matrix matOBBWorld = XMMatrixScaling(m_pColliderCom->myOBB.Extents.x * 2.f,
         m_pColliderCom->myOBB.Extents.y * 2.f,
         m_pColliderCom->myOBB.Extents.z * 2.f);

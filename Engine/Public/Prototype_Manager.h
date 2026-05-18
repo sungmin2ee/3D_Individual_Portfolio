@@ -1,13 +1,14 @@
 #pragma once
 
+#include "CModel.h"
 #include "Shader.h"
 #include "Texture.h"
 #include "Transform.h"
 #include "VIBuffer_Rect.h"
+#include "VIBuffer_Collider.h"
 #include "VIBuffer_Cube.h"
 #include "Obb.h"
 #include "GameObject.h"
-#include "CModel.h"
 
 /* 원형객체들을 레벨별로 구분하여 보관한다. */
 /* 선택된 원형객체를 복제하여 리턴해준다. */

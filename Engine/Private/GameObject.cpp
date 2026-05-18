@@ -23,13 +23,14 @@ HRESULT CGameObject::Initialize_Prototype()
 HRESULT CGameObject::Initialize(void* pArg)
 {
 	auto        pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
+
 	m_sObjectTag = pDesc->pGameObjectTag;
+	if (nullptr == pArg)
+		return S_OK;
 	m_pTransformCom = CTransform::Create(m_pDevice, m_pContext);
 	if (nullptr == m_pTransformCom)
 		return E_FAIL;
 
-	if (nullptr == pArg)
-		return S_OK;
 
 	if (FAILED(m_pTransformCom->Initialize(pArg)))
 		return E_FAIL;

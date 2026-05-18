@@ -73,20 +73,20 @@ HRESULT CLevel_Shelter::Ready_Layer_UI(const _wstring& strLayerTag)
 
 HRESULT CLevel_Shelter::Ready_Layer_Camera(const _wstring& strLayerTag)
 {
-	CCamera_Free::CAMERA_FREE_DESC		FreeDesc{};
-	FreeDesc.vEye = _float4(0.f, 0.f, -1.f, 1.f);
-	FreeDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
-	FreeDesc.fFovy = XMConvertToRadians(60.f);
-	FreeDesc.fNear = 0.1f;
-	FreeDesc.fFar = 1000.f;
-	FreeDesc.fMouseSensor = 0.02f;
-	FreeDesc.fSpeedPerSec = 2.f;
-	FreeDesc.fRotationPerSec = 180.f;
-
-
-	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Camera_Free"),
-		ETOUI(LEVEL::SHELTER), strLayerTag, &FreeDesc)))
-		return E_FAIL;
+	//CCamera_Free::CAMERA_FREE_DESC		FreeDesc{};
+	//FreeDesc.vEye = _float4(0.f, 0.f, -1.f, 1.f);
+	//FreeDesc.vAt = _float4(0.f, 0.f, 0.f, 1.f);
+	//FreeDesc.fFovy = XMConvertToRadians(60.f);
+	//FreeDesc.fNear = 0.1f;
+	//FreeDesc.fFar = 1000.f;
+	//FreeDesc.fMouseSensor = 0.02f;
+	//FreeDesc.fSpeedPerSec = 2.f;
+	//FreeDesc.fRotationPerSec = 180.f;
+	//
+	//
+	//if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Camera_Free"),
+	//	ETOUI(LEVEL::SHELTER), strLayerTag, &FreeDesc)))
+	//	return E_FAIL;
 	return S_OK;
 }
 

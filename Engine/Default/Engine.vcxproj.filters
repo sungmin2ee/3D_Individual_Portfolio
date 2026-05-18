@@ -145,6 +145,9 @@
     <Filter Include="05.GameObject\ContainerObject\PartObject">
       <UniqueIdentifier>{7e9b6fe6-48b3-4f34-a741-c3ea978d67e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="91.ShaderFiels">
+      <UniqueIdentifier>{1d0e1b10-5949-43a6-a979-89b738a55c62}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -234,7 +237,7 @@
     <ClInclude Include="..\Public\AABB.h">
       <Filter>06.Component\Collider\AABB</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\VIBuffer_Cube.h">
+    <ClInclude Include="..\Public\VIBuffer_Collider.h">
       <Filter>06.Component\VIBuffer\Cube</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Collider_Manager.h">
@@ -290,6 +293,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\PartObject.h">
       <Filter>05.GameObject\ContainerObject\PartObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Cube.h">
+      <Filter>06.Component\VIBuffer\Cube</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -398,7 +404,7 @@
     <ClCompile Include="..\Private\AABB.cpp">
       <Filter>06.Component\Collider\AABB</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\VIBuffer_Cube.cpp">
+    <ClCompile Include="..\Private\VIBuffer_Collider.cpp">
       <Filter>06.Component\VIBuffer\Cube</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Collider_Manager.cpp">
@@ -455,5 +461,18 @@
     <ClCompile Include="..\Private\PartObject.cpp">
       <Filter>05.GameObject\ContainerObject\PartObject</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Cube.cpp">
+      <Filter>06.Component\VIBuffer\Cube</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Bin\ShaderFiles\Engine_Shader_Defines.hlsli">
+      <Filter>91.ShaderFiels</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl">
+      <Filter>91.ShaderFiels</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

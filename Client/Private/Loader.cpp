@@ -13,6 +13,7 @@
 #include "Zombie.h"
 #include "Body_Player.h"
 #include "Body_Zombie.h"
+#include "Sky.h"
 
 CLoader::CLoader(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: m_pDevice{ pDevice }
@@ -198,7 +199,8 @@ HRESULT CLoader::Loading_For_Stage1()
 HRESULT CLoader::Loading_For_Stage2()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
-	
+
+
 
 	lstrcpy(m_szLoadingText, TEXT("모델을 로딩 중 입니다."));
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
@@ -241,6 +243,11 @@ HRESULT CLoader::Loading_For_Stage2()
 		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Zombie"),
 		CZombie::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Sky */
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Sky"),
+		CSky::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

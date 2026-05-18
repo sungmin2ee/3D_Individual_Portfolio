@@ -5,7 +5,7 @@
 
 NS_BEGIN(Engine)
 class Obb;
-class VIBuffer_Cube;
+class VIBuffer_Collider;
 NS_END
 
 NS_BEGIN(Client)
@@ -40,7 +40,7 @@ public:
 
 private:
 	shared_ptr<Obb> m_pObbCom = { nullptr };
-	shared_ptr<VIBuffer_Cube> m_pObbBfCom = { nullptr };
+	shared_ptr<VIBuffer_Collider> m_pObbBfCom = { nullptr };
 private:
 	HRESULT Ready_Components();
 	void ExpandCollider();

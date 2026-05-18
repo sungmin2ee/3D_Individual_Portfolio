@@ -86,7 +86,7 @@ void CStair_Collider::ExpandCollider()
 	XMStoreFloat4(&m_pObbCom->myOBB.Orientation, vRot);
 
 	// 4. 렌더링용 월드 행렬 (m_WorldMatrix) 갱신
-	// VIBuffer_Cube는 -0.5 ~ 0.5 (크기 1)이므로, Extents * 2를 하면 딱 맞습니다.
+	// VIBuffer_Collider는 -0.5 ~ 0.5 (크기 1)이므로, Extents * 2를 하면 딱 맞습니다.
 	_matrix matOBBWorld = XMMatrixScaling(m_pObbCom->myOBB.Extents.x ,
 		m_pObbCom->myOBB.Extents.y ,
 		m_pObbCom->myOBB.Extents.z );
@@ -104,7 +104,7 @@ HRESULT CStair_Collider::Ready_Components()
 {
 
 
-	m_pObbBfCom = static_pointer_cast<VIBuffer_Cube>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), L"Prototype_Cube_Buffer"));
+	m_pObbBfCom = static_pointer_cast<VIBuffer_Collider>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), L"Prototype_Collider_Buffer"));
 	if (nullptr == m_pObbBfCom)
 	{
 		MSG_BOX("OBB 버퍼 컴포넌트 클론 실패!");

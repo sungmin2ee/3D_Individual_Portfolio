@@ -1,12 +1,15 @@
 #include "Body_Player.h"
 #include "Player.h"
-#include "VIBuffer_Cube.h"
+#include "VIBuffer_Collider.h"
 #include "Obb.h"
 #include "Player_Idle.h"
 #include "Player_Stair.h"
-
+#include "Player_Execute.h"
 #include "GameInstance.h"
 #include "Stair_Collider.h"
+#include "Player_StealthAttack.h"
+#include "Zombie.h"
+#include "Layer.h"
 
 CBody_Player::CBody_Player(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: CPartObject{ pDevice, pContext }
@@ -172,6 +175,33 @@ HRESULT CBody_Player::Render()
 	return S_OK;
 }
 
+void CBody_Player::Execute()
+{
+	auto zombies = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Zombie"))->GetObjects();
+	auto iter = zombies.begin();
+	for (iter; iter != zombies.end(); iter++) {
+		if (static_pointer_cast<CZombie>(*iter)->Get_Body()->Get_HP() != 0) {
+			if (m_pObbCom->myOBB.Intersects(static_pointer_cast<CZombie>(*iter)->Get_Body()->Get_Obb()->myOBB)) {
+				if (static_pointer_cast<CZombie>(*iter)->Get_Body()->Get_HP() <= 21) {
+					if (CGameInstance::Get().Key_Down(DIK_F)) {
+						m_pStateMachine->ChangeState(CPlayer_Execute::Create());
+						static_pointer_cast<CZombie>(*iter)->Get_Body()->Set_Executing(true);
+						return;
+					}
+				}
+				if (ETOUI(static_pointer_cast<CZombie>(*iter)->Get_Body()->Get_CurDir()) == ETOUI(m_eCurDir)) {
+					if (CGameInstance::Get().Key_Down(DIK_F)) {
+						static_pointer_cast<CZombie>(*iter)->Get_Body()->Set_Stealth_Death();
+						m_pStateMachine->ChangeState(CPlayer_StealthAttack::Create());
+						return;
+					}
+				}
+			}
+		}
+		
+	}
+}
+
 HRESULT CBody_Player::Ready_Components()
 {
 	m_pModelCom = dynamic_pointer_cast<CModel>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_Model_Joe")));
@@ -182,7 +212,7 @@ HRESULT CBody_Player::Ready_Components()
 	if (FAILED(__super::Add_Component(TEXT("Com_Shader"), m_pShaderCom)))
 		return E_FAIL;
 
-	m_pObbBfCom = static_pointer_cast<VIBuffer_Cube>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), L"Prototype_Cube_Buffer"));
+	m_pObbBfCom = static_pointer_cast<VIBuffer_Collider>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), L"Prototype_Collider_Buffer"));
 	if (nullptr == m_pObbBfCom)
 	{
 		MSG_BOX("OBB 버퍼 컴포넌트 클론 실패!");
@@ -305,7 +335,7 @@ void CBody_Player::ExpandCollider()
 	XMStoreFloat4(&m_pObbCom->myOBB.Orientation, vRot);
 
 	// 4. 렌더링용 월드 행렬 (m_WorldMatrix) 갱신
-	// VIBuffer_Cube는 -0.5 ~ 0.5 (크기 1)이므로, Extents * 2를 하면 딱 맞습니다.
+	// VIBuffer_Collider는 -0.5 ~ 0.5 (크기 1)이므로, Extents * 2를 하면 딱 맞습니다.
 	_matrix matOBBWorld = XMMatrixScaling(m_pObbCom->myOBB.Extents.x * 2.f,
 		m_pObbCom->myOBB.Extents.y * 2.f,
 		m_pObbCom->myOBB.Extents.z * 2.f);

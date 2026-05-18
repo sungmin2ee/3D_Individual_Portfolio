@@ -12,6 +12,6 @@ CCollider::~CCollider()
 HRESULT CCollider::Initialize()
 {
 	m_pShaderCom = static_pointer_cast<CShader>(CGameInstance::Get().Clone_Prototype(0, L"Prototype_Component_Shader_Collider"));
-	m_pBuffer = static_pointer_cast<VIBuffer_Cube>(CGameInstance::Get().Clone_Prototype(0, L"Prototype_Cube_Buffer"));
+	m_pBuffer = static_pointer_cast<VIBuffer_Collider>(CGameInstance::Get().Clone_Prototype(0, L"Prototype_Collider_Buffer"));
 	return S_OK;
 }

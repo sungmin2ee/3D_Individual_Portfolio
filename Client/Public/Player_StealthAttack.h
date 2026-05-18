@@ -3,26 +3,27 @@
 #include "State.h"
 #include "Body_Player.h"
 NS_BEGIN(Client)
-class CPlayer_Execute :
+class CPlayer_StealthAttack :
     public State<CBody_Player>
 {
 
 public:
     enum IDLE_STATE { IDLE, SIT_IDLE };
 private:
-    CPlayer_Execute();
+    CPlayer_StealthAttack();
 
 public:
-    virtual ~CPlayer_Execute();
+    virtual ~CPlayer_StealthAttack();
 public:
     virtual void Enter(CBody_Player& owner) override;
     virtual void Update(CBody_Player& owner, _float deltaTime) override;
     virtual void Exit(CBody_Player& owner) override;
 
 public:
-    static unique_ptr<CPlayer_Execute> Create();
+    static unique_ptr<CPlayer_StealthAttack> Create();
 
-private:
+
     _bool animStart = false;
+
 };
 NS_END

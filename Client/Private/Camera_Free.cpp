@@ -1,4 +1,7 @@
 #include "Camera_Free.h"
+#include "Layer.h"
+#include "Player.h"
+#include "CModelObject.h"
 
 #include "GameInstance.h"
 
@@ -34,7 +37,7 @@ HRESULT CCamera_Free::Initialize(void* pArg)
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
-
+	
 	return S_OK;
 }
 
@@ -62,7 +65,7 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 		m_pTransformCom->Go_Right(fTimeDelta);
 	}
 
-	if (CGameInstance::Get().Get_DIKeyState(DIK_C) & 0x80)
+	if (CGameInstance::Get().Get_DIKeyState(DIK_G) & 0x80)
 	{
 		mouseMove = !mouseMove;
 	}
@@ -100,9 +103,34 @@ void CCamera_Free::Priority_Update(_float fTimeDelta)
 
 void CCamera_Free::Update(_float fTimeDelta)
 {
-
-
 	__super::Update(fTimeDelta);
+
+	auto layer = CGameInstance::Get().Find_Layer(ETOUI(CGameInstance::Get().GetCurLevelIndex()), TEXT("Layer_Player"));
+	if (layer == nullptr)
+		return;
+	auto player = layer->GetObjectFirst();
+	if (player == nullptr)
+		return;
+	auto playerBody = static_pointer_cast<CPlayer>(player)->Get_Body();
+	if (playerBody == nullptr)
+		return;
+	auto insideLayer = CGameInstance::Get().Find_Layer(ETOUI(CGameInstance::Get().GetCurLevelIndex()), TEXT("Inside_Layer"));
+	auto insideObjects = insideLayer->GetObjects();
+	for (auto& insideObject : insideObjects) {
+		zoomIn = false;
+		auto object = static_pointer_cast<CModelObject>(insideObject);
+		if (playerBody->Get_Obb()->myOBB.Intersects(object->Get_Collider()->myOBB)) {
+			zoomIn = true;
+			break;
+		}
+	}
+
+	if (zoomIn) {
+		ZoomIn(playerBody);
+	}
+	else {
+		ZoomOut(playerBody);
+	}
 }
 
 void CCamera_Free::Late_Update(_float fTimeDelta)
@@ -116,6 +144,77 @@ HRESULT CCamera_Free::Render()
 {
 
 	return S_OK;
+}
+
+void CCamera_Free::ZoomIn(CBody_Player* playerBody)
+{
+	// 1. 플레이어와 카메라의 현재 위치를 가져옵니다.
+	_vector playerPos = playerBody->Get_Transform()->Get_State(STATE::POSITION);
+	_vector camPos = m_pTransformCom->Get_State(STATE::POSITION);
+	playerPos = playerPos + XMVectorSet(0, 0.2f, 0, 0);
+	// XMStoreFloat4를 이용해 벡터의 각 성분(X, Y, Z)에 접근하기 편하게 변환합니다.
+	_float4 fPlayerPos, fCamPos;
+	XMStoreFloat4(&fPlayerPos, playerPos);
+	XMStoreFloat4(&fCamPos, camPos);
+
+	// 2. X와 Y 좌표는 플레이어의 좌표를 그대로 복사하여 강제로 따라가게 합니다.
+	fCamPos.x = fPlayerPos.x;
+	fCamPos.y = fPlayerPos.y;
+
+
+	_float fCurrentZDistance = fPlayerPos.z - fCamPos.z;
+
+	// 최소 거리 제한 (예: 플레이어와 Z축 거리가 1.0f 이하로 가까워지면 더 이상 줌인 안 됨)
+	_float fMinDistance = 0.8f;
+
+	if (fCurrentZDistance <= fMinDistance) {
+		_vector nextCamPos = XMLoadFloat4(&fCamPos);
+		m_pTransformCom->Set_State(STATE::POSITION, nextCamPos);
+		return;
+	}
+
+	// 4. 제한에 걸리지 않았다면 Z축을 플레이어 쪽으로 이동시킵니다. (+방향)
+	_float fZoomSpeed = 0.01f; // 프레임 환경에 맞게 수치를 조절하세요.
+	fCamPos.z += fZoomSpeed;
+
+	// 5. 최종 계산된 위치(X, Y는 플레이어와 동일, Z는 이동됨)를 카메라에 적용합니다.
+	_vector nextCamPos = XMLoadFloat4(&fCamPos);
+	m_pTransformCom->Set_State(STATE::POSITION, nextCamPos);
+}
+
+void CCamera_Free::ZoomOut(CBody_Player* playerBody)
+{
+	// 1. 플레이어와 카메라의 현재 위치를 가져옵니다.
+	_vector playerPos = playerBody->Get_Transform()->Get_State(STATE::POSITION);
+	_vector camPos = m_pTransformCom->Get_State(STATE::POSITION);
+	playerPos = playerPos + XMVectorSet(0, 0.2f, 0, 0);
+	// XMStoreFloat4를 이용해 벡터의 각 성분(X, Y, Z)에 접근하기 편하게 변환합니다.
+	_float4 fPlayerPos, fCamPos;
+	XMStoreFloat4(&fPlayerPos, playerPos);
+	XMStoreFloat4(&fCamPos, camPos);
+
+	// 2. X와 Y 좌표는 플레이어의 좌표를 그대로 복사하여 강제로 따라가게 합니다.
+	fCamPos.x = fPlayerPos.x;
+	fCamPos.y = fPlayerPos.y;
+
+
+	_float fCurrentZDistance = fPlayerPos.z - fCamPos.z;
+
+	_float fMaxDistance = 1.1f;
+
+	if (fCurrentZDistance >= fMaxDistance) {
+		_vector nextCamPos = XMLoadFloat4(&fCamPos);
+		m_pTransformCom->Set_State(STATE::POSITION, nextCamPos);
+		return;
+	}
+
+	// 4. 제한에 걸리지 않았다면 Z축을 플레이어 쪽으로 이동시킵니다. (+방향)
+	_float fZoomSpeed = 0.01f; // 프레임 환경에 맞게 수치를 조절하세요.
+	fCamPos.z -= fZoomSpeed;
+
+	// 5. 최종 계산된 위치(X, Y는 플레이어와 동일, Z는 이동됨)를 카메라에 적용합니다.
+	_vector nextCamPos = XMLoadFloat4(&fCamPos);
+	m_pTransformCom->Set_State(STATE::POSITION, nextCamPos);
 }
 
 HRESULT CCamera_Free::Ready_Components()

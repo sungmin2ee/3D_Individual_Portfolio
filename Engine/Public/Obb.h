@@ -22,7 +22,7 @@ public:
 	void SetWorld(_float4x4 world) { m_WorldMatrix = world; }
 	virtual bool Intersects(shared_ptr<CCollider> pTarget) override;
 	virtual bool IntersectsRay(_float* pOutDist) override;
-	void SetBuffer(shared_ptr<class VIBuffer_Cube> bf) { m_pBuffer = bf; }
+	void SetBuffer(shared_ptr<class VIBuffer_Collider> bf) { m_pBuffer = bf; }
 	void Set_WorldMatrix(_matrix matWorld) { XMStoreFloat4x4(&m_WorldMatrix, matWorld); }
 	virtual void Update(_matrix TransformMatrix) override;
 public:

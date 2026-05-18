@@ -1,8 +1,9 @@
 // 명령어				옵션			원본파일이 있는 위치			사본파일을 저장할 위치
 
-xcopy				/y/s			.\Engine\Public\*.h							.\EngineSDK\Inc\
-xcopy				/y/I			.\Engine\Bin\Engine.dll						.\Client\Bin\
-xcopy				/y/I			.\Engine\Bin\Engine.lib						.\EngineSDK\Lib\
+xcopy				/y/s			.\Engine\Public\*.h				.\EngineSDK\Inc\
+xcopy				/y/I			.\Engine\Bin\Engine.dll				.\Client\Bin\
+xcopy				/y/I			.\Engine\Bin\Engine.lib				.\EngineSDK\Lib\
+xcopy				/y			.\Engine\Bin\ShaderFiles\*.*			.\Client\Bin\ShaderFiles\
 
 
 

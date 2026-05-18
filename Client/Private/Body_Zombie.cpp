@@ -1,13 +1,13 @@
 #include "GameInstance.h"
 #include "Body_Zombie.h"
-#include "VIBuffer_Cube.h"
+#include "VIBuffer_Collider.h"
 #include "Obb.h"
 #include "Layer.h"
 #include "Player.h"
 
 
 #include "Zombie.h"
-#include "Zombie_Attack.h"
+#include "Zombie_Idle.h"
 #include "Stair_Collider.h"
 
 CBody_Zombie::CBody_Zombie(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
@@ -19,7 +19,7 @@ CBody_Zombie::CBody_Zombie(const CBody_Zombie& Prototype)
 	: CPartObject{ Prototype }
 {
 	m_pStateMachine = nullptr;
-	m_eCurState = ZOMBIE_STATE::IDLE;
+	m_eCurState = ZOMBIE_STATE::END;
 	m_eCurDir = ZOMBIE_DIR::RIGHT;
 	bodyAngle = 0.f;
 	m_bDirChanged = false;
@@ -52,6 +52,7 @@ HRESULT CBody_Zombie::Initialize(void* pArg)
 
 	m_pParentState = pDesc->pParentState;
 	pDesc->fRotationPerSec = 720.f;
+	_float speed = pDesc->fSpeedPerSec;
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -61,11 +62,12 @@ HRESULT CBody_Zombie::Initialize(void* pArg)
 	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
 	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(-0.5f, 0, 0, 1));
 
-	m_pStateMachine = StateMachine<CBody_Zombie>::Create(this, CZombie_Attack::Create());
+	m_pStateMachine = StateMachine<CBody_Zombie>::Create(this, CZombie_Idle::Create());
 	m_pModelCom->Calculate_Box(ETOUI(MODEL::ANIM));
 	CGameInstance::Get().Add_Collider(m_pObbCom);
 	m_pObbCom->SetOwner(this);
 	ExpandCollider();
+	m_ePrevDir = m_eCurDir;
 
 	return S_OK;
 }
@@ -73,52 +75,6 @@ HRESULT CBody_Zombie::Initialize(void* pArg)
 void CBody_Zombie::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
-
-	/*if (m_bDirChanged) {
-		if (m_eCurDir == CBody_Zombie::ZOMBIE_DIR::RIGHT) {
-			m_pTransformCom->Get_State(STATE::POSITION);
-			bodyAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
-			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
-			if (bodyAngle >= 180.f) {
-				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
-				m_bDirChanged = false;
-				m_bIsRotating = false;
-				bodyAngle = 180.f;
-				m_eCurDir = ZOMBIE_DIR::LEFT;
-
-			}
-		}
-		else if (m_eCurDir == CBody_Zombie::ZOMBIE_DIR::LEFT) {
-			bodyAngle -= fTimeDelta * m_pTransformCom->Get_RotSpeed();
-			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
-			if (bodyAngle <= 0.f) {
-				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
-				m_bDirChanged = false;
-				m_bIsRotating = false;
-				bodyAngle = 0.f;
-				m_eCurDir = ZOMBIE_DIR::RIGHT;
-
-			}
-		}
-	}
-	else {
-		if (!m_bIsRotating) {
-			if (m_eCurDir == CBody_Zombie::ZOMBIE_DIR::LEFT) {
-				if (CGameInstance::Get().Key_Down(DIK_RIGHT)) {
-					m_bDirChanged = true;
-					m_bIsRotating = true;
-				}
-			}
-			else if (m_eCurDir == CBody_Zombie::ZOMBIE_DIR::RIGHT) {
-				if (CGameInstance::Get().Key_Down(DIK_LEFT)) {
-					m_bDirChanged = true;
-					m_bIsRotating = true;
-
-				}
-			}
-		}
-
-	}*/
 
 }
 
@@ -130,9 +86,18 @@ void CBody_Zombie::Update(_float fTimeDelta)
 	if (true == m_pModelCom->Play_Animation(fTimeDelta))
 		int a = 10;
 	__super::Update(fTimeDelta);
+	if (m_bExecuting || m_bStealthDeath) {
+		CheckColliding();
+
+		return;
+	}
 	ExpandCollider();
-	DetectPlayer();
-	CheckColliding();
+	if (!m_bPlayerDetected) {
+		DetectPlayer();
+	}
+	if (m_bPlayerDetected) {
+		CheckColliding();
+	}
 	//if (m_bPlayerDetected) {
 	//	CheckColliding();
 	//}
@@ -143,7 +108,39 @@ void CBody_Zombie::Update(_float fTimeDelta)
 			m_fAttackTime = 0.f;
 		}
 	}
-
+	
+	if (m_bPlayerDetected && !m_bUsingStairs) {
+		FocusPlayer();
+		if (m_ePrevDir != m_eCurDir) {
+			m_bDirChanged = true;
+			m_bIsRotating = true;
+			if (m_eCurDir == ZOMBIE_DIR::LEFT) {
+				bodyAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
+				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
+				if (bodyAngle >= 180.f) {
+					m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
+					m_bDirChanged = false;
+					m_bIsRotating = false;
+					bodyAngle = 180.f;
+					m_ePrevDir = m_eCurDir;
+					return;
+				}
+			}
+			else if(m_eCurDir == ZOMBIE_DIR::RIGHT) {
+				bodyAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
+				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
+				if (bodyAngle >= 360.f) {
+					m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
+					m_bDirChanged = false;
+					m_bIsRotating = false;
+					bodyAngle = 0.f;
+					m_ePrevDir = m_eCurDir;
+					return;
+				}
+			}
+		}
+	}
+	
 }
 
 void CBody_Zombie::Late_Update(_float fTimeDelta)
@@ -197,7 +194,7 @@ HRESULT CBody_Zombie::Ready_Components()
 	if (FAILED(__super::Add_Component(TEXT("Com_Shader"), m_pShaderCom)))
 		return E_FAIL;
 
-	m_pObbBfCom = static_pointer_cast<VIBuffer_Cube>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), L"Prototype_Cube_Buffer"));
+	m_pObbBfCom = static_pointer_cast<VIBuffer_Collider>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), L"Prototype_Collider_Buffer"));
 	if (nullptr == m_pObbBfCom)
 	{
 		MSG_BOX("OBB 버퍼 컴포넌트 클론 실패!");
@@ -308,7 +305,7 @@ void CBody_Zombie::ExpandCollider()
 	XMStoreFloat4(&m_pObbCom->myOBB.Orientation, vRot);
 
 	// 4. 렌더링용 월드 행렬 (m_WorldMatrix) 갱신
-	// VIBuffer_Cube는 -0.5 ~ 0.5 (크기 1)이므로, Extents * 2를 하면 딱 맞습니다.
+	// VIBuffer_Collider는 -0.5 ~ 0.5 (크기 1)이므로, Extents * 2를 하면 딱 맞습니다.
 	_matrix matOBBWorld = XMMatrixScaling(m_pObbCom->myOBB.Extents.x * 2.f,
 		m_pObbCom->myOBB.Extents.y * 2.f,
 		m_pObbCom->myOBB.Extents.z * 2.f);
@@ -335,7 +332,7 @@ void CBody_Zombie::DetectPlayer()
 	_float4 fpos;
 	XMStoreFloat4(&fpos, deltaPos);
 	
-	if (fabs(fpos.x) >= 1.f && playerBody->Is_MakingSound()) {
+	if (fabs(fpos.x) <= 1.f && playerBody->Is_MakingSound()) {
 		m_bPlayerDetected = true;
 	}
 	else {
@@ -371,3 +368,31 @@ void CBody_Zombie::CheckColliding()
 	
 }
 
+void CBody_Zombie::FocusPlayer() {
+
+	auto layer = CGameInstance::Get().Find_Layer(ETOUI(CGameInstance::Get().GetCurLevelIndex()), TEXT("Layer_Player"));
+	if (layer == nullptr)
+		return;
+	auto player = layer->GetObjectFirst();
+	if (player == nullptr)
+		return;
+	auto playerBody = static_pointer_cast<CPlayer>(player)->Get_Body();
+	if (playerBody == nullptr)
+		return;
+	auto playerPos = playerBody->Get_Transform()->Get_State(STATE::POSITION);
+
+	_float4 fPlayerPos; 
+	XMStoreFloat4(&fPlayerPos,playerPos);
+	_float4 myPos;
+	XMStoreFloat4(&myPos, m_pTransformCom->Get_State(STATE::POSITION));
+	//좀비가 플레이어보다 오른쪽에 있으면
+	if (myPos.x - fPlayerPos.x > 0) {
+		m_eCurDir = ZOMBIE_DIR::LEFT;
+	}
+	else if(myPos.x - fPlayerPos.x < 0){
+		m_eCurDir = ZOMBIE_DIR::RIGHT;
+	}
+	else {
+
+	}
+}

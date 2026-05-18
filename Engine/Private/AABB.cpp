@@ -1,7 +1,7 @@
 #include "AABB.h"
 #include "GameInstance.h"
 #include "Helper.h"
-#include "VIbuffer_Cube.h"
+#include "VIBuffer_Collider.h"
 
 AABB::AABB(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext):CCollider(pDevice, pContext)
 

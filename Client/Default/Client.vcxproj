@@ -116,6 +116,12 @@
       <AdditionalLibraryDirectories>../../EngineSDK/Lib</AdditionalLibraryDirectories>
       <AdditionalDependencies>Engine.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -130,8 +136,15 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <FxCompile>
+      <ShaderType>Effect</ShaderType>
+    </FxCompile>
+    <FxCompile>
+      <ShaderModel>5.0</ShaderModel>
+    </FxCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp" />
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\public\Body_Player.h" />
     <ClInclude Include="..\public\Body_Zombie.h" />
@@ -156,7 +169,9 @@
     <ClInclude Include="..\Public\Player.h" />
     <ClInclude Include="..\public\Player_Idle.h" />
     <ClInclude Include="..\public\Player_Stair.h" />
+    <ClInclude Include="..\public\Player_StealthAttack.h" />
     <ClInclude Include="..\public\Player_Walk.h" />
+    <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\public\Stair_Collider.h" />
     <ClInclude Include="..\public\State.h" />
     <ClInclude Include="..\public\StateMachine.h" />
@@ -164,9 +179,11 @@
     <ClInclude Include="..\public\Zombie_Attack.h" />
     <ClInclude Include="..\public\Zombie_Damaged.h" />
     <ClInclude Include="..\public\Zombie_Dead.h" />
+    <ClInclude Include="..\public\Zombie_Fatal.h" />
     <ClInclude Include="..\Public\Zombie_Idle.h" />
     <ClInclude Include="..\Public\Zombie_Run.h" />
     <ClInclude Include="..\Public\Zombie_Stair.h" />
+    <ClInclude Include="..\public\Zombie_StealthDeath.h" />
     <ClInclude Include="..\Public\Zombie_Walk.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
@@ -182,6 +199,7 @@
     <ClCompile Include="..\private\Player_Damaged.cpp" />
     <ClCompile Include="..\private\Player_Execute.cpp" />
     <ClCompile Include="..\private\Player_Stair.cpp" />
+    <ClCompile Include="..\private\Player_StealthAttack.cpp" />
     <ClCompile Include="..\private\Player_Walk.cpp" />
     <ClCompile Include="..\private\Player_Run.cpp" />
     <ClCompile Include="..\private\Player_Idle.cpp" />
@@ -198,6 +216,7 @@
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\private\Stair_Collider.cpp" />
     <ClCompile Include="..\private\State.cpp" />
     <ClCompile Include="..\private\StateMachine.cpp" />
@@ -205,9 +224,11 @@
     <ClCompile Include="..\private\Zombie_Attack.cpp" />
     <ClCompile Include="..\private\Zombie_Damaged.cpp" />
     <ClCompile Include="..\private\Zombie_Dead.cpp" />
+    <ClCompile Include="..\private\Zombie_Fatal.cpp" />
     <ClCompile Include="..\Private\Zombie_Idle.cpp" />
     <ClCompile Include="..\Private\Zombie_Run.cpp" />
     <ClCompile Include="..\Private\Zombie_Stair.cpp" />
+    <ClCompile Include="..\private\Zombie_StealthDeath.cpp" />
     <ClCompile Include="..\Private\Zombie_Walk.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
@@ -217,6 +238,18 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Blocker.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Collider.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxBlur.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNonAnim.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\VertexShader.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
