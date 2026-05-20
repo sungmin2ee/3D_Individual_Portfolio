@@ -12,6 +12,8 @@
 #include "StateMachine.h"
 #include "Stair_Collider.h"
 #include "VIBuffer_Cube.h"
+#include "Door.h"
+#include "Blocker.h"
 
 
 CMainApp::CMainApp()
@@ -21,7 +23,6 @@ CMainApp::CMainApp()
 CMainApp::~CMainApp()
 {
 //	m_pImguiHandler.reset();
-	
 	CGameInstance::Get().Release_Engine();
 }
 
@@ -55,6 +56,12 @@ HRESULT CMainApp::Initialize()
 
 void CMainApp::Update(float fTimeDelta)
 {
+	if (CGameInstance::Get().Key_Up(DIK_0)) {
+		m_pImguiHandler->Save_DoorAndBlocker();
+	}
+	if (CGameInstance::Get().Key_Up(DIK_9)) {
+		m_pImguiHandler->Load_DoorAndBlocker();
+	}
 	CGameInstance::Get().Update_Engine(fTimeDelta);
 	m_pImguiHandler->Handle_Imgui(CGameInstance::Get().GetCurLevelIndex(), fTimeDelta);
 }
@@ -103,7 +110,9 @@ HRESULT CMainApp::Ready_Prototypes()
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Inventory"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/inventory.png"), 1))))
 		return E_FAIL;
-
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Blocker"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/black.png"), 1))))
+		return E_FAIL;
 
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_smaller_item_border"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/smaller_item_border.png"), 1))))
@@ -142,6 +151,10 @@ HRESULT CMainApp::Ready_Prototypes()
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Shader_Collider"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Collider.hlsl"), VCOLLIDER::Elements, VCOLLIDER::iNumElements))))
 		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Shader_Blocker"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Blocker.hlsl"), VTXCUBE::Elements, VTXCUBE::iNumElements))))
+		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Collider_Buffer"),
 		VIBuffer_Collider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -151,8 +164,17 @@ HRESULT CMainApp::Ready_Prototypes()
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_OBB"),
 		Obb::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+	//model
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_ModelObject"),
 		CModelObject::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Model_Door"),
+		CModel::Create(m_pDevice, m_pContext, ETOUI(MODEL::NONANIM), "../../Resources/Models/Door.fbx"))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Model_Blocker"),
+		CModel::Create(m_pDevice, m_pContext, ETOUI(MODEL::NONANIM), "../../Resources/Models/Blocker.fbx"))))
 		return E_FAIL;
 
 	//sky
@@ -173,6 +195,14 @@ HRESULT CMainApp::Ready_Prototypes()
 		CStair_Collider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	//DOOR AND BLOCKER
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Door"),
+		CDoor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Blocker"),
+		CBlocker::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 	return S_OK;
 }
 

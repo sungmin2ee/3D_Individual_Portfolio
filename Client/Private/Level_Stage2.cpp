@@ -6,8 +6,11 @@
 #include "Inventory.h"
 #include "Player.h"
 #include "Zombie.h"
+#include "Door.h"
+#include "Blocker.h"
 #include "Stair_Collider.h"
-
+namespace fs = std::filesystem;
+using json = nlohmann::json;
 CLevel_Stage2::CLevel_Stage2(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: CLevel{ pDevice, pContext }, m_pDevice{ pDevice }, m_pContext{ pContext }
 {
@@ -22,17 +25,21 @@ HRESULT CLevel_Stage2::Initialize()
 	if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::STAGE2)))) {
 		return E_FAIL;
 	}
-	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
+	//	return E_FAIL;
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
-	if (FAILED(Ready_Layer_Stair_Collider(TEXT("Layer_Stair_Collider"))))
-		return E_FAIL;
-
-	if (FAILED(Ready_Layer_Zombie(TEXT("Layer_Zombie"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Layer_Stair_Collider(TEXT("Layer_Stair_Collider"))))
+	//	return E_FAIL;
+	//
+	//if (FAILED(Ready_Layer_Zombie(TEXT("Layer_Zombie"))))
+	//	return E_FAIL;
+	//if (FAILED(Ready_Layer_Blocker(TEXT("Layer_Blocker"))))
+	//	return E_FAIL;
+	//if (FAILED(Ready_Layer_Door(TEXT("Layer_Door"))))
+	//	return E_FAIL;
 
 
 
@@ -127,6 +134,7 @@ HRESULT CLevel_Stage2::Ready_Layer_Player(const _wstring& strLayerTag)
 
 HRESULT CLevel_Stage2::Ready_Layer_Zombie(const _wstring& strLayerTag)
 {
+
 	CZombie::ZOMBIE_DESC pDesc;
 	pDesc.pGameObjectTag = TEXT("Zombie");
 	pDesc.fSpeedPerSec = 10.f;
@@ -134,6 +142,44 @@ HRESULT CLevel_Stage2::Ready_Layer_Zombie(const _wstring& strLayerTag)
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Zombie"),
 		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
 		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CLevel_Stage2::Ready_Layer_Door(const _wstring& strLayerTag)
+{
+	//14
+	_tchar szTag[32] = {};
+	for (uint32_t i = 0; i < 14; ++i) {
+		CDoor::DOOR_DESC pDesc;
+		swprintf_s(szTag, L"Door_%d", i);
+		pDesc.pGameObjectTag = szTag;
+		pDesc.fSpeedPerSec = 0.f;
+		pDesc.fRotationPerSec = 720.f;
+		if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Door"),
+			ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
+			return E_FAIL;
+	}
+
+
+
+
+	return S_OK;
+}
+
+HRESULT CLevel_Stage2::Ready_Layer_Blocker(const _wstring& strLayerTag)
+{
+
+	//16
+	_tchar szTag[32] = {};
+	for (uint32_t i = 0; i < 16; ++i) {
+		CBlocker::BLOCKER_DESC pDesc;
+		swprintf_s(szTag, L"Blocker_%d", i);
+
+		pDesc.pGameObjectTag = szTag;
+		if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Blocker"),
+			ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
+			return E_FAIL;
+	}
 	return S_OK;
 }
 

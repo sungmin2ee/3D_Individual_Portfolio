@@ -18,14 +18,17 @@ public:
 	void Handle_Imgui(uint32_t curlevel, _float fTimeDelta);
 	void Initialize();
 	void Imgui_Editor(_float fTimeDelta);
-
+	void Save_DoorAndBlocker();
+	HRESULT Load_DoorAndBlocker();
 
 public:
 	static unique_ptr<CImguiHandler> Create(ENGINE_DESC desc, ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> context);
 private:
 	ENGINE_DESC m_Desc;
 	MODELOBJ_DESC m_ModelDesc;
-	CGameObject* m_pSelected = nullptr;
+	shared_ptr<CGameObject> m_pSelected = nullptr;
+	shared_ptr<CGameObject> m_pCurBlocker = nullptr;
+	shared_ptr<CGameObject> m_pCurDoor = nullptr;
 	_float4 position = {};
 	_float3 rotation = {};
 	_float3 scale = {};
@@ -39,6 +42,8 @@ private:
 	ComPtr<ID3D11DeviceContext>		m_pContext = { nullptr };
 	_wstring strLayerTag = L"";
 	MODEL modelType = {};
+
+
 };
 
 NS_END

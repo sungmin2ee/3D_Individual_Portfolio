@@ -31,7 +31,7 @@ HRESULT CStair_Collider::Initialize(void* pArg)
 		return E_FAIL;
 
 	CGameInstance::Get().Add_Collider(m_pObbCom);
-	m_pObbCom->SetOwner(this);
+	m_pObbCom->SetOwner(SHARED_THIS(CStair_Collider));
 	ExpandCollider();
 	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(0, 0, -2, 1));
 

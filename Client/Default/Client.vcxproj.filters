@@ -100,6 +100,12 @@
     <Filter Include="02.GameObject\05.Sky">
       <UniqueIdentifier>{1cb9ae62-dd29-439a-a882-b25c30dfede9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\06.Door">
+      <UniqueIdentifier>{16e844ad-a14e-4d2b-954c-c197bb2a6775}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\07.Blocker">
+      <UniqueIdentifier>{cbcf6536-596c-4e6f-b511-e662e5a0f296}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -237,6 +243,12 @@
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
       <Filter>Shaderfiles</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Door.h">
+      <Filter>02.GameObject\06.Door</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Blocker.h">
+      <Filter>02.GameObject\07.Blocker</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -358,6 +370,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Sky.cpp">
       <Filter>02.GameObject\05.Sky</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Blocker.cpp">
+      <Filter>02.GameObject\07.Blocker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Door.cpp">
+      <Filter>02.GameObject\06.Door</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

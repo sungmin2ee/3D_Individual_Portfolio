@@ -33,6 +33,10 @@
             "PrototypeTag": "Prototype_Model_blackRoad"
         },
         {
+            "FilePath": "../../Resources/Models/Blocker.fbx",
+            "PrototypeTag": "Prototype_Model_Blocker"
+        },
+        {
             "FilePath": "../../Resources/Models/clothes_pile_b_01.fbx",
             "PrototypeTag": "Prototype_Model_clothes_pile_b_01"
         },
@@ -71,6 +75,10 @@
         {
             "FilePath": "../../Resources/Models/decal_window_emissive_a_05.fbx",
             "PrototypeTag": "Prototype_Model_decal_window_emissive_a_05"
+        },
+        {
+            "FilePath": "../../Resources/Models/Door.fbx",
+            "PrototypeTag": "Prototype_Model_Door"
         },
         {
             "FilePath": "../../Resources/Models/FloorBack.fbx",

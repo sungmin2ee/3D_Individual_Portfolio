@@ -27,6 +27,10 @@ void CPlayer_Attack::Enter(CBody_Player& owner)
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::AXE_ATTACK1), false);
         m_iCount++;
     }
+    auto pZombieLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Zombie"));
+    if (!pZombieLayer) {
+        int a = 0;
+    }
    auto zombies = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Zombie"))->GetObjects();
    auto iter = zombies.begin();
    for (iter; iter != zombies.end(); iter++) {

@@ -19,13 +19,13 @@ protected:
 	ComPtr<ID3D11Device>			m_pDevice = { nullptr };
 	ComPtr<ID3D11DeviceContext>		m_pContext = { nullptr };
 public:
-	void SetOwner(class CGameObject* pOwner) { m_pOwner = pOwner; }
-	CGameObject* GetOwner() { return m_pOwner; }
+	void SetOwner(shared_ptr<class CGameObject> pOwner) { m_pOwner = pOwner; }
+	shared_ptr<class CGameObject > GetOwner() { return m_pOwner.lock(); }
 
 public:
 	virtual shared_ptr<CPrototype> Clone(void* pArg) = 0;
 private:
-	CGameObject* m_pOwner = nullptr;
+	weak_ptr<CGameObject> m_pOwner;
 };
 
 NS_END

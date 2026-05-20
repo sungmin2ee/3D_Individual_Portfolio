@@ -146,10 +146,12 @@
   <ItemGroup>
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp" />
     <ClInclude Include="..\Public\BackGround.h" />
+    <ClInclude Include="..\Public\Blocker.h" />
     <ClInclude Include="..\public\Body_Player.h" />
     <ClInclude Include="..\public\Body_Zombie.h" />
     <ClInclude Include="..\public\Camera_Free.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
+    <ClInclude Include="..\Public\Door.h" />
     <ClInclude Include="..\public\Player_Attack.h" />
     <ClInclude Include="..\public\Player_Damaged.h" />
     <ClInclude Include="..\public\Player_Execute.h" />
@@ -192,9 +194,11 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Private\BackGround.cpp" />
+    <ClCompile Include="..\Private\Blocker.cpp" />
     <ClCompile Include="..\private\Body_Player.cpp" />
     <ClCompile Include="..\private\Body_Zombie.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />
+    <ClCompile Include="..\Private\Door.cpp" />
     <ClCompile Include="..\private\Player_Attack.cpp" />
     <ClCompile Include="..\private\Player_Damaged.cpp" />
     <ClCompile Include="..\private\Player_Execute.cpp" />

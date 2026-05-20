@@ -89,7 +89,7 @@ HRESULT CModelObject::Initialize(void* pArg)
         if (pDesc->collide) {
 
         }
-        m_pColliderCom->SetOwner(this);
+        m_pColliderCom->SetOwner(SHARED_THIS(CModelObject));
         ExpandCollider();
         //m_pTransformCom->
         //pDesc->vInitialPosition;

@@ -9,7 +9,7 @@ class CMaterial
 private:
 	CMaterial(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
 public:
-	~CMaterial();
+	virtual ~CMaterial();
 
 public:
 	HRESULT Initialize(const aiMaterial* pAIMaterial, const _string& strModelFilePath);

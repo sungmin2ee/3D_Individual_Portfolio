@@ -19,7 +19,7 @@ CBody_Zombie::CBody_Zombie(const CBody_Zombie& Prototype)
 	: CPartObject{ Prototype }
 {
 	m_pStateMachine = nullptr;
-	m_eCurState = ZOMBIE_STATE::END;
+	m_eCurState = ZOMBIE_STATE::CRAWL_IDLE;
 	m_eCurDir = ZOMBIE_DIR::RIGHT;
 	bodyAngle = 0.f;
 	m_bDirChanged = false;
@@ -65,10 +65,9 @@ HRESULT CBody_Zombie::Initialize(void* pArg)
 	m_pStateMachine = StateMachine<CBody_Zombie>::Create(this, CZombie_Idle::Create());
 	m_pModelCom->Calculate_Box(ETOUI(MODEL::ANIM));
 	CGameInstance::Get().Add_Collider(m_pObbCom);
-	m_pObbCom->SetOwner(this);
+	m_pObbCom->SetOwner(SHARED_THIS(CBody_Zombie));
 	ExpandCollider();
 	m_ePrevDir = m_eCurDir;
-
 	return S_OK;
 }
 
@@ -246,71 +245,62 @@ void CBody_Zombie::ExpandCollider()
 	const _float4x4* boneMat4 = m_pModelCom->Get_BoneMatrixPtr("toes_R");
 	const _float4x4* boneMat5 = m_pModelCom->Get_BoneMatrixPtr("toes_L");
 
-	vector<const _float4x4*> bones =
-	{
-		boneMat,
-		boneMat1,
-		boneMat2,
-		boneMat3,
-		boneMat4,
-		boneMat5
-	};
+	vector<const _float4x4*> bones = { boneMat, boneMat1, boneMat2, boneMat3, boneMat4, boneMat5 };
 
-	_float3 vMin = { FLT_MAX, FLT_MAX, FLT_MAX };
-	_float3 vMax = { -FLT_MAX, -FLT_MAX, -FLT_MAX };
-
-	_matrix world = XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrixPtr());
+	// 로컬(모델) 공간에서의 최소/최대 값을 구합니다.
+	_float3 vLocalMin = { FLT_MAX, FLT_MAX, FLT_MAX };
+	_float3 vLocalMax = { -FLT_MAX, -FLT_MAX, -FLT_MAX };
 
 	for (auto bone : bones)
 	{
-		if (!bone)
-			continue;
+		if (!bone) continue;
 
 		_matrix boneMatrix = XMLoadFloat4x4(bone);
-
-		XMVECTOR pos = boneMatrix.r[3];
-
-		pos = XMVector3TransformCoord(pos, world);
+		XMVECTOR localPos = boneMatrix.r[3]; // 본의 로컬(모델) 위치
 
 		_float3 p;
-		XMStoreFloat3(&p, pos);
+		XMStoreFloat3(&p, localPos);
 
-		vMin.x = min(vMin.x, p.x);
-		vMin.y = min(vMin.y, p.y);
-		vMin.z = min(vMin.z, p.z);
+		vLocalMin.x = min(vLocalMin.x, p.x);
+		vLocalMin.y = min(vLocalMin.y, p.y);
+		vLocalMin.z = min(vLocalMin.z, p.z);
 
-		vMax.x = max(vMax.x, p.x);
-		vMax.y = max(vMax.y, p.y);
-		vMax.z = max(vMax.z, p.z);
+		vLocalMax.x = max(vLocalMax.x, p.x);
+		vLocalMax.y = max(vLocalMax.y, p.y);
+		vLocalMax.z = max(vLocalMax.z, p.z);
 	}
+
+	// 캐릭터의 월드 행렬 로드 및 분해
+	_matrix world = XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrixPtr());
+	XMVECTOR vScale, vRot, vTrans;
+	XMMatrixDecompose(&vScale, &vRot, &vTrans, world);
 
 	_float3 scale = m_pTransformCom->Get_Scaled();
 
+	// 1. Center 계산: 로컬 중심점을 먼저 구한 뒤, '월드 변환'을 거칩니다.
+	XMVECTOR localMid = (XMLoadFloat3(&vLocalMax) + XMLoadFloat3(&vLocalMin)) * 0.5f;
+	XMVECTOR centerWorld = XMVector3TransformCoord(localMid, world); // 로컬 중심 -> 월드 중심
+	XMStoreFloat3(&m_pObbCom->myOBB.Center, centerWorld);
 
-	// 1. Center 계산: 로컬 중심점(mid)을 월드 행렬로 변환
-	XMVECTOR mid = (XMLoadFloat3(&vMax) + XMLoadFloat3(&vMin)) * 0.5f;
+	// 2. Extents 계산: 로컬 크기에 현재 트랜스폼의 스케일을 곱해줍니다.
+	// Z축 오프셋(0.9f)은 의도하신 수치 비율대로 유지했습니다.
+	m_pObbCom->myOBB.Extents.x = (vLocalMax.x - vLocalMin.x) * 0.5f * scale.x;
+	m_pObbCom->myOBB.Extents.y = (vLocalMax.y - vLocalMin.y) * 0.5f * scale.y;
+	m_pObbCom->myOBB.Extents.z = (vLocalMax.z - vLocalMin.z) * 0.5f * scale.z * 0.9f;
 
-
-	XMStoreFloat3(&m_pObbCom->myOBB.Center, mid);
-
-	// 2. Extents 계산: (모델 크기 * 트랜스폼 스케일)의 절반
-	// myOBB 자체가 월드에서 클릭되어야 하므로 여기서 스케일을 미리 곱해야 합니다.
-	m_pObbCom->myOBB.Extents.x = (vMax.x - vMin.x) * 0.5f;// * scale.x;
-	m_pObbCom->myOBB.Extents.y = (vMax.y - vMin.y) * 0.5f;// * scale.y;
-	m_pObbCom->myOBB.Extents.z = (vMax.z - vMin.z) * 0.7f;// * scale.z;
-
-	// 3. Orientation 추출: 월드 행렬에서 회전값만 가져옴
-	XMVECTOR vScale, vRot, vTrans;
-	XMMatrixDecompose(&vScale, &vRot, &vTrans, world);
+	// 3. Orientation 설정 (이전과 동일하게 정규화 처리 포함)
+	vRot = XMQuaternionNormalize(vRot); // 어서트 방지용 정규화 필수!
 	XMStoreFloat4(&m_pObbCom->myOBB.Orientation, vRot);
 
-	// 4. 렌더링용 월드 행렬 (m_WorldMatrix) 갱신
-	// VIBuffer_Collider는 -0.5 ~ 0.5 (크기 1)이므로, Extents * 2를 하면 딱 맞습니다.
+	// 4. 렌더링용 월드 행렬 생성
+	// 기본 크기 1짜리 박스에 [스케일 적용] -> [회전 적용] -> [월드 중심점으로 이동] 순서로 결합합니다.
 	_matrix matOBBWorld = XMMatrixScaling(m_pObbCom->myOBB.Extents.x * 2.f,
 		m_pObbCom->myOBB.Extents.y * 2.f,
 		m_pObbCom->myOBB.Extents.z * 2.f);
+
 	matOBBWorld *= XMMatrixRotationQuaternion(vRot);
-	matOBBWorld *= XMMatrixTranslationFromVector(mid);
+	matOBBWorld *= XMMatrixTranslationFromVector(centerWorld); // 중복 회전 버그 해결!
+
 	m_pObbCom->Set_WorldMatrix(matOBBWorld);
 }
 

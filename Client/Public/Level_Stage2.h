@@ -28,6 +28,8 @@ private:
 	HRESULT Ready_Layer_Stair_Collider(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Player(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Zombie(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Door(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Blocker(const _wstring& strLayerTag);
 
 public:
 	static unique_ptr<CLevel_Stage2> Create(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext);
