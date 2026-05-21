@@ -25,8 +25,8 @@ HRESULT CLevel_Stage2::Initialize()
 	if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::STAGE2)))) {
 		return E_FAIL;
 	}
-	//if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
+		return E_FAIL;
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))

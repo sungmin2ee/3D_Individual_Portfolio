@@ -47,6 +47,7 @@ public:
 	_wstring Get_Tag() { return m_sTag; }
 	_wstring Get_LeftTag() { return m_sLeftTag; }
 	_wstring Get_RightTag() { return m_sRightTag; }
+	shared_ptr<Obb>	 Get_Obb() { return m_pObbCom; }
 private:
 	HRESULT Ready_Components();
 	void ExpandCollider();

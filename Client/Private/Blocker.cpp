@@ -1,4 +1,7 @@
 #include "Blocker.h"
+#include "Player.h"
+#include "Body_Player.h"
+#include "Layer.h"
 
 CBlocker::CBlocker(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext) : CGameObject{ pDevice, pContext }
 {
@@ -35,7 +38,9 @@ HRESULT CBlocker::Initialize(void* pArg)
 	CGameInstance::Get().Add_Collider(m_pObbCom);
 	m_pObbCom->SetOwner(SHARED_THIS(CBlocker));
 	ExpandCollider();
-
+	m_fEndPoint = { 0.4f , 1.f };
+	m_fLine1Point1 = { 0.f, 0.5f };
+	m_fLine1Point2 = { 0.4f, 1.f };
 
 
 	return S_OK;
@@ -54,12 +59,110 @@ void CBlocker::Update(_float fTimeDelta)
 		ExpandCollider();
 	}
 
+	if (m_bDoorOpen) {
+		m_fDoorOpenClose = 0.f;
+		m_fShadeStart = 1.f;
+		auto playerLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"Layer_Player");
+		if (playerLayer == nullptr) return;
+
+		auto player = playerLayer->GetObjectFirst();
+		auto playerPos = player->Get_Transform()->Get_State(STATE::POSITION);
+		auto myPos = m_pTransformCom->Get_State(STATE::POSITION);
+		_float4 deltaPos;
+		XMStoreFloat4(&deltaPos, (myPos - playerPos));
+
+		if (deltaPos.x > 0) {
+			if (!m_bStartXSet) {
+				m_fShadeX = 0.f;
+				m_fLeftRight = 0.f;
+				m_bStartXSet = true;
+			}
+			m_fShadeX += fTimeDelta;
+			if (m_fShadeX > 1.f) m_fShadeX = 1.f;
+		}
+		else {
+			if (!m_bStartXSet) {
+				m_fShadeX = 1.f;
+				m_fLeftRight = 1.f;
+				m_bStartXSet = true;
+			}
+			m_fShadeX -= fTimeDelta;
+			if (m_fShadeX < 0.f) m_fShadeX = 0.f;
+		}
+		return;
+	}
+
+	if (m_bDoorClose) {
+		m_fDoorOpenClose = 1.f;
+		m_fShadeStart = 1.f;
+		auto playerLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"Layer_Player");
+		if (playerLayer == nullptr) return;
+
+		auto player = playerLayer->GetObjectFirst();
+		auto playerPos = player->Get_Transform()->Get_State(STATE::POSITION);
+		auto myPos = m_pTransformCom->Get_State(STATE::POSITION);
+		_float4 deltaPos;
+		XMStoreFloat4(&deltaPos, (myPos - playerPos));
+
+		if (deltaPos.x > 0) {
+			if (!m_bStartXSet) {
+				m_fShadeX = 1.f;
+				m_bStartXSet = true;
+				m_fLeftRight = 1.f;
+			}
+			m_fShadeX -= fTimeDelta;
+			if (m_fShadeX < 0.f) m_fShadeX = 0.f;
+		}
+		else {
+			if (!m_bStartXSet) {
+				m_fShadeX = 0.f;
+				m_bStartXSet = true;
+				m_fLeftRight = 0.f;
+			}
+			m_fShadeX += fTimeDelta;
+			if (m_fShadeX > 1.f) m_fShadeX = 1.f;
+		}
+		return;
+	}
+
+	if (!m_bDoorClose && !m_bDoorOpen) {
+		m_fShadeStart = 0.f;
+		m_bStartXSet = false;
+
+		if (m_bIsScanning) {
+			if (!m_bReset) {
+				Reset();
+			}
+			if (m_bScanningLeft) {
+				if (m_fEndPoint.x < 1.f) {
+					m_fEndPoint.x += fTimeDelta * 0.5f;
+				}
+				else {
+					m_fEndPoint.y -= fTimeDelta * 0.5f;
+					m_fEndPoint.x = 1.f;
+					if (m_fEndPoint.y < 0.8f) 
+						m_fEndPoint.y = 0.8f;
+				}
+			}
+			else {
+				if (m_fEndPoint.x > 0.f) {
+					m_fEndPoint.x -= fTimeDelta * 0.5f;
+				}
+				else {
+					m_fEndPoint.y -= fTimeDelta * 0.5f;
+					m_fEndPoint.x = 0.f;
+					if (m_fEndPoint.y < 0.8f) 
+						m_fEndPoint.y = 0.8f;
+				}
+			}
+		}
+	}
 }
 
 void CBlocker::Late_Update(_float fTimeDelta)
 {
 	__super::Late_Update(fTimeDelta);
-	CGameInstance::Get().Add_RenderObject(RENDERGROUP::NONBLEND, SHARED_THIS(CBlocker));
+	CGameInstance::Get().Add_RenderObject(RENDERGROUP::BLOCKER, SHARED_THIS(CBlocker));
 
 }
 HRESULT CBlocker::Ready_Components()
@@ -109,6 +212,22 @@ HRESULT CBlocker::Render()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", proj)))
 		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("Line1Point1", &m_fLine1Point1,sizeof _float2)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("Line1Point2", &m_fLine1Point2,sizeof _float2)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("EndPoint", &m_fEndPoint,sizeof _float2)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("ShadeStart", &m_fShadeStart, sizeof _float)))
+		return E_FAIL;
+	//if (m_bDoorClose || m_bDoorOpen) {
+		if (FAILED(m_pShaderCom->Bind_RawValue("DoorOpenClose", &m_fDoorOpenClose, sizeof _float)))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("ShadeX", &m_fShadeX, sizeof _float)))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("LeftRight", &m_fLeftRight, sizeof _float)))
+			return E_FAIL;
+	//}
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
@@ -194,3 +313,17 @@ void CBlocker::ExpandCollider()
 }
 
 
+void CBlocker::Reset()
+{
+	if (m_bScanningLeft) {
+		m_fEndPoint = { 0.4f,1.f };
+		m_fLine1Point1 = { 0.f, 0.5f };
+		m_fLine1Point2 = { 0.4f, 1.f };
+	}
+	else {
+		m_fEndPoint = { 0.6f,1.f };
+		m_fLine1Point1 = { 1.f, 0.5f };
+		m_fLine1Point2 = { 0.6f, 1.f };
+	}
+	m_bReset = true;
+}

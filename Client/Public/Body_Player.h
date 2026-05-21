@@ -100,6 +100,7 @@ private:
 
 public:
 	void Execute();
+	void CheckDoorCollide();
 private:
 	HRESULT Ready_Components();
 	void ExpandCollider();

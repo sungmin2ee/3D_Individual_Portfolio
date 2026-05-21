@@ -10,6 +10,8 @@
 #include "Player_StealthAttack.h"
 #include "Zombie.h"
 #include "Layer.h"
+#include "Door.h"
+#include "Blocker.h"
 
 CBody_Player::CBody_Player(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: CPartObject{ pDevice, pContext }
@@ -54,6 +56,7 @@ HRESULT CBody_Player::Initialize(void* pArg)
 	CGameInstance::Get().Add_Collider(m_pObbCom);
 	m_pObbCom->SetOwner(SHARED_THIS(CBody_Player));
 	ExpandCollider();
+	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(-1.5f, 0, 0, 1));
 
 	return S_OK;
 }
@@ -130,7 +133,7 @@ void CBody_Player::Update(_float fTimeDelta)
 		int a = 10;
 	__super::Update(fTimeDelta);
 	ExpandCollider();
-
+	CheckDoorCollide();
 	
 }
 
@@ -177,7 +180,11 @@ HRESULT CBody_Player::Render()
 
 void CBody_Player::Execute()
 {
-	auto zombies = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Zombie"))->GetObjects();
+	auto zombieLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Zombie"));
+
+	if (zombieLayer == nullptr)
+		return;
+	auto zombies = zombieLayer->GetObjects();
 	auto iter = zombies.begin();
 	for (iter; iter != zombies.end(); iter++) {
 		if (static_pointer_cast<CZombie>(*iter)->Get_Body()->Get_HP() != 0) {
@@ -199,6 +206,64 @@ void CBody_Player::Execute()
 			}
 		}
 		
+	}
+}
+void CBody_Player::CheckDoorCollide()
+{
+	auto DoorLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Door"));
+	if (DoorLayer == nullptr)
+		return;
+
+	auto doors = DoorLayer->GetObjects();
+
+	for (auto& pDoorObj : doors)
+	{
+		auto pDoor = static_pointer_cast<CDoor>(pDoorObj);
+		if (pDoor == nullptr) continue;
+
+		// 1. 플레이어와 이 문의 OBB 충돌 검사
+		if (m_pObbCom->myOBB.Intersects(pDoor->Get_Obb()->myOBB))
+		{
+			auto myPos = m_pTransformCom->Get_State(STATE::POSITION);
+			auto doorPos = pDoor->Get_Transform()->Get_State(STATE::POSITION);
+
+			_float4 deltaPos;
+			XMStoreFloat4(&deltaPos, (myPos - doorPos));
+
+			if (deltaPos.x > 0)
+			{
+				if (pDoor->Get_LeftBlocker() != nullptr) {
+					pDoor->Get_LeftBlocker()->Set_IsScanning(true);
+					pDoor->Get_LeftBlocker()->SetScanningFromLeft(false);
+					pDoor->Get_LeftBlocker()->Set_WasScanning(true);
+				}
+				// 반대편 오른쪽 블로커는 이 순간 확실하게 꺼줍니다.
+				if (pDoor->Get_RightBlocker() != nullptr) {
+					pDoor->Get_RightBlocker()->Set_IsScanning(false);
+				}
+			}
+			else
+			{
+				if (pDoor->Get_RightBlocker() != nullptr) {
+					pDoor->Get_RightBlocker()->Set_IsScanning(true);
+					pDoor->Get_RightBlocker()->SetScanningFromLeft(true);
+					pDoor->Get_RightBlocker()->Set_WasScanning(true);
+				}
+				// 반대편 왼쪽 블로커는 이 순간 확실하게 꺼줍니다.
+				if (pDoor->Get_LeftBlocker() != nullptr) {
+					pDoor->Get_LeftBlocker()->Set_IsScanning(false);
+				}
+			}
+		}
+		else
+		{
+			// 2. 이 문과 전혀 충돌하지 않고 있다면, 오직 '이 문의 블로커들만' 안전하게 꺼줍니다.
+			// 이렇게 짜야 다른 문을 검사할 때 현재 부딪힌 문의 스캔 상태를 간섭(오염)하지 않습니다.
+			//if (pDoor->Get_LeftBlocker() != nullptr)
+			//	pDoor->Get_LeftBlocker()->Set_IsScanning(false);
+			//if (pDoor->Get_RightBlocker() != nullptr)
+			//	pDoor->Get_RightBlocker()->Set_IsScanning(false);
+		}
 	}
 }
 

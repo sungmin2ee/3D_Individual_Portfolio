@@ -125,12 +125,12 @@ void CCamera_Free::Update(_float fTimeDelta)
 		}
 	}
 
-	//if (zoomIn) {
-	//	ZoomIn(playerBody);
-	//}
-	//else {
-	//	ZoomOut(playerBody);
-	//}
+	if (zoomIn) {
+		ZoomIn(playerBody);
+	}
+	else {
+		ZoomOut(playerBody);
+	}
 }
 
 void CCamera_Free::Late_Update(_float fTimeDelta)
@@ -159,7 +159,7 @@ void CCamera_Free::ZoomIn(CBody_Player* playerBody)
 
 	// 2. X와 Y 좌표는 플레이어의 좌표를 그대로 복사하여 강제로 따라가게 합니다.
 	fCamPos.x = fPlayerPos.x;
-	fCamPos.y = fPlayerPos.y;
+	fCamPos.y = fPlayerPos.y - 0.01f;
 
 
 	_float fCurrentZDistance = fPlayerPos.z - fCamPos.z;
@@ -195,7 +195,8 @@ void CCamera_Free::ZoomOut(CBody_Player* playerBody)
 
 	// 2. X와 Y 좌표는 플레이어의 좌표를 그대로 복사하여 강제로 따라가게 합니다.
 	fCamPos.x = fPlayerPos.x;
-	fCamPos.y = fPlayerPos.y;
+	fCamPos.y = fPlayerPos.y - 0.01f;
+
 
 
 	_float fCurrentZDistance = fPlayerPos.z - fCamPos.z;

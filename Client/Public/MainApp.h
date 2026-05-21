@@ -56,6 +56,8 @@ private:
 public:
 	static unique_ptr<CMainApp> Create();
 
+private:
+    _bool SaveLoadEnable = false;
 };
 NS_END
 

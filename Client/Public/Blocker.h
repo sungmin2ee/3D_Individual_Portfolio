@@ -44,11 +44,18 @@ public:
 	void Set_LeftDoor(shared_ptr<class CDoor> leftDoor) { m_pLeftDoor = leftDoor; }
 	void Set_RightDoor(shared_ptr<class CDoor> rightDoor) { m_pRightDoor = rightDoor; }
 	void Set_Tag(_wstring tag) { m_sTag = tag; }
+	void Set_IsScanning(_bool flag) { m_bIsScanning = flag; }
+	void Set_WasScanning(_bool flag) { m_bWasScanning = flag; }
 	shared_ptr<class CDoor> Get_LeftDoor() { return m_pLeftDoor; }
 	shared_ptr<class CDoor> Get_RightDoor() { return m_pRightDoor; }
 	_wstring Get_Tag() { return m_sTag; }
 	_wstring Get_LeftTag() { return m_sLeftTag; }
 	_wstring Get_RightTag() { return m_sRightTag; }
+
+	void SetScanningFromLeft(_bool flag) { m_bScanningLeft = flag; }
+	_bool ScanningFromLeft() { return m_bScanningLeft; }
+
+	void Reset();
 private:
 	HRESULT Ready_Components();
 	void ExpandCollider();
@@ -67,7 +74,22 @@ private:
 	_wstring							m_sTag = L"";
 	_wstring							m_sLeftTag = L"";
 	_wstring							m_sRightTag = L"";
-
+	_float								m_fTime = 0;
+	_float2								m_fLine1Point1{};
+	_float2								m_fLine1Point2{};
+	_float2								m_fEndPoint{};
+	_bool								m_bDoorOpen = false;
+	_bool								m_bDoorClose = false;
+	_bool								m_bScanningLeft = true;
+	_bool								m_bReset = false;
+	_bool								m_bIsScanning = false;
+	_bool								m_bStartXSet = false;
+	_bool								m_bWasScanning = false;
+	_float 								m_fShadeStart = 0;
+	_float 								m_fDoorOpenClose = 0;
+	_float 								m_fShadeX = 0;
+	_float 								m_fLeftRight = 0;
+	
 public:
 	static unique_ptr<CBlocker> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
 	virtual shared_ptr<CPrototype> Clone(void* pArg) override;

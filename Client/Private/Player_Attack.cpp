@@ -27,19 +27,21 @@ void CPlayer_Attack::Enter(CBody_Player& owner)
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::AXE_ATTACK1), false);
         m_iCount++;
     }
-    auto pZombieLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Zombie"));
-    if (!pZombieLayer) {
-        int a = 0;
-    }
-   auto zombies = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Zombie"))->GetObjects();
+
+    animStart = true;
+    owner.Set_MakingSound(true);
+    auto zombieLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Zombie"));
+
+    if (zombieLayer == nullptr)
+        return;
+    auto zombies = zombieLayer->GetObjects();
    auto iter = zombies.begin();
    for (iter; iter != zombies.end(); iter++) {
        if (owner.Get_Obb()->myOBB.Intersects(static_pointer_cast<CZombie>(*iter)->Get_Body()->Get_Obb()->myOBB)) {
            static_pointer_cast<CZombie>(*iter)->Get_Body()->Set_Damaged();
        }
    }
-    animStart = true;
-    owner.Set_MakingSound(true);
+
 
 }
 
@@ -47,8 +49,7 @@ void CPlayer_Attack::Update(CBody_Player& owner, _float deltaTime)
 {
 
     m_fTime += deltaTime;
-    auto zombies = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Zombie"))->GetObjects();
-    auto iter = zombies.begin();
+
 
 
     if (owner.Get_OnHit()) {
@@ -66,6 +67,17 @@ void CPlayer_Attack::Update(CBody_Player& owner, _float deltaTime)
     }
 
     if (!animStart) {
+
+        if (CGameInstance::Get().Key_Pressing(DIK_A) || CGameInstance::Get().Key_Pressing(DIK_D)) {
+            if (CGameInstance::Get().Key_Down(DIK_LSHIFT)) {
+                owner.Set_CurState(CBody_Player::PLAYER_STATE::STAND);
+                owner.Get_StateMachine()->ChangeState(CPlayer_Run::Create());
+                return;
+            }
+            owner.Set_CurState(CBody_Player::PLAYER_STATE::STAND);
+            owner.Get_StateMachine()->ChangeState(CPlayer_Walk::Create());
+            return;
+        }
 
         if (CGameInstance::Get().Mouse_Down(DIMK::LBUTTON)) {
             if (m_iCount % 2 == 0) {
@@ -88,6 +100,13 @@ void CPlayer_Attack::Update(CBody_Player& owner, _float deltaTime)
             }
             m_fTime = 0.f;
             animStart = true;
+
+            auto zombieLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Zombie"));
+
+            if (zombieLayer == nullptr)
+                return;
+            auto zombies = zombieLayer->GetObjects();
+            auto iter = zombies.begin();
             for (iter; iter != zombies.end(); iter++) {
                 if (owner.Get_Obb()->myOBB.Intersects(static_pointer_cast<CZombie>(*iter)->Get_Body()->Get_Obb()->myOBB)) {
                     static_pointer_cast<CZombie>(*iter)->Get_Body()->Set_Damaged();
@@ -96,16 +115,7 @@ void CPlayer_Attack::Update(CBody_Player& owner, _float deltaTime)
             return;
         }
    
-        if (CGameInstance::Get().Key_Pressing(DIK_A) || CGameInstance::Get().Key_Pressing(DIK_D)) {
-            if (CGameInstance::Get().Key_Down(DIK_LSHIFT)) {
-                owner.Set_CurState(CBody_Player::PLAYER_STATE::STAND);
-                owner.Get_StateMachine()->ChangeState(CPlayer_Run::Create());
-                return;
-            }
-            owner.Set_CurState(CBody_Player::PLAYER_STATE::STAND);
-            owner.Get_StateMachine()->ChangeState(CPlayer_Walk::Create());
-            return;
-        }
+  
     }
 
     owner.Execute();

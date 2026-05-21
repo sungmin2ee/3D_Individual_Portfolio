@@ -56,12 +56,18 @@ HRESULT CMainApp::Initialize()
 
 void CMainApp::Update(float fTimeDelta)
 {
-	if (CGameInstance::Get().Key_Up(DIK_0)) {
-		m_pImguiHandler->Save_DoorAndBlocker();
+	if (CGameInstance::Get().Key_Up(DIK_HOME)) {
+		SaveLoadEnable = !SaveLoadEnable;
 	}
-	if (CGameInstance::Get().Key_Up(DIK_9)) {
-		m_pImguiHandler->Load_DoorAndBlocker();
+	if (SaveLoadEnable) {
+		//if (CGameInstance::Get().Key_Up(DIK_9)) {
+		//	m_pImguiHandler->Save_DoorAndBlocker();
+		//}
+		if (CGameInstance::Get().Key_Up(DIK_0)) {
+			m_pImguiHandler->Load_DoorAndBlocker();
+		}
 	}
+	//D3D11_SAMPLER_DESC
 	CGameInstance::Get().Update_Engine(fTimeDelta);
 	m_pImguiHandler->Handle_Imgui(CGameInstance::Get().GetCurLevelIndex(), fTimeDelta);
 }
@@ -153,7 +159,7 @@ HRESULT CMainApp::Ready_Prototypes()
 		return E_FAIL;
 
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Shader_Blocker"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Blocker.hlsl"), VTXCUBE::Elements, VTXCUBE::iNumElements))))
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Blocker.hlsl"), VTXTEX::Elements, VTXTEX::iNumElements))))
 		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Collider_Buffer"),
 		VIBuffer_Collider::Create(m_pDevice, m_pContext))))

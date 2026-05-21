@@ -49,9 +49,6 @@
     <Filter Include="FSM">
       <UniqueIdentifier>{cc240e1b-d3d3-489a-ba3d-3de5a88fbae4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="FSM\Character">
-      <UniqueIdentifier>{dc3baa2a-3a13-4270-a29d-b1766c86caa8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="FSM\AnimationState">
       <UniqueIdentifier>{ec33ba4f-1ddc-49d6-b959-344b61bc9c35}</UniqueIdentifier>
     </Filter>
@@ -105,6 +102,9 @@
     </Filter>
     <Filter Include="02.GameObject\07.Blocker">
       <UniqueIdentifier>{cbcf6536-596c-4e6f-b511-e662e5a0f296}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FSM\AnimationState\Character">
+      <UniqueIdentifier>{dc3baa2a-3a13-4270-a29d-b1766c86caa8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
