@@ -215,56 +215,104 @@ void CBody_Player::CheckDoorCollide()
 		return;
 
 	auto doors = DoorLayer->GetObjects();
+	CDoor* pCollidedDoor = nullptr;
 
 	for (auto& pDoorObj : doors)
 	{
 		auto pDoor = static_pointer_cast<CDoor>(pDoorObj);
 		if (pDoor == nullptr) continue;
 
-		// 1. 플레이어와 이 문의 OBB 충돌 검사
 		if (m_pObbCom->myOBB.Intersects(pDoor->Get_Obb()->myOBB))
 		{
-			auto myPos = m_pTransformCom->Get_State(STATE::POSITION);
-			auto doorPos = pDoor->Get_Transform()->Get_State(STATE::POSITION);
+			pCollidedDoor = pDoor.get(); // 충돌한 문의 주소값 저장
+		
+			break; // 찾았으니 다른 문은 더 돌 필요 없이 루프 탈출!
+		}
+	}
 
-			_float4 deltaPos;
-			XMStoreFloat4(&deltaPos, (myPos - doorPos));
+	if (pCollidedDoor != nullptr)
+	{
+		// 충돌한 문이 있는 경우 처리
+		auto myPos = m_pTransformCom->Get_State(STATE::POSITION);
+		auto doorPos = pCollidedDoor->Get_Transform()->Get_State(STATE::POSITION);
 
-			if (deltaPos.x > 0)
-			{
-				if (pDoor->Get_LeftBlocker() != nullptr) {
-					pDoor->Get_LeftBlocker()->Set_IsScanning(true);
-					pDoor->Get_LeftBlocker()->SetScanningFromLeft(false);
-					pDoor->Get_LeftBlocker()->Set_WasScanning(true);
-				}
-				// 반대편 오른쪽 블로커는 이 순간 확실하게 꺼줍니다.
-				if (pDoor->Get_RightBlocker() != nullptr) {
-					pDoor->Get_RightBlocker()->Set_IsScanning(false);
-				}
+		_float4 deltaPos;
+		XMStoreFloat4(&deltaPos, (myPos - doorPos));
+
+		if (deltaPos.x > 0)
+		{
+			if (pCollidedDoor->Get_LeftBlocker() != nullptr) {
+				pCollidedDoor->Get_LeftBlocker()->Set_IsScanning(true);
+				pCollidedDoor->Get_LeftBlocker()->SetScanningFromLeft(false);
+				pCollidedDoor->Get_LeftBlocker()->Set_WasScanning(true);
 			}
-			else
-			{
-				if (pDoor->Get_RightBlocker() != nullptr) {
-					pDoor->Get_RightBlocker()->Set_IsScanning(true);
-					pDoor->Get_RightBlocker()->SetScanningFromLeft(true);
-					pDoor->Get_RightBlocker()->Set_WasScanning(true);
-				}
-				// 반대편 왼쪽 블로커는 이 순간 확실하게 꺼줍니다.
-				if (pDoor->Get_LeftBlocker() != nullptr) {
-					pDoor->Get_LeftBlocker()->Set_IsScanning(false);
-				}
+			if (pCollidedDoor->Get_RightBlocker() != nullptr) {
+				pCollidedDoor->Get_RightBlocker()->Set_IsScanning(false);
 			}
 		}
 		else
 		{
-			// 2. 이 문과 전혀 충돌하지 않고 있다면, 오직 '이 문의 블로커들만' 안전하게 꺼줍니다.
-			// 이렇게 짜야 다른 문을 검사할 때 현재 부딪힌 문의 스캔 상태를 간섭(오염)하지 않습니다.
-			//if (pDoor->Get_LeftBlocker() != nullptr)
-			//	pDoor->Get_LeftBlocker()->Set_IsScanning(false);
-			//if (pDoor->Get_RightBlocker() != nullptr)
-			//	pDoor->Get_RightBlocker()->Set_IsScanning(false);
+			if (pCollidedDoor->Get_RightBlocker() != nullptr) {
+				pCollidedDoor->Get_RightBlocker()->Set_IsScanning(true);
+				pCollidedDoor->Get_RightBlocker()->SetScanningFromLeft(true);
+				pCollidedDoor->Get_RightBlocker()->Set_WasScanning(true);
+			}
+			if (pCollidedDoor->Get_LeftBlocker() != nullptr) {
+				pCollidedDoor->Get_LeftBlocker()->Set_IsScanning(false);
+			}
+		}
+		if (CGameInstance::Get().Key_Down(DIK_F)) {
+			if (pCollidedDoor->Get_DoorOpened()) {
+				pCollidedDoor->Set_DoorOpened(false);
+				if (deltaPos.x >= 0) {
+					pCollidedDoor->Get_LeftBlocker()->Set_DoorClose(true);
+					pCollidedDoor->Get_LeftBlocker()->Set_DoorOpen(false);
+					pCollidedDoor->Get_LeftBlocker()->Set_TransitionFinished(false);
+
+				}
+				else {
+					pCollidedDoor->Get_RightBlocker()->Set_DoorClose(true);
+					pCollidedDoor->Get_RightBlocker()->Set_DoorOpen(false);
+					pCollidedDoor->Get_RightBlocker()->Set_TransitionFinished(false);
+				}
+			
+			}
+			else {
+				pCollidedDoor->Set_DoorOpened(true);
+			
+				if (deltaPos.x >= 0) {
+					pCollidedDoor->Get_LeftBlocker()->Set_DoorOpen(true);
+					pCollidedDoor->Get_LeftBlocker()->Set_DoorClose(false);
+					pCollidedDoor->Get_LeftBlocker()->Set_TransitionFinished(false);
+				}
+				else {
+					pCollidedDoor->Get_RightBlocker()->Set_DoorOpen(true);
+					pCollidedDoor->Get_RightBlocker()->Set_DoorClose(false);
+					pCollidedDoor->Get_RightBlocker()->Set_TransitionFinished(false);
+
+				}
+			}
 		}
 	}
+	else
+	{
+		// 어떤 문과도 충돌하지 않았다면 모든 문의 블로커를 안전하게 꺼줍니다.
+		for (auto& pDoorObj : doors)
+		{
+			auto pDoor = static_pointer_cast<CDoor>(pDoorObj);
+			if (pDoor == nullptr) continue;
+		/*	if (pDoor->Get_DoorOpened()) {
+				return;
+			}*/
+
+			if (pDoor->Get_LeftBlocker() != nullptr)
+				pDoor->Get_LeftBlocker()->Set_IsScanning(false);
+			if (pDoor->Get_RightBlocker() != nullptr)
+				pDoor->Get_RightBlocker()->Set_IsScanning(false);
+		}
+	}
+
+	
 }
 
 HRESULT CBody_Player::Ready_Components()

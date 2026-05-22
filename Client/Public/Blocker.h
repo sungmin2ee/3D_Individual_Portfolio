@@ -46,6 +46,9 @@ public:
 	void Set_Tag(_wstring tag) { m_sTag = tag; }
 	void Set_IsScanning(_bool flag) { m_bIsScanning = flag; }
 	void Set_WasScanning(_bool flag) { m_bWasScanning = flag; }
+	void Set_DoorOpen(_bool flag) { m_bDoorOpen = flag; }
+	void Set_DoorClose(_bool flag) { m_bDoorClose = flag; }
+	void Set_TransitionFinished(_bool flag) { m_bTransitionFinished = flag; }
 	shared_ptr<class CDoor> Get_LeftDoor() { return m_pLeftDoor; }
 	shared_ptr<class CDoor> Get_RightDoor() { return m_pRightDoor; }
 	_wstring Get_Tag() { return m_sTag; }
@@ -85,6 +88,7 @@ private:
 	_bool								m_bIsScanning = false;
 	_bool								m_bStartXSet = false;
 	_bool								m_bWasScanning = false;
+	_bool								m_bTransitionFinished= false;
 	_float 								m_fShadeStart = 0;
 	_float 								m_fDoorOpenClose = 0;
 	_float 								m_fShadeX = 0;

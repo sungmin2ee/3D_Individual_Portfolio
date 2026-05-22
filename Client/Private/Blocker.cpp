@@ -58,15 +58,17 @@ void CBlocker::Update(_float fTimeDelta)
 	if (m_pObbCom->GetSelected()) {
 		ExpandCollider();
 	}
+	
 
-	if (m_bDoorOpen) {
+	if (m_bDoorOpen && !m_bTransitionFinished) {
 		m_fDoorOpenClose = 0.f;
 		m_fShadeStart = 1.f;
 		auto playerLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"Layer_Player");
 		if (playerLayer == nullptr) return;
 
 		auto player = playerLayer->GetObjectFirst();
-		auto playerPos = player->Get_Transform()->Get_State(STATE::POSITION);
+		
+		auto playerPos = static_pointer_cast<CPlayer>(player)->Get_Body()->Get_Transform()->Get_State(STATE::POSITION);
 		auto myPos = m_pTransformCom->Get_State(STATE::POSITION);
 		_float4 deltaPos;
 		XMStoreFloat4(&deltaPos, (myPos - playerPos));
@@ -78,7 +80,11 @@ void CBlocker::Update(_float fTimeDelta)
 				m_bStartXSet = true;
 			}
 			m_fShadeX += fTimeDelta;
-			if (m_fShadeX > 1.f) m_fShadeX = 1.f;
+			if (m_fShadeX > 1.f) {
+				m_fShadeX = 1.f;
+				m_bTransitionFinished = true;
+				m_bStartXSet = false;
+			}
 		}
 		else {
 			if (!m_bStartXSet) {
@@ -87,44 +93,69 @@ void CBlocker::Update(_float fTimeDelta)
 				m_bStartXSet = true;
 			}
 			m_fShadeX -= fTimeDelta;
-			if (m_fShadeX < 0.f) m_fShadeX = 0.f;
+			if (m_fShadeX < 0.f) {
+				m_fShadeX = 0.f;
+				m_bTransitionFinished = true;
+				m_bStartXSet = false;
+
+
+			}
 		}
 		return;
 	}
 
-	if (m_bDoorClose) {
+	if (m_bDoorClose && !m_bTransitionFinished) {
 		m_fDoorOpenClose = 1.f;
 		m_fShadeStart = 1.f;
 		auto playerLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"Layer_Player");
 		if (playerLayer == nullptr) return;
 
 		auto player = playerLayer->GetObjectFirst();
-		auto playerPos = player->Get_Transform()->Get_State(STATE::POSITION);
+
+		auto playerPos = static_pointer_cast<CPlayer>(player)->Get_Body()->Get_Transform()->Get_State(STATE::POSITION);
 		auto myPos = m_pTransformCom->Get_State(STATE::POSITION);
 		_float4 deltaPos;
 		XMStoreFloat4(&deltaPos, (myPos - playerPos));
-
+		// 플레이어가 왼쪽에 있으면
 		if (deltaPos.x > 0) {
 			if (!m_bStartXSet) {
 				m_fShadeX = 1.f;
 				m_bStartXSet = true;
-				m_fLeftRight = 1.f;
+				m_fLeftRight = 0.f;
 			}
 			m_fShadeX -= fTimeDelta;
-			if (m_fShadeX < 0.f) m_fShadeX = 0.f;
+			if (m_fShadeX < 0.f) {
+				m_fShadeX = 0.f;
+				m_bTransitionFinished = true;
+				m_bStartXSet = false;
+				m_bDoorClose = false;
+				Reset();
+
+			}
 		}
 		else {
 			if (!m_bStartXSet) {
-				m_fShadeX = 0.f;
+
+				m_fShadeX = 0.f; 
 				m_bStartXSet = true;
-				m_fLeftRight = 0.f;
+				m_fLeftRight = 1.f;
 			}
 			m_fShadeX += fTimeDelta;
-			if (m_fShadeX > 1.f) m_fShadeX = 1.f;
+			if (m_fShadeX > 1.f) {
+				m_fShadeX = 1.f;
+				m_bTransitionFinished = true;
+				m_bStartXSet = false;
+				m_bDoorClose = false;
+				Reset();
+			}
 		}
 		return;
 	}
 
+	//if (m_bTransitionFinished) {
+	//	m_bDoorClose = false;
+	//	m_bDoorOpen = false;
+	//}
 	if (!m_bDoorClose && !m_bDoorOpen) {
 		m_fShadeStart = 0.f;
 		m_bStartXSet = false;
@@ -140,7 +171,7 @@ void CBlocker::Update(_float fTimeDelta)
 				else {
 					m_fEndPoint.y -= fTimeDelta * 0.5f;
 					m_fEndPoint.x = 1.f;
-					if (m_fEndPoint.y < 0.8f) 
+					if (m_fEndPoint.y < 0.8f)
 						m_fEndPoint.y = 0.8f;
 				}
 			}
@@ -151,10 +182,49 @@ void CBlocker::Update(_float fTimeDelta)
 				else {
 					m_fEndPoint.y -= fTimeDelta * 0.5f;
 					m_fEndPoint.x = 0.f;
-					if (m_fEndPoint.y < 0.8f) 
+					if (m_fEndPoint.y < 0.8f)
 						m_fEndPoint.y = 0.8f;
 				}
 			}
+		}
+		else {
+			if (m_bWasScanning) {
+				if (m_bScanningLeft) {
+					if (m_fEndPoint.y <= 1.f) {
+						m_fEndPoint.y += fTimeDelta * 0.5f;
+						if (m_fEndPoint.y >= 1.f) {
+							m_fEndPoint.y = 1.f;
+						}
+					}
+					if (m_fEndPoint.y == 1.f) {
+						m_fEndPoint.x -= fTimeDelta * 0.5f;
+						if (m_fEndPoint.x <= 0.f) {
+							m_fEndPoint.x = 0;
+							m_bWasScanning = false;
+							Reset();
+						}
+					}
+			
+				}
+				else {
+					if (m_fEndPoint.y <= 1.f) {
+						m_fEndPoint.y += fTimeDelta * 0.5f;
+						if (m_fEndPoint.y >= 1.f) {
+							m_fEndPoint.y = 1.f;
+						}
+					}
+					if (m_fEndPoint.y == 1.f) {
+						m_fEndPoint.x += fTimeDelta * 0.5f;
+						if (m_fEndPoint.x >= 1.f) {
+							m_fEndPoint.x = 1.f;
+							m_bWasScanning = false;
+							Reset();
+
+						}
+					}
+				}
+			}
+	
 		}
 	}
 }

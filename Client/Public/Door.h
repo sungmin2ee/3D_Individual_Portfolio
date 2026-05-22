@@ -44,9 +44,11 @@ public:
 	shared_ptr<class CBlocker> Get_LeftBlocker() { return m_pLeftBlocker.lock(); }
 	shared_ptr<class CBlocker> Get_RightBlocker() { return m_pRightBlocker.lock(); }
 	void Set_Tag(_wstring tag) { m_sTag = tag; }
+	void Set_DoorOpened(_bool flag) { m_bDoorOpened = flag; }
 	_wstring Get_Tag() { return m_sTag; }
 	_wstring Get_LeftTag() { return m_sLeftTag; }
 	_wstring Get_RightTag() { return m_sRightTag; }
+	_bool Get_DoorOpened() { return m_bDoorOpened; }
 	shared_ptr<Obb>	 Get_Obb() { return m_pObbCom; }
 private:
 	HRESULT Ready_Components();
@@ -65,7 +67,7 @@ private:
 	_wstring						m_sTag = L"";
 	_wstring						m_sLeftTag = L"";
 	_wstring						m_sRightTag = L"";
-
+	_bool							m_bDoorOpened = false;
 public:
 	static unique_ptr<CDoor> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
 	virtual shared_ptr<CPrototype> Clone(void* pArg) override;
