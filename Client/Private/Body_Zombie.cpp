@@ -322,7 +322,7 @@ void CBody_Zombie::DetectPlayer()
 	_float4 fpos;
 	XMStoreFloat4(&fpos, deltaPos);
 	
-	if (fabs(fpos.x) <= 1.f && playerBody->Is_MakingSound()) {
+	if (fabs(fpos.x) <= 0.5f && playerBody->Is_MakingSound()) {
 		m_bPlayerDetected = true;
 	}
 	else {

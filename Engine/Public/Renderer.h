@@ -25,6 +25,7 @@ private:
 	HRESULT Render_Priority();
 	HRESULT Render_NonBlend();
 	HRESULT Render_Blend();
+	HRESULT Render_Blocker();
 	HRESULT Render_UI();
 
 

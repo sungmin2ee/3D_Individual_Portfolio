@@ -37,6 +37,9 @@ HRESULT CRenderer::Draw()
     if (FAILED(Render_Blend()))
         return E_FAIL;
 
+    if (FAILED(Render_Blocker()))
+        return E_FAIL;
+
     if (FAILED(Render_UI()))
         return E_FAIL;
     
@@ -82,6 +85,18 @@ HRESULT CRenderer::Render_Blend()
     return S_OK;
 }
 
+HRESULT CRenderer::Render_Blocker()
+{
+    for (auto& pRenderObject : m_RenderObjects[ETOUI(RENDERGROUP::BLOCKER)])
+    {
+        if (nullptr != pRenderObject)
+            pRenderObject->Render();
+    }
+
+    m_RenderObjects[ETOUI(RENDERGROUP::BLOCKER)].clear();
+
+    return S_OK;
+}
 HRESULT CRenderer::Render_UI()
 {
     for (auto& pRenderObject : m_RenderObjects[ETOUI(RENDERGROUP::UI)])

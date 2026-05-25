@@ -240,14 +240,23 @@
     <ClInclude Include="..\public\Sky.h">
       <Filter>02.GameObject\05.Sky</Filter>
     </ClInclude>
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
-      <Filter>Shaderfiles</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Door.h">
       <Filter>02.GameObject\06.Door</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Blocker.h">
       <Filter>02.GameObject\07.Blocker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
+      <Filter>Shaderfiles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player_Door.h">
+      <Filter>FSM\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player_OpenDoor.h">
+      <Filter>FSM\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Player_CloseDoor.h">
+      <Filter>FSM\Player</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -377,6 +386,15 @@
     <ClCompile Include="..\Private\Door.cpp">
       <Filter>02.GameObject\06.Door</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Player_Door.cpp">
+      <Filter>FSM\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_OpenDoor.cpp">
+      <Filter>FSM\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Player_CloseDoor.cpp">
+      <Filter>FSM\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -392,24 +410,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_Collider.hlsl">
-      <Filter>Shaderfiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl">
-      <Filter>Shaderfiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxBlur.hlsl">
-      <Filter>Shaderfiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl">
-      <Filter>Shaderfiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNonAnim.hlsl">
-      <Filter>Shaderfiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
-      <Filter>Shaderfiles</Filter>
-    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl">
       <Filter>Shaderfiles</Filter>
     </FxCompile>
@@ -419,7 +419,28 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Blocker.hlsl">
       <Filter>Shaderfiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl">
+      <Filter>Shaderfiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Collider.hlsl">
+      <Filter>Shaderfiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl">
+      <Filter>Shaderfiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxBlur.hlsl">
+      <Filter>Shaderfiles</Filter>
+    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl">
+      <Filter>Shaderfiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl">
+      <Filter>Shaderfiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNonAnim.hlsl">
+      <Filter>Shaderfiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
       <Filter>Shaderfiles</Filter>
     </FxCompile>
   </ItemGroup>

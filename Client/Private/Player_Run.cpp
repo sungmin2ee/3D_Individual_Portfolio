@@ -4,6 +4,9 @@
 #include "Player_Walk.h"
 #include "Player_Attack.h"
 #include "Player_Damaged.h"
+#include "Player_Door.h"
+#include "Player_CloseDoor.h"
+#include "Layer.h"
 
 CPlayer_Run::CPlayer_Run()
 {
@@ -71,6 +74,42 @@ void CPlayer_Run::Update(CBody_Player& owner, _float deltaTime)
 
     }
     owner.Execute();
+
+
+    //auto DoorLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Door"));
+    //if (DoorLayer == nullptr)
+    //    return;
+    //
+    //auto doors = DoorLayer->GetObjects();
+    //
+    //for (auto& pDoorObj : doors)
+    //{
+    //    auto pDoor = static_pointer_cast<CDoor>(pDoorObj);
+    //    if (pDoor == nullptr) continue;
+    //
+    //    if (owner.Get_Obb()->myOBB.Intersects(pDoor->Get_Obb()->myOBB))
+    //    {
+    //        if (!pDoor->Get_DoorOpened()) {
+    //            owner.Get_StateMachine()->ChangeState(CPlayer_Door::Create());
+    //            return;
+    //        }
+    //
+    //    }
+    //}
+
+
+    if (owner.Get_CollidedDoor() != nullptr) {
+        if (owner.Get_CollidedDoor()->Get_DoorOpened()) {
+            if (CGameInstance::Get().Key_Down(DIK_F)) {
+                owner.Get_StateMachine()->ChangeState(CPlayer_CloseDoor::Create());
+
+            }
+        }
+        else {
+            owner.Get_StateMachine()->ChangeState(CPlayer_Door::Create());
+        }
+        return;
+    }
 }
 
 void CPlayer_Run::Exit(CBody_Player& owner)

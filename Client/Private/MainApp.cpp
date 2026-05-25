@@ -68,6 +68,8 @@ void CMainApp::Update(float fTimeDelta)
 		}
 	}
 	//D3D11_SAMPLER_DESC
+	D3D11_DEPTH_STENCIL_DESC desc;
+
 	CGameInstance::Get().Update_Engine(fTimeDelta);
 	m_pImguiHandler->Handle_Imgui(CGameInstance::Get().GetCurLevelIndex(), fTimeDelta);
 }

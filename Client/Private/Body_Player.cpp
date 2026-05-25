@@ -10,7 +10,7 @@
 #include "Player_StealthAttack.h"
 #include "Zombie.h"
 #include "Layer.h"
-#include "Door.h"
+//#include "Door.h"
 #include "Blocker.h"
 
 CBody_Player::CBody_Player(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
@@ -215,7 +215,7 @@ void CBody_Player::CheckDoorCollide()
 		return;
 
 	auto doors = DoorLayer->GetObjects();
-	CDoor* pCollidedDoor = nullptr;
+	pCollidedDoor = nullptr;
 
 	for (auto& pDoorObj : doors)
 	{
@@ -261,38 +261,7 @@ void CBody_Player::CheckDoorCollide()
 				pCollidedDoor->Get_LeftBlocker()->Set_IsScanning(false);
 			}
 		}
-		if (CGameInstance::Get().Key_Down(DIK_F)) {
-			if (pCollidedDoor->Get_DoorOpened()) {
-				pCollidedDoor->Set_DoorOpened(false);
-				if (deltaPos.x >= 0) {
-					pCollidedDoor->Get_LeftBlocker()->Set_DoorClose(true);
-					pCollidedDoor->Get_LeftBlocker()->Set_DoorOpen(false);
-					pCollidedDoor->Get_LeftBlocker()->Set_TransitionFinished(false);
-
-				}
-				else {
-					pCollidedDoor->Get_RightBlocker()->Set_DoorClose(true);
-					pCollidedDoor->Get_RightBlocker()->Set_DoorOpen(false);
-					pCollidedDoor->Get_RightBlocker()->Set_TransitionFinished(false);
-				}
-			
-			}
-			else {
-				pCollidedDoor->Set_DoorOpened(true);
-			
-				if (deltaPos.x >= 0) {
-					pCollidedDoor->Get_LeftBlocker()->Set_DoorOpen(true);
-					pCollidedDoor->Get_LeftBlocker()->Set_DoorClose(false);
-					pCollidedDoor->Get_LeftBlocker()->Set_TransitionFinished(false);
-				}
-				else {
-					pCollidedDoor->Get_RightBlocker()->Set_DoorOpen(true);
-					pCollidedDoor->Get_RightBlocker()->Set_DoorClose(false);
-					pCollidedDoor->Get_RightBlocker()->Set_TransitionFinished(false);
-
-				}
-			}
-		}
+		
 	}
 	else
 	{
@@ -416,9 +385,9 @@ void CBody_Player::ExpandCollider()
 
 	// 2. Extents 계산: 로컬 크기에 현재 트랜스폼의 스케일을 곱해줍니다.
 	// Z축 오프셋(0.9f)은 의도하신 수치 비율대로 유지했습니다.
-	m_pObbCom->myOBB.Extents.x = (vLocalMax.x - vLocalMin.x) * 0.5f * scale.x;
-	m_pObbCom->myOBB.Extents.y = (vLocalMax.y - vLocalMin.y) * 0.5f * scale.y;
-	m_pObbCom->myOBB.Extents.z = (vLocalMax.z - vLocalMin.z) * 0.5f * scale.z * 0.9f;
+	m_pObbCom->myOBB.Extents.x = (vLocalMax.x - vLocalMin.x) * 0.6f * scale.x;
+	m_pObbCom->myOBB.Extents.y = (vLocalMax.y - vLocalMin.y) * 0.6f * scale.y;
+	m_pObbCom->myOBB.Extents.z = (vLocalMax.z - vLocalMin.z) * 0.6f * scale.z * 0.9f;
 
 	// 3. Orientation 설정 (이전과 동일하게 정규화 처리 포함)
 	vRot = XMQuaternionNormalize(vRot); // 어서트 방지용 정규화 필수!

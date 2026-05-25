@@ -7,6 +7,8 @@
 #include "Player_Execute.h"
 #include "Layer.h"
 #include "Zombie.h"
+#include "Player_CloseDoor.h"
+#include "Player_Door.h"
 
 CPlayer_Idle::CPlayer_Idle()
 {
@@ -74,6 +76,20 @@ void CPlayer_Idle::Update(CBody_Player& owner, _float deltaTime)
     }
 
     owner.Execute();
+
+
+    if (owner.Get_CollidedDoor() != nullptr) {
+        if (owner.Get_CollidedDoor()->Get_DoorOpened()) {
+            if (CGameInstance::Get().Key_Down(DIK_F)) {
+                owner.Get_StateMachine()->ChangeState(CPlayer_CloseDoor::Create());
+
+            }
+        }
+        else {
+            owner.Get_StateMachine()->ChangeState(CPlayer_Door::Create());
+        }
+        return;
+    }
    
 }
 

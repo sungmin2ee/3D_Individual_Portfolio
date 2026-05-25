@@ -34,8 +34,8 @@ HRESULT CLevel_Stage2::Initialize()
 	//if (FAILED(Ready_Layer_Stair_Collider(TEXT("Layer_Stair_Collider"))))
 	//	return E_FAIL;
 	//
-	//if (FAILED(Ready_Layer_Zombie(TEXT("Layer_Zombie"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Layer_Zombie(TEXT("Layer_Zombie"))))
+		return E_FAIL;
 	//if (FAILED(Ready_Layer_Blocker(TEXT("Layer_Blocker"))))
 	//	return E_FAIL;
 	//if (FAILED(Ready_Layer_Door(TEXT("Layer_Door"))))

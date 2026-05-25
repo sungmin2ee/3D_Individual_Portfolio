@@ -153,8 +153,11 @@
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Door.h" />
     <ClInclude Include="..\public\Player_Attack.h" />
+    <ClInclude Include="..\public\Player_CloseDoor.h" />
     <ClInclude Include="..\public\Player_Damaged.h" />
+    <ClInclude Include="..\public\Player_Door.h" />
     <ClInclude Include="..\public\Player_Execute.h" />
+    <ClInclude Include="..\public\Player_OpenDoor.h" />
     <ClInclude Include="..\public\Player_Run.h" />
     <ClInclude Include="..\public\EquipBorder.h" />
     <ClInclude Include="..\Public\ImguiHandler.h" />
@@ -198,9 +201,12 @@
     <ClCompile Include="..\private\Body_Player.cpp" />
     <ClCompile Include="..\private\Body_Zombie.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />
+    <ClCompile Include="..\private\Player_CloseDoor.cpp" />
+    <ClCompile Include="..\private\Player_OpenDoor.cpp" />
     <ClCompile Include="..\Private\Door.cpp" />
     <ClCompile Include="..\private\Player_Attack.cpp" />
     <ClCompile Include="..\private\Player_Damaged.cpp" />
+    <ClCompile Include="..\private\Player_Door.cpp" />
     <ClCompile Include="..\private\Player_Execute.cpp" />
     <ClCompile Include="..\private\Player_Stair.cpp" />
     <ClCompile Include="..\private\Player_StealthAttack.cpp" />
@@ -245,6 +251,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Blocker.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Collider.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxBlur.hlsl" />

@@ -3,6 +3,7 @@
 #include "Client_Defines.h"
 #include "PartObject.h"
 #include "StateMachine.h"
+#include "Door.h"
 
 NS_BEGIN(Engine)
 class CShader;
@@ -20,8 +21,8 @@ public:
 		STAND,SIT,STAIR_UP, STAIR_DOWN,ATTACK,END
 	};
 	enum class PLAYER_ANIM {
-		AXE_STEALTH1, AXE_STEALTH2, AXE_ATTACK1, AXE_ATTACK2, DOOROPEN_STAND,
-		DOOR_OPEN_SNEAK, DOOR_PEEK_SNEAK_IDLE, DOOR_CLOSE__PEEK, DOOR_OPEN_PEEK,
+		AXE_STEALTH1, AXE_STEALTH2, AXE_ATTACK1, AXE_ATTACK2, DOOR_OPEN_STAND,
+		DOOR_OPEN_SNEAK, DOOR_PEEK_SNEAK_IDLE, DOOR_CLOSE_PEEK, DOOR_OPEN_PEEK,
 		DOOR_PULL_CLOSE_SNEAK, DOOR_PULL_CLOSE_STAND,HIT_REACT_BACK,HIT_REACT_FRONT, IDLE, IDLE_TO_RUN, STAIR_BOTTOM_ENTER,
 		STAIR_BOTTOM_EXIT, STAIR_TOP_ENTER, STAIR_TOP_EXIT, RUN_MED, RUN_STOP, SNEAK_IDLE,
 		SNEAK_IDLE_TRANSITION, SNEAK_WALK, SNEAK_WALK_START, STAIR_IDLE_DOWN,
@@ -69,6 +70,7 @@ public:
 	_bool Is_MakingSound() { return m_bIsMakingSound; }
 	_bool Get_OnHit() { return m_bOnHit; }
 	shared_ptr<Obb> Get_Obb() { return m_pObbCom; };
+	CDoor* Get_CollidedDoor() { return pCollidedDoor; };
 
 
 	void Set_CurState(PLAYER_STATE state) { m_eCurState = state; }
@@ -104,6 +106,7 @@ public:
 private:
 	HRESULT Ready_Components();
 	void ExpandCollider();
+	class CDoor* pCollidedDoor = nullptr;
 
 public:
 	static unique_ptr<CBody_Player> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
