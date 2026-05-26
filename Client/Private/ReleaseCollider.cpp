@@ -1,68 +1,65 @@
-#include "Stair_Collider.h"
+#include "ReleaseCollider.h"
 #include "Obb.h"
-CStair_Collider::CStair_Collider(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext):CGameObject(pDevice, pContext)
+CReleaseCollider::CReleaseCollider(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext) :CGameObject(pDevice, pContext)
 {
 }
 
-CStair_Collider::CStair_Collider(const CStair_Collider& Prototype):
-    CGameObject(Prototype)
+CReleaseCollider::CReleaseCollider(const CReleaseCollider& Prototype) :
+	CGameObject(Prototype)
 {
 }
 
-CStair_Collider::~CStair_Collider()
+CReleaseCollider::~CReleaseCollider()
 {
 }
 
-HRESULT CStair_Collider::Initialize_Prototype()
+HRESULT CReleaseCollider::Initialize_Prototype()
 {
-    return S_OK;
+	return S_OK;
 }
 
-HRESULT CStair_Collider::Initialize(void* pArg)
+HRESULT CReleaseCollider::Initialize(void* pArg)
 {
-	auto	pDesc = static_cast<STAIR_DESC*>(pArg);
 
-	m_eState = pDesc->state;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if(FAILED(Ready_Components()))
+	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
 	CGameInstance::Get().Add_Collider(m_pObbCom);
-	m_pObbCom->SetOwner(SHARED_THIS(CStair_Collider));
+	m_pObbCom->SetOwner(SHARED_THIS(CReleaseCollider));
 	ExpandCollider();
-	m_pTransformCom->SetWorld(pDesc->worldMat);
-	//m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(0.1f, 0.f, 0.f, 1));
+	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(0.5f, 0.35f, 0.15f, 1));
 
-    return S_OK;
+	return S_OK;
 }
 
-void CStair_Collider::Priority_Update(_float fTimeDelta)
+void CReleaseCollider::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
-		
+
 }
 
-void CStair_Collider::Update(_float fTimeDelta)
+void CReleaseCollider::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
 	ExpandCollider();
 }
 
-void CStair_Collider::Late_Update(_float fTimeDelta)
+void CReleaseCollider::Late_Update(_float fTimeDelta)
 {
-	CGameInstance::Get().Add_RenderObject(RENDERGROUP::NONBLEND, SHARED_THIS(CStair_Collider));
+	CGameInstance::Get().Add_RenderObject(RENDERGROUP::NONBLEND, SHARED_THIS(CReleaseCollider));
 
 	__super::Late_Update(fTimeDelta);
 
 }
 
-void CStair_Collider::ExpandCollider()
+void CReleaseCollider::ExpandCollider()
 {
-	
-	_float3 min = {-0.1f,-0.1f,-0.1f };
+
+	_float3 min = { -0.1f,-0.1f,-0.1f };
 	_float3 max = { 0.1f,0.1f,0.1f };
 
 	_float4x4 mat = m_pTransformCom->GetWorld();
@@ -88,20 +85,20 @@ void CStair_Collider::ExpandCollider()
 
 	// 4. 렌더링용 월드 행렬 (m_WorldMatrix) 갱신
 	// VIBuffer_Collider는 -0.5 ~ 0.5 (크기 1)이므로, Extents * 2를 하면 딱 맞습니다.
-	_matrix matOBBWorld = XMMatrixScaling(m_pObbCom->myOBB.Extents.x ,
-		m_pObbCom->myOBB.Extents.y ,
-		m_pObbCom->myOBB.Extents.z );
+	_matrix matOBBWorld = XMMatrixScaling(m_pObbCom->myOBB.Extents.x,
+		m_pObbCom->myOBB.Extents.y,
+		m_pObbCom->myOBB.Extents.z);
 	matOBBWorld *= XMMatrixRotationQuaternion(vRot);
 	matOBBWorld *= XMMatrixTranslationFromVector(centerWorld);
 
 	m_pObbCom->Set_WorldMatrix(matOBBWorld);
 }
-HRESULT CStair_Collider::Render()
+HRESULT CReleaseCollider::Render()
 {
 	m_pObbCom->Render();
-    return S_OK;
+	return S_OK;
 }
-HRESULT CStair_Collider::Ready_Components()
+HRESULT CReleaseCollider::Ready_Components()
 {
 
 
@@ -120,25 +117,25 @@ HRESULT CStair_Collider::Ready_Components()
 	return S_OK;
 }
 
-unique_ptr<CStair_Collider> CStair_Collider::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
+unique_ptr<CReleaseCollider> CReleaseCollider::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 {
-	auto	pInstance = unique_ptr<CStair_Collider>(new CStair_Collider(pDevice, pContext));
+	auto	pInstance = unique_ptr<CReleaseCollider>(new CReleaseCollider(pDevice, pContext));
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CStair_Collider");
+		MSG_BOX("Failed to Created : CReleaseCollider");
 		return nullptr;
 	}
 
 	return pInstance;
 }
-shared_ptr<CPrototype> CStair_Collider::Clone(void* pArg)
+shared_ptr<CPrototype> CReleaseCollider::Clone(void* pArg)
 {
-	auto	pInstance = shared_ptr<CGameObject>(new CStair_Collider(*this));
+	auto	pInstance = shared_ptr<CGameObject>(new CReleaseCollider(*this));
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CStair_Collider");
+		MSG_BOX("Failed to Cloned : CReleaseCollider");
 		return nullptr;
 	}
 

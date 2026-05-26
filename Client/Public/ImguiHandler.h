@@ -19,7 +19,9 @@ public:
 	void Initialize();
 	void Imgui_Editor(_float fTimeDelta);
 	void Save_DoorAndBlocker();
+	void Save_StairCollider();
 	HRESULT Load_DoorAndBlocker();
+	HRESULT Load_StairCollider();
 
 public:
 	static unique_ptr<CImguiHandler> Create(ENGINE_DESC desc, ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> context);
@@ -42,7 +44,7 @@ private:
 	ComPtr<ID3D11DeviceContext>		m_pContext = { nullptr };
 	_wstring strLayerTag = L"";
 	MODEL modelType = {};
-
+	uint32_t UPorDown = 0;
 
 };
 

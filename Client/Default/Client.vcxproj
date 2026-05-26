@@ -176,6 +176,7 @@
     <ClInclude Include="..\public\Player_Stair.h" />
     <ClInclude Include="..\public\Player_StealthAttack.h" />
     <ClInclude Include="..\public\Player_Walk.h" />
+    <ClInclude Include="..\public\ReleaseCollider.h" />
     <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\public\Stair_Collider.h" />
     <ClInclude Include="..\public\State.h" />
@@ -226,6 +227,7 @@
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
+    <ClCompile Include="..\private\ReleaseCollider.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\private\Stair_Collider.cpp" />
     <ClCompile Include="..\private\State.cpp" />

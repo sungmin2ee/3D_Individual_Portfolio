@@ -7,24 +7,32 @@ class CPlayer_Stair :
     public State<CBody_Player>
 {
 
-public:
-    enum STAIR_STATE { DOWN, DOWNFAST,UP, UPFAST, IDLE_DOWN, IDLE_UP,END };
+
 private:
     CPlayer_Stair();
 
 public:
     virtual ~CPlayer_Stair();
 public:
+    enum ENTER { UP, DOWN, END};
+public:
     virtual void Enter(CBody_Player& owner) override;
     virtual void Update(CBody_Player& owner, _float deltaTime) override;
     virtual void Exit(CBody_Player& owner) override;
-
+    void         CheckExit(CBody_Player& owner, _float4 myPos);
 public:
     static unique_ptr<CPlayer_Stair> Create();
 
 
     _bool animStart = false;
-    STAIR_STATE m_eCurstate = IDLE_UP;
-    STAIR_STATE m_ePrestate = END;
+    _bool m_bAdjustingEnter = false;
+    _bool m_bAdjustingExit = false;
+    _bool m_bAnimChanged = false;
+    _bool m_bExiting = false;
+    _bool m_bEnterAnimFinished = false;
+    _float zOffset = 0.15f;
+    _float m_fReleaseY = {};
+
+    ENTER m_eEnter = ENTER::END;
 };
 NS_END

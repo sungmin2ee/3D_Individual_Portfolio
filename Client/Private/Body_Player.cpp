@@ -56,7 +56,8 @@ HRESULT CBody_Player::Initialize(void* pArg)
 	CGameInstance::Get().Add_Collider(m_pObbCom);
 	m_pObbCom->SetOwner(SHARED_THIS(CBody_Player));
 	ExpandCollider();
-	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(-1.5f, 0, 0, 1));
+	//m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(-1.5f, 0, 0, 1));
+	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(0.f, 0, 0, 1));
 
 	return S_OK;
 }
@@ -134,7 +135,8 @@ void CBody_Player::Update(_float fTimeDelta)
 	__super::Update(fTimeDelta);
 	ExpandCollider();
 	CheckDoorCollide();
-	
+	CheckStairCollide();
+	CheckReleaseCollide();
 }
 
 void CBody_Player::Late_Update(_float fTimeDelta)
@@ -282,6 +284,55 @@ void CBody_Player::CheckDoorCollide()
 	}
 
 	
+}
+
+void CBody_Player::CheckStairCollide()
+{
+
+	auto stairLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Stair_Collider"));
+	if (stairLayer == nullptr)
+		return;
+
+	auto stairs = stairLayer->GetObjects();
+	pStairCollider = nullptr;
+
+	for (auto& pStairObj : stairs)
+	{
+		auto pStair = static_pointer_cast<CStair_Collider>(pStairObj);
+		if (pStair == nullptr) continue;
+
+		if (m_pObbCom->myOBB.Intersects(pStair->Get_Obb()->myOBB))
+		{
+			pStairCollider = pStair.get(); 
+			XMStoreFloat4(&stairColliderPos,pStair->Get_Transform()->Get_State(STATE::POSITION));
+
+			break; // 찾았으니 다른 문은 더 돌 필요 없이 루프 탈출!
+		}
+	}
+
+}
+
+void CBody_Player::CheckReleaseCollide()
+{
+	auto ReleaseLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Release_Collider"));
+	if (ReleaseLayer == nullptr)
+		return;
+
+	auto releases = ReleaseLayer->GetObjects();
+	pReleaseCollider = nullptr;
+
+	for (auto& pReleaseObj : releases)
+	{
+		auto pRelease = static_pointer_cast<CReleaseCollider>(pReleaseObj);
+		if (pRelease == nullptr) continue;
+
+		if (m_pObbCom->myOBB.Intersects(pRelease->Get_Obb()->myOBB))
+		{
+			pReleaseCollider = pRelease.get(); 
+
+			break; // 찾았으니 다른 문은 더 돌 필요 없이 루프 탈출!
+		}
+	}
 }
 
 HRESULT CBody_Player::Ready_Components()

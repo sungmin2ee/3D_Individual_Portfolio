@@ -4,6 +4,8 @@
 #include "PartObject.h"
 #include "StateMachine.h"
 #include "Door.h"
+#include "Stair_Collider.h"
+#include "ReleaseCollider.h"
 
 NS_BEGIN(Engine)
 class CShader;
@@ -71,9 +73,13 @@ public:
 	_bool Get_OnHit() { return m_bOnHit; }
 	shared_ptr<Obb> Get_Obb() { return m_pObbCom; };
 	CDoor* Get_CollidedDoor() { return pCollidedDoor; };
+	CStair_Collider* Get_CollidedStair() { return pStairCollider; }
+	CReleaseCollider* Get_CollidedRelease() { return pReleaseCollider; }
+	const _float4& Get_StairPos() { return stairColliderPos; }
 
 
 	void Set_CurState(PLAYER_STATE state) { m_eCurState = state; }
+	void Set_Rotating(_bool flag) { m_bIsRotating = flag; }
 	void Set_CurDir(PLAYER_DIR state) { m_eCurDir = state; }
 	void Set_BodyAngle(_float angle) { bodyAngle = angle; }
 	void Set_DirChanged() { m_bDirChanged = true; }
@@ -99,14 +105,19 @@ private:
 	_bool  m_bOnHit = false;
 	uint32_t m_iHp = 100;
 	_float m_fOnHitTime = 0.f;
-
+	 CDoor* pCollidedDoor = nullptr;
+	 CStair_Collider* pStairCollider = nullptr;
+	 CReleaseCollider * pReleaseCollider = nullptr;
+	_float4					stairColliderPos = {};
 public:
 	void Execute();
 	void CheckDoorCollide();
+	void CheckStairCollide();
+	void CheckReleaseCollide();
 private:
 	HRESULT Ready_Components();
 	void ExpandCollider();
-	class CDoor* pCollidedDoor = nullptr;
+
 
 public:
 	static unique_ptr<CBody_Player> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);

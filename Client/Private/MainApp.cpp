@@ -11,6 +11,7 @@
 #include "Camera_Free.h"
 #include "StateMachine.h"
 #include "Stair_Collider.h"
+#include "ReleaseCollider.h"
 #include "VIBuffer_Cube.h"
 #include "Door.h"
 #include "Blocker.h"
@@ -65,6 +66,12 @@ void CMainApp::Update(float fTimeDelta)
 		//}
 		if (CGameInstance::Get().Key_Up(DIK_0)) {
 			m_pImguiHandler->Load_DoorAndBlocker();
+		}
+		//if (CGameInstance::Get().Key_Up(DIK_K)) {
+		//	m_pImguiHandler->Save_StairCollider();
+		//}
+		if (CGameInstance::Get().Key_Up(DIK_L)) {
+			m_pImguiHandler->Load_StairCollider();
 		}
 	}
 	//D3D11_SAMPLER_DESC
@@ -201,6 +208,9 @@ HRESULT CMainApp::Ready_Prototypes()
 	//Collider
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Stair_Collider"),
 		CStair_Collider::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Release_Collider"),
+		CReleaseCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	//DOOR AND BLOCKER

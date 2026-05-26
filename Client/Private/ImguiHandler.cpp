@@ -6,6 +6,7 @@
 #include "CModel.h"
 #include "Door.h"
 #include "Blocker.h"
+#include "Stair_Collider.h"
 
 namespace fs = std::filesystem;
 using json = nlohmann::json;
@@ -176,6 +177,39 @@ void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 				}
 
 				CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), L"Prototype_ModelObject", curlevel, strLayerTag, &m_ModelDesc);
+			}
+			ImGui::EndTabItem();
+		}
+		if (ImGui::BeginTabItem("Stair"))
+		{
+			if (ImGui::Button("UP"))
+			{
+				UPorDown = ETOUI(CStair_Collider::STAIR_COLLIDER::STAIR_UP);
+			}
+			if (ImGui::Button("Down"))
+			{
+				UPorDown = ETOUI(CStair_Collider::STAIR_COLLIDER::STAIR_DOWN);
+
+			}
+			if (ImGui::Button("Add_Stair_Collider"))
+			{
+				CStair_Collider::STAIR_DESC desc;
+				_matrix camView, camWorld;
+				const _float4x4* view = CGameInstance::Get().Get_Transform(D3DTS::VIEW);
+				camView = XMLoadFloat4x4(view);
+				camWorld = XMMatrixInverse(nullptr, camView);
+				XMMATRIX world = camWorld;
+				XMStoreFloat4x4(&desc.worldMat, world);
+				desc.pGameObjectTag = L"Stair_Collider";
+				if (UPorDown == ETOUI(CStair_Collider::STAIR_COLLIDER::STAIR_UP)) {
+					desc.state = CStair_Collider::STAIR_COLLIDER::STAIR_UP;
+
+				}
+				else if (UPorDown == ETOUI(CStair_Collider::STAIR_COLLIDER::STAIR_DOWN)) {
+					desc.state = CStair_Collider::STAIR_COLLIDER::STAIR_DOWN;
+				}
+				_wstring layerTag = L"Layer_Stair_Collider";
+				CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), L"Prototype_GameObject_Stair_Collider", curlevel, layerTag, &desc);
 			}
 			ImGui::EndTabItem();
 		}
@@ -639,6 +673,7 @@ void CImguiHandler::Save_DoorAndBlocker()
 
 }
 
+
 HRESULT CImguiHandler::Load_DoorAndBlocker()
 {
 	m_pSelected = nullptr;
@@ -755,6 +790,137 @@ HRESULT CImguiHandler::Load_DoorAndBlocker()
 				}
 			}
 		}
+	}
+	return S_OK;
+}
+void CImguiHandler::Save_StairCollider()
+{
+	json Main;
+	auto layers = CGameInstance::Get().Get_Layers();
+	uint32_t levelIndex = CGameInstance::Get().GetCurLevelIndex();
+	map<const _wstring, unique_ptr<class CLayer>>::iterator iter = layers[levelIndex].begin();
+
+	for (iter; iter != layers[levelIndex].end(); iter++) {
+		if (iter->first == L"Layer_Stair_Collider") {
+			for (auto object : iter->second->GetObjects()) {
+				json j;
+				auto stairCollider = static_pointer_cast<CStair_Collider>(object);
+
+				_vector right, up, look, pos;
+
+				right = object->Get_Transform()->Get_State(STATE::RIGHT);
+				up = object->Get_Transform()->Get_State(STATE::UP);
+				look = object->Get_Transform()->Get_State(STATE::LOOK);
+				pos = object->Get_Transform()->Get_State(STATE::POSITION);
+
+				_float4 rightf, upf, lookf, posf;
+				XMStoreFloat4(&rightf, right);
+				XMStoreFloat4(&upf, up);
+				XMStoreFloat4(&lookf, look);
+				XMStoreFloat4(&posf, pos);
+				uint32_t upOrDown = ETOUI(stairCollider->Get_State());
+				
+				j["UpOrDown"] = upOrDown;
+				j["Layer"] = WStringToString(iter->first);
+				j["Right"] = { rightf.x,rightf.y, rightf.z, rightf.w };
+				j["Up"] = { upf.x, upf.y, upf.z, upf.w };
+				j["Look"] = { lookf.x, lookf.y, lookf.z, lookf.w };
+				j["Position"] = { posf.x, posf.y, posf.z, posf.w };
+
+				Main["GameObjects"].push_back(j);
+				
+			}
+		}
+	}
+	string LevelName = "";
+	switch (levelIndex) {
+	case 2:
+		LevelName = "LOGO";
+		break;
+	case 3:
+		LevelName = "SHELTER";
+
+		break;
+	case 4:
+		LevelName = "STAGE1";
+		break;
+	case 5:
+		LevelName = "STAGE2";
+		break;
+	}
+
+	string savePath1 = "../../Resources/Data/" + LevelName + "_Stair_Collider.json";
+	std::ofstream file1(savePath1);
+	if (file1.is_open()) {
+		file1 << Main.dump(4); // 4는 들여쓰기(Tab) 간격입니다.
+		file1.close();
+	}
+
+
+
+}
+
+HRESULT CImguiHandler::Load_StairCollider()
+{
+	string LevelName = "";
+	uint32_t levelIndex = CGameInstance::Get().GetCurLevelIndex();
+
+	switch (levelIndex) {
+	case 2:
+		LevelName = "LOGO";
+		break;
+	case 3:
+		LevelName = "SHELTER";
+
+		break;
+	case 4:
+		LevelName = "STAGE1";
+		break;
+	case 5:
+		LevelName = "STAGE2";
+		break;
+	}
+
+	string path = "../../Resources/Data/" + LevelName + "_Stair_Collider.json";
+	ifstream file(path);
+	if (!file.is_open()) {
+		return E_FAIL;
+	}
+
+	json j;
+	file >> j;
+
+	for (auto& gameObject : j["GameObjects"])
+	{
+		_wstring layerTag;
+		CStair_Collider::STAIR_DESC desc;
+		layerTag = StringToWString(gameObject.value("Layer", ""));
+		uint32_t uState = gameObject["UpOrDown"].get<uint32_t>();
+		if (uState == ETOUI(CStair_Collider::STAIR_COLLIDER::STAIR_UP)) {
+			desc.state = CStair_Collider::STAIR_COLLIDER::STAIR_UP;
+		}
+		else if (uState == ETOUI(CStair_Collider::STAIR_COLLIDER::STAIR_DOWN)) {
+			desc.state = CStair_Collider::STAIR_COLLIDER::STAIR_DOWN;
+		}
+		_float fRight[4], fUp[4], fLook[4], fPos[4];
+		for (int i = 0; i < 4; ++i) {
+			fRight[i] = gameObject["Right"][i].get<float>();
+			fUp[i] = gameObject["Up"][i].get<float>();
+			fLook[i] = gameObject["Look"][i].get<float>();
+			fPos[i] = gameObject["Position"][i].get<float>();
+		}
+		XMMATRIX matWorld = XMMatrixIdentity();
+
+		matWorld.r[0] = XMLoadFloat4((_float4*)fRight);  // Right
+		matWorld.r[1] = XMLoadFloat4((_float4*)fUp);     // Up
+		matWorld.r[2] = XMLoadFloat4((_float4*)fLook);   // Look
+		matWorld.r[3] = XMLoadFloat4((_float4*)fPos);    // Position
+		XMStoreFloat4x4(&desc.worldMat, matWorld);
+		desc.pGameObjectTag = L"Stair_Collider";
+		if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(0, L"Prototype_GameObject_Stair_Collider", levelIndex, layerTag, &desc))) {
+			return E_FAIL;
+		}
+	
 	}
 	return S_OK;
 }

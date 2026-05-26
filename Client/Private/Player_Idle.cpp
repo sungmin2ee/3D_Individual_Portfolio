@@ -9,6 +9,7 @@
 #include "Zombie.h"
 #include "Player_CloseDoor.h"
 #include "Player_Door.h"
+#include "Player_Stair.h"
 
 CPlayer_Idle::CPlayer_Idle()
 {
@@ -44,6 +45,7 @@ void CPlayer_Idle::Update(CBody_Player& owner, _float deltaTime)
     if (CGameInstance::Get().Key_Pressing(DIK_A) || CGameInstance::Get().Key_Pressing(DIK_D)) {
         // 만약 W키를 누르면 Run 상태로 변경
          owner.Get_StateMachine()->ChangeState(CPlayer_Walk::Create());
+         return;
     }
     if (CGameInstance::Get().Key_Down(DIK_C)) {
 
@@ -90,7 +92,12 @@ void CPlayer_Idle::Update(CBody_Player& owner, _float deltaTime)
         }
         return;
     }
-   
+    if (owner.Get_CollidedStair() != nullptr) {
+        if (CGameInstance::Get().Key_Down(DIK_F)) {
+            owner.Get_StateMachine()->ChangeState(CPlayer_Stair::Create());
+            return;
+        }
+    }
 }
 
 void CPlayer_Idle::Exit(CBody_Player& owner)

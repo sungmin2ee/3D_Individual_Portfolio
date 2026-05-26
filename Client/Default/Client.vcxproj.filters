@@ -258,6 +258,9 @@
     <ClInclude Include="..\public\Player_CloseDoor.h">
       <Filter>FSM\Player</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ReleaseCollider.h">
+      <Filter>02.GameObject\StairCollider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -394,6 +397,9 @@
     </ClCompile>
     <ClCompile Include="..\private\Player_CloseDoor.cpp">
       <Filter>FSM\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ReleaseCollider.cpp">
+      <Filter>02.GameObject\StairCollider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

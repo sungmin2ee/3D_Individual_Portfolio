@@ -33,9 +33,14 @@ HRESULT CLevel_Stage2::Initialize()
 		return E_FAIL;
 	//if (FAILED(Ready_Layer_Stair_Collider(TEXT("Layer_Stair_Collider"))))
 	//	return E_FAIL;
-	//
-	if (FAILED(Ready_Layer_Zombie(TEXT("Layer_Zombie"))))
+	//if (FAILED(Ready_Layer_Release_Collider(TEXT("Layer_Release_Collider"))))
+	//	return E_FAIL;
+	
+	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
+	
+	//if (FAILED(Ready_Layer_Zombie(TEXT("Layer_Zombie"))))
+	//	return E_FAIL;
 	//if (FAILED(Ready_Layer_Blocker(TEXT("Layer_Blocker"))))
 	//	return E_FAIL;
 	//if (FAILED(Ready_Layer_Door(TEXT("Layer_Door"))))
@@ -103,11 +108,7 @@ HRESULT CLevel_Stage2::Ready_Layer_Camera(const _wstring& strLayerTag)
 }
 HRESULT CLevel_Stage2::Ready_Layer_Stair_Collider(const _wstring& strLayerTag)
 {
-	CGameObject::GAMEOBJECT_DESC pDesc{};
-	pDesc.pGameObjectTag = L"Sky";
-	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Sky"),
-		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
-		return E_FAIL;
+
 
 	CStair_Collider::STAIR_DESC stairDesc{};
 
@@ -115,6 +116,22 @@ HRESULT CLevel_Stage2::Ready_Layer_Stair_Collider(const _wstring& strLayerTag)
 	stairDesc.pGameObjectTag = L"Stair_Collider";
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Stair_Collider"),
 		ETOUI(LEVEL::STAGE2), strLayerTag, &stairDesc)))
+		return E_FAIL;
+
+	//CGameObject::GAMEOBJECT_DESC desc;
+	//desc.pGameObjectTag = L"Release_Collider";
+	//if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Release_Collider"),
+	//	ETOUI(LEVEL::STAGE2), strLayerTag, &desc)))
+	//	return E_FAIL;
+	return S_OK;
+}
+HRESULT CLevel_Stage2::Ready_Layer_Release_Collider(const _wstring& strLayerTag)
+{
+
+	CGameObject::GAMEOBJECT_DESC desc;
+	desc.pGameObjectTag = L"Release_Collider";
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Release_Collider"),
+		ETOUI(LEVEL::STAGE2), strLayerTag, &desc)))
 		return E_FAIL;
 	return S_OK;
 }
@@ -140,6 +157,16 @@ HRESULT CLevel_Stage2::Ready_Layer_Zombie(const _wstring& strLayerTag)
 	pDesc.fSpeedPerSec = 10.f;
 	pDesc.fRotationPerSec = 720.f;
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Zombie"),
+		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
+		return E_FAIL;
+	return S_OK;
+}
+HRESULT CLevel_Stage2::Ready_Layer_Sky(const _wstring& strLayerTag)
+{
+
+	CGameObject::GAMEOBJECT_DESC pDesc{};
+	pDesc.pGameObjectTag = L"Sky";
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Sky"),
 		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
 		return E_FAIL;
 	return S_OK;

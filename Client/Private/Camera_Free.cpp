@@ -148,6 +148,7 @@ HRESULT CCamera_Free::Render()
 
 void CCamera_Free::ZoomIn(CBody_Player* playerBody)
 {
+
 	// 1. 플레이어와 카메라의 현재 위치를 가져옵니다.
 	_vector playerPos = playerBody->Get_Transform()->Get_State(STATE::POSITION);
 	_vector camPos = m_pTransformCom->Get_State(STATE::POSITION);
@@ -172,7 +173,15 @@ void CCamera_Free::ZoomIn(CBody_Player* playerBody)
 		m_pTransformCom->Set_State(STATE::POSITION, nextCamPos);
 		return;
 	}
+	if (playerBody->Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_UP ||
+		playerBody->Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_DOWN) {
+		_vector nextCamPos = XMLoadFloat4(&fCamPos);
 
+		m_pTransformCom->Set_State(STATE::POSITION, nextCamPos);
+
+		return;
+	}
+		
 	// 4. 제한에 걸리지 않았다면 Z축을 플레이어 쪽으로 이동시킵니다. (+방향)
 	_float fZoomSpeed = 0.01f; // 프레임 환경에 맞게 수치를 조절하세요.
 	fCamPos.z += fZoomSpeed;

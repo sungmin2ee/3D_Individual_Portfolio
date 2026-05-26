@@ -6,6 +6,7 @@
 #include "Player_Damaged.h"
 #include "Player_CloseDoor.h"
 #include "Player_Door.h"
+#include "Player_Stair.h"
 #include "Layer.h"
 #include "Door.h"
 
@@ -81,29 +82,6 @@ void CPlayer_Walk::Update(CBody_Player& owner, _float deltaTime)
     owner.Execute();
 
 
-    //if (!owner.Get_Rotating()) {
-    //    auto DoorLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Door"));
-    //    if (DoorLayer == nullptr)
-    //        return;
-    //
-    //    auto doors = DoorLayer->GetObjects();
-    //
-    //    for (auto& pDoorObj : doors)
-    //    {
-    //        auto pDoor = static_pointer_cast<CDoor>(pDoorObj);
-    //        if (pDoor == nullptr) continue;
-    //
-    //        if (owner.Get_Obb()->myOBB.Intersects(pDoor->Get_Obb()->myOBB))
-    //        {
-    //            if (!pDoor->Get_DoorOpened()) {
-    //                owner.Get_StateMachine()->ChangeState(CPlayer_Door::Create());
-    //                return;
-    //
-    //            }
-    //        }
-    //    }
-    //}
-
     if (owner.Get_CollidedDoor() != nullptr) {
         if (owner.Get_CollidedDoor()->Get_DoorOpened()) {
             if (CGameInstance::Get().Key_Down(DIK_F)) {
@@ -116,7 +94,12 @@ void CPlayer_Walk::Update(CBody_Player& owner, _float deltaTime)
         }
         return;
     }
-   
+    if (owner.Get_CollidedStair() != nullptr) {
+        if (CGameInstance::Get().Key_Down(DIK_F)) {
+            owner.Get_StateMachine()->ChangeState(CPlayer_Stair::Create());
+            return;
+        }
+    }
 }
 
 void CPlayer_Walk::Exit(CBody_Player& owner)
