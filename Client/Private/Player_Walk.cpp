@@ -86,7 +86,6 @@ void CPlayer_Walk::Update(CBody_Player& owner, _float deltaTime)
         if (owner.Get_CollidedDoor()->Get_DoorOpened()) {
             if (CGameInstance::Get().Key_Down(DIK_F)) {
                 owner.Get_StateMachine()->ChangeState(CPlayer_CloseDoor::Create());
-
             }
         }
         else {

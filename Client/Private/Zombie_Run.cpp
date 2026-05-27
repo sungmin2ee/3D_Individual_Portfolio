@@ -1,10 +1,12 @@
 #include "Zombie_Run.h"
 #include "GameInstance.h"
-#include "Zombie_Idle.h"
-#include "Zombie_Walk.h"
 #include "Zombie_Attack.h"
 #include "Zombie_Damaged.h"
 #include "Zombie_Fatal.h"
+#include "Zombie_Stair.h"
+#include "Layer.h"
+#include "Player.h"
+#include "Body_Player.h"
 
 CZombie_Run::CZombie_Run()
 {
@@ -33,12 +35,28 @@ void CZombie_Run::Update(CBody_Zombie& owner, _float deltaTime)
         owner.Get_StateMachine()->ChangeState(CZombie_Attack::Create());
         return;
     }
-    owner.Get_Transform()->Go_Straight(deltaTime * 3.f);
 
     if (owner.Get_HP() <= 21) {
         owner.Get_StateMachine()->ChangeState(CZombie_Fatal::Create());
         return;
     }
+    //플레이어가 도망중인데 계단을 탔으면
+    //일단 계속가
+    //가다가 계단 콜라이더에 닿으면 계단 상태머신 발동 
+    if (owner.Get_PlayerDetected()) {
+        auto layer = CGameInstance::Get().Find_Layer(ETOUI(CGameInstance::Get().GetCurLevelIndex()), TEXT("Layer_Player"));
+        auto player = layer->GetObjectFirst();
+        auto playerBody = static_pointer_cast<CPlayer>(player)->Get_Body();
+        if (owner.Get_CollidedStair() != nullptr) {
+            if (playerBody->Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_DOWN ||
+                playerBody->Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_DOWN) {
+                owner.Get_StateMachine()->ChangeState(CZombie_Stair::Create());
+                return;
+            }
+        }
+       
+    }
+    owner.Get_Transform()->Go_Straight(deltaTime * 3.f);
 
 }
 

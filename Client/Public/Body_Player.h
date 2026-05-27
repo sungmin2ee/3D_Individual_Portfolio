@@ -75,6 +75,7 @@ public:
 	CDoor* Get_CollidedDoor() { return pCollidedDoor; };
 	CStair_Collider* Get_CollidedStair() { return pStairCollider; }
 	CReleaseCollider* Get_CollidedRelease() { return pReleaseCollider; }
+
 	const _float4& Get_StairPos() { return stairColliderPos; }
 
 
@@ -85,6 +86,7 @@ public:
 	void Set_DirChanged() { m_bDirChanged = true; }
 	void Set_MakingSound(_bool flag) { m_bIsMakingSound = flag; }
 	void Set_OnHit(_bool flag) { m_bOnHit= flag; }
+	void Set_StairMove(_bool flag) { m_bStairMove = flag; }
 	void Set_Hp(uint32_t delta) { m_iHp += delta; }
 
 private:
@@ -103,6 +105,7 @@ private:
 	_bool  m_bIsRotating = false;
 	_bool  m_bIsMakingSound = false;
 	_bool  m_bOnHit = false;
+	_bool  m_bStairMove = false;
 	uint32_t m_iHp = 100;
 	_float m_fOnHitTime = 0.f;
 	 CDoor* pCollidedDoor = nullptr;

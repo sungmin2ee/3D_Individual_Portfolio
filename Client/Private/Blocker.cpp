@@ -231,7 +231,7 @@ void CBlocker::Update(_float fTimeDelta)
 
 void CBlocker::Late_Update(_float fTimeDelta)
 {
-	CGameInstance::Get().Add_RenderObject(RENDERGROUP::PRIORITY, SHARED_THIS(CBlocker));
+	//CGameInstance::Get().Add_RenderObject(RENDERGROUP::PRIORITY, SHARED_THIS(CBlocker));
 	CGameInstance::Get().Add_RenderObject(RENDERGROUP::BLOCKER , SHARED_THIS(CBlocker));
 	__super::Late_Update(fTimeDelta);
 

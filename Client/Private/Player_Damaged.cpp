@@ -72,27 +72,7 @@ void CPlayer_Damaged::Update(CBody_Player& owner, _float deltaTime)
             return;
         }
     }
-    //if (owner.Get_OnHit() && !animStart) {
 
-    //    auto zombies = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Zombie"))->GetObjects();
-    //    auto iter = zombies.begin();
-
-    //    for (iter; iter != zombies.end(); iter++) {
-    //        if (owner.Get_Obb()->myOBB.Intersects(static_pointer_cast<CZombie>(*iter)->Get_Body()->Get_Obb()->myOBB)) {
-    //            if (ETOUI(static_pointer_cast<CZombie>(*iter)->Get_Body()->Get_CurDir()) == ETOUI(owner.Get_CurDir())) {
-    //                owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::HIT_REACT_FRONT), false);
-    //                break;
-    //            }
-    //            else {
-    //                owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::HIT_REACT_BACK), false);
-    //                break;
-    //            }
-    //        }
-    //    }
-    //    animStart = true;
-    //    m_fTime = 0.f;
-    //    return;
-    //}
   
     if (m_fTime >= 0.5f) {
         owner.Set_OnHit(false);

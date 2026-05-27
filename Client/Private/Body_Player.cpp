@@ -56,8 +56,8 @@ HRESULT CBody_Player::Initialize(void* pArg)
 	CGameInstance::Get().Add_Collider(m_pObbCom);
 	m_pObbCom->SetOwner(SHARED_THIS(CBody_Player));
 	ExpandCollider();
-	//m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(-1.5f, 0, 0, 1));
-	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(0.f, 0, 0, 1));
+	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(-1.5f, 0, 0, 1));
+	//m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(0.f, 0, 0, 1));
 
 	return S_OK;
 }
@@ -98,21 +98,24 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
 		}
 	}
 	else {
-		if (m_eCurDir == PLAYER_DIR::LEFT) {
-			if (CGameInstance::Get().Key_Down(DIK_D)) {
-				m_bDirChanged = true;
-				m_bIsRotating = true;
-				return;
+		if (!m_bStairMove) {
+			if (m_eCurDir == PLAYER_DIR::LEFT) {
+				if (CGameInstance::Get().Key_Down(DIK_D)) {
+					m_bDirChanged = true;
+					m_bIsRotating = true;
+					return;
+				}
 			}
-		}
-		else if (m_eCurDir == PLAYER_DIR::RIGHT) {
-			if (CGameInstance::Get().Key_Down(DIK_A)) {
-				m_bDirChanged = true;
-				m_bIsRotating = true;
-				return;
+			else if (m_eCurDir == PLAYER_DIR::RIGHT) {
+				if (CGameInstance::Get().Key_Down(DIK_A)) {
+					m_bDirChanged = true;
+					m_bIsRotating = true;
+					return;
 
+				}
 			}
 		}
+		
 	}
 	
 	
@@ -226,9 +229,16 @@ void CBody_Player::CheckDoorCollide()
 
 		if (m_pObbCom->myOBB.Intersects(pDoor->Get_Obb()->myOBB))
 		{
-			pCollidedDoor = pDoor.get(); // 충돌한 문의 주소값 저장
-		
-			break; // 찾았으니 다른 문은 더 돌 필요 없이 루프 탈출!
+			_float4 myPos;
+			_float3 doorPos;
+			
+			XMStoreFloat4(&myPos, m_pTransformCom->Get_State(STATE::POSITION));
+			//XMStoreFloat3(&doorPos, pDoor->Get_Obb()->myOBB.Center);
+			if (fabs(myPos.x - pDoor->Get_Obb()->myOBB.Center.x) < 0.03f) {
+				pCollidedDoor = pDoor.get(); // 충돌한 문의 주소값 저장
+				break; // 찾았으니 다른 문은 더 돌 필요 없이 루프 탈출!
+
+			}
 		}
 	}
 

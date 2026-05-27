@@ -78,7 +78,7 @@ HRESULT CModelObject::Initialize(void* pArg)
 
         // 2. 인자로 들어온 태그를 사용하여 모델 컴포넌트 클론
         m_pModelCom = static_pointer_cast<CModel>(CGameInstance::Get().Clone_Prototype(pDesc->levelIndex, pDesc->pModelPrototypeTag));
-        m_pModelCom->Calculate_Box(modelType);
+        //m_pModelCom->Calculate_Box(modelType);
         // 3. 쉐이더 컴포넌트 클론
         m_pShaderCom = static_pointer_cast<CShader>(CGameInstance::Get().Clone_Prototype(0, pDesc->pShaderPrototypeTag));
 
@@ -90,7 +90,7 @@ HRESULT CModelObject::Initialize(void* pArg)
 
         }
         m_pColliderCom->SetOwner(SHARED_THIS(CModelObject));
-        ExpandCollider();
+        //ExpandCollider();
         //m_pTransformCom->
         //pDesc->vInitialPosition;
         // 4. (선택사항) 필요하다면 콜라이더도 여기서 생성

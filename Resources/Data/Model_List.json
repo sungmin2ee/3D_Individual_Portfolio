@@ -1,6 +1,10 @@
 {
     "Model": [
         {
+            "FilePath": "../../Resources/Models/Avatar_Kiana_C8_WS.fbx",
+            "PrototypeTag": "Prototype_Model_Avatar_Kiana_C8_WS"
+        },
+        {
             "FilePath": "../../Resources/Models/barrier_concrete.fbx",
             "PrototypeTag": "Prototype_Model_barrier_concrete"
         },

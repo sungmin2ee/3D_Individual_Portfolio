@@ -34,16 +34,22 @@ void CPlayer_OpenDoor::Enter(CBody_Player& owner)
     pCollidedDoor->Set_DoorOpened(true);
 
     if (deltaPos.x >= 0) {
-        pCollidedDoor->Get_LeftBlocker()->Set_DoorOpen(true);
-        pCollidedDoor->Get_LeftBlocker()->Set_DoorClose(false);
-        pCollidedDoor->Get_LeftBlocker()->Set_TransitionFinished(false);
-    }
-    else {
-        pCollidedDoor->Get_RightBlocker()->Set_DoorOpen(true);
-        pCollidedDoor->Get_RightBlocker()->Set_DoorClose(false);
-        pCollidedDoor->Get_RightBlocker()->Set_TransitionFinished(false);
+        if (pCollidedDoor->Get_LeftBlocker() != nullptr) {
+            pCollidedDoor->Get_LeftBlocker()->Set_DoorOpen(true);
+            pCollidedDoor->Get_LeftBlocker()->Set_DoorClose(false);
+            pCollidedDoor->Get_LeftBlocker()->Set_TransitionFinished(false);
+        }
 
     }
+    else {
+        if (pCollidedDoor->Get_RightBlocker() != nullptr) {
+            pCollidedDoor->Get_RightBlocker()->Set_DoorOpen(true);
+            pCollidedDoor->Get_RightBlocker()->Set_DoorClose(false);
+            pCollidedDoor->Get_RightBlocker()->Set_TransitionFinished(false);
+        }
+    }
+    owner.Get_CollidedDoor()->Set_Rotating(true);
+
 }
 
 void CPlayer_OpenDoor::Update(CBody_Player& owner, _float deltaTime)

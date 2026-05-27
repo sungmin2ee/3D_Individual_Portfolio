@@ -313,7 +313,7 @@ HRESULT CMesh::Ready_AnimMesh(CModel* pModel, const aiMesh* pAIMesh)
         m_iNumBones = 1;
 
         int32_t        iBoneIndex = { -1 };
-
+        //Scene.001
         iBoneIndex = pModel->Get_BoneIndex(m_szName);
 
         if (-1 == iBoneIndex)

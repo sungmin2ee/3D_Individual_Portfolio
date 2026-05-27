@@ -4,6 +4,8 @@
 #include "PartObject.h"
 #include "StateMachine.h"
 #include "Body_Player.h"
+#include "Door.h"
+#include "Stair_Collider.h"
 
 NS_BEGIN(Engine)
 class CShader;
@@ -67,6 +69,9 @@ public:
 	_bool Stealth_Death() { return m_bStealthDeath; }
 	uint32_t Get_HP() { return m_iHp; }
 	shared_ptr<Obb> Get_Obb() { return m_pObbCom; };
+	CDoor* Get_CollidedDoor() { return pCollidedDoor; };
+	CStair_Collider* Get_CollidedStair() { return pStairCollider; }
+	const _float4& Get_StairPos() { return stairColliderPos; }
 
 
 	void Set_CurState(ZOMBIE_STATE state) { m_eCurState = state; }
@@ -79,30 +84,38 @@ public:
 	void Set_HPZero() { m_iHp = 0; }
 	void Set_Executing(_bool flag) { m_bExecuting = flag; }
 	void Set_Stealth_Death() { m_bStealthDeath = true; }
+	void CheckDoorCollide();
+	void Turn(_float fTimeDelta);
+	void CheckStairCollide();
 
 private:
-	shared_ptr<CShader>				m_pShaderCom = { nullptr };
-	shared_ptr<CModel>				m_pModelCom = { nullptr };
-	shared_ptr<Obb> m_pObbCom = { nullptr };
-	shared_ptr<VIBuffer_Collider> m_pObbBfCom = { nullptr };
+	shared_ptr<CShader>						m_pShaderCom = { nullptr };
+	shared_ptr<CModel>						m_pModelCom = { nullptr };
+	shared_ptr<Obb>							m_pObbCom = { nullptr };
+	shared_ptr<VIBuffer_Collider>			m_pObbBfCom = { nullptr };
 private:
-	const uint32_t* m_pParentState = { nullptr };
-	unique_ptr<StateMachine<CBody_Zombie>> m_pStateMachine = nullptr;
-	ZOMBIE_STATE m_eCurState = ZOMBIE_STATE::END;
-	ZOMBIE_DIR   m_eCurDir = ZOMBIE_DIR::RIGHT;
-	ZOMBIE_DIR   m_ePrevDir= ZOMBIE_DIR::END;
-	_float bodyAngle = 0.f;
-	_bool  m_bDirChanged = false;
-	_bool  m_bIsRotating = false;
-	_bool  m_bIsDamaged  = false;
-	_bool  m_bPlayerInRange = false;
-	_bool  m_bPlayerDetected = false;
-	_bool  m_bUsingStairs = false;
-	_bool  m_bExecuting = false;
-	_bool  m_bStealthDeath = false;
-	_float m_fAttackTime = 0.f;
-	uint32_t m_iHp = 100;
-	
+	const uint32_t*							m_pParentState = { nullptr };
+	unique_ptr<StateMachine<CBody_Zombie>>  m_pStateMachine = nullptr;
+	ZOMBIE_STATE							m_eCurState = ZOMBIE_STATE::END;
+	ZOMBIE_DIR								m_eCurDir = ZOMBIE_DIR::END;
+	ZOMBIE_DIR								m_ePrevDir= ZOMBIE_DIR::END;
+	_float									bodyAngle = 0.f;
+	_bool									m_bDirChanged = false;
+	_bool									m_bIsRotating = false;
+	_bool									m_bIsDamaged  = false;
+	_bool									m_bPlayerInRange = false;
+	_bool									m_bPlayerDetected = false;
+	_bool									m_bUsingStairs = false;
+	_bool									m_bExecuting = false;
+	_bool									m_bStealthDeath = false;
+	_bool									m_bDoorCollided = false;
+	_float									m_fAttackTime = 0.f;
+	uint32_t								m_iHp = 100;
+	CDoor*									pCollidedDoor = nullptr;
+	CStair_Collider*						pStairCollider = nullptr;
+	_float4									stairColliderPos = {};
+
+
 private:
 	void FocusPlayer();
 	//shared_ptr<CBody_Player> m_pPlayer = { nullptr };

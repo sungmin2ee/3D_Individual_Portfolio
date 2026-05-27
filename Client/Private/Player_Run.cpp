@@ -92,6 +92,7 @@ void CPlayer_Run::Update(CBody_Player& owner, _float deltaTime)
     if (owner.Get_CollidedStair() != nullptr) {
         if (CGameInstance::Get().Key_Down(DIK_F)) {
             owner.Get_StateMachine()->ChangeState(CPlayer_Stair::Create());
+
             return;
         }
     }

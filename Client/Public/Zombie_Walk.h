@@ -22,6 +22,6 @@ public:
 public:
     static unique_ptr<CZombie_Walk> Create();
     _bool animStart = false;
-
+    _bool detectedAnimStart = false;
 };
 NS_END

@@ -24,6 +24,7 @@ HRESULT CDoor::Initialize(void* pArg)
 	m_sTag = pDesc->pGameObjectTag;
 	m_sLeftTag = pDesc->leftTag;
 	m_sRightTag = pDesc->rightTag;
+	pDesc->fRotationPerSec = 320.f;
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -42,6 +43,30 @@ HRESULT CDoor::Initialize(void* pArg)
 void CDoor::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
+	_float x = m_pTransformCom->Get_RotSpeed();
+	if (m_bRotating) {
+		if (m_bDoorOpened) {
+			m_fAngle -= fTimeDelta * m_pTransformCom->Get_RotSpeed();
+			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), m_fAngle);
+			if (m_fAngle < -230.f) {
+				m_bRotating = false;
+				
+				m_fAngle = -230.f;
+				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), m_fAngle);
+			}
+		}
+		else {
+			m_fAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
+			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), m_fAngle);
+			if (m_fAngle > -90.f) {
+				m_bRotating = false;
+				m_fAngle = -90.f;
+				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), m_fAngle);
+			}
+		}
+	}
+	
+
 
 }
 

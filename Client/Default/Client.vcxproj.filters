@@ -246,9 +246,6 @@
     <ClInclude Include="..\Public\Blocker.h">
       <Filter>02.GameObject\07.Blocker</Filter>
     </ClInclude>
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
-      <Filter>Shaderfiles</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Player_Door.h">
       <Filter>FSM\Player</Filter>
     </ClInclude>
@@ -260,6 +257,9 @@
     </ClInclude>
     <ClInclude Include="..\public\ReleaseCollider.h">
       <Filter>02.GameObject\StairCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
+      <Filter>Shaderfiles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

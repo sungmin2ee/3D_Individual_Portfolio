@@ -41,15 +41,18 @@ public:
 public:
 	void Set_LeftBlocker(shared_ptr<class CBlocker> leftBlocker) { m_pLeftBlocker = leftBlocker; }
 	void Set_RightBlocker(shared_ptr<class CBlocker> rightBlocker) { m_pRightBlocker = rightBlocker; }
-	shared_ptr<class CBlocker> Get_LeftBlocker() { return m_pLeftBlocker.lock(); }
-	shared_ptr<class CBlocker> Get_RightBlocker() { return m_pRightBlocker.lock(); }
 	void Set_Tag(_wstring tag) { m_sTag = tag; }
 	void Set_DoorOpened(_bool flag) { m_bDoorOpened = flag; }
-	_wstring Get_Tag() { return m_sTag; }
-	_wstring Get_LeftTag() { return m_sLeftTag; }
-	_wstring Get_RightTag() { return m_sRightTag; }
-	_bool Get_DoorOpened() { return m_bDoorOpened; }
+	void Set_Rotating(_bool flag) { m_bRotating = flag; }
+	shared_ptr<class CBlocker> Get_LeftBlocker() { return m_pLeftBlocker.lock(); }
+	shared_ptr<class CBlocker> Get_RightBlocker() { return m_pRightBlocker.lock(); }
+	const _wstring &Get_Tag() { return m_sTag; }
+	const _wstring &Get_LeftTag() { return m_sLeftTag; }
+	const _wstring &Get_RightTag() { return m_sRightTag; }
+	const _bool &Get_DoorOpened() { return m_bDoorOpened; }
+	const _bool &Get_Rotating() { return m_bRotating; }
 	shared_ptr<Obb>	 Get_Obb() { return m_pObbCom; }
+
 private:
 	HRESULT Ready_Components();
 	void ExpandCollider();
@@ -68,6 +71,8 @@ private:
 	_wstring						m_sLeftTag = L"";
 	_wstring						m_sRightTag = L"";
 	_bool							m_bDoorOpened = false;
+	_bool							m_bRotating = false;
+	_float							m_fAngle = -90.f;
 public:
 	static unique_ptr<CDoor> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
 	virtual shared_ptr<CPrototype> Clone(void* pArg) override;

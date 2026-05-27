@@ -63,6 +63,7 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
 
 
     if (m_bAdjustingExit) {
+        owner.Set_StairMove(true);
         if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_UP) {
             if (myPos.z > 0) {
                 owner.Get_Transform()->Go_Right(deltaTime * 1.5f);
@@ -71,6 +72,7 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
             }
             else {
                 m_bAdjustingExit = false;
+                owner.Set_StairMove(false);
                 owner.Set_CurState(CBody_Player::PLAYER_STATE::STAND);
                 owner.Get_StateMachine()->ChangeState(CPlayer_Idle::Create());
                 return;
@@ -86,6 +88,8 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
             }
             else {
                 m_bAdjustingExit = false;
+                owner.Set_StairMove(false);
+
                 owner.Set_CurState(CBody_Player::PLAYER_STATE::STAND);
 
                 owner.Get_StateMachine()->ChangeState(CPlayer_Idle::Create());
@@ -108,6 +112,7 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
         }
     }
     if (m_bAdjustingEnter) {
+        owner.Set_StairMove(true);
         if (!owner.Get_Rotating()) {
             if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_DOWN) {
                 //플레이어가 계단 콜라이더 보다 왼쪽에있으면
@@ -135,6 +140,8 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
                 }
                 else {
                     //owner.Get_Transform()->Set_State
+                    owner.Set_StairMove(false);
+
                     m_bAdjustingEnter = false;
                     m_bEnterAnimFinished = true;
                     if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_UP) {
@@ -174,7 +181,10 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
                 }
                 else {
                     //owner.Get_Transform()->Set_State
+                    owner.Set_StairMove(false);
+
                     m_bAdjustingEnter = false;
+
                     m_bEnterAnimFinished = true;
                     if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_UP) {
                         owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::STAIR_IDLE_UP));
@@ -187,15 +197,17 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
                 }
             }
         }
-       
+        return;
     }
-
-    if (owner.Get_Model()->Get_AnimIndex() == ETOUI(CBody_Player::PLAYER_ANIM::STAIR_IDLE_UP)
-        || owner.Get_Model()->Get_AnimIndex() == ETOUI(CBody_Player::PLAYER_ANIM::STAIR_IDLE_DOWN)) {
-        if (CGameInstance::Get().Key_Down(DIK_A) || CGameInstance::Get().Key_Down(DIK_D)) {
-            m_bAnimChanged = false;
+    if (!m_bAdjustingEnter && !m_bAdjustingExit) {
+        if (owner.Get_Model()->Get_AnimIndex() == ETOUI(CBody_Player::PLAYER_ANIM::STAIR_IDLE_UP)
+            || owner.Get_Model()->Get_AnimIndex() == ETOUI(CBody_Player::PLAYER_ANIM::STAIR_IDLE_DOWN)) {
+            if (CGameInstance::Get().Key_Down(DIK_A) || CGameInstance::Get().Key_Down(DIK_D)) {
+                m_bAnimChanged = false;
+            }
         }
     }
+   
     if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_UP) {
         if (!owner.Get_Rotating() && !m_bAdjustingEnter) {
             if (CGameInstance::Get().Key_Pressing(DIK_D)) {
