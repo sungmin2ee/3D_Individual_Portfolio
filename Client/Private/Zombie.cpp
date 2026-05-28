@@ -24,17 +24,22 @@ HRESULT CZombie::Initialize_Prototype()
 
 HRESULT CZombie::Initialize(void* pArg)
 {
-	ZOMBIE_DESC			Desc{};
-	Desc.fSpeedPerSec = 10.f;
-	Desc.fRotationPerSec = 180.f;
+	//ZOMBIE_DESC			Desc{};
+	//Desc.fSpeedPerSec = 10.f;
+	//Desc.fRotationPerSec = 180.f;
 
-	if (FAILED(__super::Initialize(&Desc)))
+	auto		pDesc = static_cast<ZOMBIE_DESC*>(pArg);
+
+
+
+	if (FAILED(__super::Initialize(&pDesc)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
-
-	if (FAILED(Ready_PartObjects()))
+	
+	
+	if (FAILED(Ready_PartObjects(pArg)))
 		return E_FAIL;
 	//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
 	return S_OK;
@@ -47,40 +52,10 @@ void CZombie::Priority_Update(_float fTimeDelta)
 
 void CZombie::Update(_float fTimeDelta)
 {
-	/*if (GetKeyState(VK_DOWN) & 0x8000)
-	{
-		m_pTransformCom->Go_Backward(fTimeDelta);
-	}
-	if (GetKeyState(VK_LEFT) & 0x8000)
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * -1.f);
-	}
-	if (GetKeyState(VK_RIGHT) & 0x8000)
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta);
-	}
-	if (GetKeyState(VK_UP) & 0x8000)
-	{
-		m_pTransformCom->Go_Straight(fTimeDelta);
-
-		
-		if (m_iState & CBody_Zombie::PLAYER_STATE::IDLE)
-			m_iState ^= CBody_Zombie::PLAYER_STATE::IDLE;
-
-		m_iState |= CBody_Zombie::PLAYER_STATE::RUN;
-	}
-	else
-	{
-		if (m_iState & CBody_Zombie::PLAYER_STATE::RUN)
-			m_iState ^= CBody_Zombie::PLAYER_STATE::RUN;
-
-		m_iState |= CBody_Zombie::PLAYER_STATE::IDLE;
-	}*/
+	
 	__super::Update(fTimeDelta);
 
-	//if (body->Get_HP() <= 0) {
-	//	m_bDead = true;
-	//}
+
 }
 
 void CZombie::Late_Update(_float fTimeDelta)
@@ -98,12 +73,22 @@ HRESULT CZombie::Ready_Components()
 	return S_OK;
 }
 
-HRESULT CZombie::Ready_PartObjects()
+HRESULT CZombie::Ready_PartObjects(void *pArg)
 {
+	
+	auto		pDesc = static_cast<ZOMBIE_DESC*>(pArg);
+
+
+
 	CBody_Zombie::BODY_ZOMBIE_DESC		BodyDesc{};
-	BodyDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrixPtr();
 	BodyDesc.pParentState = &m_iState;
-	BodyDesc.fSpeedPerSec = 0.1f;
+	BodyDesc.fSpeedPerSec = pDesc->fSpeedPerSec;
+	BodyDesc.firstState = pDesc->firstState;
+	BodyDesc.State = pDesc->State;
+	BodyDesc.Direction = pDesc->Direction;
+	BodyDesc.fRotationPerSec = pDesc->fRotationPerSec;
+	BodyDesc.pos = pDesc->pos;
+	BodyDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrixPtr();
 	if (FAILED(__super::Add_PartObject(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Body_Zombie"),
 		TEXT("Part_Body"), &BodyDesc)))
 		return E_FAIL;

@@ -5,7 +5,6 @@
 #include "StateMachine.h"
 #include "Door.h"
 #include "Stair_Collider.h"
-#include "ReleaseCollider.h"
 
 NS_BEGIN(Engine)
 class CShader;
@@ -74,7 +73,6 @@ public:
 	shared_ptr<Obb> Get_Obb() { return m_pObbCom; };
 	CDoor* Get_CollidedDoor() { return pCollidedDoor; };
 	CStair_Collider* Get_CollidedStair() { return pStairCollider; }
-	CReleaseCollider* Get_CollidedRelease() { return pReleaseCollider; }
 
 	const _float4& Get_StairPos() { return stairColliderPos; }
 
@@ -95,28 +93,26 @@ private:
 	shared_ptr<Obb>					m_pObbCom = { nullptr };
 	shared_ptr<VIBuffer_Collider>		m_pObbBfCom = { nullptr };
 private:
-	const uint32_t* m_pParentState = { nullptr };
-	unique_ptr<StateMachine<CBody_Player>> m_pStateMachine = nullptr;
-	PLAYER_STATE m_eCurState = PLAYER_STATE::STAND;
-	PLAYER_DIR   m_eCurDir = PLAYER_DIR::RIGHT;
-	PLAYER_WEAPON   m_eCurWeapon = PLAYER_WEAPON::HAND;
-	_float bodyAngle = 0.f;
-	_bool  m_bDirChanged = false;
-	_bool  m_bIsRotating = false;
-	_bool  m_bIsMakingSound = false;
-	_bool  m_bOnHit = false;
-	_bool  m_bStairMove = false;
-	uint32_t m_iHp = 100;
-	_float m_fOnHitTime = 0.f;
-	 CDoor* pCollidedDoor = nullptr;
-	 CStair_Collider* pStairCollider = nullptr;
-	 CReleaseCollider * pReleaseCollider = nullptr;
-	_float4					stairColliderPos = {};
+	const uint32_t*								m_pParentState = { nullptr };
+	unique_ptr<StateMachine<CBody_Player>>		m_pStateMachine = nullptr;
+	PLAYER_STATE								m_eCurState = PLAYER_STATE::STAND;
+	PLAYER_DIR									m_eCurDir = PLAYER_DIR::RIGHT;
+	PLAYER_WEAPON								m_eCurWeapon = PLAYER_WEAPON::HAND;
+	_float										bodyAngle = 0.f;
+	_bool										m_bDirChanged = false;
+	_bool										m_bIsRotating = false;
+	_bool										m_bIsMakingSound = false;
+	_bool										m_bOnHit = false;
+	_bool										m_bStairMove = false;
+	uint32_t									m_iHp = 100;
+	_float										m_fOnHitTime = 0.f;
+	 CDoor*										pCollidedDoor = nullptr;
+	 CStair_Collider*							pStairCollider = nullptr;
+	_float4										stairColliderPos = {};
 public:
 	void Execute();
 	void CheckDoorCollide();
 	void CheckStairCollide();
-	void CheckReleaseCollide();
 private:
 	HRESULT Ready_Components();
 	void ExpandCollider();

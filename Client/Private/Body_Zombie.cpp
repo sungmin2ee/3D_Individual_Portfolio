@@ -20,7 +20,6 @@ CBody_Zombie::CBody_Zombie(const CBody_Zombie& Prototype)
 	: CPartObject{ Prototype }
 {
 	m_pStateMachine = nullptr;
-	m_eCurState = ZOMBIE_STATE::WALK_FAST;
 	bodyAngle = 0.f;
 	m_bDirChanged = false;
 	m_bIsRotating = false;
@@ -29,6 +28,11 @@ CBody_Zombie::CBody_Zombie(const CBody_Zombie& Prototype)
 	m_bPlayerDetected = false;
 	m_fAttackTime = 0.f;
 	m_iHp = 100;
+
+	pCollidedDoor = nullptr;
+	pStairCollider = nullptr;
+	m_bDoorCollided = false;
+	m_bUsingStairs = false;
 }
 
 CBody_Zombie::~CBody_Zombie()
@@ -49,30 +53,43 @@ HRESULT CBody_Zombie::Initialize_Prototype()
 HRESULT CBody_Zombie::Initialize(void* pArg)
 {
 	auto	pDesc = static_cast<BODY_ZOMBIE_DESC*>(pArg);
-
 	m_pParentState = pDesc->pParentState;
-	pDesc->fRotationPerSec = 720.f;
-	_float speed = pDesc->fSpeedPerSec;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 	m_pTransformCom->Set_Scale(0.1f, 0.1f, 0.1f);
-	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(-0.5f, 0, 0, 1));
 
-	m_pStateMachine = StateMachine<CBody_Zombie>::Create(this, CZombie_Walk::Create());
 	m_pModelCom->Calculate_Box(ETOUI(MODEL::ANIM));
 	CGameInstance::Get().Add_Collider(m_pObbCom);
 	m_pObbCom->SetOwner(SHARED_THIS(CBody_Zombie));
 	ExpandCollider();
-	m_eCurDir = ZOMBIE_DIR::LEFT;
+	auto pos = pDesc->pos;
+	m_pTransformCom->Set_State(STATE::POSITION, pDesc->pos);
+	m_eCurState = pDesc->State;
+	m_eCurDir = pDesc->Direction;
 	m_ePrevDir = m_eCurDir;
 	if (m_eCurDir == ZOMBIE_DIR::LEFT) {
-		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), -90.f);
+		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
 
 	}else if(m_eCurDir == ZOMBIE_DIR::RIGHT) {
 		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
+	}
+	else if (m_eCurDir == ZOMBIE_DIR::FRONT) {
+		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 180.f);
+	}
+	else {
+		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 0.f);
+
+	}
+
+	if (pDesc->firstState == ZOMBIE_FIRSTSTATE::IDLE) {
+		m_pStateMachine = StateMachine<CBody_Zombie>::Create(this, CZombie_Idle::Create());
+	}
+	else {
+		m_pStateMachine = StateMachine<CBody_Zombie>::Create(this, CZombie_Walk::Create());
 	}
 	return S_OK;
 }
@@ -81,6 +98,7 @@ void CBody_Zombie::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
 	CheckDoorCollide();
+	CheckStairCollide();
 }
 
 void CBody_Zombie::Update(_float fTimeDelta)
@@ -103,9 +121,7 @@ void CBody_Zombie::Update(_float fTimeDelta)
 	if (m_bPlayerDetected) {
 		CheckColliding();
 	}
-	//if (m_bPlayerDetected) {
-	//	CheckColliding();
-	//}
+
 	if (m_bIsDamaged) {
 		m_fAttackTime += fTimeDelta;
 		if (m_fAttackTime >= 0.5f) {
@@ -116,56 +132,31 @@ void CBody_Zombie::Update(_float fTimeDelta)
 	
 	if (m_bPlayerDetected && !m_bUsingStairs) {
 
-		FocusPlayer();
+		if(m_eCurState != ZOMBIE_STATE::KNOCKDOWN)
+			FocusPlayer();
 		if (m_ePrevDir != m_eCurDir) {
-			m_bDirChanged = true;
-			m_bIsRotating = true;
-			if (m_eCurDir == ZOMBIE_DIR::LEFT) {
-				bodyAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
-				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
-				if (bodyAngle >= 180.f) {
-					m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
-					m_bDirChanged = false;
-					m_bIsRotating = false;
-					bodyAngle = 180.f;
-					m_ePrevDir = m_eCurDir;
-					return;
-				}
+			if (!m_bIsRotating) {
+				m_bDirChanged = true;
+				bodyAngle = 0.f;
 			}
-			else if(m_eCurDir == ZOMBIE_DIR::RIGHT) {
-				bodyAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
-				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
-				if (bodyAngle >= 360.f) {
-					m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
-					m_bDirChanged = false;
-					m_bIsRotating = false;
-					bodyAngle = 0.f;
-					m_ePrevDir = m_eCurDir;
-					return;
-				}
-			}
+			
 		}
 	}
 
-	static int count = 0;
 	if (pCollidedDoor != nullptr && !m_bDoorCollided) {
 		m_pTransformCom->Go_Backward(fTimeDelta * 20.f);
-
-		if (m_eCurDir == ZOMBIE_DIR::LEFT) {
-			m_eCurDir = ZOMBIE_DIR::RIGHT;
-		}
-		else if (m_eCurDir == ZOMBIE_DIR::RIGHT) {
-			m_eCurDir = ZOMBIE_DIR::LEFT;
-		}
+		m_bDirChanged = true;
 		m_bDoorCollided = true;
-		count++;
 		
 	}
 	if (m_bDoorCollided && !m_bPlayerDetected) {
-		Turn(fTimeDelta);
-		if (!m_bIsRotating)
+		if (!m_bIsRotating) {
+			m_bDirChanged = true;
 			m_bDoorCollided = false;
-
+		}
+	}
+	if (m_bDirChanged) {
+		Turn(fTimeDelta);
 	}
 }
 
@@ -349,14 +340,23 @@ void CBody_Zombie::DetectPlayer()
 	_float4 fpos;
 	XMStoreFloat4(&fpos, deltaPos);
 	
-	if (fabs(fpos.x) <= 0.5f && playerBody->Is_MakingSound()) {
-		m_bPlayerDetected = true;
-	}
-	else {
-		m_bPlayerDetected = false;
-	}
+	//if (fabs(fpos.x) <= 0.5f && playerBody->Is_MakingSound()) {
+	//	if(fpos.y == 0)
+	//		m_bPlayerDetected = true;
+	//}
+	//else {
+	//	m_bPlayerDetected = false;
+	//}
 
+	if (fabs(fpos.x) <= 0.5f&& fpos.y == 0) {
+		if (playerBody->Is_MakingSound()) {
+			m_bPlayerDetected = true;
+		}
+		else if (ETOUI(playerBody->Get_CurDir()) != ETOUI(m_eCurDir)) {
+			m_bPlayerDetected = true;
 
+		}
+	}
 
 	
 }
@@ -402,16 +402,35 @@ void CBody_Zombie::FocusPlayer() {
 	XMStoreFloat4(&fPlayerPos,playerPos);
 	_float4 myPos;
 	XMStoreFloat4(&myPos, m_pTransformCom->Get_State(STATE::POSITION));
-	//좀비가 플레이어보다 오른쪽에 있으면
-	if (myPos.x - fPlayerPos.x > 0) {
-		m_eCurDir = ZOMBIE_DIR::LEFT;
-	}
-	else if(myPos.x - fPlayerPos.x < 0){
-		m_eCurDir = ZOMBIE_DIR::RIGHT;
-	}
-	else {
+	if (m_eCurDir == ZOMBIE_DIR::FRONT) {
+		if (fabs(myPos.z - fPlayerPos.z) < 0.05f) {
+			if (myPos.x - fPlayerPos.x > 0) {
+				m_eCurDir = ZOMBIE_DIR::LEFT;
+				m_bDirChanged = true;
+				m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetZ(m_pTransformCom->Get_State(STATE::POSITION), 0));
+			}
+			else if (myPos.x - fPlayerPos.x < 0) {
+				m_eCurDir = ZOMBIE_DIR::RIGHT;
+				m_bDirChanged = true;
+			}
+			else {
+
+			}
+		}
+	}else if (m_eCurDir == ZOMBIE_DIR::BACK) {
+		m_eCurDir = ZOMBIE_DIR::FRONT;
+		m_bDirChanged = true;
 
 	}
+	else {
+		if (myPos.x - fPlayerPos.x > 0) {
+			m_eCurDir = ZOMBIE_DIR::LEFT;
+		}
+		else if (myPos.x - fPlayerPos.x < 0) {
+			m_eCurDir = ZOMBIE_DIR::RIGHT;
+		}
+	}
+
 }
 void CBody_Zombie::CheckDoorCollide()
 {
@@ -472,32 +491,69 @@ void CBody_Zombie::CheckStairCollide()
 
 void CBody_Zombie::Turn(_float fTimeDelta)
 {
-	if (m_ePrevDir != m_eCurDir) {
-		m_bDirChanged = true;
-		m_bIsRotating = true;
+	m_bIsRotating = true;
+	bodyAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
+
+	if (m_ePrevDir == ZOMBIE_DIR::LEFT) {
+
+
+		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), -90.f + bodyAngle);
+
+		if (bodyAngle >= 180.f) {
+		
+			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
+
+			m_bDirChanged = false;
+			m_bIsRotating = false;
+			bodyAngle = 0.f;
+			m_ePrevDir = ZOMBIE_DIR::RIGHT; 
+		}
+	}
+	else if (m_ePrevDir == ZOMBIE_DIR::RIGHT) {
+		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f + bodyAngle);
+
+		if (bodyAngle >= 180.f) {
+			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
+
+			m_bDirChanged = false;
+			m_bIsRotating = false;
+			bodyAngle = 0.f;
+			m_ePrevDir = ZOMBIE_DIR::LEFT; 
+		}
+	}
+	else if (m_ePrevDir == ZOMBIE_DIR::FRONT) {
 		if (m_eCurDir == ZOMBIE_DIR::LEFT) {
-			bodyAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
-			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
-			if (bodyAngle >= 180.f) {
+			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 180.f + bodyAngle);
+
+			if (bodyAngle >= 90.f) {
 				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
+
 				m_bDirChanged = false;
 				m_bIsRotating = false;
 				bodyAngle = 0.f;
-				m_ePrevDir = m_eCurDir;
-				return;
+				m_ePrevDir = ZOMBIE_DIR::LEFT;
 			}
-		}
-		else if (m_eCurDir == ZOMBIE_DIR::RIGHT) {
-			bodyAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
-			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
-			if (bodyAngle >= 180.f) {
+		}else if (m_eCurDir == ZOMBIE_DIR::RIGHT) {
+			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 180.f - bodyAngle);
+			if (bodyAngle >= 90.f) {
 				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
 				m_bDirChanged = false;
 				m_bIsRotating = false;
 				bodyAngle = 0.f;
-				m_ePrevDir = m_eCurDir;
-				return;
+				m_ePrevDir = ZOMBIE_DIR::RIGHT;
 			}
+		}
+	
+	}
+	else if (m_ePrevDir == ZOMBIE_DIR::BACK) {
+		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
+
+		if (bodyAngle >= 180.f) {
+			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 180.f);
+			m_bDirChanged = false;
+			m_bIsRotating = false;
+			bodyAngle = 0.f;
+			m_ePrevDir = ZOMBIE_DIR::FRONT; 
 		}
 	}
 }

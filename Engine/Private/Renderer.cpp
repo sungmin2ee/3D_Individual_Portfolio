@@ -43,6 +43,10 @@ HRESULT CRenderer::Draw()
     if (FAILED(Render_UI()))
         return E_FAIL;
     
+
+    if (FAILED(Render_ICON()))
+        return E_FAIL;
+    
     return S_OK;
 }
 
@@ -109,7 +113,18 @@ HRESULT CRenderer::Render_UI()
 
     return S_OK;
 }
+HRESULT CRenderer::Render_ICON()
+{
+    for (auto& pRenderObject : m_RenderObjects[ETOUI(RENDERGROUP::ICON)])
+    {
+        if (nullptr != pRenderObject)
+            pRenderObject->Render();
+    }
 
+    m_RenderObjects[ETOUI(RENDERGROUP::ICON)].clear();
+
+    return S_OK;
+}
 unique_ptr<CRenderer> CRenderer::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 {
     auto		pInstance = unique_ptr<CRenderer>(new CRenderer(pDevice, pContext));

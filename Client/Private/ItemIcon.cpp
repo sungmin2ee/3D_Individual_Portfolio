@@ -57,7 +57,7 @@ void CItemIcon::Update(_float fTimeDelta)
 void CItemIcon::Late_Update(_float fTimeDelta)
 {
 
-	CGameInstance::Get().Add_RenderObject(RENDERGROUP::UI, SHARED_THIS(CItemIcon));
+	CGameInstance::Get().Add_RenderObject(RENDERGROUP::ICON, SHARED_THIS(CItemIcon));
 
 	__super::Late_Update(fTimeDelta);
 }
@@ -76,7 +76,7 @@ HRESULT CItemIcon::Render()
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Begin(0)))
+	if (FAILED(m_pShaderCom->Begin(1)))
 		return E_FAIL;
 
 	if (FAILED(m_pVIBufferCom->Bind_Resources()))

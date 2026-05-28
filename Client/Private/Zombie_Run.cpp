@@ -18,6 +18,7 @@ CZombie_Run::~CZombie_Run()
 
 void CZombie_Run::Enter(CBody_Zombie& owner)
 {
+
     owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::RUN), 0.7f);
 }
 
@@ -49,14 +50,16 @@ void CZombie_Run::Update(CBody_Zombie& owner, _float deltaTime)
         auto playerBody = static_pointer_cast<CPlayer>(player)->Get_Body();
         if (owner.Get_CollidedStair() != nullptr) {
             if (playerBody->Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_DOWN ||
-                playerBody->Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_DOWN) {
+                playerBody->Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_UP) {
                 owner.Get_StateMachine()->ChangeState(CZombie_Stair::Create());
                 return;
             }
         }
        
     }
-    owner.Get_Transform()->Go_Straight(deltaTime * 3.f);
+    if (!owner.Get_DirChanged()) {
+        owner.Get_Transform()->Go_Straight(deltaTime * 3.f);
+    }
 
 }
 

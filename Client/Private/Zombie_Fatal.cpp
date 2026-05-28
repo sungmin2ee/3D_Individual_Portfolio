@@ -14,6 +14,8 @@ CZombie_Fatal::~CZombie_Fatal()
 void CZombie_Fatal::Enter(CBody_Zombie& owner)
 {
     owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::KNOCKDOWN), 0.7f, false);
+    owner.Set_CurState(CBody_Zombie::ZOMBIE_STATE::KNOCKDOWN);
+
 }
 
 void CZombie_Fatal::Update(CBody_Zombie& owner, _float deltaTime)

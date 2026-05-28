@@ -28,12 +28,18 @@ public:
 		UNARMED_STEALTH,WALK_FAST,END
 	};
 	enum class ZOMBIE_DIR {
-		LEFT, RIGHT, END
+		LEFT, RIGHT, FRONT, BACK, END
 	};
-
+	enum class ZOMBIE_FIRSTSTATE {
+		IDLE, WALK, END
+	};
 	typedef struct tagBodyZombieDesc : public CPartObject::PARTOBJECT_DESC
 	{
 		const uint32_t* pParentState = { nullptr };
+		CBody_Zombie::ZOMBIE_DIR Direction;
+		CBody_Zombie::ZOMBIE_STATE State;
+		CBody_Zombie::ZOMBIE_FIRSTSTATE firstState;
+		_vector pos;
 	}BODY_ZOMBIE_DESC;
 
 private:
@@ -80,6 +86,7 @@ public:
 	void Set_DirChanged() { m_bDirChanged = true; }
 	void Set_Damaged() { m_bIsDamaged = true; }
 	void Set_Detected(_bool flag) { m_bPlayerDetected = flag; }
+	void Set_UsingStair(_bool flag) { m_bUsingStairs = flag; }
 	void Set_HP(uint32_t hp) { m_iHp += hp; }
 	void Set_HPZero() { m_iHp = 0; }
 	void Set_Executing(_bool flag) { m_bExecuting = flag; }
@@ -99,6 +106,7 @@ private:
 	ZOMBIE_STATE							m_eCurState = ZOMBIE_STATE::END;
 	ZOMBIE_DIR								m_eCurDir = ZOMBIE_DIR::END;
 	ZOMBIE_DIR								m_ePrevDir= ZOMBIE_DIR::END;
+	ZOMBIE_FIRSTSTATE						m_eFirstState = ZOMBIE_FIRSTSTATE::END;
 	_float									bodyAngle = 0.f;
 	_bool									m_bDirChanged = false;
 	_bool									m_bIsRotating = false;
@@ -114,7 +122,6 @@ private:
 	CDoor*									pCollidedDoor = nullptr;
 	CStair_Collider*						pStairCollider = nullptr;
 	_float4									stairColliderPos = {};
-
 
 private:
 	void FocusPlayer();

@@ -6,7 +6,7 @@ namespace Engine
 
 
 	enum class WINMODE { FULL, WIN };
-	enum class RENDERGROUP { PRIORITY, NONBLEND, BLEND, BLOCKER, UI,END };
+	enum class RENDERGROUP { PRIORITY, NONBLEND, BLEND, BLOCKER, UI, ICON,END };
 	enum class STATE { RIGHT, UP, LOOK, POSITION, END };
 	enum class D3DTS { VIEW, PROJ, END };
 	enum class DIMK { LBUTTON, RBUTTON, WHEEL, END };

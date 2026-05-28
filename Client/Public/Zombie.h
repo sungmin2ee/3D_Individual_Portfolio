@@ -11,7 +11,10 @@ class CZombie final : public CContainerObject
 public:
 	typedef struct tagZombieDesc : public CContainerObject::CONTAINEROBJECT_DESC
 	{
-
+		CBody_Zombie::ZOMBIE_DIR Direction;
+		CBody_Zombie::ZOMBIE_STATE State;
+		CBody_Zombie::ZOMBIE_FIRSTSTATE firstState;
+		_vector pos;
 	}ZOMBIE_DESC;
 
 
@@ -37,7 +40,7 @@ private:
 	
 private:
 	HRESULT Ready_Components();
-	HRESULT Ready_PartObjects();
+	HRESULT Ready_PartObjects(void* pArg);
 
 public:
 	static unique_ptr<CZombie> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);

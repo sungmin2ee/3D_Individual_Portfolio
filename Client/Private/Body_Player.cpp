@@ -139,7 +139,6 @@ void CBody_Player::Update(_float fTimeDelta)
 	ExpandCollider();
 	CheckDoorCollide();
 	CheckStairCollide();
-	CheckReleaseCollide();
 }
 
 void CBody_Player::Late_Update(_float fTimeDelta)
@@ -201,6 +200,7 @@ void CBody_Player::Execute()
 						return;
 					}
 				}
+				auto dir = static_pointer_cast<CZombie>(*iter)->Get_Body()->Get_CurDir();
 				if (ETOUI(static_pointer_cast<CZombie>(*iter)->Get_Body()->Get_CurDir()) == ETOUI(m_eCurDir)) {
 					if (CGameInstance::Get().Key_Down(DIK_F)) {
 						static_pointer_cast<CZombie>(*iter)->Get_Body()->Set_Stealth_Death();
@@ -320,29 +320,6 @@ void CBody_Player::CheckStairCollide()
 		}
 	}
 
-}
-
-void CBody_Player::CheckReleaseCollide()
-{
-	auto ReleaseLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Release_Collider"));
-	if (ReleaseLayer == nullptr)
-		return;
-
-	auto releases = ReleaseLayer->GetObjects();
-	pReleaseCollider = nullptr;
-
-	for (auto& pReleaseObj : releases)
-	{
-		auto pRelease = static_pointer_cast<CReleaseCollider>(pReleaseObj);
-		if (pRelease == nullptr) continue;
-
-		if (m_pObbCom->myOBB.Intersects(pRelease->Get_Obb()->myOBB))
-		{
-			pReleaseCollider = pRelease.get(); 
-
-			break; // 찾았으니 다른 문은 더 돌 필요 없이 루프 탈출!
-		}
-	}
 }
 
 HRESULT CBody_Player::Ready_Components()

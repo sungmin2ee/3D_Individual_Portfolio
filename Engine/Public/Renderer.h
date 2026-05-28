@@ -28,6 +28,8 @@ private:
 	HRESULT Render_Blocker();
 	HRESULT Render_UI();
 
+	HRESULT Render_ICON();
+
 
 
 public:
