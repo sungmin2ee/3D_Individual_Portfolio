@@ -4,7 +4,12 @@
 
 #include "Level_Stage1.h"
 #include "Inventory.h"
-
+#include "Player.h"
+#include "Zombie.h"
+#include "Door.h"
+#include "Blocker.h"
+#include "Stair_Collider.h"
+#include "Body_Zombie.h"
 CLevel_Stage1::CLevel_Stage1(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: CLevel{ pDevice, pContext }, m_pDevice{ pDevice }, m_pContext{ pContext }
 {
@@ -20,6 +25,12 @@ HRESULT CLevel_Stage1::Initialize()
 		return E_FAIL;
 	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
 		return E_FAIL;
+	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
+		return E_FAIL;
+	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
+		return E_FAIL;
+	//if (FAILED(Ready_Layer_Zombie(TEXT("Layer_Zombie"))))
+	//	return E_FAIL;
 	if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::STAGE1)))) {
 		return E_FAIL;
 	}
@@ -63,7 +74,94 @@ HRESULT CLevel_Stage1::Ready_Layer_UI(const _wstring& strLayerTag)
 
 	return S_OK;
 }
+HRESULT CLevel_Stage1::Ready_Layer_Sky(const _wstring& strLayerTag)
+{
 
+	CGameObject::GAMEOBJECT_DESC pDesc{};
+	pDesc.pGameObjectTag = L"Sky";
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Sky"),
+		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
+		return E_FAIL;
+	return S_OK;
+}
+HRESULT CLevel_Stage1::Ready_Layer_Player(const _wstring& strLayerTag)
+{
+	CPlayer::PLAYER_DESC pDesc;
+	pDesc.pGameObjectTag = TEXT("Player");
+	pDesc.fSpeedPerSec = 10.f;
+	pDesc.fRotationPerSec = 720.f;
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Player"),
+		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+HRESULT CLevel_Stage1::Ready_Layer_Zombie(const _wstring& strLayerTag)
+{
+
+	CZombie::ZOMBIE_DESC pDesc;
+	pDesc.pGameObjectTag = TEXT("Zombie");
+	pDesc.fSpeedPerSec = 0.1f;
+	pDesc.fRotationPerSec = 720.f;
+	pDesc.firstState = CBody_Zombie::ZOMBIE_FIRSTSTATE::IDLE;
+	pDesc.Direction = CBody_Zombie::ZOMBIE_DIR::BACK;
+	pDesc.State = CBody_Zombie::ZOMBIE_STATE::AGGRO_IDLE1;
+	pDesc.pos = XMVectorSet(-1.5f, 0, 1.f, 1);
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Zombie"),
+		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
+		return E_FAIL;
+	pDesc.pos = XMVectorSet(-2.5f, 0, 1.5f, 1);
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Zombie"),
+		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
+		return E_FAIL;
+	pDesc.pos = XMVectorSet(0.5f, 0, 0.f, 1);
+	pDesc.Direction = CBody_Zombie::ZOMBIE_DIR::RIGHT;
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Zombie"),
+		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
+		return E_FAIL;
+
+	//pDesc.pos = XMVectorSet(1.5f, 0.35f, 0.f, 1);
+	//if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Zombie"),
+	//	ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
+	//	return E_FAIL;
+	pDesc.pos = XMVectorSet(-3.5f, 0.f, 0.f, 1);
+	pDesc.firstState = CBody_Zombie::ZOMBIE_FIRSTSTATE::IDLE;
+	pDesc.Direction = CBody_Zombie::ZOMBIE_DIR::LEFT;
+	pDesc.State = CBody_Zombie::ZOMBIE_STATE::CRAWL_IDLE;
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Zombie"),
+		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
+		return E_FAIL;
+	pDesc.pos = XMVectorSet(1.8f, 0.f, 0.f, 1);
+	pDesc.firstState = CBody_Zombie::ZOMBIE_FIRSTSTATE::IDLE;
+	pDesc.Direction = CBody_Zombie::ZOMBIE_DIR::RIGHT;
+	pDesc.State = CBody_Zombie::ZOMBIE_STATE::PATROL_IDLE;
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Zombie"),
+		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
+		return E_FAIL;
+
+	pDesc.pos = XMVectorSet(-0.5f, 0.f, 0.f, 1);
+	pDesc.firstState = CBody_Zombie::ZOMBIE_FIRSTSTATE::WALK;
+	pDesc.Direction = CBody_Zombie::ZOMBIE_DIR::RIGHT;
+	pDesc.State = CBody_Zombie::ZOMBIE_STATE::PATROL_WALK;
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Zombie"),
+		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
+		return E_FAIL;
+	pDesc.pos = XMVectorSet(1.f, 0.65f, 0.f, 1);
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Zombie"),
+		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
+		return E_FAIL;
+	pDesc.pos = XMVectorSet(0.7f, 0.35f, 0.3f, 1);
+	pDesc.firstState = CBody_Zombie::ZOMBIE_FIRSTSTATE::IDLE;
+	pDesc.Direction = CBody_Zombie::ZOMBIE_DIR::BACK;
+	pDesc.State = CBody_Zombie::ZOMBIE_STATE::AGGRO_IDLE2;
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Zombie"),
+		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
+		return E_FAIL;
+	return S_OK;
+}
 HRESULT CLevel_Stage1::Ready_Layer_Camera(const _wstring& strLayerTag)
 {
 	CCamera_Free::CAMERA_FREE_DESC		FreeDesc{};

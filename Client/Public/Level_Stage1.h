@@ -25,7 +25,9 @@ virtual HRESULT Render() override; private:
 private:
 	HRESULT Ready_Layer_UI(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Camera(const _wstring& strLayerTag);
-
+	HRESULT Ready_Layer_Player(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Zombie(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Sky(const _wstring& strLayerTag);
 public:
 	static unique_ptr<CLevel_Stage1> Create(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext);
 

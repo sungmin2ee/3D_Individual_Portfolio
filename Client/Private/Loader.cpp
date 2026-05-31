@@ -167,14 +167,8 @@ HRESULT CLoader::Loading_For_Shelter()
 HRESULT CLoader::Loading_For_Stage1()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
-	for (size_t i = 0; i < 99999999; i++)
-	{
-		int a = 10;
-	}
 
 	lstrcpy(m_szLoadingText, TEXT("모델을 로딩 중 입니다."));
-
-	//Load_Models_From_Directory(LEVEL::GAMEPLAY, "Gameplay");
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩 중 입니다."));
 
@@ -188,8 +182,16 @@ HRESULT CLoader::Loading_For_Stage1()
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_EquipBorder", CEquipBorder::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Sky"),
+		CSky::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
-
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Player"),
+		CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Zombie"),
+		CZombie::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
@@ -204,19 +206,7 @@ HRESULT CLoader::Loading_For_Stage2()
 
 
 	lstrcpy(m_szLoadingText, TEXT("모델을 로딩 중 입니다."));
-	_matrix		PreTransformMatrix = XMMatrixIdentity();
 
-	/* For.Prototype_Component_Model_Player */
-	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
-	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
-
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_Model_Joe"),
-		CModel::Create(m_pDevice, m_pContext, ETOUI(MODEL::ANIM), "../../Resources/Models/Player1.fbx", PreTransformMatrix))))
-		return E_FAIL;
-
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_Model_Zombie1"),
-		CModel::Create(m_pDevice, m_pContext, ETOUI(MODEL::ANIM), "../../Resources/Models/Zombie1.fbx", PreTransformMatrix))))
-		return E_FAIL;
 	//Load_Models_From_Directory(LEVEL::GAMEPLAY, "Gameplay");
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩 중 입니다."));
@@ -233,12 +223,7 @@ HRESULT CLoader::Loading_For_Stage2()
 
 
 
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Body_Player"),
-		CBody_Player::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Body_Zombie"),
-		CBody_Zombie::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+;
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Player"),
 		CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
