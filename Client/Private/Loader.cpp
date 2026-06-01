@@ -14,6 +14,9 @@
 #include "Body_Player.h"
 #include "Body_Zombie.h"
 #include "Sky.h"
+#include "JoeIcon.h"
+#include "HealthBarFrame.h"
+#include "HealthBarFill.h"
 
 
 CLoader::CLoader(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
@@ -191,6 +194,15 @@ HRESULT CLoader::Loading_For_Stage1()
 		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Zombie"),
 		CZombie::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), TEXT("Prototype_JoeIcon"),
+		CJoeIcon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), TEXT("Prototype_HealthBarFill"),
+		CHealthBarFill::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), TEXT("Prototype_HealthBarFrame"),
+		CHealthBarFrame::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 

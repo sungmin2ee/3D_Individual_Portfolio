@@ -24,6 +24,7 @@ public:
 
 private:
     _bool animStart = false;
+    _bool flag = false;
     _float m_fTime = 0.f;
     CBody_Zombie::ZOMBIE_STATE curState = CBody_Zombie::ZOMBIE_STATE::END;
 };

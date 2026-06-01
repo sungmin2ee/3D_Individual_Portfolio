@@ -33,7 +33,7 @@ void CLevel_Logo::Update(_float fTimeDelta)
 	if (CGameInstance::Get().Key_Down(DIK_INSERT))
 	{
 		if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
-			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::STAGE2))))
+			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::STAGE1))))
 			return;
 
 		return;

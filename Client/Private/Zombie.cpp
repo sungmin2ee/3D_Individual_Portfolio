@@ -89,7 +89,7 @@ HRESULT CZombie::Ready_PartObjects(void *pArg)
 	BodyDesc.fRotationPerSec = pDesc->fRotationPerSec;
 	BodyDesc.pos = pDesc->pos;
 	BodyDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrixPtr();
-	if (FAILED(__super::Add_PartObject(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Body_Zombie"),
+	if (FAILED(__super::Add_PartObject(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Body_Zombie"),
 		TEXT("Part_Body"), &BodyDesc)))
 		return E_FAIL;
 	body = static_pointer_cast<CBody_Zombie>(__super::Get_PartObject(TEXT("Part_Body")));

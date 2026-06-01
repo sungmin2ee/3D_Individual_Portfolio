@@ -2,6 +2,7 @@
 #include "Player_Walk.h"
 #include "GameInstance.h"
 #include "Player_Idle.h"
+#include "Player.h"
 #include "Player_Attack.h"
 
 CPlayer_Stair::CPlayer_Stair()
@@ -24,6 +25,7 @@ void CPlayer_Stair::Enter(CBody_Player& owner)
     if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_UP) {
         //플레이어가 왼쪽을 바라보고있으면
         m_fReleaseY = owner.Get_StairPos().y + 0.3f;
+
         m_eEnter = ENTER::UP;
         if (owner.Get_CurDir() == CBody_Player::PLAYER_DIR::LEFT) {
             owner.Set_DirChanged();
@@ -59,14 +61,14 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
         }
     }
     _float4 myPos;
-    XMStoreFloat4(&myPos, owner.Get_Transform()->Get_State(STATE::POSITION));
+    XMStoreFloat4(&myPos, owner.Get_Player().lock()->Get_Transform()->Get_State(STATE::POSITION));
 
 
     if (m_bAdjustingExit) {
         owner.Set_StairMove(true);
         if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_UP) {
             if (myPos.z > 0) {
-                owner.Get_Transform()->Go_Right(deltaTime * 1.5f);
+                owner.Get_Player().lock()->Get_Transform()->Go_Right(deltaTime * 1.5f);
                 return;
 
             }
@@ -82,7 +84,7 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
         }
         if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_DOWN) {
             if (myPos.z > 0) {
-                owner.Get_Transform()->Go_Left(deltaTime * 1.5f);
+                owner.Get_Player().lock()->Get_Transform()->Go_Left(deltaTime * 1.5f);
                 return;
 
             }
@@ -118,28 +120,28 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
                 //플레이어가 계단 콜라이더 보다 왼쪽에있으면
                 _float4 newPos;
                 if (myPos.x < owner.Get_StairPos().x) {
-                    owner.Get_Transform()->Go_Backward(deltaTime * 1.1f);
-                    XMStoreFloat4(&newPos, owner.Get_Transform()->Get_State(STATE::POSITION));
+                    owner.Get_Player().lock()->Get_Transform()->Go_Backward(deltaTime * 1.1f);
+                    XMStoreFloat4(&newPos, owner.Get_Player().lock()->Get_Transform()->Get_State(STATE::POSITION));
                     if (newPos.x > owner.Get_StairPos().x) {
-                        owner.Get_Transform()->Set_State(STATE::POSITION, XMVectorSetX(owner.Get_Transform()->Get_State(STATE::POSITION), owner.Get_StairPos().x));
+                        owner.Get_Player().lock()->Get_Transform()->Set_State(STATE::POSITION, XMVectorSetX(owner.Get_Player().lock()->Get_Transform()->Get_State(STATE::POSITION), owner.Get_StairPos().x));
                     }
                 }
                 //플레이어가 계단 콜라이더 보다 오른쪽에 있으면
 
                 else if (myPos.x > owner.Get_StairPos().x) {
-                    owner.Get_Transform()->Go_Straight(deltaTime * 1.1f);
-                    XMStoreFloat4(&newPos, owner.Get_Transform()->Get_State(STATE::POSITION));
+                    owner.Get_Player().lock()->Get_Transform()->Go_Straight(deltaTime * 1.1f);
+                    XMStoreFloat4(&newPos, owner.Get_Player().lock()->Get_Transform()->Get_State(STATE::POSITION));
                     if (newPos.x < owner.Get_StairPos().x) {
-                        owner.Get_Transform()->Set_State(STATE::POSITION, XMVectorSetX(owner.Get_Transform()->Get_State(STATE::POSITION), owner.Get_StairPos().x));
+                        owner.Get_Player().lock()->Get_Transform()->Set_State(STATE::POSITION, XMVectorSetX(owner.Get_Player().lock()->Get_Transform()->Get_State(STATE::POSITION), owner.Get_StairPos().x));
                     }
                 }
                 else {
                 }
                 if (myPos.z < zOffset) {
-                    owner.Get_Transform()->Go_Right(deltaTime * 1.5f);
+                    owner.Get_Player().lock()->Get_Transform()->Go_Right(deltaTime * 1.5f);
                 }
                 else {
-                    //owner.Get_Transform()->Set_State
+                    //owner.Get_Player().lock()->Get_Transform()->Set_State
                     owner.Set_StairMove(false);
 
                     m_bAdjustingEnter = false;
@@ -158,29 +160,29 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
                 //플레이어가 왼쪽에 있으면
                 _float4 newPos;
                 if (myPos.x < owner.Get_StairPos().x) {
-                    owner.Get_Transform()->Go_Straight(deltaTime * 1.1f);
-                    XMStoreFloat4(&newPos, owner.Get_Transform()->Get_State(STATE::POSITION));
+                    owner.Get_Player().lock()->Get_Transform()->Go_Straight(deltaTime * 1.1f);
+                    XMStoreFloat4(&newPos, owner.Get_Player().lock()->Get_Transform()->Get_State(STATE::POSITION));
                     if (newPos.x > owner.Get_StairPos().x) {
-                        owner.Get_Transform()->Set_State(STATE::POSITION, XMVectorSetX(owner.Get_Transform()->Get_State(STATE::POSITION), owner.Get_StairPos().x));
+                        owner.Get_Player().lock()->Get_Transform()->Set_State(STATE::POSITION, XMVectorSetX(owner.Get_Player().lock()->Get_Transform()->Get_State(STATE::POSITION), owner.Get_StairPos().x));
                     }
                 }
                 //플레이어가 계단 콜라이더 보다 오른쪽에 있으면
 
                 else if (myPos.x > owner.Get_StairPos().x) {
-                    owner.Get_Transform()->Go_Backward(deltaTime * 1.1f);
-                    XMStoreFloat4(&newPos, owner.Get_Transform()->Get_State(STATE::POSITION));
+                    owner.Get_Player().lock()->Get_Transform()->Go_Backward(deltaTime * 1.1f);
+                    XMStoreFloat4(&newPos, owner.Get_Player().lock()->Get_Transform()->Get_State(STATE::POSITION));
                     if (newPos.x < owner.Get_StairPos().x) {
-                        owner.Get_Transform()->Set_State(STATE::POSITION, XMVectorSetX(owner.Get_Transform()->Get_State(STATE::POSITION), owner.Get_StairPos().x));
+                        owner.Get_Player().lock()->Get_Transform()->Set_State(STATE::POSITION, XMVectorSetX(owner.Get_Player().lock()->Get_Transform()->Get_State(STATE::POSITION), owner.Get_StairPos().x));
                     }
                 }
                 else {
                 }
 
                 if (myPos.z < zOffset) {
-                    owner.Get_Transform()->Go_Left(deltaTime * 1.5f);
+                    owner.Get_Player().lock()->Get_Transform()->Go_Left(deltaTime * 1.5f);
                 }
                 else {
-                    //owner.Get_Transform()->Set_State
+                    //owner.Get_Player().lock()->Get_Transform()->Set_State
                     owner.Set_StairMove(false);
 
                     m_bAdjustingEnter = false;
@@ -215,8 +217,15 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
                     owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::STAIR_RUN_UP));
                     m_bAnimChanged = true;
                 }
-                owner.Get_Transform()->Go_Straight(deltaTime * 1.1f);
-                owner.Get_Transform()->Go_Up(deltaTime * 0.8f);
+                if (CGameInstance::Get().GetCurLevelIndex() == 4) {
+                    owner.Get_Player().lock()->Get_Transform()->Go_Straight(deltaTime * 1.4f);
+                    owner.Get_Player().lock()->Get_Transform()->Go_Up(deltaTime * 0.8f);
+                }
+                else {
+                    owner.Get_Player().lock()->Get_Transform()->Go_Straight(deltaTime * 1.1f);
+                    owner.Get_Player().lock()->Get_Transform()->Go_Up(deltaTime * 0.8f);
+                }
+ 
                 CheckExit(owner, myPos);
                 return;
             }
@@ -228,8 +237,15 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
 
                 }
                 owner.Set_CurState(CBody_Player::PLAYER_STATE::STAIR_DOWN);
-                owner.Get_Transform()->Go_Straight(deltaTime * 1.1f);
-                owner.Get_Transform()->Go_Down(deltaTime * 0.8f);
+                if (CGameInstance::Get().GetCurLevelIndex() == ETOUI(LEVEL::STAGE1)) {
+                    owner.Get_Player().lock()->Get_Transform()->Go_Straight(deltaTime * 1.4f);
+                    owner.Get_Player().lock()->Get_Transform()->Go_Down(deltaTime * 0.8f);
+                }
+                else {
+                    owner.Get_Player().lock()->Get_Transform()->Go_Straight(deltaTime * 1.1f);
+                    owner.Get_Player().lock()->Get_Transform()->Go_Down(deltaTime * 0.8f);
+                }
+
                 CheckExit(owner, myPos);
 
                 return;
@@ -249,8 +265,15 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
 
                 }
                 owner.Set_CurState(CBody_Player::PLAYER_STATE::STAIR_UP);
-                owner.Get_Transform()->Go_Straight(deltaTime * 1.1f);
-                owner.Get_Transform()->Go_Up(deltaTime * 0.8f);
+                if (CGameInstance::Get().GetCurLevelIndex() == ETOUI(LEVEL::STAGE1)) {
+                    owner.Get_Player().lock()->Get_Transform()->Go_Straight(deltaTime * 1.4f);
+                    owner.Get_Player().lock()->Get_Transform()->Go_Up(deltaTime * 0.8f);
+                }
+                else {
+                    owner.Get_Player().lock()->Get_Transform()->Go_Straight(deltaTime * 1.1f);
+                    owner.Get_Player().lock()->Get_Transform()->Go_Up(deltaTime * 0.8f);
+                }
+
                 CheckExit(owner, myPos);
 
                 return;
@@ -261,8 +284,15 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
                     m_bAnimChanged = true;
 
                 }
-                owner.Get_Transform()->Go_Straight(deltaTime * 1.1f);
-                owner.Get_Transform()->Go_Down(deltaTime * 0.8f);
+                if (CGameInstance::Get().GetCurLevelIndex() == ETOUI(LEVEL::STAGE1)) {
+                    owner.Get_Player().lock()->Get_Transform()->Go_Straight(deltaTime * 1.4f);
+                    owner.Get_Player().lock()->Get_Transform()->Go_Down(deltaTime * 0.8f);
+                }
+                else {
+                    owner.Get_Player().lock()->Get_Transform()->Go_Straight(deltaTime * 1.1f);
+                    owner.Get_Player().lock()->Get_Transform()->Go_Down(deltaTime * 0.8f);
+                }
+          
                 CheckExit(owner, myPos);
 
                 return;
@@ -317,22 +347,22 @@ void CPlayer_Stair::CheckExit(CBody_Player& owner, _float4 myPos)
         if (m_eEnter == ENTER::UP) {
             if (myPos.y < owner.Get_StairPos().y) {
                 m_bExiting = true;
-                owner.Get_Transform()->Set_State(STATE::POSITION, XMVectorSetY(owner.Get_Transform()->Get_State(STATE::POSITION), owner.Get_StairPos().y));
+                owner.Get_Player().lock()->Get_Transform()->Set_State(STATE::POSITION, XMVectorSetY(owner.Get_Player().lock()->Get_Transform()->Get_State(STATE::POSITION), owner.Get_StairPos().y));
             }
             if (myPos.y > m_fReleaseY) {
                 m_bExiting = true;
-                owner.Get_Transform()->Set_State(STATE::POSITION, XMVectorSetY(owner.Get_Transform()->Get_State(STATE::POSITION), m_fReleaseY));
+                owner.Get_Player().lock()->Get_Transform()->Set_State(STATE::POSITION, XMVectorSetY(owner.Get_Player().lock()->Get_Transform()->Get_State(STATE::POSITION), m_fReleaseY));
 
             }
         }
         else if (m_eEnter == ENTER::DOWN) {
             if (myPos.y > owner.Get_StairPos().y) {
-                owner.Get_Transform()->Set_State(STATE::POSITION, XMVectorSetY(owner.Get_Transform()->Get_State(STATE::POSITION), owner.Get_StairPos().y));
+                owner.Get_Player().lock()->Get_Transform()->Set_State(STATE::POSITION, XMVectorSetY(owner.Get_Player().lock()->Get_Transform()->Get_State(STATE::POSITION), owner.Get_StairPos().y));
                 m_bExiting = true;
             }
             if (myPos.y < m_fReleaseY) {
                 m_bExiting = true;
-                owner.Get_Transform()->Set_State(STATE::POSITION, XMVectorSetY(owner.Get_Transform()->Get_State(STATE::POSITION), m_fReleaseY));
+                owner.Get_Player().lock()->Get_Transform()->Set_State(STATE::POSITION, XMVectorSetY(owner.Get_Player().lock()->Get_Transform()->Get_State(STATE::POSITION), m_fReleaseY));
             }
         }
     }

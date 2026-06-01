@@ -6,6 +6,7 @@
 #include "Player_OpenDoor.h"
 #include "Door.h"
 #include "Blocker.h"
+#include "Player.h"
 
 CPlayer_Door::CPlayer_Door()
 {
@@ -35,11 +36,11 @@ void CPlayer_Door::Update(CBody_Player& owner, _float deltaTime)
     if (owner.Get_CurDir() == CBody_Player::PLAYER_DIR::LEFT) {
         if (CGameInstance::Get().Key_Pressing(DIK_D)) {
             if (CGameInstance::Get().Key_Pressing(DIK_LSHIFT)) {
-                owner.Get_Transform()->Go_Backward(deltaTime * 4.f);
+                owner.Get_Player().lock()->Get_Transform()->Go_Backward(deltaTime * 4.f);
                 owner.Get_StateMachine()->ChangeState(CPlayer_Run::Create());
                 return;
             }
-            owner.Get_Transform()->Go_Backward(deltaTime * 4.f);
+            owner.Get_Player().lock()->Get_Transform()->Go_Backward(deltaTime * 4.f);
             //owner.Set_CurDir(CBody_Player::PLAYER_DIR::RIGHT);
             owner.Get_StateMachine()->ChangeState(CPlayer_Walk::Create());
             return;
@@ -49,11 +50,11 @@ void CPlayer_Door::Update(CBody_Player& owner, _float deltaTime)
         if (CGameInstance::Get().Key_Pressing(DIK_A)) {
             //owner.Set_CurDir(CBody_Player::PLAYER_DIR::LEFT);
             if (CGameInstance::Get().Key_Pressing(DIK_LSHIFT)) {
-                owner.Get_Transform()->Go_Backward(deltaTime * 4.f);
+                owner.Get_Player().lock()->Get_Transform()->Go_Backward(deltaTime * 4.f);
                 owner.Get_StateMachine()->ChangeState(CPlayer_Run::Create());
                 return;
             }
-            owner.Get_Transform()->Go_Backward(deltaTime * 4.f);
+            owner.Get_Player().lock()->Get_Transform()->Go_Backward(deltaTime * 4.f);
             owner.Get_StateMachine()->ChangeState(CPlayer_Walk::Create());
             return;
         }

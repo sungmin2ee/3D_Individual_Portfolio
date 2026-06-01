@@ -2,7 +2,6 @@
 
 #include "Client_Defines.h"
 #include "ContainerObject.h"
-#include "Body_Player.h"
 NS_BEGIN(Client)
 
 class CPlayer final : public CContainerObject
@@ -30,7 +29,7 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	CBody_Player* Get_Body() { return body.get(); }
+	class CBody_Player* Get_Body() { return body.get(); }
 private:
 	uint32_t			m_iState = {};
 

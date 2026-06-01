@@ -40,6 +40,7 @@ public:
 	typedef struct tagBodyPlayerDesc : public CPartObject::PARTOBJECT_DESC
 	{
 		const uint32_t* pParentState = { nullptr };
+		shared_ptr<class CPlayer> player;
 	}BODY_PLAYER_DESC;
 
 private:
@@ -66,16 +67,15 @@ public:
 	PLAYER_DIR Get_CurDir() { return m_eCurDir; }
 	PLAYER_WEAPON Get_Weapon() { return m_eCurWeapon; }
 	_float Get_BodyAngle() { return bodyAngle; }
-	uint32_t Get_HP() { return m_iHp; }
+	_float Get_HP() { return m_fHp; }
 	_bool Get_Rotating() { return m_bIsRotating; }
 	_bool Is_MakingSound() { return m_bIsMakingSound; }
 	_bool Get_OnHit() { return m_bOnHit; }
 	shared_ptr<Obb> Get_Obb() { return m_pObbCom; };
 	CDoor* Get_CollidedDoor() { return pCollidedDoor; };
 	CStair_Collider* Get_CollidedStair() { return pStairCollider; }
-
 	const _float4& Get_StairPos() { return stairColliderPos; }
-
+	weak_ptr<class CPlayer> Get_Player() { return m_pPlayer.lock(); }
 
 	void Set_CurState(PLAYER_STATE state) { m_eCurState = state; }
 	void Set_Rotating(_bool flag) { m_bIsRotating = flag; }
@@ -85,7 +85,7 @@ public:
 	void Set_MakingSound(_bool flag) { m_bIsMakingSound = flag; }
 	void Set_OnHit(_bool flag) { m_bOnHit= flag; }
 	void Set_StairMove(_bool flag) { m_bStairMove = flag; }
-	void Set_Hp(uint32_t delta) { m_iHp += delta; }
+	void Set_Hp(_float delta) { m_fHp += delta; }
 
 private:
 	shared_ptr<CShader>				m_pShaderCom = { nullptr };
@@ -97,18 +97,19 @@ private:
 	unique_ptr<StateMachine<CBody_Player>>		m_pStateMachine = nullptr;
 	PLAYER_STATE								m_eCurState = PLAYER_STATE::STAND;
 	PLAYER_DIR									m_eCurDir = PLAYER_DIR::RIGHT;
-	PLAYER_WEAPON								m_eCurWeapon = PLAYER_WEAPON::HAND;
+	PLAYER_WEAPON								m_eCurWeapon = PLAYER_WEAPON::AXE;
 	_float										bodyAngle = 0.f;
 	_bool										m_bDirChanged = false;
 	_bool										m_bIsRotating = false;
 	_bool										m_bIsMakingSound = false;
 	_bool										m_bOnHit = false;
 	_bool										m_bStairMove = false;
-	uint32_t									m_iHp = 100;
+	_float										m_fHp = 100.f;
 	_float										m_fOnHitTime = 0.f;
 	 CDoor*										pCollidedDoor = nullptr;
 	 CStair_Collider*							pStairCollider = nullptr;
 	_float4										stairColliderPos = {};
+	weak_ptr<class CPlayer>							m_pPlayer;
 public:
 	void Execute();
 	void CheckDoorCollide();

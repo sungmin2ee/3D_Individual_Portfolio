@@ -33,7 +33,7 @@ HRESULT CInventory::Initialize(void* pArg)
 	auto		pDesc = static_cast<INVENTORY_DESC*>(pArg);
 
 
-	pDesc->pGameObjectTag = TEXT("Invnetory_Frame");
+	pDesc->pGameObjectTag = TEXT("Inventory_Frame");
 	pDesc->fSpeedPerSec = 0.f;
 	pDesc->fRotationPerSec = 0.f;
 

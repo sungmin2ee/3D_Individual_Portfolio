@@ -43,20 +43,22 @@ HRESULT CBody_Player::Initialize(void* pArg)
 	auto	pDesc = static_cast<BODY_PLAYER_DESC*>(pArg);
 
 	m_pParentState = pDesc->pParentState;
+	m_pParentMatrix = pDesc->pParentMatrix;
 	pDesc->fRotationPerSec = 720.f;
+	m_pPlayer = pDesc->player;
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
-	m_pTransformCom->Set_Scale(0.1f, 0.1f, 0.1f);
-	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
+	//m_pTransformCom->Set_Scale(0.1f, 0.1f, 0.1f);
+	//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
 	m_pStateMachine = StateMachine<CBody_Player>::Create(this, CPlayer_Idle::Create());
 	m_pModelCom->Calculate_Box(ETOUI(MODEL::ANIM));
 	CGameInstance::Get().Add_Collider(m_pObbCom);
 	m_pObbCom->SetOwner(SHARED_THIS(CBody_Player));
 	ExpandCollider();
-	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(-1.5f, 0, 0, 1));
+	//m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(-1.5f, 0, 0, 1));
 	//m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(0.f, 0, 0, 1));
 
 	return S_OK;
@@ -71,9 +73,12 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
 		if (m_bDirChanged && m_eCurState != PLAYER_STATE::ATTACK) {
 			if (m_eCurDir == CBody_Player::PLAYER_DIR::RIGHT) {
 				bodyAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
-				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
+				//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
+				m_pPlayer.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
+
 				if (bodyAngle >= 180.f) {
-					m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
+					//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
+					m_pPlayer.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
 					m_bDirChanged = false;
 					m_bIsRotating = false;
 					bodyAngle = 180.f;
@@ -84,9 +89,14 @@ void CBody_Player::Priority_Update(_float fTimeDelta)
 			}
 			else if (m_eCurDir == CBody_Player::PLAYER_DIR::LEFT) {
 				bodyAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
-				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
+				//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
+				m_pPlayer.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
+
+
 				if (bodyAngle >= 360.f) {
-					m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
+					//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
+					m_pPlayer.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
+
 					m_bDirChanged = false;
 					m_bIsRotating = false;
 					bodyAngle = 0.f;
@@ -143,6 +153,7 @@ void CBody_Player::Update(_float fTimeDelta)
 
 void CBody_Player::Late_Update(_float fTimeDelta)
 {
+
 	Make_CombinedWorldMatrix(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrixPtr()));
 
 	CGameInstance::Get().Add_RenderObject(RENDERGROUP::NONBLEND, SHARED_THIS(CBody_Player));
@@ -194,11 +205,14 @@ void CBody_Player::Execute()
 		if (static_pointer_cast<CZombie>(*iter)->Get_Body()->Get_HP() != 0) {
 			if (m_pObbCom->myOBB.Intersects(static_pointer_cast<CZombie>(*iter)->Get_Body()->Get_Obb()->myOBB)) {
 				if (static_pointer_cast<CZombie>(*iter)->Get_Body()->Get_HP() <= 21) {
-					if (CGameInstance::Get().Key_Down(DIK_F)) {
-						m_pStateMachine->ChangeState(CPlayer_Execute::Create());
-						static_pointer_cast<CZombie>(*iter)->Get_Body()->Set_Executing(true);
-						return;
+					if (m_eCurWeapon == PLAYER_WEAPON::HAND) {
+						if (CGameInstance::Get().Key_Down(DIK_F)) {
+							m_pStateMachine->ChangeState(CPlayer_Execute::Create());
+							static_pointer_cast<CZombie>(*iter)->Get_Body()->Set_Executing(true);
+							return;
+						}
 					}
+				
 				}
 				auto dir = static_pointer_cast<CZombie>(*iter)->Get_Body()->Get_CurDir();
 				if (ETOUI(static_pointer_cast<CZombie>(*iter)->Get_Body()->Get_CurDir()) == ETOUI(m_eCurDir)) {
@@ -324,7 +338,7 @@ void CBody_Player::CheckStairCollide()
 
 HRESULT CBody_Player::Ready_Components()
 {
-	m_pModelCom = dynamic_pointer_cast<CModel>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_Model_Joe")));
+	m_pModelCom = dynamic_pointer_cast<CModel>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Model_Joe")));
 	if (FAILED(__super::Add_Component(TEXT("Com_Model"), m_pModelCom)))
 		return E_FAIL;
 
@@ -395,7 +409,7 @@ void CBody_Player::ExpandCollider()
 		if (!bone) continue;
 
 		_matrix boneMatrix = XMLoadFloat4x4(bone);
-		XMVECTOR localPos = boneMatrix.r[3]; // 본의 로컬(모델) 위치
+		XMVECTOR localPos = boneMatrix.r[3];
 
 		_float3 p;
 		XMStoreFloat3(&p, localPos);
@@ -409,36 +423,45 @@ void CBody_Player::ExpandCollider()
 		vLocalMax.z = max(vLocalMax.z, p.z);
 	}
 
-	// 캐릭터의 월드 행렬 로드 및 분해
-	_matrix world = XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrixPtr());
+	// 1. 자신의 월드 행렬 계산
+	_matrix myWorld = XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrixPtr());
+
+	// 2. 부모의 행렬이 존재한다면 결합 (핵심 추가 변경 사항)
+	_matrix combinedWorld = myWorld;
+	if (m_pParentMatrix != nullptr)
+	{
+		_matrix parentWorld = XMLoadFloat4x4(m_pParentMatrix);
+		combinedWorld = myWorld * parentWorld; // 행렬 곱셈 순서는 엔진 구조(행우선/열우선)에 맞춰 확인 필요
+	}
+
+	// 3. 결합된 최종 월드 행렬을 분해하여 최종 스케일, 회전, 위치를 추출
 	XMVECTOR vScale, vRot, vTrans;
-	XMMatrixDecompose(&vScale, &vRot, &vTrans, world);
+	XMMatrixDecompose(&vScale, &vRot, &vTrans, combinedWorld);
 
-	_float3 scale = m_pTransformCom->Get_Scaled();
+	_float3 finalScale;
+	XMStoreFloat3(&finalScale, vScale);
 
-	// 1. Center 계산: 로컬 중심점을 먼저 구한 뒤, '월드 변환'을 거칩니다.
+	// 4. Center 계산: 로컬 중심점을 구한 뒤, '최종 결합 행렬'로 월드 변환
 	XMVECTOR localMid = (XMLoadFloat3(&vLocalMax) + XMLoadFloat3(&vLocalMin)) * 0.5f;
-	XMVECTOR centerWorld = XMVector3TransformCoord(localMid, world); // 로컬 중심 -> 월드 중심
+	XMVECTOR centerWorld = XMVector3TransformCoord(localMid, combinedWorld);
 	XMStoreFloat3(&m_pObbCom->myOBB.Center, centerWorld);
 
-	// 2. Extents 계산: 로컬 크기에 현재 트랜스폼의 스케일을 곱해줍니다.
-	// Z축 오프셋(0.9f)은 의도하신 수치 비율대로 유지했습니다.
-	m_pObbCom->myOBB.Extents.x = (vLocalMax.x - vLocalMin.x) * 0.6f * scale.x;
-	m_pObbCom->myOBB.Extents.y = (vLocalMax.y - vLocalMin.y) * 0.6f * scale.y;
-	m_pObbCom->myOBB.Extents.z = (vLocalMax.z - vLocalMin.z) * 0.6f * scale.z * 0.9f;
+	// 5. Extents 계산: 로컬 크기에 부모까지 반영된 '최종 스케일'을 곱해줍니다.
+	m_pObbCom->myOBB.Extents.x = (vLocalMax.x - vLocalMin.x) * 0.6f * finalScale.x;
+	m_pObbCom->myOBB.Extents.y = (vLocalMax.y - vLocalMin.y) * 0.6f * finalScale.y;
+	m_pObbCom->myOBB.Extents.z = (vLocalMax.z - vLocalMin.z) * 0.6f * finalScale.z * 0.9f;
 
-	// 3. Orientation 설정 (이전과 동일하게 정규화 처리 포함)
-	vRot = XMQuaternionNormalize(vRot); // 어서트 방지용 정규화 필수!
+	// 6. Orientation 설정
+	vRot = XMQuaternionNormalize(vRot);
 	XMStoreFloat4(&m_pObbCom->myOBB.Orientation, vRot);
 
-	// 4. 렌더링용 월드 행렬 생성
-	// 기본 크기 1짜리 박스에 [스케일 적용] -> [회전 적용] -> [월드 중심점으로 이동] 순서로 결합합니다.
+	// 7. 렌더링용 OBB 월드 행렬 생성
 	_matrix matOBBWorld = XMMatrixScaling(m_pObbCom->myOBB.Extents.x * 2.f,
 		m_pObbCom->myOBB.Extents.y * 2.f,
 		m_pObbCom->myOBB.Extents.z * 2.f);
 
 	matOBBWorld *= XMMatrixRotationQuaternion(vRot);
-	matOBBWorld *= XMMatrixTranslationFromVector(centerWorld); // 중복 회전 버그 해결!
+	matOBBWorld *= XMMatrixTranslationFromVector(centerWorld);
 
 	m_pObbCom->Set_WorldMatrix(matOBBWorld);
 }

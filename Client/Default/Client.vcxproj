@@ -145,6 +145,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp" />
+    <ClInclude Include="..\public\Axe.h" />
     <ClInclude Include="..\Public\BackGround.h" />
     <ClInclude Include="..\Public\Blocker.h" />
     <ClInclude Include="..\public\Body_Player.h" />
@@ -152,6 +153,9 @@
     <ClInclude Include="..\public\Camera_Free.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Door.h" />
+    <ClInclude Include="..\Public\HealthBarFill.h" />
+    <ClInclude Include="..\Public\HealthBarFrame.h" />
+    <ClInclude Include="..\Public\JoeIcon.h" />
     <ClInclude Include="..\public\Player_Attack.h" />
     <ClInclude Include="..\public\Player_CloseDoor.h" />
     <ClInclude Include="..\public\Player_Damaged.h" />
@@ -181,6 +185,7 @@
     <ClInclude Include="..\public\Stair_Collider.h" />
     <ClInclude Include="..\public\State.h" />
     <ClInclude Include="..\public\StateMachine.h" />
+    <ClInclude Include="..\public\Weapon.h" />
     <ClInclude Include="..\public\Zombie.h" />
     <ClInclude Include="..\public\Zombie_Attack.h" />
     <ClInclude Include="..\public\Zombie_Damaged.h" />
@@ -202,6 +207,10 @@
     <ClCompile Include="..\private\Body_Player.cpp" />
     <ClCompile Include="..\private\Body_Zombie.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />
+    <ClCompile Include="..\private\Axe.cpp" />
+    <ClCompile Include="..\Private\HealthBarFill.cpp" />
+    <ClCompile Include="..\Private\HealthBarFrame.cpp" />
+    <ClCompile Include="..\Private\JoeIcon.cpp" />
     <ClCompile Include="..\private\Player_CloseDoor.cpp" />
     <ClCompile Include="..\private\Player_OpenDoor.cpp" />
     <ClCompile Include="..\Private\Door.cpp" />
@@ -232,6 +241,7 @@
     <ClCompile Include="..\private\Stair_Collider.cpp" />
     <ClCompile Include="..\private\State.cpp" />
     <ClCompile Include="..\private\StateMachine.cpp" />
+    <ClCompile Include="..\private\Weapon.cpp" />
     <ClCompile Include="..\private\Zombie.cpp" />
     <ClCompile Include="..\private\Zombie_Attack.cpp" />
     <ClCompile Include="..\private\Zombie_Damaged.cpp" />
@@ -255,6 +265,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Blocker.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Collider.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_HpBar.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxBlur.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />

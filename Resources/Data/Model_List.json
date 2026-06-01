@@ -1,10 +1,6 @@
 {
     "Model": [
         {
-            "FilePath": "../../Resources/Models/Avatar_Kiana_C8_WS.fbx",
-            "PrototypeTag": "Prototype_Model_Avatar_Kiana_C8_WS"
-        },
-        {
             "FilePath": "../../Resources/Models/barrier_concrete.fbx",
             "PrototypeTag": "Prototype_Model_barrier_concrete"
         },
@@ -83,6 +79,10 @@
         {
             "FilePath": "../../Resources/Models/Door.fbx",
             "PrototypeTag": "Prototype_Model_Door"
+        },
+        {
+            "FilePath": "../../Resources/Models/FireAxe.fbx",
+            "PrototypeTag": "Prototype_Model_FireAxe"
         },
         {
             "FilePath": "../../Resources/Models/FloorBack.fbx",
@@ -487,6 +487,10 @@
         {
             "FilePath": "../../Resources/Models/test.fbx",
             "PrototypeTag": "Prototype_Model_test"
+        },
+        {
+            "FilePath": "../../Resources/Models/test_bottom.fbx",
+            "PrototypeTag": "Prototype_Model_test_bottom"
         },
         {
             "FilePath": "../../Resources/Models/trafficlight_set_a_intersection.fbx",

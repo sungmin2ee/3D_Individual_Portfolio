@@ -106,6 +106,18 @@
     <Filter Include="FSM\AnimationState\Character">
       <UniqueIdentifier>{dc3baa2a-3a13-4270-a29d-b1766c86caa8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\08.Axe">
+      <UniqueIdentifier>{6a51585e-a889-402d-863c-02277f0311d0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\09.Health">
+      <UniqueIdentifier>{776ba224-8209-4c99-869b-dea12e8d3dfa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\09.Health\Bar">
+      <UniqueIdentifier>{ab9ade53-caf2-467e-b146-714bc352f217}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\09.Health\CharactorIcon">
+      <UniqueIdentifier>{2da91b3b-c308-42a9-8ee8-89fb40a3d364}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -246,6 +258,9 @@
     <ClInclude Include="..\Public\Blocker.h">
       <Filter>02.GameObject\07.Blocker</Filter>
     </ClInclude>
+    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
+      <Filter>Shaderfiles</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\Player_Door.h">
       <Filter>FSM\Player</Filter>
     </ClInclude>
@@ -258,8 +273,20 @@
     <ClInclude Include="..\public\ReleaseCollider.h">
       <Filter>02.GameObject\StairCollider</Filter>
     </ClInclude>
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
-      <Filter>Shaderfiles</Filter>
+    <ClInclude Include="..\public\Axe.h">
+      <Filter>02.GameObject\08.Axe</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Weapon.h">
+      <Filter>02.GameObject\02.Player\Weapon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\HealthBarFill.h">
+      <Filter>02.GameObject\09.Health\Bar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\HealthBarFrame.h">
+      <Filter>02.GameObject\09.Health\Bar</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\JoeIcon.h">
+      <Filter>02.GameObject\09.Health\CharactorIcon</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -401,6 +428,21 @@
     <ClCompile Include="..\private\ReleaseCollider.cpp">
       <Filter>02.GameObject\StairCollider</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Axe.cpp">
+      <Filter>02.GameObject\08.Axe</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Weapon.cpp">
+      <Filter>02.GameObject\02.Player\Weapon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\JoeIcon.cpp">
+      <Filter>02.GameObject\09.Health\CharactorIcon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HealthBarFrame.cpp">
+      <Filter>02.GameObject\09.Health\Bar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HealthBarFill.cpp">
+      <Filter>02.GameObject\09.Health\Bar</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -447,6 +489,9 @@
       <Filter>Shaderfiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
+      <Filter>Shaderfiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_HpBar.hlsl">
       <Filter>Shaderfiles</Filter>
     </FxCompile>
   </ItemGroup>

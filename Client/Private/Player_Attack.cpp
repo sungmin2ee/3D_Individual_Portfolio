@@ -60,7 +60,7 @@ void CPlayer_Attack::Update(CBody_Player& owner, _float deltaTime)
         animStart = false;
     }
 
-    if (m_fTime >= 1.f) {
+    if (m_fTime >= 2.f) {
         owner.Set_CurState(CBody_Player::PLAYER_STATE::STAND);
         owner.Get_StateMachine()->ChangeState(CPlayer_Idle::Create());
         return;
@@ -85,7 +85,7 @@ void CPlayer_Attack::Update(CBody_Player& owner, _float deltaTime)
                     owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::UNARMED_ATTACK1), 1.5f, false);
                 }
                 else if (owner.Get_Weapon() == CBody_Player::PLAYER_WEAPON::AXE) {
-                    owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::AXE_ATTACK2), false);
+                    owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::AXE_ATTACK1), false);
                 }
                 m_iCount++;
             }

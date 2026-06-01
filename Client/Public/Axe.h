@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "PartObject.h"
+#include "GameObject.h"
 
 NS_BEGIN(Engine)
 class CShader;
@@ -11,20 +11,15 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CWeapon final : public CPartObject
+class CAxe final : public CGameObject
 {
-public:
-	typedef struct tagWeaponDesc : public CPartObject::PARTOBJECT_DESC
-	{
-		const uint32_t* pParentState = { nullptr };
-		const _float4x4* pSocketMatrix = { nullptr };
-	}WEAPON_DESC;
+
 
 private:
-	CWeapon(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
-	CWeapon(const CWeapon& Prototype);
+	CAxe(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
+	CAxe(const CAxe& Prototype);
 public:
-	virtual ~CWeapon();
+	virtual ~CAxe();
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -37,16 +32,12 @@ public:
 private:
 	shared_ptr<CModel>			m_pModelCom = { nullptr };
 	shared_ptr<CShader>			m_pShaderCom = { nullptr };
-	shared_ptr<class CPlayer>   m_pPlayer = { nullptr };
-private:
-	const uint32_t* m_pParentState = { nullptr };
-	const _float4x4* m_pSocketMatrix = { nullptr };
 
 private:
 	HRESULT Ready_Components();
 
 public:
-	static unique_ptr<CWeapon> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
+	static unique_ptr<CAxe> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
 	virtual shared_ptr<CPrototype> Clone(void* pArg) override;
 };
 

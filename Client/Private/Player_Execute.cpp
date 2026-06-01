@@ -26,6 +26,7 @@ void CPlayer_Execute::Enter(CBody_Player& owner)
 
         }
     }
+
     animStart = true;
 }
 

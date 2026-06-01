@@ -33,7 +33,6 @@ void CZombie_Attack::Enter(CBody_Zombie& owner)
         if (owner.Get_Obb()->myOBB.Intersects(playerBody->Get_Obb()->myOBB))
             playerBody->Set_OnHit(true);
     }
-   
 }
 
 void CZombie_Attack::Update(CBody_Zombie& owner, _float deltaTime)

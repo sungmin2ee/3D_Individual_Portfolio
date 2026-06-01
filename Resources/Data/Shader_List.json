@@ -13,6 +13,10 @@
             "PrototypeTag": "Prototype_Component_Shader_Collider"
         },
         {
+            "FilePath": "../../Client/Bin/ShaderFiles/Shader_HpBar",
+            "PrototypeTag": "Prototype_Component_Shader_HpBar"
+        },
+        {
             "FilePath": "../../Client/Bin/ShaderFiles/Shader_VtxAnimMesh",
             "PrototypeTag": "Prototype_Component_Shader_VtxAnimMesh"
         },

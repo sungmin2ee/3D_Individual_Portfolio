@@ -152,14 +152,29 @@ void CZombie_Stair::Update(CBody_Zombie& owner, _float deltaTime)
     }
     if (!m_bExiting && !m_bAdjustingExit && !m_bAdjustingEnter) {
         if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::STAIR_WALK_UP) {
-            owner.Get_Transform()->Go_Straight(deltaTime * 0.9f);
-            owner.Get_Transform()->Go_Up(deltaTime * 0.75f);
+            if (CGameInstance::Get().GetCurLevelIndex() == 4) {
+                owner.Get_Transform()->Go_Straight(deltaTime * 0.9f);
+                owner.Get_Transform()->Go_Up(deltaTime * 0.5f);
+            }
+            else {
+                owner.Get_Transform()->Go_Straight(deltaTime * 0.9f);
+                owner.Get_Transform()->Go_Up(deltaTime * 0.75f);
+            }
+   
             CheckExit(owner, myPos);
 
         }
         else if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::STAIR_WALK_DOWN) {
-            owner.Get_Transform()->Go_Straight(deltaTime * 1.1f);
-            owner.Get_Transform()->Go_Down(deltaTime * 0.8f);
+            if (CGameInstance::Get().GetCurLevelIndex() == 4) {
+                owner.Get_Transform()->Go_Straight(deltaTime * 1.3f);
+                owner.Get_Transform()->Go_Down(deltaTime * 0.8f);
+
+            }
+            else {
+                owner.Get_Transform()->Go_Straight(deltaTime * 1.1f);
+                owner.Get_Transform()->Go_Down(deltaTime * 0.8f);
+            }
+
             CheckExit(owner, myPos);
         }
     }

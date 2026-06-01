@@ -7,6 +7,7 @@
 #include "Player_Door.h"
 #include "Player_CloseDoor.h"
 #include "Player_Stair.h"
+#include "Player.h"
 #include "Layer.h"
 
 CPlayer_Run::CPlayer_Run()
@@ -54,10 +55,10 @@ void CPlayer_Run::Update(CBody_Player& owner, _float deltaTime)
                 || CGameInstance::Get().Key_Pressing(DIK_D)) {
 
                 if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::SIT) {
-                    owner.Get_Transform()->Go_Straight(deltaTime * 1.5f);
+                    owner.Get_Player().lock()->Get_Transform()->Go_Straight(deltaTime * 1.5f);
                 }
                 else if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAND) {
-                    owner.Get_Transform()->Go_Straight(deltaTime * 2.5f);
+                    owner.Get_Player().lock()->Get_Transform()->Go_Straight(deltaTime * 2.5f);
                 }
             }
         }

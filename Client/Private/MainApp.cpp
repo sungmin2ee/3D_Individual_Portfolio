@@ -126,7 +126,7 @@ HRESULT CMainApp::Ready_Prototypes()
 		return E_FAIL;
 	/*Inventory Textures*/
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Inventory"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/inventory.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/inventory.dds"), 1))))
 		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Blocker"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/black.png"), 1))))
@@ -161,11 +161,26 @@ HRESULT CMainApp::Ready_Prototypes()
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxNonAnim"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxNonAnim.hlsl"), VERTEX::Elements, VERTEX::iNumElements))))
 		return E_FAIL;
+	//charactor icon
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_icon_joe"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/icon_jo.png"), 1))))
+		return E_FAIL;
+
+	//Health Icon
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_icon_Health_Frame"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/icon_BarricadeFrame4.png"), 1))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_icon_Health_Fill"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/healthbar_fill.png"), 1))))
+		return E_FAIL;
 	/* For.Prototype_Component_Shader_VtxAnimMesh */
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxAnimMesh"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl"), VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
 		return E_FAIL;
-
+	/* For.Prototype_Component_Shader_HpBar */
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Shader_HpBar"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_HpBar.hlsl"), VTXTEX::Elements, VTXTEX::iNumElements))))
+		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Shader_Collider"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Collider.hlsl"), VCOLLIDER::Elements, VCOLLIDER::iNumElements))))
 		return E_FAIL;

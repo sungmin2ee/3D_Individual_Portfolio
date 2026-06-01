@@ -6,6 +6,7 @@
 #include "Layer.h"
 #include "Zombie.h"
 #include "Player_Walk.h"
+#include "Player.h"
 
 CPlayer_Damaged::CPlayer_Damaged()
 {
@@ -24,7 +25,7 @@ void CPlayer_Damaged::Enter(CBody_Player& owner)
 
     for (iter; iter != zombies.end(); iter++) {
        // if (owner.Get_Obb()->myOBB.Intersects(static_pointer_cast<CZombie>(*iter)->Get_Body()->Get_Obb()->myOBB)) {
-            auto pos = owner.Get_Transform()->Get_State(STATE::POSITION);
+            auto pos = owner.Get_Player().lock()->Get_Transform()->Get_State(STATE::POSITION);
             _vector delta = XMVectorSet(0.02f, 0, 0, 0);
             if (ETOUI(static_pointer_cast<CZombie>(*iter)->Get_Body()->Get_CurDir()) == ETOUI(owner.Get_CurDir())) {
                 owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::HIT_REACT_FRONT),0.7f, false);
@@ -34,7 +35,7 @@ void CPlayer_Damaged::Enter(CBody_Player& owner)
                 else {
                     pos = pos + delta;
                 }
-                owner.Get_Transform()->Set_State(STATE::POSITION, pos);
+                owner.Get_Player().lock()->Get_Transform()->Set_State(STATE::POSITION, pos);
                 break;
             }
             else {
@@ -46,7 +47,7 @@ void CPlayer_Damaged::Enter(CBody_Player& owner)
                 else {
                     pos = pos - delta;
                 }
-                owner.Get_Transform()->Set_State(STATE::POSITION, pos);
+                owner.Get_Player().lock()->Get_Transform()->Set_State(STATE::POSITION, pos);
                 break;
             }
       //  }

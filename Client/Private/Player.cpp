@@ -1,7 +1,8 @@
 #include "Player.h"
+#include "Body_Player.h"
 
 
-//#include "Weapon.h"
+#include "Weapon.h"
 #include "GameInstance.h"
 
 CPlayer::CPlayer(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
@@ -26,14 +27,17 @@ HRESULT CPlayer::Initialize_Prototype()
 HRESULT CPlayer::Initialize(void* pArg)
 {
 	PLAYER_DESC			Desc{};
-	Desc.fSpeedPerSec = 10.f;
-	Desc.fRotationPerSec = 180.f;
+	Desc.fSpeedPerSec = 0.1f;
+	Desc.fRotationPerSec = 720.f;
 
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
+
+	m_pTransformCom->Set_Scale(0.1f, 0.1f, 0.1f);
+    m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
 
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
@@ -103,19 +107,21 @@ HRESULT CPlayer::Ready_PartObjects()
 	BodyDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrixPtr();
 	BodyDesc.pParentState = &m_iState;
 	BodyDesc.fSpeedPerSec = 0.1f;
-	if (FAILED(__super::Add_PartObject(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Body_Player"),
+	BodyDesc.player = static_pointer_cast<CPlayer>(shared_from_this());
+	if (FAILED(__super::Add_PartObject(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Body_Player"),
 		TEXT("Part_Body"), &BodyDesc)))
 		return E_FAIL;
 	body = static_pointer_cast<CBody_Player>(__super::Get_PartObject(TEXT("Part_Body")));
-	//CWeapon::WEAPON_DESC		WeaponDesc{};
-	//WeaponDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrixPtr();
-	//WeaponDesc.pParentState = &m_iState;
-	//WeaponDesc.pSocketMatrix = dynamic_pointer_cast<CBody_Player>(m_PartObjects[TEXT("Part_Body")])->Get_SocketMatrixPtr("SWORD");
-	//
-	//if (FAILED(__super::Add_PartObject(ETOUI(LEVEL::GAMEPLAY), TEXT("Prototype_GameObject_Weapon"),
-	//	TEXT("Part_Weapon"), &WeaponDesc)))
-	//	return E_FAIL;
 
+
+	CWeapon::WEAPON_DESC		WeaponDesc{};
+	WeaponDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrixPtr();
+	WeaponDesc.pParentState = &m_iState;
+	WeaponDesc.pSocketMatrix = dynamic_pointer_cast<CBody_Player>(m_PartObjects[TEXT("Part_Body")])->Get_SocketMatrixPtr("rightPinky1");
+
+	if (FAILED(__super::Add_PartObject(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Weapon"),
+		TEXT("Part_Weapon"), &WeaponDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 

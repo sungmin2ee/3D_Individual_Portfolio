@@ -203,7 +203,7 @@ HRESULT CBody_Zombie::Render()
 
 HRESULT CBody_Zombie::Ready_Components()
 {
-	m_pModelCom = dynamic_pointer_cast<CModel>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_Model_Zombie1")));
+	m_pModelCom = dynamic_pointer_cast<CModel>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Model_Zombie1")));
 	if (FAILED(__super::Add_Component(TEXT("Com_Model"), m_pModelCom)))
 		return E_FAIL;
 
@@ -335,7 +335,7 @@ void CBody_Zombie::DetectPlayer()
 	auto playerBody = static_pointer_cast<CPlayer>(player)->Get_Body();
 	if (playerBody == nullptr)
 		return;
-	_vector playerPos = playerBody->Get_Transform()->Get_State(STATE::POSITION);
+	_vector playerPos = player->Get_Transform()->Get_State(STATE::POSITION);
 	_vector deltaPos = m_pTransformCom->Get_State(STATE::POSITION) - playerPos;
 	_float4 fpos;
 	XMStoreFloat4(&fpos, deltaPos);
@@ -352,7 +352,7 @@ void CBody_Zombie::DetectPlayer()
 		if (playerBody->Is_MakingSound()) {
 			m_bPlayerDetected = true;
 		}
-		else if (ETOUI(playerBody->Get_CurDir()) != ETOUI(m_eCurDir)) {
+		else if (ETOUI(playerBody->Get_CurDir()) != ETOUI(m_eCurDir) && playerBody->Is_MakingSound()) {
 			m_bPlayerDetected = true;
 
 		}
@@ -393,10 +393,8 @@ void CBody_Zombie::FocusPlayer() {
 	auto player = layer->GetObjectFirst();
 	if (player == nullptr)
 		return;
-	auto playerBody = static_pointer_cast<CPlayer>(player)->Get_Body();
-	if (playerBody == nullptr)
-		return;
-	auto playerPos = playerBody->Get_Transform()->Get_State(STATE::POSITION);
+
+	auto playerPos = player->Get_Transform()->Get_State(STATE::POSITION);
 
 	_float4 fPlayerPos; 
 	XMStoreFloat4(&fPlayerPos,playerPos);

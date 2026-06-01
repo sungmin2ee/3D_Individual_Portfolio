@@ -9,6 +9,7 @@
 #include "Player_Stair.h"
 #include "Layer.h"
 #include "Door.h"
+#include "Player.h"
 
 CPlayer_Walk::CPlayer_Walk()
 {
@@ -40,10 +41,10 @@ void CPlayer_Walk::Update(CBody_Player& owner, _float deltaTime)
     if (owner.Get_CurDir() == CBody_Player::PLAYER_DIR::LEFT && !owner.Get_Rotating()) {
         if (CGameInstance::Get().Key_Pressing(DIK_A)) {
             if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::SIT) {
-                owner.Get_Transform()->Go_Straight(deltaTime * 0.7f);
+                owner.Get_Player().lock()->Get_Transform()->Go_Straight(deltaTime * 0.7f);
             }
             else if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAND) {
-                owner.Get_Transform()->Go_Straight(deltaTime);
+                owner.Get_Player().lock()->Get_Transform()->Go_Straight(deltaTime);
             }
         }
         
@@ -51,10 +52,10 @@ void CPlayer_Walk::Update(CBody_Player& owner, _float deltaTime)
     if (owner.Get_CurDir() == CBody_Player::PLAYER_DIR::RIGHT && !owner.Get_Rotating()) {
         if (CGameInstance::Get().Key_Pressing(DIK_D)) {
             if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::SIT) {
-                owner.Get_Transform()->Go_Straight(deltaTime * 0.7f);
+                owner.Get_Player().lock()->Get_Transform()->Go_Straight(deltaTime * 0.7f);
             }
             else if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAND) {
-                owner.Get_Transform()->Go_Straight(deltaTime);
+                owner.Get_Player().lock()->Get_Transform()->Go_Straight(deltaTime);
             }
         }
     

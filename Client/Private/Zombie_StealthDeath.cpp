@@ -23,23 +23,26 @@ void CZombie_StealthDeath::Enter(CBody_Zombie& owner)
     auto playerBody = static_pointer_cast<CPlayer>(player)->Get_Body();
     if (playerBody == nullptr)
         return;
+    _vector delta;
     if (playerBody->Get_Model()->Get_AnimIndex() == ETOUI(CBody_Player::PLAYER_ANIM::AXE_STEALTH1)) {
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::AXE_STEALTH1),false);
+        delta = XMVectorSet(0.1f, 0, 0, 0);
     }
     else if (playerBody->Get_Model()->Get_AnimIndex() == ETOUI(CBody_Player::PLAYER_ANIM::AXE_STEALTH2)) {
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::AXE_STEALTH2), false);
+        delta = XMVectorSet(0.12f, 0, 0, 0);
     }
     else if (playerBody->Get_Model()->Get_AnimIndex() == ETOUI(CBody_Player::PLAYER_ANIM::STEALTH_KILL)) {
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::UNARMED_STEALTH), false);
+        delta = XMVectorSet(0.13f, 0, 0, 0);
     }
-    auto playerPos = playerBody->Get_Transform()->Get_State(STATE::POSITION);
-    _vector delta = XMVectorSet(0.13f, 0, 0, 0);
+    auto playerPos = player->Get_Transform()->Get_State(STATE::POSITION);
     if (playerBody->Get_CurDir() == CBody_Player::PLAYER_DIR::RIGHT) {
         playerPos += delta;
     }
     else if (playerBody->Get_CurDir() == CBody_Player::PLAYER_DIR::LEFT) {
         playerPos -= delta;
-
+    
     }
     owner.Get_Transform()->Set_State(STATE::POSITION, playerPos);
     auto pos = owner.Get_Transform()->Get_State(STATE::POSITION);

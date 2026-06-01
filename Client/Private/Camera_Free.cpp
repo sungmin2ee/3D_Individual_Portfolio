@@ -2,6 +2,7 @@
 #include "Layer.h"
 #include "Player.h"
 #include "CModelObject.h"
+#include "Body_Player.h"
 
 #include "GameInstance.h"
 
@@ -125,12 +126,12 @@ void CCamera_Free::Update(_float fTimeDelta)
 		}
 	}
 
-	if (zoomIn) {
-		ZoomIn(playerBody);
-	}
-	else {
-		ZoomOut(playerBody);
-	}
+	//if (zoomIn) {
+	//	ZoomIn(playerBody);
+	//}
+	//else {
+	//	ZoomOut(playerBody);
+	//}
 }
 
 void CCamera_Free::Late_Update(_float fTimeDelta)
@@ -150,7 +151,7 @@ void CCamera_Free::ZoomIn(CBody_Player* playerBody)
 {
 
 	// 1. 플레이어와 카메라의 현재 위치를 가져옵니다.
-	_vector playerPos = playerBody->Get_Transform()->Get_State(STATE::POSITION);
+	_vector playerPos = playerBody->Get_Player().lock()->Get_Transform()->Get_State(STATE::POSITION);
 	_vector camPos = m_pTransformCom->Get_State(STATE::POSITION);
 	playerPos = playerPos + XMVectorSet(0, 0.2f, 0, 0);
 	// XMStoreFloat4를 이용해 벡터의 각 성분(X, Y, Z)에 접근하기 편하게 변환합니다.
@@ -194,7 +195,7 @@ void CCamera_Free::ZoomIn(CBody_Player* playerBody)
 void CCamera_Free::ZoomOut(CBody_Player* playerBody)
 {
 	// 1. 플레이어와 카메라의 현재 위치를 가져옵니다.
-	_vector playerPos = playerBody->Get_Transform()->Get_State(STATE::POSITION);
+	_vector playerPos = playerBody->Get_Player().lock()->Get_Transform()->Get_State(STATE::POSITION);
 	_vector camPos = m_pTransformCom->Get_State(STATE::POSITION);
 	playerPos = playerPos + XMVectorSet(0, 0.2f, 0, 0);
 	// XMStoreFloat4를 이용해 벡터의 각 성분(X, Y, Z)에 접근하기 편하게 변환합니다.

@@ -1,4 +1,7 @@
 #include "Weapon.h"
+#include "Layer.h"
+#include "Player.h"
+#include "Body_Player.h"
 
 #include "GameInstance.h"
 
@@ -37,17 +40,19 @@ HRESULT CWeapon::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-	//m_pTransformCom->Set_Scale(0.1f, 0.1f, 0.1f);
-	//m_pTransformCom->Rotation(0.f, 90.f, 0.f);
+	m_pTransformCom->Set_Scale(0.7f, 0.7f, 0.7f);
+	m_pTransformCom->Rotation(XMVectorSet(1.f, 1.f, 1.f, 0.f), 120.f);
 
 
-	//m_pTransformCom->Set_State(STATE::POSITION,
-	//	XMVectorSet(
-	//		0.f,
-	//		0.f,
-	//		0.f,
-	//		1.f
-	//	));
+
+	m_pTransformCom->Set_State(STATE::POSITION,
+		XMVectorSet(
+			0.f,
+			0.05f,
+			0.2f,
+			1.f
+		));
+
 
 	return S_OK;
 }
@@ -82,31 +87,40 @@ void CWeapon::Late_Update(_float fTimeDelta)
 
 HRESULT CWeapon::Render()
 {
-	if (FAILED(__super::Bind_WorldMatrix(m_pShaderCom, "g_WorldMatrix")))
+	auto layer = CGameInstance::Get().Find_Layer(ETOUI(CGameInstance::Get().GetCurLevelIndex()), TEXT("Layer_Player"));
+	if (layer == nullptr)
 		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", CGameInstance::Get().Get_Transform(D3DTS::VIEW))))
+	auto player = layer->GetObjectFirst();
+	if (player == nullptr)
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", CGameInstance::Get().Get_Transform(D3DTS::PROJ))))
-		return E_FAIL;
-
-
-
-	uint32_t	iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-	for (size_t i = 0; i < iNumMeshes; i++)
-	{
-		if (FAILED(m_pModelCom->Bind_Materials(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
+	auto pPlayer  = static_pointer_cast<CPlayer>(player);
+	if (pPlayer->Get_Body()->Get_CurState() == CBody_Player::PLAYER_STATE::ATTACK && pPlayer->Get_Body()->Get_Weapon() == CBody_Player::PLAYER_WEAPON::AXE) {
+		if (FAILED(__super::Bind_WorldMatrix(m_pShaderCom, "g_WorldMatrix")))
 			return E_FAIL;
 
-		if (FAILED(m_pShaderCom->Begin(0)))
+		if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", CGameInstance::Get().Get_Transform(D3DTS::VIEW))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", CGameInstance::Get().Get_Transform(D3DTS::PROJ))))
 			return E_FAIL;
 
 
-		m_pModelCom->Render(i);
+
+		uint32_t	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+		for (size_t i = 0; i < iNumMeshes; i++)
+		{
+			if (FAILED(m_pModelCom->Bind_Materials(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE, 0)))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->Begin(0)))
+				return E_FAIL;
+
+
+			m_pModelCom->Render(i);
+		}
+
 	}
-
-
+	
 
 	return S_OK;
 }
