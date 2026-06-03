@@ -23,8 +23,12 @@ public:
 	void Sub_Item(_wstring item);
 	_bool &Get_Changed() { return m_bListChanged; }
 	void Set_Changed(_bool flag) { m_bListChanged = flag; }
-	pair< _wstring, string>&Get_WhichHow() { return itemChanged; }
+	vector<pair< _wstring, string>>&Get_WhichHow() { return itemChanged; }
+	void Clear_WhichHow();
 	vector<ITEMINFO_DESC>&Get_ItemInfo() { return itemInfo; }
+	vector<_wstring>& Get_FoundItem() { return foundItem; }
+	void MakeRandomItem();
+	
 public:
 	static unique_ptr<CItem_Manager> Create();
 
@@ -32,8 +36,9 @@ private:
 	HRESULT Initialize();
 private:
 	map<_wstring, uint32_t> items;
+	vector <_wstring> foundItem;
 	_bool m_bListChanged = false;
-	pair<  _wstring, string> itemChanged;
+	vector<pair<  _wstring, string>> itemChanged;
 	vector<ITEMINFO_DESC> itemInfo;
 };
 

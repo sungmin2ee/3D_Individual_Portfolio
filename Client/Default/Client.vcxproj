@@ -156,6 +156,7 @@
     <ClInclude Include="..\Public\HealthBarFill.h" />
     <ClInclude Include="..\Public\HealthBarFrame.h" />
     <ClInclude Include="..\Public\JoeIcon.h" />
+    <ClInclude Include="..\Public\Overlay.h" />
     <ClInclude Include="..\public\Player_Attack.h" />
     <ClInclude Include="..\public\Player_CloseDoor.h" />
     <ClInclude Include="..\public\Player_Damaged.h" />
@@ -181,6 +182,10 @@
     <ClInclude Include="..\public\Player_StealthAttack.h" />
     <ClInclude Include="..\public\Player_Walk.h" />
     <ClInclude Include="..\public\ReleaseCollider.h" />
+    <ClInclude Include="..\Public\SearchBox.h" />
+    <ClInclude Include="..\Public\SearchItemFrame.h" />
+    <ClInclude Include="..\Public\SearchItemIcon.h" />
+    <ClInclude Include="..\Public\Search_Collider.h" />
     <ClInclude Include="..\public\Sky.h" />
     <ClInclude Include="..\public\Stair_Collider.h" />
     <ClInclude Include="..\public\State.h" />
@@ -211,6 +216,7 @@
     <ClCompile Include="..\Private\HealthBarFill.cpp" />
     <ClCompile Include="..\Private\HealthBarFrame.cpp" />
     <ClCompile Include="..\Private\JoeIcon.cpp" />
+    <ClCompile Include="..\Private\Overlay.cpp" />
     <ClCompile Include="..\private\Player_CloseDoor.cpp" />
     <ClCompile Include="..\private\Player_OpenDoor.cpp" />
     <ClCompile Include="..\Private\Door.cpp" />
@@ -237,6 +243,10 @@
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\private\ReleaseCollider.cpp" />
+    <ClCompile Include="..\Private\SearchBox.cpp" />
+    <ClCompile Include="..\Private\SearchItemFrame.cpp" />
+    <ClCompile Include="..\Private\SearchItemIcon.cpp" />
+    <ClCompile Include="..\Private\Search_Collider.cpp" />
     <ClCompile Include="..\private\Sky.cpp" />
     <ClCompile Include="..\private\Stair_Collider.cpp" />
     <ClCompile Include="..\private\State.cpp" />

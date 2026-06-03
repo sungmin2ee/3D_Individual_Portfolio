@@ -43,11 +43,11 @@ HRESULT SaveLoad_Manager::Save(uint32_t levelIndex)
 	map<const _wstring, unique_ptr<class CLayer>>::iterator iter = layers[levelIndex].begin();
 	for (iter; iter != layers[levelIndex].end(); iter++) {
 		if (iter->first != L"Layer_Camera" && iter->first != L"Layer_UI"&& iter->first != L"UI_EquipBorder"&& iter->first != L"UI_ICons"
-			&& iter->first != L"Layer_Door" && iter->first != L"Layer_Blocker") {
+			&& iter->first != L"Layer_Door" && iter->first != L"Layer_Blocker" && iter->first != L"Layer_Player" && iter->first != L"Layer_Zombie" 
+			&& iter->first != L"Layer_Sky" && iter->first != L"Layer_PlayerUI" && iter->first != L"Layer_Stair_Collider") {
 			for (auto object : iter->second->GetObjects()) {
 				//월드 행렬
 				json j;
-
 				MODELOBJ_DESC desc = object->Get_Desc();
 				_vector right, up, look, pos;
 

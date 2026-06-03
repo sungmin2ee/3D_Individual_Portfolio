@@ -118,6 +118,21 @@
     <Filter Include="02.GameObject\09.Health\CharactorIcon">
       <UniqueIdentifier>{2da91b3b-c308-42a9-8ee8-89fb40a3d364}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\10.SearchBox">
+      <UniqueIdentifier>{1609bd12-e349-4e2d-9e3a-90e98b654643}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\10.SearchBox\Frame">
+      <UniqueIdentifier>{d8623525-a234-4249-8efb-bbd9ac1310c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\10.SearchBox\Icon">
+      <UniqueIdentifier>{52f43aa9-a492-4884-96c3-1ea8b6e1c6cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\10.SearchBox\Collider">
+      <UniqueIdentifier>{3b05b2b6-a963-40a0-92f8-bd9604f5a754}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\04.Inventory\Overlay">
+      <UniqueIdentifier>{eabdd545-11d3-4842-bfc6-3083cd8e18dc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -288,6 +303,21 @@
     <ClInclude Include="..\Public\JoeIcon.h">
       <Filter>02.GameObject\09.Health\CharactorIcon</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SearchBox.h">
+      <Filter>02.GameObject\10.SearchBox</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SearchItemFrame.h">
+      <Filter>02.GameObject\10.SearchBox\Frame</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SearchItemIcon.h">
+      <Filter>02.GameObject\10.SearchBox\Icon</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Search_Collider.h">
+      <Filter>02.GameObject\10.SearchBox\Collider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Overlay.h">
+      <Filter>02.GameObject\04.Inventory\Overlay</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -442,6 +472,21 @@
     </ClCompile>
     <ClCompile Include="..\Private\HealthBarFill.cpp">
       <Filter>02.GameObject\09.Health\Bar</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SearchBox.cpp">
+      <Filter>02.GameObject\10.SearchBox</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SearchItemIcon.cpp">
+      <Filter>02.GameObject\10.SearchBox\Icon</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SearchItemFrame.cpp">
+      <Filter>02.GameObject\10.SearchBox\Frame</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Search_Collider.cpp">
+      <Filter>02.GameObject\10.SearchBox\Collider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Overlay.cpp">
+      <Filter>02.GameObject\04.Inventory\Overlay</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

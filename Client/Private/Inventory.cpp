@@ -3,6 +3,7 @@
 #include "ItemIcon.h"
 #include "Layer.h"
 #include "EquipBorder.h"
+#include "SearchBox.h"
 
 #include "GameInstance.h"
 
@@ -56,14 +57,14 @@ HRESULT CInventory::Initialize(void* pArg)
 void CInventory::Priority_Update(_float fTimeDelta)
 {
 
-
+	auto i = CGameInstance::Get().GetCurLevelIndex();
 
 	if (m_bRender) {
-		CLayer* layer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::SHELTER), L"UI_ICons");
+		CLayer* layer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"UI_ICons");
 
 		if (layer != nullptr) {
 			list<shared_ptr<CGameObject>> icons = layer->GetObjects();
-			CLayer* borderlayer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::SHELTER), L"UI_EquipBorder");
+			CLayer* borderlayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"UI_EquipBorder");
 			shared_ptr<CGameObject> border = borderlayer->GetObjectFirst();
 			if (!icons.empty()) {
 				for (auto& icon : icons) {
@@ -114,69 +115,112 @@ void CInventory::Update(_float fTimeDelta)
 {
 	/*m_fX += 20.f * fTimeDelta;
 	m_fSizeY += 100.f * fTimeDelta;*/
-	if (CGameInstance::Get().Key_Down(DIK_1)) {
-		CGameInstance::Get().Add_Item(L"Prototype_Component_Texture_icon_lockpick");
-	}
-	if (CGameInstance::Get().Key_Down(DIK_2)) {
-		CGameInstance::Get().Add_Item(L"Prototype_Component_Texture_icon_bandage");
-	}
-	if (CGameInstance::Get().Key_Down(DIK_3)) {
-		CGameInstance::Get().Add_Item(L"Prototype_Component_Texture_icon_metal");
-	}
-	if (CGameInstance::Get().Key_Down(DIK_4)) {
-		CGameInstance::Get().Sub_Item(L"Prototype_Component_Texture_icon_lockpick");
-	}
-	if (CGameInstance::Get().Key_Down(DIK_5)) {
-		CGameInstance::Get().Sub_Item(L"Prototype_Component_Texture_icon_bandage");
-	}
-	if (CGameInstance::Get().Key_Down(DIK_6)) {
-		CGameInstance::Get().Sub_Item(L"Prototype_Component_Texture_icon_metal");
-	}
+	//if (CGameInstance::Get().Key_Down(DIK_1)) {
+	//	CGameInstance::Get().Add_Item(L"Prototype_Component_Texture_icon_lockpick");
+	//}
+	//if (CGameInstance::Get().Key_Down(DIK_2)) {
+	//	CGameInstance::Get().Add_Item(L"Prototype_Component_Texture_icon_bandage");
+	//}
+	//if (CGameInstance::Get().Key_Down(DIK_3)) {
+	//	CGameInstance::Get().Add_Item(L"Prototype_Component_Texture_icon_metal");
+	//}
+	//if (CGameInstance::Get().Key_Down(DIK_4)) {
+	//	CGameInstance::Get().Sub_Item(L"Prototype_Component_Texture_icon_lockpick");
+	//}
+	//if (CGameInstance::Get().Key_Down(DIK_5)) {
+	//	CGameInstance::Get().Sub_Item(L"Prototype_Component_Texture_icon_bandage");
+	//}
+	//if (CGameInstance::Get().Key_Down(DIK_6)) {
+	//	CGameInstance::Get().Sub_Item(L"Prototype_Component_Texture_icon_metal");
+	//}
 	__super::Update(fTimeDelta);
+	CLayer* borderlayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"UI_EquipBorder");
+	
+	if (m_bRender) {
+	
+	}
+	else {
+		shared_ptr<CGameObject> border = borderlayer->GetObjectFirst();
+		auto pBorder = dynamic_pointer_cast<CUIObject>(border);
+		pBorder->Set_Render(m_bRender);
+		m_selectedItemDesc = L"";
+		m_selectedItemName = L"";
+	}
 	if (CGameInstance::Get().Key_Down(DIK_E)) {
 		m_bRender = !m_bRender;
-		CLayer* borderlayer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::SHELTER), L"UI_EquipBorder");
-		if (m_bRender == false) {
-			shared_ptr<CGameObject> border = borderlayer->GetObjectFirst();
-			auto pBorder = dynamic_pointer_cast<CUIObject>(border);
-			pBorder->Set_Render(m_bRender);
-			m_selectedItemDesc = L"";
-			m_selectedItemName = L"";
-		}
 	}
-	if (CGameInstance::Get().Get_Changed()) {
-		pair< _wstring, string> itemTag = CGameInstance::Get().Get_WhichHow();
-		if (itemTag.second == "Add") {
-			CItemIcon::ITEMICON_DESC pDesc;
-			pDesc.bInitialRender = this->m_bRender;
-			pDesc.fSizeX = g_iWinSizeX * 0.4f * 0.15f;
-			pDesc.fSizeY = g_iWinSizeY * 0.7f * 0.15f;
-			pDesc.fX = framePos[itemCount].first;
-			pDesc.fY = framePos[itemCount].second;
-			pDesc.pGameObjectTag = itemTag.first;
-			if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER),
-				L"Prototype_ItemIcon", ETOUI(LEVEL::SHELTER), L"UI_ICons", &pDesc)))
-				return ;
-			itemCount++;
 
-			CGameInstance::Get().Set_Changed(false);
-		}
-		else if(itemTag.second == "Sub"){
-			CLayer* layer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::SHELTER), L"UI_ICons");
-			list<shared_ptr<CGameObject>>::iterator iter = layer->GetObjects().begin();
-			for (iter; iter != layer->GetObjects().end();) {
-				if ((*iter)->Get_Tag() == itemTag.first) {
-					(*iter)->Set_Dead();
-					CGameInstance::Get().Set_Changed(false);
-					itemCount--;
-					ReArrange();
-					break;
+
+	if (CGameInstance::Get().Get_Changed()) {
+		vector<pair< _wstring, string>> itemTag = CGameInstance::Get().Get_WhichHow();
+
+		for (auto& tag : itemTag) {
+			if (tag.second == "Add") {
+				CItemIcon::ITEMICON_DESC pDesc;
+				pDesc.bInitialRender = this->m_bRender;
+				pDesc.fSizeX = g_iWinSizeX * 0.4f * 0.15f;
+				pDesc.fSizeY = g_iWinSizeY * 0.7f * 0.15f;
+				pDesc.fX = framePos[itemCount].first;
+				pDesc.fY = framePos[itemCount].second;
+				pDesc.pGameObjectTag = tag.first;
+				CLayer* layer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"UI_ICons");
+				if (layer == nullptr) {
+					if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(CGameInstance::Get().GetCurLevelIndex(),
+						L"Prototype_ItemIcon", CGameInstance::Get().GetCurLevelIndex(), L"UI_ICons", &pDesc)))
+						return;
+					itemCount++;
 				}
 				else {
-					iter++;
+
+					list<shared_ptr<CGameObject>>::iterator iter = layer->GetObjects().begin();
+					_bool found = false;
+					for (iter; iter != layer->GetObjects().end(); iter++) {
+						if ((*iter)->Get_Tag() == tag.first) {
+							found = true;
+							break;
+						}
+					}
+					if (found) {
+						CGameInstance::Get().Add_Item(tag.first);
+					}
+					else {
+						if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(CGameInstance::Get().GetCurLevelIndex(),
+							L"Prototype_ItemIcon", CGameInstance::Get().GetCurLevelIndex(), L"UI_ICons", &pDesc)))
+							return;
+						itemCount++;
+					}
 				}
+				
 			}
+			else if (tag.second == "Sub") {
+
+				CGameInstance::Get().Sub_Item(tag.first);
+			/*	CLayer* layer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"UI_ICons");
+				list<shared_ptr<CGameObject>>::iterator iter = layer->GetObjects().begin();
+				for (iter; iter != layer->GetObjects().end();) {
+					if ((*iter)->Get_Tag() == tag.first) {
+						(*iter)->Set_Dead();
+						itemCount--;
+						ReArrange();
+						break;
+					}
+					else {
+						iter++;
+					}
+				}*/
+			}
+
 		}
+		ReArrange();
+		CGameInstance::Get().Set_Changed(false);
+		CGameInstance::Get().Clear_WhichHow();
+		auto layer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_SearchBox"));
+		auto searchBox = layer->GetObjectFirst();
+
+		//static_pointer_cast<CSearchBox>(searchBox)->Clear();
+		
+
+
 	}
 }
 
@@ -242,11 +286,11 @@ HRESULT CInventory::Ready_Components()
 	return S_OK;
 }
 
-HRESULT CInventory::Ready_ItemFrames()
+HRESULT CInventory::Ready_ItemFrames(LEVEL nextLevel)
 {
 
 
-
+	auto i = CGameInstance::Get().GetCurLevelIndex();
 	_float fCellSizeX = g_iWinSizeX * 0.4f * 0.19f;
 	_float fCellSizeY = g_iWinSizeY * 0.7f * 0.19f;
 	_float fPadding = 10.f; 
@@ -277,9 +321,9 @@ HRESULT CInventory::Ready_ItemFrames()
 			pDesc.fY = fStartY + (i * (fCellSizeY + fPadding));
 			
 			if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(
-				ETOUI(LEVEL::SHELTER),
+				ETOUI(nextLevel),
 				TEXT("Prototype_ItemFrame"),
-				ETOUI(LEVEL::SHELTER),
+				ETOUI(nextLevel),
 				L"Layer_UI",
 				&pDesc)))
 				return E_FAIL;
@@ -296,13 +340,14 @@ HRESULT CInventory::Ready_ItemFrames()
 	bDesc.fSizeY = fCellSizeY;
 	bDesc.fX = framePos[0].first;
 	bDesc.fY = framePos[0].second;
-	CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), L"Prototype_EquipBorder", ETOUI(LEVEL::SHELTER), L"UI_EquipBorder", &bDesc);
+	CGameInstance::Get().Add_GameObject_toLayer(ETOUI(nextLevel), L"Prototype_EquipBorder", ETOUI(nextLevel), L"UI_EquipBorder", &bDesc);
 	return S_OK;
 }
 
 void CInventory::ReArrange()
 {
-	CLayer* layer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::SHELTER), L"UI_ICons");
+	
+	CLayer* layer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"UI_ICons");
 	list<shared_ptr<CGameObject>> icons = layer->GetObjects();
 	uint32_t  index = 0;
 	for (auto& pIcon : icons)
@@ -316,7 +361,7 @@ void CInventory::ReArrange()
 			index++;
 		}
 	}
-	CLayer* borderlayer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::SHELTER), L"UI_EquipBorder");
+	CLayer* borderlayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"UI_EquipBorder");
 	shared_ptr<CGameObject> border = borderlayer->GetObjectFirst();
 	auto pBorder = dynamic_pointer_cast<CUIObject>(border);
 	pBorder->Set_Render(false);
@@ -347,8 +392,9 @@ shared_ptr<CPrototype> CInventory::Clone(void* pArg)
 		MSG_BOX("Failed to Cloned : CInventory");
 		return nullptr;
 	}
+	auto		pDesc = static_cast<INVENTORY_DESC*>(pArg);
 
-	if (FAILED(static_pointer_cast<CInventory>(pInstance)->Ready_ItemFrames())) {
+	if (FAILED(static_pointer_cast<CInventory>(pInstance)->Ready_ItemFrames(pDesc->nextLevel))) {
 		MSG_BOX("Failed to Cloned : CItemFrames");
 		return nullptr;
 	}

@@ -1,6 +1,6 @@
 #include "GameInstance.h"
 #include "Item_Manager.h"
-
+#include <random>
 CItem_Manager::CItem_Manager()
 {
 }
@@ -8,6 +8,7 @@ CItem_Manager::~CItem_Manager()
 {
 	itemInfo.clear();
 	items.clear();
+	foundItem.clear();
 }
 HRESULT CItem_Manager::Initialize()
 {
@@ -35,14 +36,15 @@ void CItem_Manager::Add_Item(_wstring item)
 	if (items.empty()) {
 		items.emplace(item, 1);
 		m_bListChanged = true;
-		itemChanged = { item, "Add" };
+		itemChanged.push_back({ item, "Add" });
 	}
 	else {
 		auto	iter = items.find(item);
 		if (iter == items.end()) {
 			items.emplace(item, 1);
 			m_bListChanged = true;
-			itemChanged = { item, "Add" };
+			itemChanged.push_back({ item, "Add" });
+
 
 		}
 		else {
@@ -63,10 +65,53 @@ void CItem_Manager::Sub_Item(_wstring item)
 		{
 			items.erase(iter); // 0개가 되면 맵에서 완전히 삭제
 			m_bListChanged = true;
-			itemChanged = { item, "Sub" };
-
+			itemChanged.push_back({ item, "Sub" });
 		}
 	}
+}
+void CItem_Manager::Clear_WhichHow()
+{
+	itemChanged.clear();
+	foundItem.clear();
+
+}
+void CItem_Manager::MakeRandomItem()
+{
+	foundItem.clear();
+	if (itemInfo.empty()) return;
+
+
+
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	// 1부터 (size - 2)까지의 범위를 명확하게 지정
+	std::uniform_int_distribution<uint32_t> dis(1, itemInfo.size() - 2);
+
+	uint32_t randomCount = dis(gen);
+
+
+	for (uint32_t i = 0; i < randomCount; ++i) {
+		uint32_t randomNum = rand() % itemInfo.size();
+		auto currentTag = itemInfo[randomNum].itemTag;
+
+		// 중복 검사
+		_bool exist = false;
+		for (auto item : foundItem) {
+			if (currentTag == item) {
+				exist = true;
+				break;
+			}
+		}
+
+		if (!exist) {
+			// 중복이 없으면 안전하게 추가
+			foundItem.push_back(currentTag);
+		}
+		else {
+			--i;
+		}
+	}
+	
 }
 unique_ptr<CItem_Manager> CItem_Manager::Create()
 {

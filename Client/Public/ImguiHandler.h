@@ -18,9 +18,9 @@ public:
 	void Handle_Imgui(uint32_t curlevel, _float fTimeDelta);
 	void Initialize();
 	void Imgui_Editor(_float fTimeDelta);
-	void Save_DoorAndBlocker();
+	//void Save_DoorAndBlocker();
 	void Save_StairCollider();
-	HRESULT Load_DoorAndBlocker();
+	//HRESULT Load_DoorAndBlocker();
 	HRESULT Load_StairCollider();
 
 public:
@@ -29,8 +29,8 @@ private:
 	ENGINE_DESC m_Desc;
 	MODELOBJ_DESC m_ModelDesc;
 	shared_ptr<CGameObject> m_pSelected = nullptr;
-	shared_ptr<CGameObject> m_pCurBlocker = nullptr;
-	shared_ptr<CGameObject> m_pCurDoor = nullptr;
+	//shared_ptr<CGameObject> m_pCurBlocker = nullptr;
+	//shared_ptr<CGameObject> m_pCurDoor = nullptr;
 	_float4 position = {};
 	_float3 rotation = {};
 	_float3 scale = {};

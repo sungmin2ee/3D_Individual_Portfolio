@@ -29,6 +29,11 @@ private:
 	HRESULT Ready_Layer_Zombie(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Sky(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_HealthUI(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Inven(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Search_Collider(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Search_Box(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Overlay(const _wstring& strLayerTag);
+
 public:
 	static unique_ptr<CLevel_Stage1> Create(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext);
 

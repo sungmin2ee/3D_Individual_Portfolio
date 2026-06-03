@@ -10,19 +10,15 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CInventory final : public CUIObject
+class COverlay final : public CUIObject
 {
 public:
-	typedef struct tagInventoryDesc : public CUIObject::UIOBJECT_DESC
-	{
-		LEVEL nextLevel;
-	}INVENTORY_DESC;
 
 private:
-	CInventory(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
-	CInventory(const CInventory& Prototype);
+	COverlay(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
+	COverlay(const COverlay& Prototype);
 public:
-	virtual ~CInventory();
+	virtual ~COverlay();
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -31,7 +27,6 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-	_bool& Get_Render() { return m_bRender; }
 
 private:
 	shared_ptr<CVIBuffer_Rect>	m_pVIBufferCom = { nullptr };
@@ -40,18 +35,12 @@ private:
 
 private:
 	HRESULT Ready_Components();
-	HRESULT Ready_ItemFrames(LEVEL nextLevel);
-	void ReArrange();
+
 public:
-	static unique_ptr<CInventory> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
+	static unique_ptr<COverlay> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
 	virtual shared_ptr<CPrototype> Clone(void* pArg) override;
 
 private:
-	vector<pair<_float, _float>> framePos;
-	vector<CGameObject> Icons;
-	uint32_t itemCount = 0;
-	_wstring m_selectedItemDesc;
-	_wstring m_selectedItemName;
 
 };
 

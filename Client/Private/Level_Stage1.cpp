@@ -10,6 +10,8 @@
 #include "Blocker.h"
 #include "Stair_Collider.h"
 #include "Body_Zombie.h"
+#include "SearchBox.h"
+#include "Search_Collider.h"
 CLevel_Stage1::CLevel_Stage1(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: CLevel{ pDevice, pContext }, m_pDevice{ pDevice }, m_pContext{ pContext }
 {
@@ -23,15 +25,21 @@ HRESULT CLevel_Stage1::Initialize()
 {
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
-	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
+	if (FAILED(Ready_Layer_Inven(TEXT("Layer_Inventory"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
-	if (FAILED(Ready_Layer_Zombie(TEXT("Layer_Zombie"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Layer_Zombie(TEXT("Layer_Zombie"))))
+	//	return E_FAIL;
 	if (FAILED(Ready_Layer_HealthUI(TEXT("Layer_PlayerUI"))))
+		return E_FAIL;
+	if (FAILED(Ready_Layer_Search_Collider(TEXT("Layer_Search_Collider"))))
+		return E_FAIL;
+	if (FAILED(Ready_Layer_Search_Box(TEXT("Layer_SearchBox"))))
+		return E_FAIL;
+	if (FAILED(Ready_Layer_Overlay(TEXT("Layer_Overlay"))))
 		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::STAGE1)))) {
 		return E_FAIL;
@@ -64,11 +72,8 @@ HRESULT CLevel_Stage1::Ready_Layer_UI(const _wstring& strLayerTag)
 {
 
 
-	CInventory::INVENTORY_DESC pDesc;
-
-	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), TEXT("Prototype_Inventory"),
-		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
-		return E_FAIL;
+	
+	
 	return S_OK;
 }
 HRESULT CLevel_Stage1::Ready_Layer_Sky(const _wstring& strLayerTag)
@@ -79,6 +84,20 @@ HRESULT CLevel_Stage1::Ready_Layer_Sky(const _wstring& strLayerTag)
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Sky"),
 		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
 		return E_FAIL;
+	return S_OK;
+}
+HRESULT CLevel_Stage1::Ready_Layer_Overlay(const _wstring& strLayerTag)
+{
+	CUIObject::UIOBJECT_DESC pDesc;
+	pDesc.fSizeX = g_iWinSizeX;
+	pDesc.fSizeY = g_iWinSizeY;
+	pDesc.fX = g_iWinSizeX * 0.5f;
+	pDesc.fY = g_iWinSizeY * 0.5f;
+	pDesc.pGameObjectTag = L"Overlay";
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_Overlay"),
+		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 HRESULT CLevel_Stage1::Ready_Layer_HealthUI(const _wstring& strLayerTag)
@@ -107,6 +126,44 @@ HRESULT CLevel_Stage1::Ready_Layer_HealthUI(const _wstring& strLayerTag)
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), L"Prototype_HealthBarFill", ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
 		return E_FAIL;
 
+	return S_OK;
+}
+HRESULT CLevel_Stage1::Ready_Layer_Inven(const _wstring& strLayerTag)
+{
+	CInventory::INVENTORY_DESC pDesc;
+
+	pDesc.nextLevel = LEVEL::STAGE1;
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_Inventory"),
+		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
+		return E_FAIL;
+	return S_OK;
+}
+HRESULT CLevel_Stage1::Ready_Layer_Search_Collider(const _wstring& strLayerTag)
+{
+	CSearch_Collider::SEARCH_COLLIDER_DESC pDesc;
+	pDesc.position = XMVectorSet(2.2f, 0.12f, -0.1f, 1);
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), L"Prototype_Search_Collider", ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
+		return E_FAIL;
+	pDesc.position = XMVectorSet(0.15f, 0.412f, -0.1f, 1);
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), L"Prototype_Search_Collider", ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
+		return E_FAIL;
+	pDesc.position = XMVectorSet(0.52f, 0.712f, -0.1f, 1);
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), L"Prototype_Search_Collider", ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
+		return E_FAIL;
+	pDesc.position = XMVectorSet(0.84f, 0.712f, -0.1f, 1);
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), L"Prototype_Search_Collider", ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+HRESULT CLevel_Stage1::Ready_Layer_Search_Box(const _wstring& strLayerTag)
+{
+	CSearchBox::SEARCH_DESC pSDesc;
+
+	pSDesc.nextLevel = LEVEL::STAGE1;
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_SearchBox"),
+		ETOUI(LEVEL::STAGE1), strLayerTag, &pSDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 HRESULT CLevel_Stage1::Ready_Layer_Player(const _wstring& strLayerTag)

@@ -17,6 +17,11 @@
 #include "JoeIcon.h"
 #include "HealthBarFrame.h"
 #include "HealthBarFill.h"
+#include "SearchBox.h"
+#include "Search_Collider.h"
+#include "SearchItemFrame.h"
+#include "SearchItemIcon.h"
+#include "Overlay.h"
 
 
 CLoader::CLoader(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
@@ -149,6 +154,8 @@ HRESULT CLoader::Loading_For_Shelter()
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩 중 입니다."));
 	
 	lstrcpy(m_szLoadingText, TEXT("객체원형 생성 중 입니다."));
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_Overlay", COverlay::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_Inventory", CInventory::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_ItemFrame", CItemFrame::Create(m_pDevice, m_pContext))))
@@ -176,13 +183,23 @@ HRESULT CLoader::Loading_For_Stage1()
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩 중 입니다."));
 
 	lstrcpy(m_szLoadingText, TEXT("객체원형 생성 중 입니다."));
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_Inventory", CInventory::Create(m_pDevice, m_pContext))))
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), L"Prototype_Overlay", COverlay::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_ItemFrame", CItemFrame::Create(m_pDevice, m_pContext))))
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), L"Prototype_Search_Collider", CSearch_Collider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_ItemIcon", CItemIcon::Create(m_pDevice, m_pContext))))
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), L"Prototype_SearchItemFrame", CSearchItemFrame::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_EquipBorder", CEquipBorder::Create(m_pDevice, m_pContext))))
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), L"Prototype_SearchItemIcon", CSearchItemIcon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), L"Prototype_SearchBox", CSearchBox::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), L"Prototype_Inventory", CInventory::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), L"Prototype_ItemFrame", CItemFrame::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), L"Prototype_ItemIcon", CItemIcon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), L"Prototype_EquipBorder", CEquipBorder::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Sky"),
@@ -224,13 +241,23 @@ HRESULT CLoader::Loading_For_Stage2()
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩 중 입니다."));
 
 	lstrcpy(m_szLoadingText, TEXT("객체원형 생성 중 입니다."));
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_Inventory", CInventory::Create(m_pDevice, m_pContext))))
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), L"Prototype_Overlay", COverlay::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_ItemFrame", CItemFrame::Create(m_pDevice, m_pContext))))
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), L"Prototype_Search_Collider", CSearch_Collider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_ItemIcon", CItemIcon::Create(m_pDevice, m_pContext))))
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), L"Prototype_SearchItemFrame", CSearchItemFrame::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_EquipBorder", CEquipBorder::Create(m_pDevice, m_pContext))))
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), L"Prototype_SearchItemIcon", CSearchItemIcon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), L"Prototype_SearchBox", CSearchBox::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), L"Prototype_Inventory", CInventory::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), L"Prototype_ItemFrame", CItemFrame::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), L"Prototype_ItemIcon", CItemIcon::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), L"Prototype_EquipBorder", CEquipBorder::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 

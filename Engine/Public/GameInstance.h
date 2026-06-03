@@ -111,8 +111,12 @@ public:
 	void Sub_Item(_wstring item);
 	void Set_Changed(_bool flag);
 	_bool Get_Changed();
-	pair< _wstring, string>&  Get_WhichHow();
+	vector<pair< _wstring, string>>&  Get_WhichHow();
+	void Clear_WhichHow();
 	vector<CItem_Manager::ITEMINFO_DESC>& Get_ItemInfo();
+
+	vector<_wstring>& Get_FoundItem();
+	void MakeRandomItem();
 	
 #pragma endregion
 

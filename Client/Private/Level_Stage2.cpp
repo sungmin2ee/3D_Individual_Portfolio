@@ -10,6 +10,9 @@
 #include "Blocker.h"
 #include "Stair_Collider.h"
 #include "Body_Zombie.h"
+#include "Search_Collider.h"
+#include "SearchBox.h"
+
 namespace fs = std::filesystem;
 using json = nlohmann::json;
 CLevel_Stage2::CLevel_Stage2(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
@@ -30,8 +33,7 @@ HRESULT CLevel_Stage2::Initialize()
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
-	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
-		return E_FAIL;
+
 	//if (FAILED(Ready_Layer_Stair_Collider(TEXT("Layer_Stair_Collider"))))
 	//	return E_FAIL;
 	//if (FAILED(Ready_Layer_Release_Collider(TEXT("Layer_Release_Collider"))))
@@ -40,7 +42,16 @@ HRESULT CLevel_Stage2::Initialize()
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 	
-	if (FAILED(Ready_Layer_Zombie(TEXT("Layer_Zombie"))))
+	//if (FAILED(Ready_Layer_Zombie(TEXT("Layer_Zombie"))))
+	//	return E_FAIL;
+	if (FAILED(Ready_Layer_Search_Collider(TEXT("Layer_Search_Collider"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Search_Box(TEXT("Layer_SearchBox"))))
+		return E_FAIL;
+	if (FAILED(Ready_Layer_Inven(TEXT("Layer_Inventory"))))
+		return E_FAIL;
+	if (FAILED(Ready_Layer_Overlay(TEXT("Layer_Overlay"))))
 		return E_FAIL;
 	//if (FAILED(Ready_Layer_Blocker(TEXT("Layer_Blocker"))))
 	//	return E_FAIL;
@@ -70,25 +81,77 @@ HRESULT CLevel_Stage2::Render()
 	return S_OK;
 }
 
-HRESULT CLevel_Stage2::Ready_Layer_UI(const _wstring& strLayerTag)
+
+HRESULT CLevel_Stage2::Ready_Layer_Inven(const _wstring& strLayerTag)
 {
 	CInventory::INVENTORY_DESC pDesc;
-	
-	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), TEXT("Prototype_Inventory"),
+
+	pDesc.nextLevel = LEVEL::STAGE2;
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_Inventory"),
 		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
 		return E_FAIL;
-
-
-	//if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), L"Prototype_Inventory", ETOUI(LEVEL::SHELTER), strLayerTag)))
+	return S_OK;
+}
+HRESULT CLevel_Stage2::Ready_Layer_Search_Collider(const _wstring& strLayerTag)
+{
+	CSearch_Collider::SEARCH_COLLIDER_DESC pDesc;
+	pDesc.position = XMVectorSet(1.1f, 0.12f, -0.1f, 1);
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), L"Prototype_Search_Collider", ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
+		return E_FAIL;
+	pDesc.position = XMVectorSet(3.3f, 0.12f, -0.1f, 1);
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), L"Prototype_Search_Collider", ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
+		return E_FAIL;
+	pDesc.position = XMVectorSet(3.44f, 0.42f, -0.1f, 1);
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), L"Prototype_Search_Collider", ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
+		return E_FAIL;
+	pDesc.position = XMVectorSet(2.1f, 0.42f, -0.1f, 1);
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), L"Prototype_Search_Collider", ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
+		return E_FAIL;
+	pDesc.position = XMVectorSet(-0.77f, 0.42f, -0.1f, 1);
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), L"Prototype_Search_Collider", ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
+		return E_FAIL;
+	pDesc.position = XMVectorSet(-0.42f, 0.72f, -0.1f, 1);
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), L"Prototype_Search_Collider", ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
+		return E_FAIL;
+	pDesc.position = XMVectorSet(0.74f, 0.72f, -0.1f, 1);
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), L"Prototype_Search_Collider", ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
+		return E_FAIL;
+	//pDesc.position = XMVectorSet(0.15f, 0.412f, -0.1f, 1);
+	//if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), L"Prototype_Search_Collider", ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
 	//	return E_FAIL;
-	//
-		/* For.Prototype_GameObject_Player*/
-	
-
+	//pDesc.position = XMVectorSet(0.52f, 0.712f, -0.1f, 1);
+	//if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), L"Prototype_Search_Collider", ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
+	//	return E_FAIL;
+	//pDesc.position = XMVectorSet(0.84f, 0.712f, -0.1f, 1);
+	//if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), L"Prototype_Search_Collider", ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
+	//	return E_FAIL;
 
 	return S_OK;
 }
+HRESULT CLevel_Stage2::Ready_Layer_Search_Box(const _wstring& strLayerTag)
+{
+	CSearchBox::SEARCH_DESC pSDesc;
 
+	pSDesc.nextLevel = LEVEL::STAGE2;
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_SearchBox"),
+		ETOUI(LEVEL::STAGE2), strLayerTag, &pSDesc)))
+		return E_FAIL;
+	return S_OK;
+}
+HRESULT CLevel_Stage2::Ready_Layer_Overlay(const _wstring& strLayerTag)
+{
+	CUIObject::UIOBJECT_DESC pDesc;
+	pDesc.fSizeX = g_iWinSizeX;
+	pDesc.fSizeY = g_iWinSizeY;
+	pDesc.fX = g_iWinSizeX * 0.5f;
+	pDesc.fY = g_iWinSizeY * 0.5f;
+	pDesc.pGameObjectTag = L"Overlay";
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_Overlay"),
+		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
 HRESULT CLevel_Stage2::Ready_Layer_Camera(const _wstring& strLayerTag)
 {
 	CCamera_Free::CAMERA_FREE_DESC		FreeDesc{};
@@ -124,16 +187,6 @@ HRESULT CLevel_Stage2::Ready_Layer_Stair_Collider(const _wstring& strLayerTag)
 	//if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Release_Collider"),
 	//	ETOUI(LEVEL::STAGE2), strLayerTag, &desc)))
 	//	return E_FAIL;
-	return S_OK;
-}
-HRESULT CLevel_Stage2::Ready_Layer_Release_Collider(const _wstring& strLayerTag)
-{
-
-	CGameObject::GAMEOBJECT_DESC desc;
-	desc.pGameObjectTag = L"Release_Collider";
-	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Release_Collider"),
-		ETOUI(LEVEL::STAGE2), strLayerTag, &desc)))
-		return E_FAIL;
 	return S_OK;
 }
 

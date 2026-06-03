@@ -81,6 +81,10 @@
             "PrototypeTag": "Prototype_Model_Door"
         },
         {
+            "FilePath": "../../Resources/Models/evidence_room_shelve_a_var_c.fbx",
+            "PrototypeTag": "Prototype_Model_evidence_room_shelve_a_var_c"
+        },
+        {
             "FilePath": "../../Resources/Models/FireAxe.fbx",
             "PrototypeTag": "Prototype_Model_FireAxe"
         },
@@ -115,6 +119,10 @@
         {
             "FilePath": "../../Resources/Models/footpath_right.fbx",
             "PrototypeTag": "Prototype_Model_footpath_right"
+        },
+        {
+            "FilePath": "../../Resources/Models/forensic_bench_02.fbx",
+            "PrototypeTag": "Prototype_Model_forensic_bench_02"
         },
         {
             "FilePath": "../../Resources/Models/garage_workshop_03.fbx",

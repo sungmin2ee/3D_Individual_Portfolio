@@ -12,6 +12,10 @@
 #include "Layer.h"
 //#include "Door.h"
 #include "Blocker.h"
+#include "Search_Collider.h"
+#include "UIObject.h"
+#include "SearchBox.h"
+#include "Inventory.h"
 
 CBody_Player::CBody_Player(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: CPartObject{ pDevice, pContext }
@@ -149,6 +153,7 @@ void CBody_Player::Update(_float fTimeDelta)
 	ExpandCollider();
 	CheckDoorCollide();
 	CheckStairCollide();
+	CheckSearchCollide();
 }
 
 void CBody_Player::Late_Update(_float fTimeDelta)
@@ -334,6 +339,41 @@ void CBody_Player::CheckStairCollide()
 		}
 	}
 
+}
+
+void CBody_Player::CheckSearchCollide()
+{
+	auto searchLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Search_Collider"));
+	if (searchLayer == nullptr)
+		return;
+
+	auto boxes = searchLayer->GetObjects();
+
+	for (auto& box : boxes)
+	{
+		auto pBox = static_pointer_cast<CSearch_Collider>(box);
+		if (pBox == nullptr) continue;
+		auto layer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_SearchBox"));
+		auto searchBox = layer->GetObjectFirst();
+		if (m_pObbCom->myOBB.Intersects(pBox->Get_Obb()->myOBB))
+		{
+			pBox->Set_Render(true);
+			if (CGameInstance::Get().Key_Down(DIK_F)) {
+				auto layer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Inventory"));
+				auto inven = layer->GetObjectFirst();
+				static_pointer_cast<CInventory>(inven)->Set_Render(true);
+
+				static_pointer_cast<CSearchBox>(searchBox)->Set_Render(true);
+				static_pointer_cast<CSearchBox>(searchBox)->Refresh();
+			
+			}
+			break; // 찾았으니 다른 문은 더 돌 필요 없이 루프 탈출!
+		}
+		else {
+			pBox->Set_Render(false);
+			static_pointer_cast<CSearchBox>(searchBox)->Set_Render(false);
+		}
+	}
 }
 
 HRESULT CBody_Player::Ready_Components()

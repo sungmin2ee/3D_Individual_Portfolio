@@ -337,17 +337,29 @@ void CGameInstance::Set_Changed(_bool flag)
 {
     return m_pItem_Manager->Set_Changed(flag);
 }
+void CGameInstance::Clear_WhichHow()
+{
+    return m_pItem_Manager->Clear_WhichHow();
+}
+void CGameInstance::MakeRandomItem()
+{
+    return m_pItem_Manager->MakeRandomItem();
+}
 _bool CGameInstance::Get_Changed()
 {
     return m_pItem_Manager->Get_Changed();
 }
-pair< _wstring, string>  &CGameInstance::Get_WhichHow()
+vector<pair< _wstring, string>>  &CGameInstance::Get_WhichHow()
 {
     return m_pItem_Manager->Get_WhichHow();
 }
 vector<CItem_Manager::ITEMINFO_DESC>&CGameInstance::Get_ItemInfo()
 {
     return m_pItem_Manager->Get_ItemInfo();
+}
+vector<_wstring>& CGameInstance::Get_FoundItem()
+{
+    return m_pItem_Manager->Get_FoundItem();
 }
 
 #pragma endregion

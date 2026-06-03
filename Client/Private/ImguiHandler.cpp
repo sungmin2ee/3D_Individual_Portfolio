@@ -215,172 +215,172 @@ void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 		}
 
 		// 6. Connect Door and Blocker Tab
-		if (ImGui::BeginTabItem("Connect_Door_and Blocker"))
-		{
-			if (ImGui::Button("Create_Door"))
-			{
-				_matrix camView, camWorld;
-				CDoor::DOOR_DESC pDesc{};
-				_tchar szTag[32] = {};
-				auto layer = CGameInstance::Get().Find_Layer(curlevel, L"Layer_Door");
-				if (layer == nullptr) {
-					swprintf_s(szTag, L"Door_%d", 0);
-				}
-				else {
-					swprintf_s(szTag, L"Door_%d", layer->GetObjects().size());
-				}
-				pDesc.pGameObjectTag = szTag;
-
-				const _float4x4* view = CGameInstance::Get().Get_Transform(D3DTS::VIEW);
-				camView = XMLoadFloat4x4(view);
-				camWorld = XMMatrixInverse(nullptr, camView);
-				XMMATRIX scale = XMMatrixScaling(0.001f, 0.001f, 0.001f);
-				XMMATRIX world = scale * camWorld;
-				XMStoreFloat4x4(&pDesc.worldMat, world);
-
-				pDesc.fRotationPerSec = 720.f;
-				CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Door"), curlevel, L"Layer_Door", &pDesc);
-			}
-
-			ImGui::SameLine();
-
-			if (ImGui::Button("Create_Blocker"))
-			{
-				_matrix camView, camWorld;
-				CBlocker::BLOCKER_DESC pDesc{};
-				_tchar szTag[32] = {};
-				auto layer = CGameInstance::Get().Find_Layer(curlevel, L"Layer_Blocker");
-
-				if (layer == nullptr) {
-					swprintf_s(szTag, L"Blocker_%d", 0);
-				}
-				else {
-					uint32_t size = layer->GetObjects().size();
-					swprintf_s(szTag, L"Blocker_%d", size);
-				}
-				pDesc.pGameObjectTag = szTag;
-
-				const _float4x4* view = CGameInstance::Get().Get_Transform(D3DTS::VIEW);
-				camView = XMLoadFloat4x4(view);
-				camWorld = XMMatrixInverse(nullptr, camView);
-				XMMATRIX scale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
-				XMMATRIX world = scale * camWorld;
-				XMStoreFloat4x4(&pDesc.worldMat, world);
-
-				pDesc.fRotationPerSec = 720.f;
-				CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Blocker"), curlevel, L"Layer_Blocker", &pDesc);
-			}
-
-			ImGui::Separator();
-
-			if (ImGui::Button("LeftDoor"))
-			{
-				static_pointer_cast<CDoor>(m_pCurDoor)->Set_RightBlocker(static_pointer_cast<CBlocker>(m_pCurBlocker));
-				static_pointer_cast<CBlocker>(m_pCurBlocker)->Set_LeftDoor(static_pointer_cast<CDoor>(m_pCurDoor));
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("RightDoor"))
-			{
-				static_pointer_cast<CDoor>(m_pCurDoor)->Set_LeftBlocker(static_pointer_cast<CBlocker>(m_pCurBlocker));
-				static_pointer_cast<CBlocker>(m_pCurBlocker)->Set_RightDoor(static_pointer_cast<CDoor>(m_pCurDoor));
-			}
-
-			ImGui::EndTabItem();
-		} // 괄호를 여기로 옮겨서 Connect 탭을 완전히 닫아줍니다.
-
-		// 7. Door Tab (이제 Connect 탭과 동등한 위치로 독립되었습니다)
-		if (ImGui::BeginTabItem("Door"))
-		{
-			static ImGuiTextFilter filter1;
-			filter1.Draw("Door Filter");
-
-			auto layer = CGameInstance::Get().Find_Layer(curlevel, L"Layer_Door");
-			if (layer != nullptr) {
-				auto doors = layer->GetObjects();
-				uint32_t index = 0;
-
-				for (auto& door : doors) {
-					std::string doorTag = WStringToString(door->Get_Tag());
-
-					if (filter1.PassFilter(doorTag.c_str())) {
-						ImGui::PushID(index);
-
-						bool isSelected = (m_pSelected == door);
-
-						if (ImGui::Selectable(doorTag.c_str(), isSelected))
-						{
-							m_pSelected = door;
-							m_pCurDoor = door;
-						}
-
-						if (isSelected) {
-							for (auto& collider : CGameInstance::Get().Get_Colliders()) {
-								auto pCollider = collider.lock();
-								pCollider->SetSelected(false);
-							}
-							for (auto& collider : CGameInstance::Get().Get_Colliders()) {
-								auto pCollider = collider.lock();
-								if (m_pSelected == pCollider->GetOwner()) {
-									pCollider->SetSelected(true);
-									break;
-								}
-							}
-							ImGui::SetItemDefaultFocus();
-						}
-
-						ImGui::PopID();
-					}
-					index++;
-				}
-			}
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem("Blocker"))
-		{
-			static ImGuiTextFilter filter2;
-			filter2.Draw("Blocker Filter");
-
-			auto layer = CGameInstance::Get().Find_Layer(curlevel, L"Layer_Blocker");
-			if (layer != nullptr) {
-				auto blockers = layer->GetObjects();
-				uint32_t index = 0;
-
-				for (auto& blocker : blockers) {
-					std::string blockerTag = WStringToString(blocker->Get_Tag());
-
-					if (filter2.PassFilter(blockerTag.c_str())) {
-						ImGui::PushID(index);
-
-						bool isSelected = (m_pSelected == blocker);
-
-						if (ImGui::Selectable(blockerTag.c_str(), isSelected))
-						{
-							m_pSelected = blocker;
-							m_pCurDoor = blocker;
-						}
-
-						if (isSelected) {
-							for (auto& collider : CGameInstance::Get().Get_Colliders()) {
-								auto pCollider = collider.lock();
-								pCollider->SetSelected(false);
-							}
-							for (auto& collider : CGameInstance::Get().Get_Colliders()) {
-								auto pCollider = collider.lock();
-								if (m_pSelected == pCollider->GetOwner()) {
-									pCollider->SetSelected(true);
-									break;
-								}
-							}
-							ImGui::SetItemDefaultFocus();
-						}
-
-						ImGui::PopID();
-					}
-					index++;
-				}
-			}
-			ImGui::EndTabItem();
-		}
+		//if (ImGui::BeginTabItem("Connect_Door_and Blocker"))
+		//{
+		//	if (ImGui::Button("Create_Door"))
+		//	{
+		//		_matrix camView, camWorld;
+		//		CDoor::DOOR_DESC pDesc{};
+		//		_tchar szTag[32] = {};
+		//		auto layer = CGameInstance::Get().Find_Layer(curlevel, L"Layer_Door");
+		//		if (layer == nullptr) {
+		//			swprintf_s(szTag, L"Door_%d", 0);
+		//		}
+		//		else {
+		//			swprintf_s(szTag, L"Door_%d", layer->GetObjects().size());
+		//		}
+		//		pDesc.pGameObjectTag = szTag;
+		//
+		//		const _float4x4* view = CGameInstance::Get().Get_Transform(D3DTS::VIEW);
+		//		camView = XMLoadFloat4x4(view);
+		//		camWorld = XMMatrixInverse(nullptr, camView);
+		//		XMMATRIX scale = XMMatrixScaling(0.001f, 0.001f, 0.001f);
+		//		XMMATRIX world = scale * camWorld;
+		//		XMStoreFloat4x4(&pDesc.worldMat, world);
+		//
+		//		pDesc.fRotationPerSec = 720.f;
+		//		CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Door"), curlevel, L"Layer_Door", &pDesc);
+		//	}
+		//
+		//	ImGui::SameLine();
+		//
+		//	if (ImGui::Button("Create_Blocker"))
+		//	{
+		//		_matrix camView, camWorld;
+		//		CBlocker::BLOCKER_DESC pDesc{};
+		//		_tchar szTag[32] = {};
+		//		auto layer = CGameInstance::Get().Find_Layer(curlevel, L"Layer_Blocker");
+		//
+		//		if (layer == nullptr) {
+		//			swprintf_s(szTag, L"Blocker_%d", 0);
+		//		}
+		//		else {
+		//			uint32_t size = layer->GetObjects().size();
+		//			swprintf_s(szTag, L"Blocker_%d", size);
+		//		}
+		//		pDesc.pGameObjectTag = szTag;
+		//
+		//		const _float4x4* view = CGameInstance::Get().Get_Transform(D3DTS::VIEW);
+		//		camView = XMLoadFloat4x4(view);
+		//		camWorld = XMMatrixInverse(nullptr, camView);
+		//		XMMATRIX scale = XMMatrixScaling(1.0f, 1.0f, 1.0f);
+		//		XMMATRIX world = scale * camWorld;
+		//		XMStoreFloat4x4(&pDesc.worldMat, world);
+		//
+		//		pDesc.fRotationPerSec = 720.f;
+		//		CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Blocker"), curlevel, L"Layer_Blocker", &pDesc);
+		//	}
+		//
+		//	ImGui::Separator();
+		//
+		//	if (ImGui::Button("LeftDoor"))
+		//	{
+		//		static_pointer_cast<CDoor>(m_pCurDoor)->Set_RightBlocker(static_pointer_cast<CBlocker>(m_pCurBlocker));
+		//		static_pointer_cast<CBlocker>(m_pCurBlocker)->Set_LeftDoor(static_pointer_cast<CDoor>(m_pCurDoor));
+		//	}
+		//	ImGui::SameLine();
+		//	if (ImGui::Button("RightDoor"))
+		//	{
+		//		static_pointer_cast<CDoor>(m_pCurDoor)->Set_LeftBlocker(static_pointer_cast<CBlocker>(m_pCurBlocker));
+		//		static_pointer_cast<CBlocker>(m_pCurBlocker)->Set_RightDoor(static_pointer_cast<CDoor>(m_pCurDoor));
+		//	}
+		//
+		//	ImGui::EndTabItem();
+		//} // 괄호를 여기로 옮겨서 Connect 탭을 완전히 닫아줍니다.
+		//
+		//// 7. Door Tab (이제 Connect 탭과 동등한 위치로 독립되었습니다)
+		//if (ImGui::BeginTabItem("Door"))
+		//{
+		//	static ImGuiTextFilter filter1;
+		//	filter1.Draw("Door Filter");
+		//
+		//	auto layer = CGameInstance::Get().Find_Layer(curlevel, L"Layer_Door");
+		//	if (layer != nullptr) {
+		//		auto doors = layer->GetObjects();
+		//		uint32_t index = 0;
+		//
+		//		for (auto& door : doors) {
+		//			std::string doorTag = WStringToString(door->Get_Tag());
+		//
+		//			if (filter1.PassFilter(doorTag.c_str())) {
+		//				ImGui::PushID(index);
+		//
+		//				bool isSelected = (m_pSelected == door);
+		//
+		//				if (ImGui::Selectable(doorTag.c_str(), isSelected))
+		//				{
+		//					m_pSelected = door;
+		//					m_pCurDoor = door;
+		//				}
+		//
+		//				if (isSelected) {
+		//					for (auto& collider : CGameInstance::Get().Get_Colliders()) {
+		//						auto pCollider = collider.lock();
+		//						pCollider->SetSelected(false);
+		//					}
+		//					for (auto& collider : CGameInstance::Get().Get_Colliders()) {
+		//						auto pCollider = collider.lock();
+		//						if (m_pSelected == pCollider->GetOwner()) {
+		//							pCollider->SetSelected(true);
+		//							break;
+		//						}
+		//					}
+		//					ImGui::SetItemDefaultFocus();
+		//				}
+		//
+		//				ImGui::PopID();
+		//			}
+		//			index++;
+		//		}
+		//	}
+		//	ImGui::EndTabItem();
+		//}
+		//if (ImGui::BeginTabItem("Blocker"))
+		//{
+		//	static ImGuiTextFilter filter2;
+		//	filter2.Draw("Blocker Filter");
+		//
+		//	auto layer = CGameInstance::Get().Find_Layer(curlevel, L"Layer_Blocker");
+		//	if (layer != nullptr) {
+		//		auto blockers = layer->GetObjects();
+		//		uint32_t index = 0;
+		//
+		//		for (auto& blocker : blockers) {
+		//			std::string blockerTag = WStringToString(blocker->Get_Tag());
+		//
+		//			if (filter2.PassFilter(blockerTag.c_str())) {
+		//				ImGui::PushID(index);
+		//
+		//				bool isSelected = (m_pSelected == blocker);
+		//
+		//				if (ImGui::Selectable(blockerTag.c_str(), isSelected))
+		//				{
+		//					m_pSelected = blocker;
+		//					m_pCurDoor = blocker;
+		//				}
+		//
+		//				if (isSelected) {
+		//					for (auto& collider : CGameInstance::Get().Get_Colliders()) {
+		//						auto pCollider = collider.lock();
+		//						pCollider->SetSelected(false);
+		//					}
+		//					for (auto& collider : CGameInstance::Get().Get_Colliders()) {
+		//						auto pCollider = collider.lock();
+		//						if (m_pSelected == pCollider->GetOwner()) {
+		//							pCollider->SetSelected(true);
+		//							break;
+		//						}
+		//					}
+		//					ImGui::SetItemDefaultFocus();
+		//				}
+		//
+		//				ImGui::PopID();
+		//			}
+		//			index++;
+		//		}
+		//	}
+		//	ImGui::EndTabItem();
+		//}
 		ImGui::EndTabBar();
 	}
 
@@ -403,7 +403,7 @@ void CImguiHandler::Imgui_Editor(_float fTimeDelta)
 	ImGui::Separator(); // 구분선
 	
 	
-	CGameInstance::Get().GetMousePointRay(&rayPos, &rayDir);
+	//CGameInstance::Get().GetMousePointRay(&rayPos, &rayDir);
 	
 	if (CGameInstance::Get().Mouse_Down(DIMK::RBUTTON)) {
 		_float fMinDist = 100000.f;
@@ -411,7 +411,6 @@ void CImguiHandler::Imgui_Editor(_float fTimeDelta)
 			auto pCollider = collider.lock();
 			if (pCollider) pCollider->SetSelected(false); // 모두 초록색으로 초기화
 		}
-	
 		for (auto& collider : CGameInstance::Get().Get_Colliders()) {
 			auto pCollider = collider.lock();
 			_float fDist = 0.f;
@@ -419,26 +418,26 @@ void CImguiHandler::Imgui_Editor(_float fTimeDelta)
 				if (fDist < fMinDist) {
 					fMinDist = fDist;
 					m_pSelected = pCollider->GetOwner();
-					auto blockerLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"Layer_Blocker");
-					auto doorLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"Layer_Door");
-					if (blockerLayer != nullptr) {
-						auto blockers = blockerLayer->GetObjects();
-						for (auto& blocker : blockers) {
-							if (m_pSelected == blocker) {
-								m_pCurBlocker = m_pSelected;
-								break;
-							}
-						}
-					}
-					if (doorLayer != nullptr) {
-						auto doors = doorLayer->GetObjects();
-						for (auto& door : doors) {
-							if (m_pSelected == door) {
-								m_pCurDoor = m_pSelected;
-								break;
-							}
-						}
-					}
+					//auto blockerLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"Layer_Blocker");
+					//auto doorLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"Layer_Door");
+					//if (blockerLayer != nullptr) {
+					//	auto blockers = blockerLayer->GetObjects();
+					//	for (auto& blocker : blockers) {
+					//		if (m_pSelected == blocker) {
+					//			m_pCurBlocker = m_pSelected;
+					//			break;
+					//		}
+					//	}
+					//}
+					//if (doorLayer != nullptr) {
+					//	auto doors = doorLayer->GetObjects();
+					//	for (auto& door : doors) {
+					//		if (m_pSelected == door) {
+					//			m_pCurDoor = m_pSelected;
+					//			break;
+					//		}
+					//	}
+					//}
 				}
 			}
 		}
@@ -553,246 +552,246 @@ void CImguiHandler::Imgui_Editor(_float fTimeDelta)
 	
 	// 2. 카메라 행렬 및 오브젝트 월드 행렬 가져오기 (float*)
 	
-	static bool show_demo = true; // 프로그램이 꺼질 때까지 상태가 유지됨
-	
-	
-	if (show_demo)
-	{
-		ImGui::ShowDemoWindow(&show_demo);
-	}
+	//static bool show_demo = true; // 프로그램이 꺼질 때까지 상태가 유지됨
+	//
+	//
+	//if (show_demo)
+	//{
+	//	ImGui::ShowDemoWindow(&show_demo);
+	//}
 	
 
 
 }
 
-void CImguiHandler::Save_DoorAndBlocker()
-{
-	json Main;
-	auto layers = CGameInstance::Get().Get_Layers();
-	uint32_t levelIndex = CGameInstance::Get().GetCurLevelIndex();
-	map<const _wstring, unique_ptr<class CLayer>>::iterator iter = layers[levelIndex].begin();
+//void CImguiHandler::Save_DoorAndBlocker()
+//{
+//	json Main;
+//	auto layers = CGameInstance::Get().Get_Layers();
+//	uint32_t levelIndex = CGameInstance::Get().GetCurLevelIndex();
+//	map<const _wstring, unique_ptr<class CLayer>>::iterator iter = layers[levelIndex].begin();
+//
+//	for (iter; iter != layers[levelIndex].end(); iter++) {
+//		if (iter->first == L"Layer_Door" || iter->first == L"Layer_Blocker") {
+//			for (auto object : iter->second->GetObjects()) {
+//				json j;
+//
+//				MODELOBJ_DESC desc = object->Get_Desc();
+//				_vector right, up, look, pos;
+//
+//				right = object->Get_Transform()->Get_State(STATE::RIGHT);
+//				up = object->Get_Transform()->Get_State(STATE::UP);
+//				look = object->Get_Transform()->Get_State(STATE::LOOK);
+//				pos = object->Get_Transform()->Get_State(STATE::POSITION);
+//
+//				_float4 rightf, upf, lookf, posf;
+//				XMStoreFloat4(&rightf, right);
+//				XMStoreFloat4(&upf, up);
+//				XMStoreFloat4(&lookf, look);
+//				XMStoreFloat4(&posf, pos);
+//				_wstring prototypeTag,tag, leftTag, rightTag;
+//				if (iter->first == L"Layer_Door") {
+//					prototypeTag = L"Prototype_GameObject_Door";
+//					tag =static_pointer_cast<CDoor>(object)->Get_Tag();
+//					auto door = static_pointer_cast<CDoor>(object);
+//					auto leftBlocker = door->Get_LeftBlocker();
+//					auto rightBlocker = door->Get_RightBlocker();
+//					if (leftBlocker == nullptr) {
+//						leftTag = L"Empty";
+//					}
+//					else {
+//						leftTag = door->Get_LeftBlocker()->Get_Tag();
+//					}
+//					if (rightBlocker == nullptr) {
+//						rightTag = L"Empty";
+//					}
+//					else {
+//						rightTag = door->Get_RightBlocker()->Get_Tag();
+//					}
+//				}
+//				else if (iter->first == L"Layer_Blocker") {
+//					prototypeTag = L"Prototype_GameObject_Blocker";
+//					tag = static_pointer_cast<CBlocker>(object)->Get_Tag();
+//					auto blocker = static_pointer_cast<CBlocker>(object);
+//					auto leftDoor = blocker->Get_LeftDoor();
+//					auto rightDoor= blocker->Get_RightDoor();
+//					if (leftDoor == nullptr) {
+//						leftTag = L"Empty";
+//					}
+//					else {
+//						leftTag = blocker->Get_LeftDoor()->Get_Tag();
+//					}
+//					if (rightDoor == nullptr) {
+//						rightTag = L"Empty";
+//					}
+//					else {
+//						rightTag = blocker->Get_RightDoor()->Get_Tag();
+//					}
+//
+//
+//				}
+//				j["PrototypeTag"] = WStringToString(prototypeTag);
+//				j["ObjectTag"] = WStringToString(tag);
+//				j["Layer"] = WStringToString(iter->first);
+//				j["LeftObject"] = WStringToString(leftTag);
+//				j["RightObject"] = WStringToString(rightTag);
+//				j["Right"] = { rightf.x,rightf.y, rightf.z, rightf.w };
+//				j["Up"] = { upf.x, upf.y, upf.z, upf.w };
+//				j["Look"] = { lookf.x, lookf.y, lookf.z, lookf.w };
+//				j["Position"] = { posf.x, posf.y, posf.z, posf.w };
+//
+//				Main["GameObjects"].push_back(j);
+//			}
+//		}
+//	}
+//	string LevelName = "";
+//	switch (levelIndex) {
+//	case 2:
+//		LevelName = "LOGO";
+//		break;
+//	case 3:
+//		LevelName = "SHELTER";
+//
+//		break;
+//	case 4:
+//		LevelName = "STAGE1";
+//		break;
+//	case 5:
+//		LevelName = "STAGE2";
+//		break;
+//	}
+//
+//	string savePath1 = "../../Resources/Data/" + LevelName + "_DoorAndBlocker.json";
+//	std::ofstream file1(savePath1);
+//	if (file1.is_open()) {
+//		file1 << Main.dump(4); // 4는 들여쓰기(Tab) 간격입니다.
+//		file1.close();
+//	}
+//
+//
+//
+//}
 
-	for (iter; iter != layers[levelIndex].end(); iter++) {
-		if (iter->first == L"Layer_Door" || iter->first == L"Layer_Blocker") {
-			for (auto object : iter->second->GetObjects()) {
-				json j;
 
-				MODELOBJ_DESC desc = object->Get_Desc();
-				_vector right, up, look, pos;
-
-				right = object->Get_Transform()->Get_State(STATE::RIGHT);
-				up = object->Get_Transform()->Get_State(STATE::UP);
-				look = object->Get_Transform()->Get_State(STATE::LOOK);
-				pos = object->Get_Transform()->Get_State(STATE::POSITION);
-
-				_float4 rightf, upf, lookf, posf;
-				XMStoreFloat4(&rightf, right);
-				XMStoreFloat4(&upf, up);
-				XMStoreFloat4(&lookf, look);
-				XMStoreFloat4(&posf, pos);
-				_wstring prototypeTag,tag, leftTag, rightTag;
-				if (iter->first == L"Layer_Door") {
-					prototypeTag = L"Prototype_GameObject_Door";
-					tag =static_pointer_cast<CDoor>(object)->Get_Tag();
-					auto door = static_pointer_cast<CDoor>(object);
-					auto leftBlocker = door->Get_LeftBlocker();
-					auto rightBlocker = door->Get_RightBlocker();
-					if (leftBlocker == nullptr) {
-						leftTag = L"Empty";
-					}
-					else {
-						leftTag = door->Get_LeftBlocker()->Get_Tag();
-					}
-					if (rightBlocker == nullptr) {
-						rightTag = L"Empty";
-					}
-					else {
-						rightTag = door->Get_RightBlocker()->Get_Tag();
-					}
-				}
-				else if (iter->first == L"Layer_Blocker") {
-					prototypeTag = L"Prototype_GameObject_Blocker";
-					tag = static_pointer_cast<CBlocker>(object)->Get_Tag();
-					auto blocker = static_pointer_cast<CBlocker>(object);
-					auto leftDoor = blocker->Get_LeftDoor();
-					auto rightDoor= blocker->Get_RightDoor();
-					if (leftDoor == nullptr) {
-						leftTag = L"Empty";
-					}
-					else {
-						leftTag = blocker->Get_LeftDoor()->Get_Tag();
-					}
-					if (rightDoor == nullptr) {
-						rightTag = L"Empty";
-					}
-					else {
-						rightTag = blocker->Get_RightDoor()->Get_Tag();
-					}
-
-
-				}
-				j["PrototypeTag"] = WStringToString(prototypeTag);
-				j["ObjectTag"] = WStringToString(tag);
-				j["Layer"] = WStringToString(iter->first);
-				j["LeftObject"] = WStringToString(leftTag);
-				j["RightObject"] = WStringToString(rightTag);
-				j["Right"] = { rightf.x,rightf.y, rightf.z, rightf.w };
-				j["Up"] = { upf.x, upf.y, upf.z, upf.w };
-				j["Look"] = { lookf.x, lookf.y, lookf.z, lookf.w };
-				j["Position"] = { posf.x, posf.y, posf.z, posf.w };
-
-				Main["GameObjects"].push_back(j);
-			}
-		}
-	}
-	string LevelName = "";
-	switch (levelIndex) {
-	case 2:
-		LevelName = "LOGO";
-		break;
-	case 3:
-		LevelName = "SHELTER";
-
-		break;
-	case 4:
-		LevelName = "STAGE1";
-		break;
-	case 5:
-		LevelName = "STAGE2";
-		break;
-	}
-
-	string savePath1 = "../../Resources/Data/" + LevelName + "_DoorAndBlocker.json";
-	std::ofstream file1(savePath1);
-	if (file1.is_open()) {
-		file1 << Main.dump(4); // 4는 들여쓰기(Tab) 간격입니다.
-		file1.close();
-	}
-
-
-
-}
-
-
-HRESULT CImguiHandler::Load_DoorAndBlocker()
-{
-	m_pSelected = nullptr;
-	m_pCurDoor = nullptr;
-	m_pCurBlocker = nullptr;
-	string LevelName = "";
-	uint32_t levelIndex = CGameInstance::Get().GetCurLevelIndex();
-
-	switch (levelIndex) {
-	case 2:
-		LevelName = "LOGO";
-		break;
-	case 3:
-		LevelName = "SHELTER";
-
-		break;
-	case 4:
-		LevelName = "STAGE1";
-		break;
-	case 5:
-		LevelName = "STAGE2";
-		break;
-	}
-
-	string path = "../../Resources/Data/" + LevelName + "_DoorAndBlocker.json";
-	ifstream file(path);
-	if (!file.is_open()) {
-		return E_FAIL;
-	}
-
-	json j;
-	file >> j;
-
-	for (auto& gameObject : j["GameObjects"])
-	{
-		_wstring prototypeTag, layerTag;
-		CDoor::DOOR_DESC desc;
-		prototypeTag = StringToWString(gameObject.value("PrototypeTag", ""));
-		desc.pGameObjectTag = StringToWString(gameObject.value("ObjectTag", ""));
-		layerTag = StringToWString(gameObject.value("Layer", ""));
-		desc.leftTag = StringToWString(gameObject.value("LeftObject", ""));
-		desc.rightTag = StringToWString(gameObject.value("RightObject", ""));
-
-		_float fRight[4], fUp[4], fLook[4], fPos[4];
-		for (int i = 0; i < 4; ++i) {
-			fRight[i] = gameObject["Right"][i].get<float>();
-			fUp[i] = gameObject["Up"][i].get<float>();
-			fLook[i] = gameObject["Look"][i].get<float>();
-			fPos[i] = gameObject["Position"][i].get<float>();
-		}
-		XMMATRIX matWorld = XMMatrixIdentity();
-
-		matWorld.r[0] = XMLoadFloat4((_float4*)fRight);  // Right
-		matWorld.r[1] = XMLoadFloat4((_float4*)fUp);     // Up
-		matWorld.r[2] = XMLoadFloat4((_float4*)fLook);   // Look
-		matWorld.r[3] = XMLoadFloat4((_float4*)fPos);    // Position
-		XMStoreFloat4x4(&desc.worldMat, matWorld);
-
-		if (prototypeTag == L"Prototype_GameObject_Blocker") {
-			if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(0, L"Prototype_GameObject_Blocker", levelIndex, layerTag, &desc))) {
-				return E_FAIL;
-			}
-		}
-		else if (prototypeTag == L"Prototype_GameObject_Door") {
-			if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(0, L"Prototype_GameObject_Door", levelIndex, layerTag, &desc))) {
-				return E_FAIL;
-			}
-		}
-	}
-
-	auto blockerLayer = CGameInstance::Get().Find_Layer(levelIndex, L"Layer_Blocker");
-	auto doorLayer =CGameInstance::Get().Find_Layer(levelIndex, L"Layer_Door");
-
-	auto blockers = blockerLayer->GetObjects();
-	auto doors = doorLayer->GetObjects();
-	for (auto& blocker : blockers) {
-		auto block = static_pointer_cast<CBlocker>(blocker);
-		if (block->Get_LeftTag() != L"Empty") {
-			for (auto& door : doors) {
-				auto pDoor = static_pointer_cast<CDoor>(door);
-				if (block->Get_LeftTag() == pDoor->Get_Tag()) {
-					block->Set_LeftDoor(pDoor);
-					break;
-				}
-			}
-		}
-		if (block->Get_RightTag()!= L"Empty") {
-			for (auto& door : doors) {
-				auto pDoor = static_pointer_cast<CDoor>(door);
-				if (block->Get_RightTag() == pDoor->Get_Tag()) {
-					block->Set_RightDoor(pDoor);
-					break;
-				}
-			}
-		}
-	}
-	for (auto& door : doors) {
-		auto pDoor = static_pointer_cast<CDoor>(door);
-		if (pDoor->Get_LeftTag() != L"Empty") {
-			for (auto& blocker : blockers) {
-				auto pBlocker = static_pointer_cast<CBlocker>(blocker);
-				if (pDoor->Get_LeftTag() == pBlocker->Get_Tag()) {
-					pDoor->Set_LeftBlocker(pBlocker);
-					break;
-				}
-			}
-		}
-		if (pDoor->Get_RightTag() != L"Empty") {
-			for (auto& blocker : blockers) {
-				auto pBlocker = static_pointer_cast<CBlocker>(blocker);
-				if (pDoor->Get_RightTag() == pBlocker->Get_Tag()) {
-					pDoor->Set_RightBlocker(pBlocker);
-					break;
-				}
-			}
-		}
-	}
-	return S_OK;
-}
+//HRESULT CImguiHandler::Load_DoorAndBlocker()
+//{
+//	m_pSelected = nullptr;
+//	m_pCurDoor = nullptr;
+//	m_pCurBlocker = nullptr;
+//	string LevelName = "";
+//	uint32_t levelIndex = CGameInstance::Get().GetCurLevelIndex();
+//
+//	switch (levelIndex) {
+//	case 2:
+//		LevelName = "LOGO";
+//		break;
+//	case 3:
+//		LevelName = "SHELTER";
+//
+//		break;
+//	case 4:
+//		LevelName = "STAGE1";
+//		break;
+//	case 5:
+//		LevelName = "STAGE2";
+//		break;
+//	}
+//
+//	string path = "../../Resources/Data/" + LevelName + "_DoorAndBlocker.json";
+//	ifstream file(path);
+//	if (!file.is_open()) {
+//		return E_FAIL;
+//	}
+//
+//	json j;
+//	file >> j;
+//
+//	for (auto& gameObject : j["GameObjects"])
+//	{
+//		_wstring prototypeTag, layerTag;
+//		CDoor::DOOR_DESC desc;
+//		prototypeTag = StringToWString(gameObject.value("PrototypeTag", ""));
+//		desc.pGameObjectTag = StringToWString(gameObject.value("ObjectTag", ""));
+//		layerTag = StringToWString(gameObject.value("Layer", ""));
+//		desc.leftTag = StringToWString(gameObject.value("LeftObject", ""));
+//		desc.rightTag = StringToWString(gameObject.value("RightObject", ""));
+//
+//		_float fRight[4], fUp[4], fLook[4], fPos[4];
+//		for (int i = 0; i < 4; ++i) {
+//			fRight[i] = gameObject["Right"][i].get<float>();
+//			fUp[i] = gameObject["Up"][i].get<float>();
+//			fLook[i] = gameObject["Look"][i].get<float>();
+//			fPos[i] = gameObject["Position"][i].get<float>();
+//		}
+//		XMMATRIX matWorld = XMMatrixIdentity();
+//
+//		matWorld.r[0] = XMLoadFloat4((_float4*)fRight);  // Right
+//		matWorld.r[1] = XMLoadFloat4((_float4*)fUp);     // Up
+//		matWorld.r[2] = XMLoadFloat4((_float4*)fLook);   // Look
+//		matWorld.r[3] = XMLoadFloat4((_float4*)fPos);    // Position
+//		XMStoreFloat4x4(&desc.worldMat, matWorld);
+//
+//		if (prototypeTag == L"Prototype_GameObject_Blocker") {
+//			if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(0, L"Prototype_GameObject_Blocker", levelIndex, layerTag, &desc))) {
+//				return E_FAIL;
+//			}
+//		}
+//		else if (prototypeTag == L"Prototype_GameObject_Door") {
+//			if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(0, L"Prototype_GameObject_Door", levelIndex, layerTag, &desc))) {
+//				return E_FAIL;
+//			}
+//		}
+//	}
+//
+//	auto blockerLayer = CGameInstance::Get().Find_Layer(levelIndex, L"Layer_Blocker");
+//	auto doorLayer =CGameInstance::Get().Find_Layer(levelIndex, L"Layer_Door");
+//
+//	auto blockers = blockerLayer->GetObjects();
+//	auto doors = doorLayer->GetObjects();
+//	for (auto& blocker : blockers) {
+//		auto block = static_pointer_cast<CBlocker>(blocker);
+//		if (block->Get_LeftTag() != L"Empty") {
+//			for (auto& door : doors) {
+//				auto pDoor = static_pointer_cast<CDoor>(door);
+//				if (block->Get_LeftTag() == pDoor->Get_Tag()) {
+//					block->Set_LeftDoor(pDoor);
+//					break;
+//				}
+//			}
+//		}
+//		if (block->Get_RightTag()!= L"Empty") {
+//			for (auto& door : doors) {
+//				auto pDoor = static_pointer_cast<CDoor>(door);
+//				if (block->Get_RightTag() == pDoor->Get_Tag()) {
+//					block->Set_RightDoor(pDoor);
+//					break;
+//				}
+//			}
+//		}
+//	}
+//	for (auto& door : doors) {
+//		auto pDoor = static_pointer_cast<CDoor>(door);
+//		if (pDoor->Get_LeftTag() != L"Empty") {
+//			for (auto& blocker : blockers) {
+//				auto pBlocker = static_pointer_cast<CBlocker>(blocker);
+//				if (pDoor->Get_LeftTag() == pBlocker->Get_Tag()) {
+//					pDoor->Set_LeftBlocker(pBlocker);
+//					break;
+//				}
+//			}
+//		}
+//		if (pDoor->Get_RightTag() != L"Empty") {
+//			for (auto& blocker : blockers) {
+//				auto pBlocker = static_pointer_cast<CBlocker>(blocker);
+//				if (pDoor->Get_RightTag() == pBlocker->Get_Tag()) {
+//					pDoor->Set_RightBlocker(pBlocker);
+//					break;
+//				}
+//			}
+//		}
+//	}
+//	return S_OK;
+//}
 void CImguiHandler::Save_StairCollider()
 {
 	json Main;

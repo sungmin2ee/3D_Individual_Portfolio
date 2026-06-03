@@ -67,9 +67,9 @@ void CMainApp::Update(float fTimeDelta)
 		//if (CGameInstance::Get().Key_Up(DIK_9)) {
 		//	m_pImguiHandler->Save_DoorAndBlocker();
 		//}
-		if (CGameInstance::Get().Key_Up(DIK_0)) {
-			m_pImguiHandler->Load_DoorAndBlocker();
-		}
+		//if (CGameInstance::Get().Key_Up(DIK_0)) {
+		//	m_pImguiHandler->Load_DoorAndBlocker();
+		//}
 		//if (CGameInstance::Get().Key_Up(DIK_K)) {
 		//	m_pImguiHandler->Save_StairCollider();
 		//}
@@ -139,6 +139,9 @@ HRESULT CMainApp::Ready_Prototypes()
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_equip_border"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/equip_border.png"), 1))))
 		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_search_border"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/clear_border.png"), 1))))
+		return E_FAIL;
 	//Icons
 
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_icon_lockpick"),
@@ -153,6 +156,29 @@ HRESULT CMainApp::Ready_Prototypes()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/icon_metal.png"), 1))))
 		return E_FAIL;
 
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_icon_lumber"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/icon_lumber_0.png"), 1))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_icon_meat"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/icon_meat.png"), 1))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_icon_connectors"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/icon_connectors.png"), 1))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_icon_healing_kit"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/icon_healing_kit.png"), 1))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_icon_tape"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/icon_tape.png"), 1))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_icon_search"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/icon_search.png"), 1))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_dust_scratch_overlay"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/dust_scratch_overlay.png"), 1))))
+		return E_FAIL;
+
+	/////
 
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxCube"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube.hlsl"), VTXCUBE::Elements, VTXCUBE::iNumElements))))

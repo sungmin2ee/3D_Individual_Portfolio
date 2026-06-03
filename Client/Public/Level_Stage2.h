@@ -26,12 +26,15 @@ private:
 	HRESULT Ready_Layer_UI(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Camera(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Stair_Collider(const _wstring& strLayerTag);
-	HRESULT Ready_Layer_Release_Collider(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Inven(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Player(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Zombie(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Sky(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Door(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Blocker(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Search_Collider(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Search_Box(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Overlay(const _wstring& strLayerTag);
 
 public:
 	static unique_ptr<CLevel_Stage2> Create(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext);

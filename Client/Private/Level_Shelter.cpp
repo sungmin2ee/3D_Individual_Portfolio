@@ -18,7 +18,9 @@ HRESULT CLevel_Shelter::Initialize()
 {
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
-	if (FAILED(Ready_Layer_UI(TEXT("Layer_UI"))))
+	if (FAILED(Ready_Layer_Inven(TEXT("Layer_Inventory"))))
+		return E_FAIL;
+	if (FAILED(Ready_Layer_Overlay(TEXT("Layer_Overlay"))))
 		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::SHELTER)))) {
 		return E_FAIL;
@@ -54,7 +56,7 @@ HRESULT CLevel_Shelter::Render()
 	return S_OK;
 }
 
-HRESULT CLevel_Shelter::Ready_Layer_UI(const _wstring& strLayerTag)
+HRESULT CLevel_Shelter::Ready_Layer_Inven(const _wstring& strLayerTag)
 {
 	CInventory::INVENTORY_DESC pDesc;
 
@@ -70,7 +72,20 @@ HRESULT CLevel_Shelter::Ready_Layer_UI(const _wstring& strLayerTag)
 
 	return S_OK;
 }
+HRESULT CLevel_Shelter::Ready_Layer_Overlay(const _wstring& strLayerTag)
+{
+	CUIObject::UIOBJECT_DESC pDesc;
+	pDesc.fSizeX = g_iWinSizeX;
+	pDesc.fSizeY = g_iWinSizeY;
+	pDesc.fX = g_iWinSizeX * 0.5f;
+	pDesc.fY = g_iWinSizeY * 0.5f;
+	pDesc.pGameObjectTag = L"Overlay";
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), TEXT("Prototype_Overlay"),
+		ETOUI(LEVEL::SHELTER), strLayerTag, &pDesc)))
+		return E_FAIL;
 
+	return S_OK;
+}
 HRESULT CLevel_Shelter::Ready_Layer_Camera(const _wstring& strLayerTag)
 {
 	//CCamera_Free::CAMERA_FREE_DESC		FreeDesc{};

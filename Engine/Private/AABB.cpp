@@ -161,6 +161,11 @@ bool AABB::IntersectsRay(_float* pOutDist)
     //        pVertices[i].vColor = XMFLOAT4(0, 1, 0, 1); // 노란색
     //    }
     //}
-
+    if (hit) {
+        *pOutDist = dist;
+    }
+    else {
+        *pOutDist = 100000.f; // 충돌 안 했을 땐 엄청 먼 거리로 셋팅해서 선택 안 되게 방지
+    }
     return hit;
 }

@@ -114,6 +114,7 @@ public:
 	void Execute();
 	void CheckDoorCollide();
 	void CheckStairCollide();
+	void CheckSearchCollide();
 private:
 	HRESULT Ready_Components();
 	void ExpandCollider();

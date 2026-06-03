@@ -1,74 +1,81 @@
-#include "ItemFrame.h"
+#include "SearchItemIcon.h"
 
 #include "GameInstance.h"
-#include "Inventory.h"
+#include "SearchBox.h"
 #include "Layer.h"
 
-CItemFrame::CItemFrame(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
+CSearchItemIcon::CSearchItemIcon(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: CUIObject{ pDevice, pContext }
 
 {
 }
 
-CItemFrame::CItemFrame(const CItemFrame& Prototype)
+CSearchItemIcon::CSearchItemIcon(const CSearchItemIcon& Prototype)
 	: CUIObject{ Prototype }
 {
 }
 
-CItemFrame::~CItemFrame()
+CSearchItemIcon::~CSearchItemIcon()
 {
-
+	int a = 10;
 }
 
 
-HRESULT CItemFrame::Initialize_Prototype()
+HRESULT CSearchItemIcon::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CItemFrame::Initialize(void* pArg)
+HRESULT CSearchItemIcon::Initialize(void* pArg)
 {
+	auto pDesc = static_cast<ITEMICON_DESC*>(pArg);
+	itemIconTag = pDesc->pGameObjectTag;
+	m_bRender = pDesc->bInitialRender;
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Components()))
+	if (FAILED(Ready_Components(itemIconTag)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-void CItemFrame::Priority_Update(_float fTimeDelta)
+void CSearchItemIcon::Priority_Update(_float fTimeDelta)
 {
+
 	__super::Priority_Update(fTimeDelta);
 }
 
-void CItemFrame::Update(_float fTimeDelta)
+void CSearchItemIcon::Update(_float fTimeDelta)
 {
-	/*m_fX += 20.f * fTimeDelta;
-	m_fSizeY += 100.f * fTimeDelta;*/
-	auto layer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Inventory"));
-	auto inven = layer->GetObjectFirst();
 
-	if (static_pointer_cast<CInventory>(inven)->Get_Render()) {
+
+	__super::Update(fTimeDelta);
+	//if (CGameInstance::Get().Key_Down(DIK_E)) {
+	//	m_bRender = !m_bRender;
+	//}
+
+	auto layer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_SearchBox"));
+	auto searchBox = layer->GetObjectFirst();
+
+	if (static_pointer_cast<CSearchBox>(searchBox)->Get_Render()) {
 		m_bRender = true;
 	}
 	else {
 		m_bRender = false;
 
 	}
-	__super::Update(fTimeDelta);
-
 }
 
-void CItemFrame::Late_Update(_float fTimeDelta)
+void CSearchItemIcon::Late_Update(_float fTimeDelta)
 {
 
-	CGameInstance::Get().Add_RenderObject(RENDERGROUP::UI, SHARED_THIS(CItemFrame));
+	CGameInstance::Get().Add_RenderObject(RENDERGROUP::ICON, SHARED_THIS(CSearchItemIcon));
 
 	__super::Late_Update(fTimeDelta);
 }
 
-HRESULT CItemFrame::Render()
+HRESULT CSearchItemIcon::Render()
 {
 	if (!m_bRender)
 		return E_FAIL;
@@ -87,17 +94,13 @@ HRESULT CItemFrame::Render()
 
 	if (FAILED(m_pVIBufferCom->Bind_Resources()))
 		return E_FAIL;
-
-
-
 	if (FAILED(m_pVIBufferCom->Render()))
 		return E_FAIL;
-
 
 	return S_OK;
 }
 
-HRESULT CItemFrame::Ready_Components()
+HRESULT CSearchItemIcon::Ready_Components(_wstring iconTag)
 {
 	m_pVIBufferCom = dynamic_pointer_cast<CVIBuffer_Rect>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect")));
 	if (FAILED(__super::Add_Component(TEXT("Com_VIBuffer"), m_pVIBufferCom)))
@@ -107,7 +110,7 @@ HRESULT CItemFrame::Ready_Components()
 	if (FAILED(__super::Add_Component(TEXT("Com_Shader"), m_pShaderCom)))
 		return E_FAIL;
 
-	m_pTextureCom = dynamic_pointer_cast<CTexture>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_smaller_item_border")));
+	m_pTextureCom = dynamic_pointer_cast<CTexture>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), iconTag));
 	if (FAILED(__super::Add_Component(TEXT("Com_Texture"), m_pTextureCom)))
 		return E_FAIL;
 
@@ -117,13 +120,13 @@ HRESULT CItemFrame::Ready_Components()
 	return S_OK;
 }
 
-unique_ptr<CItemFrame> CItemFrame::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
+unique_ptr<CSearchItemIcon> CSearchItemIcon::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 {
-	auto	pInstance = unique_ptr<CItemFrame>(new CItemFrame(pDevice, pContext));
+	auto	pInstance = unique_ptr<CSearchItemIcon>(new CSearchItemIcon(pDevice, pContext));
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : CItemFrame");
+		MSG_BOX("Failed to Created : CSearchItemIcon");
 		return nullptr;
 	}
 
@@ -131,16 +134,16 @@ unique_ptr<CItemFrame> CItemFrame::Create(ComPtr<ID3D11Device> pDevice, ComPtr<I
 }
 
 
-shared_ptr<CPrototype> CItemFrame::Clone(void* pArg)
+shared_ptr<CPrototype> CSearchItemIcon::Clone(void* pArg)
 {
-	auto	pInstance = shared_ptr<CGameObject>(new CItemFrame(*this));
+	auto	pInstance = shared_ptr<CGameObject>(new CSearchItemIcon(*this));
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : CItemFrame");
+		MSG_BOX("Failed to Cloned : CSearchItemIcon");
 		return nullptr;
 	}
-
+	
 	return pInstance;
 }
 
