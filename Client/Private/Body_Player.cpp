@@ -16,6 +16,7 @@
 #include "UIObject.h"
 #include "SearchBox.h"
 #include "Inventory.h"
+#include "Overlay.h"
 
 CBody_Player::CBody_Player(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: CPartObject{ pDevice, pContext }
@@ -64,73 +65,77 @@ HRESULT CBody_Player::Initialize(void* pArg)
 	ExpandCollider();
 	//m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(-1.5f, 0, 0, 1));
 	//m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(0.f, 0, 0, 1));
-
+	auto layer = CGameInstance::Get().Find_Layer(ETOUI(pDesc->nextLevel), TEXT("Layer_Inventory"));
+	m_pInven = static_pointer_cast<CInventory>(layer->GetObjectFirst());
 	return S_OK;
 }
 
 void CBody_Player::Priority_Update(_float fTimeDelta)
 {
+	
 	__super::Priority_Update(fTimeDelta);
+	if (!m_pInven->Get_Render()) {
+		if (m_bIsRotating) {
+			if (m_bDirChanged && m_eCurState != PLAYER_STATE::ATTACK) {
+				if (m_eCurDir == CBody_Player::PLAYER_DIR::RIGHT) {
+					bodyAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
+					//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
+					m_pPlayer.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
 
+					if (bodyAngle >= 180.f) {
+						//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
+						m_pPlayer.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
+						m_bDirChanged = false;
+						m_bIsRotating = false;
+						bodyAngle = 180.f;
+						m_eCurDir = PLAYER_DIR::LEFT;
+						return;
 
-	if (m_bIsRotating) {
-		if (m_bDirChanged && m_eCurState != PLAYER_STATE::ATTACK) {
-			if (m_eCurDir == CBody_Player::PLAYER_DIR::RIGHT) {
-				bodyAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
-				//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
-				m_pPlayer.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
-
-				if (bodyAngle >= 180.f) {
-					//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
-					m_pPlayer.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
-					m_bDirChanged = false;
-					m_bIsRotating = false;
-					bodyAngle = 180.f;
-					m_eCurDir = PLAYER_DIR::LEFT;
-					return;
-
+					}
 				}
-			}
-			else if (m_eCurDir == CBody_Player::PLAYER_DIR::LEFT) {
-				bodyAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
-				//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
-				m_pPlayer.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
+				else if (m_eCurDir == CBody_Player::PLAYER_DIR::LEFT) {
+					bodyAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
+					//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
+					m_pPlayer.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
 
 
-				if (bodyAngle >= 360.f) {
-					//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
-					m_pPlayer.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
+					if (bodyAngle >= 360.f) {
+						//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
+						m_pPlayer.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
 
-					m_bDirChanged = false;
-					m_bIsRotating = false;
-					bodyAngle = 0.f;
-					m_eCurDir = PLAYER_DIR::RIGHT;
-					return;
+						m_bDirChanged = false;
+						m_bIsRotating = false;
+						bodyAngle = 0.f;
+						m_eCurDir = PLAYER_DIR::RIGHT;
+						return;
 
-				}
-			}
-		}
-	}
-	else {
-		if (!m_bStairMove) {
-			if (m_eCurDir == PLAYER_DIR::LEFT) {
-				if (CGameInstance::Get().Key_Down(DIK_D)) {
-					m_bDirChanged = true;
-					m_bIsRotating = true;
-					return;
-				}
-			}
-			else if (m_eCurDir == PLAYER_DIR::RIGHT) {
-				if (CGameInstance::Get().Key_Down(DIK_A)) {
-					m_bDirChanged = true;
-					m_bIsRotating = true;
-					return;
-
+					}
 				}
 			}
 		}
-		
+		else {
+			if (!m_bStairMove) {
+				if (m_eCurDir == PLAYER_DIR::LEFT) {
+					if (CGameInstance::Get().Key_Down(DIK_D)) {
+						m_bDirChanged = true;
+						m_bIsRotating = true;
+						return;
+					}
+				}
+				else if (m_eCurDir == PLAYER_DIR::RIGHT) {
+					if (CGameInstance::Get().Key_Down(DIK_A)) {
+						m_bDirChanged = true;
+						m_bIsRotating = true;
+						return;
+
+					}
+				}
+			}
+
+		}
 	}
+
+
 	
 	
 }
@@ -251,7 +256,7 @@ void CBody_Player::CheckDoorCollide()
 			_float4 myPos;
 			_float3 doorPos;
 			
-			XMStoreFloat4(&myPos, m_pTransformCom->Get_State(STATE::POSITION));
+			XMStoreFloat4(&myPos, m_pPlayer.lock()->Get_Transform()->Get_State(STATE::POSITION));
 			//XMStoreFloat3(&doorPos, pDoor->Get_Obb()->myOBB.Center);
 			if (fabs(myPos.x - pDoor->Get_Obb()->myOBB.Center.x) < 0.03f) {
 				pCollidedDoor = pDoor.get(); // 충돌한 문의 주소값 저장
@@ -264,7 +269,7 @@ void CBody_Player::CheckDoorCollide()
 	if (pCollidedDoor != nullptr)
 	{
 		// 충돌한 문이 있는 경우 처리
-		auto myPos = m_pTransformCom->Get_State(STATE::POSITION);
+		auto myPos = m_pPlayer.lock()->Get_Transform()->Get_State(STATE::POSITION);
 		auto doorPos = pCollidedDoor->Get_Transform()->Get_State(STATE::POSITION);
 
 		_float4 deltaPos;
@@ -365,13 +370,17 @@ void CBody_Player::CheckSearchCollide()
 
 				static_pointer_cast<CSearchBox>(searchBox)->Set_Render(true);
 				static_pointer_cast<CSearchBox>(searchBox)->Refresh();
-			
+				auto overlaylayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Overlay"));
+				auto overlay = overlaylayer->GetObjectFirst();
+				static_pointer_cast<COverlay>(overlay)->Set_Render(true);
+				pBox->Set_Dead();
 			}
-			break; // 찾았으니 다른 문은 더 돌 필요 없이 루프 탈출!
+			break; 
 		}
 		else {
 			pBox->Set_Render(false);
-			static_pointer_cast<CSearchBox>(searchBox)->Set_Render(false);
+			
+			//static_pointer_cast<CSearchBox>(searchBox)->Set_Render(false);
 		}
 	}
 }

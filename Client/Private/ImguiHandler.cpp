@@ -673,125 +673,125 @@ void CImguiHandler::Imgui_Editor(_float fTimeDelta)
 //}
 
 
-//HRESULT CImguiHandler::Load_DoorAndBlocker()
-//{
-//	m_pSelected = nullptr;
-//	m_pCurDoor = nullptr;
-//	m_pCurBlocker = nullptr;
-//	string LevelName = "";
-//	uint32_t levelIndex = CGameInstance::Get().GetCurLevelIndex();
-//
-//	switch (levelIndex) {
-//	case 2:
-//		LevelName = "LOGO";
-//		break;
-//	case 3:
-//		LevelName = "SHELTER";
-//
-//		break;
-//	case 4:
-//		LevelName = "STAGE1";
-//		break;
-//	case 5:
-//		LevelName = "STAGE2";
-//		break;
-//	}
-//
-//	string path = "../../Resources/Data/" + LevelName + "_DoorAndBlocker.json";
-//	ifstream file(path);
-//	if (!file.is_open()) {
-//		return E_FAIL;
-//	}
-//
-//	json j;
-//	file >> j;
-//
-//	for (auto& gameObject : j["GameObjects"])
-//	{
-//		_wstring prototypeTag, layerTag;
-//		CDoor::DOOR_DESC desc;
-//		prototypeTag = StringToWString(gameObject.value("PrototypeTag", ""));
-//		desc.pGameObjectTag = StringToWString(gameObject.value("ObjectTag", ""));
-//		layerTag = StringToWString(gameObject.value("Layer", ""));
-//		desc.leftTag = StringToWString(gameObject.value("LeftObject", ""));
-//		desc.rightTag = StringToWString(gameObject.value("RightObject", ""));
-//
-//		_float fRight[4], fUp[4], fLook[4], fPos[4];
-//		for (int i = 0; i < 4; ++i) {
-//			fRight[i] = gameObject["Right"][i].get<float>();
-//			fUp[i] = gameObject["Up"][i].get<float>();
-//			fLook[i] = gameObject["Look"][i].get<float>();
-//			fPos[i] = gameObject["Position"][i].get<float>();
-//		}
-//		XMMATRIX matWorld = XMMatrixIdentity();
-//
-//		matWorld.r[0] = XMLoadFloat4((_float4*)fRight);  // Right
-//		matWorld.r[1] = XMLoadFloat4((_float4*)fUp);     // Up
-//		matWorld.r[2] = XMLoadFloat4((_float4*)fLook);   // Look
-//		matWorld.r[3] = XMLoadFloat4((_float4*)fPos);    // Position
-//		XMStoreFloat4x4(&desc.worldMat, matWorld);
-//
-//		if (prototypeTag == L"Prototype_GameObject_Blocker") {
-//			if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(0, L"Prototype_GameObject_Blocker", levelIndex, layerTag, &desc))) {
-//				return E_FAIL;
-//			}
-//		}
-//		else if (prototypeTag == L"Prototype_GameObject_Door") {
-//			if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(0, L"Prototype_GameObject_Door", levelIndex, layerTag, &desc))) {
-//				return E_FAIL;
-//			}
-//		}
-//	}
-//
-//	auto blockerLayer = CGameInstance::Get().Find_Layer(levelIndex, L"Layer_Blocker");
-//	auto doorLayer =CGameInstance::Get().Find_Layer(levelIndex, L"Layer_Door");
-//
-//	auto blockers = blockerLayer->GetObjects();
-//	auto doors = doorLayer->GetObjects();
-//	for (auto& blocker : blockers) {
-//		auto block = static_pointer_cast<CBlocker>(blocker);
-//		if (block->Get_LeftTag() != L"Empty") {
-//			for (auto& door : doors) {
-//				auto pDoor = static_pointer_cast<CDoor>(door);
-//				if (block->Get_LeftTag() == pDoor->Get_Tag()) {
-//					block->Set_LeftDoor(pDoor);
-//					break;
-//				}
-//			}
-//		}
-//		if (block->Get_RightTag()!= L"Empty") {
-//			for (auto& door : doors) {
-//				auto pDoor = static_pointer_cast<CDoor>(door);
-//				if (block->Get_RightTag() == pDoor->Get_Tag()) {
-//					block->Set_RightDoor(pDoor);
-//					break;
-//				}
-//			}
-//		}
-//	}
-//	for (auto& door : doors) {
-//		auto pDoor = static_pointer_cast<CDoor>(door);
-//		if (pDoor->Get_LeftTag() != L"Empty") {
-//			for (auto& blocker : blockers) {
-//				auto pBlocker = static_pointer_cast<CBlocker>(blocker);
-//				if (pDoor->Get_LeftTag() == pBlocker->Get_Tag()) {
-//					pDoor->Set_LeftBlocker(pBlocker);
-//					break;
-//				}
-//			}
-//		}
-//		if (pDoor->Get_RightTag() != L"Empty") {
-//			for (auto& blocker : blockers) {
-//				auto pBlocker = static_pointer_cast<CBlocker>(blocker);
-//				if (pDoor->Get_RightTag() == pBlocker->Get_Tag()) {
-//					pDoor->Set_RightBlocker(pBlocker);
-//					break;
-//				}
-//			}
-//		}
-//	}
-//	return S_OK;
-//}
+HRESULT CImguiHandler::Load_DoorAndBlocker()
+{
+	//m_pSelected = nullptr;
+	//m_pCurDoor = nullptr;
+	//m_pCurBlocker = nullptr;
+	string LevelName = "";
+	uint32_t levelIndex = CGameInstance::Get().GetCurLevelIndex();
+
+	switch (levelIndex) {
+	case 2:
+		LevelName = "LOGO";
+		break;
+	case 3:
+		LevelName = "SHELTER";
+
+		break;
+	case 4:
+		LevelName = "STAGE1";
+		break;
+	case 5:
+		LevelName = "STAGE2";
+		break;
+	}
+
+	string path = "../../Resources/Data/" + LevelName + "_DoorAndBlocker.json";
+	ifstream file(path);
+	if (!file.is_open()) {
+		return E_FAIL;
+	}
+
+	json j;
+	file >> j;
+
+	for (auto& gameObject : j["GameObjects"])
+	{
+		_wstring prototypeTag, layerTag;
+		CDoor::DOOR_DESC desc;
+		prototypeTag = StringToWString(gameObject.value("PrototypeTag", ""));
+		desc.pGameObjectTag = StringToWString(gameObject.value("ObjectTag", ""));
+		layerTag = StringToWString(gameObject.value("Layer", ""));
+		desc.leftTag = StringToWString(gameObject.value("LeftObject", ""));
+		desc.rightTag = StringToWString(gameObject.value("RightObject", ""));
+
+		_float fRight[4], fUp[4], fLook[4], fPos[4];
+		for (int i = 0; i < 4; ++i) {
+			fRight[i] = gameObject["Right"][i].get<float>();
+			fUp[i] = gameObject["Up"][i].get<float>();
+			fLook[i] = gameObject["Look"][i].get<float>();
+			fPos[i] = gameObject["Position"][i].get<float>();
+		}
+		XMMATRIX matWorld = XMMatrixIdentity();
+
+		matWorld.r[0] = XMLoadFloat4((_float4*)fRight);  // Right
+		matWorld.r[1] = XMLoadFloat4((_float4*)fUp);     // Up
+		matWorld.r[2] = XMLoadFloat4((_float4*)fLook);   // Look
+		matWorld.r[3] = XMLoadFloat4((_float4*)fPos);    // Position
+		XMStoreFloat4x4(&desc.worldMat, matWorld);
+
+		if (prototypeTag == L"Prototype_GameObject_Blocker") {
+			if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(0, L"Prototype_GameObject_Blocker", levelIndex, layerTag, &desc))) {
+				return E_FAIL;
+			}
+		}
+		else if (prototypeTag == L"Prototype_GameObject_Door") {
+			if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(0, L"Prototype_GameObject_Door", levelIndex, layerTag, &desc))) {
+				return E_FAIL;
+			}
+		}
+	}
+
+	auto blockerLayer = CGameInstance::Get().Find_Layer(levelIndex, L"Layer_Blocker");
+	auto doorLayer =CGameInstance::Get().Find_Layer(levelIndex, L"Layer_Door");
+
+	auto blockers = blockerLayer->GetObjects();
+	auto doors = doorLayer->GetObjects();
+	for (auto& blocker : blockers) {
+		auto block = static_pointer_cast<CBlocker>(blocker);
+		if (block->Get_LeftTag() != L"Empty") {
+			for (auto& door : doors) {
+				auto pDoor = static_pointer_cast<CDoor>(door);
+				if (block->Get_LeftTag() == pDoor->Get_Tag()) {
+					block->Set_LeftDoor(pDoor);
+					break;
+				}
+			}
+		}
+		if (block->Get_RightTag()!= L"Empty") {
+			for (auto& door : doors) {
+				auto pDoor = static_pointer_cast<CDoor>(door);
+				if (block->Get_RightTag() == pDoor->Get_Tag()) {
+					block->Set_RightDoor(pDoor);
+					break;
+				}
+			}
+		}
+	}
+	for (auto& door : doors) {
+		auto pDoor = static_pointer_cast<CDoor>(door);
+		if (pDoor->Get_LeftTag() != L"Empty") {
+			for (auto& blocker : blockers) {
+				auto pBlocker = static_pointer_cast<CBlocker>(blocker);
+				if (pDoor->Get_LeftTag() == pBlocker->Get_Tag()) {
+					pDoor->Set_LeftBlocker(pBlocker);
+					break;
+				}
+			}
+		}
+		if (pDoor->Get_RightTag() != L"Empty") {
+			for (auto& blocker : blockers) {
+				auto pBlocker = static_pointer_cast<CBlocker>(blocker);
+				if (pDoor->Get_RightTag() == pBlocker->Get_Tag()) {
+					pDoor->Set_RightBlocker(pBlocker);
+					break;
+				}
+			}
+		}
+	}
+	return S_OK;
+}
 void CImguiHandler::Save_StairCollider()
 {
 	json Main;

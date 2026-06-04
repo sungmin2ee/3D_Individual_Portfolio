@@ -12,6 +12,11 @@
 #include "Body_Zombie.h"
 #include "SearchBox.h"
 #include "Search_Collider.h"
+
+#include "Layer.h"
+
+namespace fs = std::filesystem;
+using json = nlohmann::json;
 CLevel_Stage1::CLevel_Stage1(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: CLevel{ pDevice, pContext }, m_pDevice{ pDevice }, m_pContext{ pContext }
 {
@@ -40,6 +45,10 @@ HRESULT CLevel_Stage1::Initialize()
 	if (FAILED(Ready_Layer_Search_Box(TEXT("Layer_SearchBox"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Overlay(TEXT("Layer_Overlay"))))
+		return E_FAIL;
+	if (FAILED(Load_Door_Blocker()))
+		return E_FAIL;
+	if (FAILED(Load_Stair_Collider()))
 		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::STAGE1)))) {
 		return E_FAIL;
@@ -172,7 +181,7 @@ HRESULT CLevel_Stage1::Ready_Layer_Player(const _wstring& strLayerTag)
 	pDesc.pGameObjectTag = TEXT("Player");
 	pDesc.fSpeedPerSec = 0.1f;
 	pDesc.fRotationPerSec = 720.f;
-
+	pDesc.nextLevel = LEVEL::STAGE1;
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Player"),
 		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
 		return E_FAIL;
@@ -247,6 +256,158 @@ HRESULT CLevel_Stage1::Ready_Layer_Zombie(const _wstring& strLayerTag)
 		return E_FAIL;
 	return S_OK;
 }
+HRESULT CLevel_Stage1::Load_Stair_Collider()
+{
+	string LevelName = "STAGE1";
+
+
+	string path = "../../Resources/Data/" + LevelName + "_Stair_Collider.json";
+	ifstream file(path);
+	if (!file.is_open()) {
+		return E_FAIL;
+	}
+
+	json j;
+	file >> j;
+
+	for (auto& gameObject : j["GameObjects"])
+	{
+		_wstring layerTag;
+		CStair_Collider::STAIR_DESC desc;
+		layerTag = StringToWString(gameObject.value("Layer", ""));
+		uint32_t uState = gameObject["UpOrDown"].get<uint32_t>();
+		if (uState == ETOUI(CStair_Collider::STAIR_COLLIDER::STAIR_UP)) {
+			desc.state = CStair_Collider::STAIR_COLLIDER::STAIR_UP;
+		}
+		else if (uState == ETOUI(CStair_Collider::STAIR_COLLIDER::STAIR_DOWN)) {
+			desc.state = CStair_Collider::STAIR_COLLIDER::STAIR_DOWN;
+		}
+		_float fRight[4], fUp[4], fLook[4], fPos[4];
+		for (int i = 0; i < 4; ++i) {
+			fRight[i] = gameObject["Right"][i].get<float>();
+			fUp[i] = gameObject["Up"][i].get<float>();
+			fLook[i] = gameObject["Look"][i].get<float>();
+			fPos[i] = gameObject["Position"][i].get<float>();
+		}
+		XMMATRIX matWorld = XMMatrixIdentity();
+
+		matWorld.r[0] = XMLoadFloat4((_float4*)fRight);  // Right
+		matWorld.r[1] = XMLoadFloat4((_float4*)fUp);     // Up
+		matWorld.r[2] = XMLoadFloat4((_float4*)fLook);   // Look
+		matWorld.r[3] = XMLoadFloat4((_float4*)fPos);    // Position
+		XMStoreFloat4x4(&desc.worldMat, matWorld);
+		desc.pGameObjectTag = L"Stair_Collider";
+		if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(0, L"Prototype_GameObject_Stair_Collider", ETOUI(LEVEL::STAGE1), layerTag, &desc))) {
+			return E_FAIL;
+		}
+
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_Stage1::Load_Door_Blocker()
+{
+	string LevelName = "STAGE1";
+
+
+	string path = "../../Resources/Data/" + LevelName + "_DoorAndBlocker.json";
+	ifstream file(path);
+	if (!file.is_open()) {
+		return E_FAIL;
+	}
+
+	json j;
+	file >> j;
+
+	for (auto& gameObject : j["GameObjects"])
+	{
+		_wstring prototypeTag, layerTag;
+		CDoor::DOOR_DESC desc;
+		prototypeTag = StringToWString(gameObject.value("PrototypeTag", ""));
+		desc.pGameObjectTag = StringToWString(gameObject.value("ObjectTag", ""));
+		layerTag = StringToWString(gameObject.value("Layer", ""));
+		desc.leftTag = StringToWString(gameObject.value("LeftObject", ""));
+		desc.rightTag = StringToWString(gameObject.value("RightObject", ""));
+
+		_float fRight[4], fUp[4], fLook[4], fPos[4];
+		for (int i = 0; i < 4; ++i) {
+			fRight[i] = gameObject["Right"][i].get<float>();
+			fUp[i] = gameObject["Up"][i].get<float>();
+			fLook[i] = gameObject["Look"][i].get<float>();
+			fPos[i] = gameObject["Position"][i].get<float>();
+		}
+		XMMATRIX matWorld = XMMatrixIdentity();
+
+		matWorld.r[0] = XMLoadFloat4((_float4*)fRight);  // Right
+		matWorld.r[1] = XMLoadFloat4((_float4*)fUp);     // Up
+		matWorld.r[2] = XMLoadFloat4((_float4*)fLook);   // Look
+		matWorld.r[3] = XMLoadFloat4((_float4*)fPos);    // Position
+		XMStoreFloat4x4(&desc.worldMat, matWorld);
+
+		if (prototypeTag == L"Prototype_GameObject_Blocker") {
+			if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(0, L"Prototype_GameObject_Blocker", ETOUI(LEVEL::STAGE1), layerTag, &desc))) {
+				return E_FAIL;
+			}
+		}
+		else if (prototypeTag == L"Prototype_GameObject_Door") {
+			if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(0, L"Prototype_GameObject_Door", ETOUI(LEVEL::STAGE1), layerTag, &desc))) {
+				return E_FAIL;
+			}
+		}
+	}
+
+	auto blockerLayer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::STAGE1), L"Layer_Blocker");
+	auto doorLayer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::STAGE1), L"Layer_Door");
+
+	auto blockers = blockerLayer->GetObjects();
+	auto doors = doorLayer->GetObjects();
+	for (auto& blocker : blockers) {
+		auto block = static_pointer_cast<CBlocker>(blocker);
+		if (block->Get_LeftTag() != L"Empty") {
+			for (auto& door : doors) {
+				auto pDoor = static_pointer_cast<CDoor>(door);
+				if (block->Get_LeftTag() == pDoor->Get_Tag()) {
+					block->Set_LeftDoor(pDoor);
+					break;
+				}
+			}
+		}
+		if (block->Get_RightTag() != L"Empty") {
+			for (auto& door : doors) {
+				auto pDoor = static_pointer_cast<CDoor>(door);
+				if (block->Get_RightTag() == pDoor->Get_Tag()) {
+					block->Set_RightDoor(pDoor);
+					break;
+				}
+			}
+		}
+	}
+	for (auto& door : doors) {
+		auto pDoor = static_pointer_cast<CDoor>(door);
+		if (pDoor->Get_LeftTag() != L"Empty") {
+			for (auto& blocker : blockers) {
+				auto pBlocker = static_pointer_cast<CBlocker>(blocker);
+				if (pDoor->Get_LeftTag() == pBlocker->Get_Tag()) {
+					pDoor->Set_LeftBlocker(pBlocker);
+					break;
+				}
+			}
+		}
+		if (pDoor->Get_RightTag() != L"Empty") {
+			for (auto& blocker : blockers) {
+				auto pBlocker = static_pointer_cast<CBlocker>(blocker);
+				if (pDoor->Get_RightTag() == pBlocker->Get_Tag()) {
+					pDoor->Set_RightBlocker(pBlocker);
+					break;
+				}
+			}
+		}
+	}
+	return S_OK;
+}
+
+
 HRESULT CLevel_Stage1::Ready_Layer_Camera(const _wstring& strLayerTag)
 {
 	CCamera_Free::CAMERA_FREE_DESC		FreeDesc{};

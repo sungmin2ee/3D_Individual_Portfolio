@@ -4,6 +4,8 @@
 #include "Layer.h"
 #include "EquipBorder.h"
 #include "SearchBox.h"
+#include "Player.h"
+#include "Body_Player.h"
 
 #include "GameInstance.h"
 
@@ -50,7 +52,8 @@ HRESULT CInventory::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
-
+	m_fCellSizeX = g_iWinSizeX * 0.4f * 0.19f;
+	m_fCellSizeY = g_iWinSizeY * 0.7f * 0.19f;
 	return S_OK;
 }
 
@@ -91,9 +94,11 @@ void CInventory::Priority_Update(_float fTimeDelta)
 								if (pUI->Get_Tag() == info.itemTag) {
 									m_selectedItemDesc = info.itemDesc;
 									m_selectedItemName = info.itemName;
+									m_selectedItemTag = info.itemTag;
 								}
 							}
-							//CGameInstance::Get().Sub_Item(pUI->Get_Tag());
+							
+							//CGameInstance::Get().Sub_Item(m_selectedItemTag);
 						}
 					}
 				}
@@ -115,15 +120,15 @@ void CInventory::Update(_float fTimeDelta)
 {
 	/*m_fX += 20.f * fTimeDelta;
 	m_fSizeY += 100.f * fTimeDelta;*/
-	//if (CGameInstance::Get().Key_Down(DIK_1)) {
-	//	CGameInstance::Get().Add_Item(L"Prototype_Component_Texture_icon_lockpick");
-	//}
-	//if (CGameInstance::Get().Key_Down(DIK_2)) {
-	//	CGameInstance::Get().Add_Item(L"Prototype_Component_Texture_icon_bandage");
-	//}
-	//if (CGameInstance::Get().Key_Down(DIK_3)) {
-	//	CGameInstance::Get().Add_Item(L"Prototype_Component_Texture_icon_metal");
-	//}
+	if (CGameInstance::Get().Key_Down(DIK_1)) {
+		CGameInstance::Get().Add_Item(L"Prototype_Component_Texture_icon_lockpick");
+	}
+	if (CGameInstance::Get().Key_Down(DIK_2)) {
+		CGameInstance::Get().Add_Item(L"Prototype_Component_Texture_icon_bandage");
+	}
+	if (CGameInstance::Get().Key_Down(DIK_3)) {
+		CGameInstance::Get().Add_Item(L"Prototype_Component_Texture_icon_metal");
+	}
 	//if (CGameInstance::Get().Key_Down(DIK_4)) {
 	//	CGameInstance::Get().Sub_Item(L"Prototype_Component_Texture_icon_lockpick");
 	//}
@@ -145,9 +150,15 @@ void CInventory::Update(_float fTimeDelta)
 		pBorder->Set_Render(m_bRender);
 		m_selectedItemDesc = L"";
 		m_selectedItemName = L"";
+		m_selectedItemTag = L"";
 	}
 	if (CGameInstance::Get().Key_Down(DIK_E)) {
 		m_bRender = !m_bRender;
+		auto layer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_SearchBox"));
+		if (layer == nullptr)
+			return;
+		auto searchBox = layer->GetObjectFirst();
+		dynamic_pointer_cast<CSearchBox>(searchBox)->Set_Render(false);
 	}
 
 
@@ -194,8 +205,8 @@ void CInventory::Update(_float fTimeDelta)
 			}
 			else if (tag.second == "Sub") {
 
-				CGameInstance::Get().Sub_Item(tag.first);
-			/*	CLayer* layer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"UI_ICons");
+				//CGameInstance::Get().Sub_Item(tag.first);
+				CLayer* layer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"UI_ICons");
 				list<shared_ptr<CGameObject>>::iterator iter = layer->GetObjects().begin();
 				for (iter; iter != layer->GetObjects().end();) {
 					if ((*iter)->Get_Tag() == tag.first) {
@@ -207,15 +218,14 @@ void CInventory::Update(_float fTimeDelta)
 					else {
 						iter++;
 					}
-				}*/
+				}
 			}
 
 		}
 		ReArrange();
 		CGameInstance::Get().Set_Changed(false);
 		CGameInstance::Get().Clear_WhichHow();
-		auto layer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_SearchBox"));
-		auto searchBox = layer->GetObjectFirst();
+
 
 		//static_pointer_cast<CSearchBox>(searchBox)->Clear();
 		
@@ -229,6 +239,36 @@ void CInventory::Late_Update(_float fTimeDelta)
 
 	CGameInstance::Get().Add_RenderObject(RENDERGROUP::UI, SHARED_THIS(CInventory));
 
+	if (m_bRender) {
+		if (CGameInstance::Get().Key_Down(DIK_F)) {
+			if (m_selectedItemName == L"붕대") {
+				auto layer = CGameInstance::Get().Find_Layer(ETOUI(CGameInstance::Get().GetCurLevelIndex()), TEXT("Layer_Player"));
+				if (layer == nullptr)
+					return;
+				auto player = layer->GetObjectFirst();
+				if (player == nullptr)
+					return;
+				auto playerBody = static_pointer_cast<CPlayer>(player)->Get_Body();
+				if (playerBody == nullptr)
+					return;
+				playerBody->Set_Hp(15.f);
+				CGameInstance::Get().Sub_Item(m_selectedItemTag);
+			}
+			else if (m_selectedItemName == L"구급상자") {
+				auto layer = CGameInstance::Get().Find_Layer(ETOUI(CGameInstance::Get().GetCurLevelIndex()), TEXT("Layer_Player"));
+				if (layer == nullptr)
+					return;
+				auto player = layer->GetObjectFirst();
+				if (player == nullptr)
+					return;
+				auto playerBody = static_pointer_cast<CPlayer>(player)->Get_Body();
+				if (playerBody == nullptr)
+					return;
+				playerBody->Set_Hp(30.f);
+				CGameInstance::Get().Sub_Item(m_selectedItemTag);
+			}
+		}
+	}
 	__super::Late_Update(fTimeDelta);
 }
 
@@ -262,6 +302,13 @@ HRESULT CInventory::Render()
 	}
 
 	CGameInstance::Get().RenderText(1,L"인벤토리", (m_fX - m_fSizeX * 0.5f + 30.f), (m_fY - m_fSizeY* 0.5f - 40.f), DirectX::Colors::Gold, 0.9f);
+	auto items = CGameInstance::Get().Get_Items();
+	uint32_t itemNum = items.size();
+	uint32_t index = 0;
+	for (auto& item : items) {
+		CGameInstance::Get().RenderText(1, to_wstring(item.second),framePos[index].first + (m_fCellSizeX * 0.2f), framePos[index].second + (m_fCellSizeY * 0.25f), DirectX::Colors::White, 0.6f);
+		index++;
+	}
 
 	return S_OK;
 }

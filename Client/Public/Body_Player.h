@@ -41,6 +41,7 @@ public:
 	{
 		const uint32_t* pParentState = { nullptr };
 		shared_ptr<class CPlayer> player;
+		LEVEL				nextLevel;
 	}BODY_PLAYER_DESC;
 
 private:
@@ -109,7 +110,9 @@ private:
 	 CDoor*										pCollidedDoor = nullptr;
 	 CStair_Collider*							pStairCollider = nullptr;
 	_float4										stairColliderPos = {};
-	weak_ptr<class CPlayer>							m_pPlayer;
+	weak_ptr<class CPlayer>						m_pPlayer;
+
+	shared_ptr<class CInventory>				m_pInven = nullptr;
 public:
 	void Execute();
 	void CheckDoorCollide();

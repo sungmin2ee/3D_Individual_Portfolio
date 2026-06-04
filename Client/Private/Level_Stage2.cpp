@@ -13,6 +13,7 @@
 #include "Search_Collider.h"
 #include "SearchBox.h"
 
+#include "Layer.h"
 namespace fs = std::filesystem;
 using json = nlohmann::json;
 CLevel_Stage2::CLevel_Stage2(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
@@ -29,10 +30,7 @@ HRESULT CLevel_Stage2::Initialize()
 	if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::STAGE2)))) {
 		return E_FAIL;
 	}
-	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
-		return E_FAIL;
-	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
-		return E_FAIL;
+
 
 	//if (FAILED(Ready_Layer_Stair_Collider(TEXT("Layer_Stair_Collider"))))
 	//	return E_FAIL;
@@ -42,8 +40,8 @@ HRESULT CLevel_Stage2::Initialize()
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 	
-	//if (FAILED(Ready_Layer_Zombie(TEXT("Layer_Zombie"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Layer_Zombie(TEXT("Layer_Zombie"))))
+		return E_FAIL;
 	if (FAILED(Ready_Layer_Search_Collider(TEXT("Layer_Search_Collider"))))
 		return E_FAIL;
 
@@ -53,10 +51,19 @@ HRESULT CLevel_Stage2::Initialize()
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Overlay(TEXT("Layer_Overlay"))))
 		return E_FAIL;
-	//if (FAILED(Ready_Layer_Blocker(TEXT("Layer_Blocker"))))
-	//	return E_FAIL;
-	//if (FAILED(Ready_Layer_Door(TEXT("Layer_Door"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
+		return E_FAIL;
+	if (FAILED(Ready_Layer_HealthUI(TEXT("Layer_PlayerUI"))))
+		return E_FAIL;
+
+
+	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
+		return E_FAIL;
+	
+	if (FAILED(Load_Door_Blocker()))
+		return E_FAIL;
+	if (FAILED(Load_Stair_Collider()))
+		return E_FAIL;
 
 
 
@@ -92,6 +99,35 @@ HRESULT CLevel_Stage2::Ready_Layer_Inven(const _wstring& strLayerTag)
 		return E_FAIL;
 	return S_OK;
 }
+HRESULT CLevel_Stage2::Ready_Layer_HealthUI(const _wstring& strLayerTag)
+{
+	CUIObject::UIOBJECT_DESC pDesc;
+	pDesc.fSizeX = 100.f;
+	pDesc.fSizeY = 100.f;
+	pDesc.fX = 100.f;
+	pDesc.fY = g_iWinSizeY - 80.f;
+	pDesc.pGameObjectTag = L"JoeIcon";
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_JoeIcon"),
+		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
+		return E_FAIL;
+	pDesc.pGameObjectTag = L"HealthBarFrame";
+	pDesc.fSizeX = 300.f;
+	pDesc.fSizeY = 20.f;
+	pDesc.fX = 310.f;
+	pDesc.fY = g_iWinSizeY - 40.f;
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), L"Prototype_HealthBarFrame", ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
+		return E_FAIL;
+	pDesc.pGameObjectTag = L"HealthBarFill";
+	pDesc.fSizeX = 280.f;
+	pDesc.fSizeY = 10.f;
+	pDesc.fX = 309.f;
+	pDesc.fY = g_iWinSizeY - 40.f;
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), L"Prototype_HealthBarFill", ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CLevel_Stage2::Ready_Layer_Search_Collider(const _wstring& strLayerTag)
 {
 	CSearch_Collider::SEARCH_COLLIDER_DESC pDesc;
@@ -152,6 +188,55 @@ HRESULT CLevel_Stage2::Ready_Layer_Overlay(const _wstring& strLayerTag)
 
 	return S_OK;
 }
+HRESULT CLevel_Stage2::Load_Stair_Collider()
+{
+	string LevelName = "STAGE2";
+
+
+	string path = "../../Resources/Data/" + LevelName + "_Stair_Collider.json";
+	ifstream file(path);
+	if (!file.is_open()) {
+		return E_FAIL;
+	}
+
+	json j;
+	file >> j;
+
+	for (auto& gameObject : j["GameObjects"])
+	{
+		_wstring layerTag;
+		CStair_Collider::STAIR_DESC desc;
+		layerTag = StringToWString(gameObject.value("Layer", ""));
+		uint32_t uState = gameObject["UpOrDown"].get<uint32_t>();
+		if (uState == ETOUI(CStair_Collider::STAIR_COLLIDER::STAIR_UP)) {
+			desc.state = CStair_Collider::STAIR_COLLIDER::STAIR_UP;
+		}
+		else if (uState == ETOUI(CStair_Collider::STAIR_COLLIDER::STAIR_DOWN)) {
+			desc.state = CStair_Collider::STAIR_COLLIDER::STAIR_DOWN;
+		}
+		_float fRight[4], fUp[4], fLook[4], fPos[4];
+		for (int i = 0; i < 4; ++i) {
+			fRight[i] = gameObject["Right"][i].get<float>();
+			fUp[i] = gameObject["Up"][i].get<float>();
+			fLook[i] = gameObject["Look"][i].get<float>();
+			fPos[i] = gameObject["Position"][i].get<float>();
+		}
+		XMMATRIX matWorld = XMMatrixIdentity();
+
+		matWorld.r[0] = XMLoadFloat4((_float4*)fRight);  // Right
+		matWorld.r[1] = XMLoadFloat4((_float4*)fUp);     // Up
+		matWorld.r[2] = XMLoadFloat4((_float4*)fLook);   // Look
+		matWorld.r[3] = XMLoadFloat4((_float4*)fPos);    // Position
+		XMStoreFloat4x4(&desc.worldMat, matWorld);
+		desc.pGameObjectTag = L"Stair_Collider";
+		if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(0, L"Prototype_GameObject_Stair_Collider", ETOUI(LEVEL::STAGE2), layerTag, &desc))) {
+			return E_FAIL;
+		}
+
+	}
+
+	return S_OK;
+}
 HRESULT CLevel_Stage2::Ready_Layer_Camera(const _wstring& strLayerTag)
 {
 	CCamera_Free::CAMERA_FREE_DESC		FreeDesc{};
@@ -196,6 +281,7 @@ HRESULT CLevel_Stage2::Ready_Layer_Player(const _wstring& strLayerTag)
 	pDesc.pGameObjectTag = TEXT("Player");
 	pDesc.fSpeedPerSec = 10.f;
 	pDesc.fRotationPerSec = 720.f;
+	pDesc.nextLevel = LEVEL::STAGE2;
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Player"),
 		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
 		return E_FAIL;
@@ -221,15 +307,26 @@ HRESULT CLevel_Stage2::Ready_Layer_Zombie(const _wstring& strLayerTag)
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Zombie"),
 		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
 		return E_FAIL;
+
+	pDesc.firstState = CBody_Zombie::ZOMBIE_FIRSTSTATE::IDLE;
+	pDesc.Direction = CBody_Zombie::ZOMBIE_DIR::LEFT;
+	pDesc.State = CBody_Zombie::ZOMBIE_STATE::AGGRO_IDLE2;
 	pDesc.pos = XMVectorSet(0.5f, 0, 0.f, 1);
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Zombie"),
 		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
 		return E_FAIL;
 	pDesc.pos = XMVectorSet(-0.5f, 0.3f, 0.f, 1);
+	pDesc.firstState = CBody_Zombie::ZOMBIE_FIRSTSTATE::IDLE;
+	pDesc.Direction = CBody_Zombie::ZOMBIE_DIR::RIGHT;
+	pDesc.State = CBody_Zombie::ZOMBIE_STATE::AGGRO_IDLE2;
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Zombie"),
 		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
 		return E_FAIL;
+
 	pDesc.pos = XMVectorSet(1.5f, 0.3f, 0.f, 1);
+	pDesc.firstState = CBody_Zombie::ZOMBIE_FIRSTSTATE::WALK;
+	pDesc.Direction = CBody_Zombie::ZOMBIE_DIR::LEFT;
+	pDesc.State = CBody_Zombie::ZOMBIE_STATE::WALK_FAST;
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Zombie"),
 		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
 		return E_FAIL;
@@ -284,43 +381,109 @@ HRESULT CLevel_Stage2::Ready_Layer_Sky(const _wstring& strLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_Stage2::Ready_Layer_Door(const _wstring& strLayerTag)
+
+HRESULT CLevel_Stage2::Load_Door_Blocker()
 {
-	//14
-	_tchar szTag[32] = {};
-	for (uint32_t i = 0; i < 14; ++i) {
-		CDoor::DOOR_DESC pDesc;
-		swprintf_s(szTag, L"Door_%d", i);
-		pDesc.pGameObjectTag = szTag;
-		pDesc.fSpeedPerSec = 0.f;
-		pDesc.fRotationPerSec = 720.f;
-		if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Door"),
-			ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
-			return E_FAIL;
+	string LevelName = "STAGE2";
+
+
+	string path = "../../Resources/Data/" + LevelName + "_DoorAndBlocker.json";
+	ifstream file(path);
+	if (!file.is_open()) {
+		return E_FAIL;
 	}
 
+	json j;
+	file >> j;
 
+	for (auto& gameObject : j["GameObjects"])
+	{
+		_wstring prototypeTag, layerTag;
+		CDoor::DOOR_DESC desc;
+		prototypeTag = StringToWString(gameObject.value("PrototypeTag", ""));
+		desc.pGameObjectTag = StringToWString(gameObject.value("ObjectTag", ""));
+		layerTag = StringToWString(gameObject.value("Layer", ""));
+		desc.leftTag = StringToWString(gameObject.value("LeftObject", ""));
+		desc.rightTag = StringToWString(gameObject.value("RightObject", ""));
 
+		_float fRight[4], fUp[4], fLook[4], fPos[4];
+		for (int i = 0; i < 4; ++i) {
+			fRight[i] = gameObject["Right"][i].get<float>();
+			fUp[i] = gameObject["Up"][i].get<float>();
+			fLook[i] = gameObject["Look"][i].get<float>();
+			fPos[i] = gameObject["Position"][i].get<float>();
+		}
+		XMMATRIX matWorld = XMMatrixIdentity();
 
+		matWorld.r[0] = XMLoadFloat4((_float4*)fRight);  // Right
+		matWorld.r[1] = XMLoadFloat4((_float4*)fUp);     // Up
+		matWorld.r[2] = XMLoadFloat4((_float4*)fLook);   // Look
+		matWorld.r[3] = XMLoadFloat4((_float4*)fPos);    // Position
+		XMStoreFloat4x4(&desc.worldMat, matWorld);
+
+		if (prototypeTag == L"Prototype_GameObject_Blocker") {
+			if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(0, L"Prototype_GameObject_Blocker", ETOUI(LEVEL::STAGE2), layerTag, &desc))) {
+				return E_FAIL;
+			}
+		}
+		else if (prototypeTag == L"Prototype_GameObject_Door") {
+			if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(0, L"Prototype_GameObject_Door", ETOUI(LEVEL::STAGE2), layerTag, &desc))) {
+				return E_FAIL;
+			}
+		}
+	}
+
+	auto blockerLayer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::STAGE2), L"Layer_Blocker");
+	auto doorLayer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::STAGE2), L"Layer_Door");
+
+	auto blockers = blockerLayer->GetObjects();
+	auto doors = doorLayer->GetObjects();
+	for (auto& blocker : blockers) {
+		auto block = static_pointer_cast<CBlocker>(blocker);
+		if (block->Get_LeftTag() != L"Empty") {
+			for (auto& door : doors) {
+				auto pDoor = static_pointer_cast<CDoor>(door);
+				if (block->Get_LeftTag() == pDoor->Get_Tag()) {
+					block->Set_LeftDoor(pDoor);
+					break;
+				}
+			}
+		}
+		if (block->Get_RightTag() != L"Empty") {
+			for (auto& door : doors) {
+				auto pDoor = static_pointer_cast<CDoor>(door);
+				if (block->Get_RightTag() == pDoor->Get_Tag()) {
+					block->Set_RightDoor(pDoor);
+					break;
+				}
+			}
+		}
+	}
+	for (auto& door : doors) {
+		auto pDoor = static_pointer_cast<CDoor>(door);
+		if (pDoor->Get_LeftTag() != L"Empty") {
+			for (auto& blocker : blockers) {
+				auto pBlocker = static_pointer_cast<CBlocker>(blocker);
+				if (pDoor->Get_LeftTag() == pBlocker->Get_Tag()) {
+					pDoor->Set_LeftBlocker(pBlocker);
+					break;
+				}
+			}
+		}
+		if (pDoor->Get_RightTag() != L"Empty") {
+			for (auto& blocker : blockers) {
+				auto pBlocker = static_pointer_cast<CBlocker>(blocker);
+				if (pDoor->Get_RightTag() == pBlocker->Get_Tag()) {
+					pDoor->Set_RightBlocker(pBlocker);
+					break;
+				}
+			}
+		}
+	}
 	return S_OK;
 }
 
-HRESULT CLevel_Stage2::Ready_Layer_Blocker(const _wstring& strLayerTag)
-{
 
-	//16
-	_tchar szTag[32] = {};
-	for (uint32_t i = 0; i < 16; ++i) {
-		CBlocker::BLOCKER_DESC pDesc;
-		swprintf_s(szTag, L"Blocker_%d", i);
-
-		pDesc.pGameObjectTag = szTag;
-		if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Blocker"),
-			ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
-			return E_FAIL;
-	}
-	return S_OK;
-}
 
 unique_ptr<CLevel_Stage2> CLevel_Stage2::Create(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext)
 {

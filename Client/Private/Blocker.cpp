@@ -68,7 +68,7 @@ void CBlocker::Update(_float fTimeDelta)
 
 		auto player = playerLayer->GetObjectFirst();
 		
-		auto playerPos = static_pointer_cast<CPlayer>(player)->Get_Body()->Get_Transform()->Get_State(STATE::POSITION);
+		auto playerPos = static_pointer_cast<CPlayer>(player)->Get_Transform()->Get_State(STATE::POSITION);
 		auto myPos = m_pTransformCom->Get_State(STATE::POSITION);
 		_float4 deltaPos;
 		XMStoreFloat4(&deltaPos, (myPos - playerPos));
@@ -112,7 +112,7 @@ void CBlocker::Update(_float fTimeDelta)
 
 		auto player = playerLayer->GetObjectFirst();
 
-		auto playerPos = static_pointer_cast<CPlayer>(player)->Get_Body()->Get_Transform()->Get_State(STATE::POSITION);
+		auto playerPos = static_pointer_cast<CPlayer>(player)->Get_Transform()->Get_State(STATE::POSITION);
 		auto myPos = m_pTransformCom->Get_State(STATE::POSITION);
 		_float4 deltaPos;
 		XMStoreFloat4(&deltaPos, (myPos - playerPos));
@@ -231,7 +231,7 @@ void CBlocker::Update(_float fTimeDelta)
 
 void CBlocker::Late_Update(_float fTimeDelta)
 {
-	//CGameInstance::Get().Add_RenderObject(RENDERGROUP::PRIORITY, SHARED_THIS(CBlocker));
+	CGameInstance::Get().Add_RenderObject(RENDERGROUP::PRIORITY, SHARED_THIS(CBlocker));
 	CGameInstance::Get().Add_RenderObject(RENDERGROUP::BLOCKER , SHARED_THIS(CBlocker));
 	__super::Late_Update(fTimeDelta);
 

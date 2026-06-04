@@ -30,6 +30,8 @@ HRESULT CSky::Initialize(void* pArg)
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
+	
+	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
 
 	return S_OK;
 }
@@ -66,8 +68,15 @@ HRESULT CSky::Render()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", CGameInstance::Get().Get_Transform(D3DTS::PROJ))))
 		return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
-		return E_FAIL;
+	if (CGameInstance::Get().GetCurLevelIndex() == ETOUI(LEVEL::STAGE2)) {
+		if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 1)))
+			return E_FAIL;
+	}
+	else {
+		if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
+			return E_FAIL;
+	}
+
 
 	if (FAILED(m_pShaderCom->Begin(0)))
 		return E_FAIL;

@@ -20,7 +20,7 @@ public:
 	void Imgui_Editor(_float fTimeDelta);
 	//void Save_DoorAndBlocker();
 	void Save_StairCollider();
-	//HRESULT Load_DoorAndBlocker();
+	HRESULT Load_DoorAndBlocker();
 	HRESULT Load_StairCollider();
 
 public:

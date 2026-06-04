@@ -52,6 +52,9 @@ private:
 	uint32_t itemCount = 0;
 	_wstring m_selectedItemDesc;
 	_wstring m_selectedItemName;
+	_wstring m_selectedItemTag;
+	_float	 m_fCellSizeX = 0;
+	_float	 m_fCellSizeY = 0;
 
 };
 

@@ -116,7 +116,7 @@ void CModelObject::Update(_float fTimeDelta)
 
 void CModelObject::Late_Update(_float fTimeDelta)
 {
-    CGameInstance::Get().Add_RenderObject(RENDERGROUP::BLEND, SHARED_THIS(CModelObject));
+    CGameInstance::Get().Add_RenderObject(RENDERGROUP::NONBLEND, SHARED_THIS(CModelObject));
 }
 
 HRESULT CModelObject::Render()
@@ -143,9 +143,32 @@ HRESULT CModelObject::Render()
         return E_FAIL;
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", proj)))
         return E_FAIL;
-
     if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", CGameInstance::Get().Get_CamPosition(), sizeof(_float4))))
         return E_FAIL;
+  
+    if (CGameInstance::Get().GetCurLevelIndex() == 5) {
+        _float4 g_vLightDiffuse = _float4(0.2f, 0.2f, 0.2f, 1.f);
+        _float4 g_vLightAmbient = _float4(0.1f, 0.1f, 0.15f, 1.f);
+        _float4 g_vLightSpecular = _float4(0.2f, 0.2f, 0.2f, 1.f);
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDiffuse", &g_vLightDiffuse, sizeof(_float4))))
+            return E_FAIL;
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightAmbient", &g_vLightAmbient, sizeof(_float4))))
+            return E_FAIL;
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightSpecular", &g_vLightSpecular, sizeof(_float4))))
+            return E_FAIL;
+
+    }else{
+        _float4 g_vLightDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+        _float4 g_vLightAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+        _float4 g_vLightSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightDiffuse", &g_vLightDiffuse, sizeof(_float4))))
+            return E_FAIL;
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightAmbient", &g_vLightAmbient, sizeof(_float4))))
+            return E_FAIL;
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightSpecular", &g_vLightSpecular, sizeof(_float4))))
+            return E_FAIL;
+    }
+
 
     if (FAILED(m_pShaderCom->Begin(0)))
         return E_FAIL;
@@ -162,7 +185,7 @@ HRESULT CModelObject::Render()
             if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i)))
                 return E_FAIL;
         }
-        if (FAILED(m_pShaderCom->Begin(0)))
+        if (FAILED(m_pShaderCom->Begin(1)))
             return E_FAIL;
 
         m_pModelCom->Render(i);

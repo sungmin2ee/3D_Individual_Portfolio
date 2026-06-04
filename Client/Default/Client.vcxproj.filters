@@ -539,5 +539,8 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_HpBar.hlsl">
       <Filter>Shaderfiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNoLightMesh.hlsl">
+      <Filter>Shaderfiles</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

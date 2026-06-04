@@ -33,6 +33,10 @@
             "PrototypeTag": "Prototype_Component_Shader_VtxMesh"
         },
         {
+            "FilePath": "../../Client/Bin/ShaderFiles/Shader_VtxNoLightMesh",
+            "PrototypeTag": "Prototype_Component_Shader_VtxNoLightMesh"
+        },
+        {
             "FilePath": "../../Client/Bin/ShaderFiles/Shader_VtxNonAnim",
             "PrototypeTag": "Prototype_Component_Shader_VtxNonAnim"
         },

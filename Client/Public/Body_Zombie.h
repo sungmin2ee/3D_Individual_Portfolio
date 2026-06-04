@@ -63,7 +63,7 @@ public:
 	shared_ptr<CModel> Get_Model() { return m_pModelCom; }
 	StateMachine<CBody_Zombie>* Get_StateMachine() { return m_pStateMachine.get(); }
 	ZOMBIE_STATE Get_CurState() { return m_eCurState; }
-	ZOMBIE_DIR Get_CurDir() { return m_eCurDir; }
+	ZOMBIE_DIR Get_CurDir() { return m_ePrevDir; }
 	_float Get_BodyAngle() { return bodyAngle; }
 	_bool Get_Rotating() { return m_bIsRotating; }
 	_bool Get_Damaged() { return m_bIsDamaged; }

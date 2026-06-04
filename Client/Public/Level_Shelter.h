@@ -26,7 +26,9 @@ private:
 	HRESULT Ready_Layer_Inven(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Camera(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Overlay(const _wstring& strLayerTag);
-
+	HRESULT Ready_Layer_Player(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Sky(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_HealthUI(const _wstring& strLayerTag);
 public:
 	static unique_ptr<CLevel_Shelter> Create(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext);
 

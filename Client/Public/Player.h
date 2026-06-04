@@ -9,7 +9,7 @@ class CPlayer final : public CContainerObject
 public:
 	typedef struct tagPlayerDesc : public CContainerObject::CONTAINEROBJECT_DESC
 	{
-
+		LEVEL  nextLevel;
 	}PLAYER_DESC;
 
 
@@ -38,7 +38,7 @@ private:
 private:
 	HRESULT Ready_Components();
 	HRESULT Ready_PartObjects();
-
+	LEVEL   m_eNextLevel = LEVEL::END;
 public:
 	static unique_ptr<CPlayer> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
 	virtual shared_ptr<CPrototype> Clone(void* pArg) override;

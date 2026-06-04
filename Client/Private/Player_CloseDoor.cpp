@@ -5,6 +5,7 @@
 #include "Player_Walk.h"
 #include "Door.h"
 #include "Blocker.h"
+#include "Player.h"
 
 CPlayer_CloseDoor::CPlayer_CloseDoor()
 {
@@ -25,8 +26,9 @@ void CPlayer_CloseDoor::Enter(CBody_Player& owner)
     animStart = true;
 
     auto pCollidedDoor = owner.Get_CollidedDoor();
+    auto myPos = owner.Get_Player().lock()->Get_Transform()->Get_State(STATE::POSITION);
 
-    auto myPos = owner.Get_Transform()->Get_State(STATE::POSITION);
+    //auto myPos = owner.Get_Transform()->Get_State(STATE::POSITION);
     auto doorPos = pCollidedDoor->Get_Transform()->Get_State(STATE::POSITION);
 
     _float4 deltaPos;

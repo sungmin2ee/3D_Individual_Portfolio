@@ -29,15 +29,18 @@ HRESULT CPlayer::Initialize(void* pArg)
 	PLAYER_DESC			Desc{};
 	Desc.fSpeedPerSec = 0.1f;
 	Desc.fRotationPerSec = 720.f;
-
 	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 
+	auto pDesc = static_cast<PLAYER_DESC*>(pArg);
+	m_eNextLevel = pDesc->nextLevel;
+
 	m_pTransformCom->Set_Scale(0.1f, 0.1f, 0.1f);
     m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
+	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(-1.5f, 0, 0, 1));
 
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
@@ -108,6 +111,7 @@ HRESULT CPlayer::Ready_PartObjects()
 	BodyDesc.pParentState = &m_iState;
 	BodyDesc.fSpeedPerSec = 0.1f;
 	BodyDesc.player = static_pointer_cast<CPlayer>(shared_from_this());
+	BodyDesc.nextLevel = m_eNextLevel;
 	if (FAILED(__super::Add_PartObject(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Body_Player"),
 		TEXT("Part_Body"), &BodyDesc)))
 		return E_FAIL;
