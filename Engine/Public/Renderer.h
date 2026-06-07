@@ -23,6 +23,8 @@ private:
 
 private:
 	HRESULT Render_Priority();
+	HRESULT Render_Test();
+
 	HRESULT Render_NonBlend();
 	HRESULT Render_Blend();
 	HRESULT Render_Blocker();

@@ -148,6 +148,18 @@
     <Filter Include="91.ShaderFiels">
       <UniqueIdentifier>{1d0e1b10-5949-43a6-a979-89b738a55c62}</UniqueIdentifier>
     </Filter>
+    <Filter Include="06.Component\VIBuffer\Instancing">
+      <UniqueIdentifier>{97c513e1-d743-4756-9087-ad441808ec4b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Component\VIBuffer\Instancing\Particles">
+      <UniqueIdentifier>{2b8aea7f-856b-4b48-a5de-84636f2a6894}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Component\VIBuffer\Instancing\Particles\Point">
+      <UniqueIdentifier>{10f3bef3-f542-40da-8aab-9844fa58b7e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.Component\VIBuffer\Instancing\Particles\Rect">
+      <UniqueIdentifier>{0255ed2b-51f7-49f2-9a3d-01714678d11f}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -296,6 +308,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_Cube.h">
       <Filter>06.Component\VIBuffer\Cube</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Particle_Point.h">
+      <Filter>06.Component\VIBuffer\Instancing\Particles\Point</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Particle_Rect.h">
+      <Filter>06.Component\VIBuffer\Instancing\Particles\Rect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Instance.h">
+      <Filter>06.Component\VIBuffer\Instancing\Particles</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -464,6 +485,15 @@
     <ClCompile Include="..\Private\VIBuffer_Cube.cpp">
       <Filter>06.Component\VIBuffer\Cube</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Particle_Point.cpp">
+      <Filter>06.Component\VIBuffer\Instancing\Particles\Point</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Particle_Rect.cpp">
+      <Filter>06.Component\VIBuffer\Instancing\Particles\Rect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Instance.cpp">
+      <Filter>06.Component\VIBuffer\Instancing\Particles</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Bin\Shaderfiles\Engine_Shader_Defines.hlsli">
@@ -472,6 +502,9 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\Shaderfiles\Shader_Cell.hlsl">
+      <Filter>91.ShaderFiels</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\Shaderfiles\Shader_Deferred.hlsl">
       <Filter>91.ShaderFiels</Filter>
     </FxCompile>
   </ItemGroup>

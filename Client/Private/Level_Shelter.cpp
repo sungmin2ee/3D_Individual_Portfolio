@@ -5,9 +5,13 @@
 #include "Level_Shelter.h"
 #include "Inventory.h"
 #include "Player.h"
+#include "MapPin.h"
+#include "Map.h"
+#include "Stair_Collider.h"
 //#include "Overlay.h"
 //#include "Sky.h"
-
+namespace fs = std::filesystem;
+using json = nlohmann::json;
 CLevel_Shelter::CLevel_Shelter(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: CLevel{ pDevice, pContext }, m_pDevice{ pDevice }, m_pContext{ pContext }
 {
@@ -25,11 +29,15 @@ HRESULT CLevel_Shelter::Initialize()
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Overlay(TEXT("Layer_Overlay"))))
 		return E_FAIL;
+	if (FAILED(Load_Stair_Collider()))
+		return E_FAIL;
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_HealthUI(TEXT("Layer_PlayerUI"))))
+		return E_FAIL;
+	if (FAILED(Ready_Layer_Map(TEXT("Layer_Map"))))
 		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::SHELTER)))) {
 		return E_FAIL;
@@ -46,14 +54,27 @@ void CLevel_Shelter::Update(_float fTimeDelta)
 	if (CGameInstance::Get().Key_Down(DIK_CAPITAL)) {
 		CGameInstance::Get().Save(ETOUI(LEVEL::SHELTER));
 	}
-	//if (CGameInstance::Get().Key_Down(DIK_INSERT))
-	//{
-	//	if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
-	//		CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::STAGE1))))
-	//		return;
-	//
-	//	return;
-	//}
+	 
+	 
+	
+
+	if (m_bChangeLevel)
+	{
+		switch (m_NextLevel) {
+		case 4:
+			if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
+				CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::STAGE1))))
+				return;
+			break;
+		case 5:
+			if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
+				CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::STAGE2))))
+				return;
+			break;
+		}
+	
+		m_bChangeLevel = false;
+	}
 }
 
 HRESULT CLevel_Shelter::Render()
@@ -92,6 +113,104 @@ HRESULT CLevel_Shelter::Ready_Layer_HealthUI(const _wstring& strLayerTag)
 
 	return S_OK;
 }
+HRESULT CLevel_Shelter::Load_Stair_Collider()
+{
+	string LevelName = "SHELTER";
+
+
+	string path = "../../Resources/Data/" + LevelName + "_Stair_Collider.json";
+	ifstream file(path);
+	if (!file.is_open()) {
+		return E_FAIL;
+	}
+
+	json j;
+	file >> j;
+
+	for (auto& gameObject : j["GameObjects"])
+	{
+		_wstring layerTag;
+		CStair_Collider::STAIR_DESC desc;
+		layerTag = StringToWString(gameObject.value("Layer", ""));
+		uint32_t uState = gameObject["UpOrDown"].get<uint32_t>();
+		if (uState == ETOUI(CStair_Collider::STAIR_COLLIDER::STAIR_UP)) {
+			desc.state = CStair_Collider::STAIR_COLLIDER::STAIR_UP;
+		}
+		else if (uState == ETOUI(CStair_Collider::STAIR_COLLIDER::STAIR_DOWN)) {
+			desc.state = CStair_Collider::STAIR_COLLIDER::STAIR_DOWN;
+		}
+		_float fRight[4], fUp[4], fLook[4], fPos[4];
+		for (int i = 0; i < 4; ++i) {
+			fRight[i] = gameObject["Right"][i].get<float>();
+			fUp[i] = gameObject["Up"][i].get<float>();
+			fLook[i] = gameObject["Look"][i].get<float>();
+			fPos[i] = gameObject["Position"][i].get<float>();
+		}
+		XMMATRIX matWorld = XMMatrixIdentity();
+
+		matWorld.r[0] = XMLoadFloat4((_float4*)fRight);  // Right
+		matWorld.r[1] = XMLoadFloat4((_float4*)fUp);     // Up
+		matWorld.r[2] = XMLoadFloat4((_float4*)fLook);   // Look
+		matWorld.r[3] = XMLoadFloat4((_float4*)fPos);    // Position
+		XMStoreFloat4x4(&desc.worldMat, matWorld);
+		desc.pGameObjectTag = L"Stair_Collider";
+		if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(0, L"Prototype_GameObject_Stair_Collider", ETOUI(LEVEL::SHELTER), layerTag, &desc))) {
+			return E_FAIL;
+		}
+
+	}
+
+	return S_OK;
+}
+
+HRESULT CLevel_Shelter::Ready_Layer_Map(const _wstring& strLayerTag)
+{
+
+
+
+	CUIObject::UIOBJECT_DESC pDesc;
+	pDesc.fSizeX = g_iWinSizeX * 0.9f;
+	pDesc.fSizeY = g_iWinSizeY;
+	pDesc.fX = g_iWinSizeX * 0.5f;
+	pDesc.fY = g_iWinSizeY * 1.5f;
+	pDesc.pGameObjectTag = L"Map";
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), L"Prototype_GameObject_Map", ETOUI(LEVEL::SHELTER), strLayerTag, &pDesc)))
+		return E_FAIL;
+
+
+	CMapPin::MAPPIN_DESC mDesc;
+
+	mDesc.fSizeX = g_iWinSizeX * 0.06f;
+	mDesc.fSizeY = g_iWinSizeY * 0.09f;
+	mDesc.fX = g_iWinSizeX * 0.5f;
+	mDesc.fY = g_iWinSizeY * 0.4f;
+	mDesc.pGameObjectTag = L"MapPin1";
+	mDesc.textureTag = L"Prototype_Component_Texture_MapInfo1";
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), L"Prototype_GameObject_MapPin", ETOUI(LEVEL::SHELTER), TEXT("Layer_Map"), &mDesc)))
+		return E_FAIL;
+
+	mDesc.fX = g_iWinSizeX * 0.7f;
+	mDesc.fY = g_iWinSizeY * 0.6f;
+	mDesc.pGameObjectTag = L"MapPin2";
+	mDesc.textureTag = L"Prototype_Component_Texture_MapInfo2";
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), L"Prototype_GameObject_MapPin", ETOUI(LEVEL::SHELTER), TEXT("Layer_Map"), &mDesc)))
+		return E_FAIL;
+
+
+	CUIObject::UIOBJECT_DESC buttonDesc;
+	buttonDesc.fSizeX = g_iWinSizeX * 0.1f;
+	buttonDesc.fSizeY = g_iWinSizeY * 0.1f;
+	buttonDesc.fX = g_iWinSizeX * 0.5f;
+	buttonDesc.fY = g_iWinSizeY * 0.9f;
+	buttonDesc.pGameObjectTag = L"MoveButton";
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), L"Prototype_GameObject_MoveButton", ETOUI(LEVEL::SHELTER), strLayerTag, &buttonDesc)))
+		return E_FAIL;
+	return S_OK;
+}
 HRESULT CLevel_Shelter::Ready_Layer_Inven(const _wstring& strLayerTag)
 {
 	CInventory::INVENTORY_DESC pDesc;
@@ -126,6 +245,8 @@ HRESULT CLevel_Shelter::Ready_Layer_Player(const _wstring& strLayerTag)
 	pDesc.fSpeedPerSec = 0.1f;
 	pDesc.fRotationPerSec = 720.f;
 	pDesc.nextLevel = LEVEL::SHELTER;
+	pDesc.pos = XMVectorSet(1.f, 0.01f, 0, 1);
+
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_Player"),
 		ETOUI(LEVEL::SHELTER), strLayerTag, &pDesc)))
 		return E_FAIL;

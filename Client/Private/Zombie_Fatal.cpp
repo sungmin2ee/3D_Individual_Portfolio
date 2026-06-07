@@ -1,6 +1,10 @@
 #include "Zombie_Fatal.h"
 #include "GameInstance.h"
 #include "Layer.h"
+#include "Zombie.h"
+#include "Player.h"
+#include "Body_Player.h"
+#include "Blood.h"
 
 
 CZombie_Fatal::CZombie_Fatal()
@@ -32,7 +36,26 @@ void CZombie_Fatal::Update(CBody_Zombie& owner, _float deltaTime)
             return;
         }
     }
-    
+    if (m_bDead && !animFinished) {
+        animTimer += deltaTime;
+        auto layer = CGameInstance::Get().Find_Layer(ETOUI(CGameInstance::Get().GetCurLevelIndex()), TEXT("Layer_Player"));
+        auto player = layer->GetObjectFirst();
+        auto playerBody = static_pointer_cast<CPlayer>(player)->Get_Body();
+
+        if (animTimer > 1.0f && (playerBody->Get_Model()->Get_AnimIndex() == ETOUI(CBody_Player::PLAYER_ANIM::GROUND_EXECUTE1))) {
+            animFinished = true;
+            auto zombie = static_pointer_cast<CZombie>(owner.Get_Zombie().lock());
+            static_cast<CBlood*>(zombie->Get_Effect())->Set_Bleeding();
+            static_cast<CBlood*>(zombie->Get_Effect())->Play_Particle();
+        }
+        if (animTimer > 0.7f && (playerBody->Get_Model()->Get_AnimIndex() == ETOUI(CBody_Player::PLAYER_ANIM::GROUND_EXECUTE2))) {
+            animFinished = true;
+            auto zombie = static_pointer_cast<CZombie>(owner.Get_Zombie().lock());
+            static_cast<CBlood*>(zombie->Get_Effect())->Play_Particle();
+            static_cast<CBlood*>(zombie->Get_Effect())->Set_Bleeding();
+
+        }
+    }
 }
 
 void CZombie_Fatal::Exit(CBody_Zombie& owner)

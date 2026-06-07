@@ -3,6 +3,7 @@
 #include "Client_Defines.h"
 #include "Body_Zombie.h"
 #include "ContainerObject.h"
+#include "Blood.h"
 
 NS_BEGIN(Client)
 
@@ -15,6 +16,8 @@ public:
 		CBody_Zombie::ZOMBIE_STATE State;
 		CBody_Zombie::ZOMBIE_FIRSTSTATE firstState;
 		_vector pos;
+		LEVEL  nextLevel;
+
 	}ZOMBIE_DESC;
 
 
@@ -33,9 +36,11 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 	CBody_Zombie* Get_Body() { return body.get(); }
+	CBlood* Get_Effect() { return efftct.get(); }
 
 private:
 	shared_ptr<CBody_Zombie> body = nullptr;
+	shared_ptr<CBlood>		efftct = nullptr;
 	uint32_t			m_iState = {};
 	
 private:

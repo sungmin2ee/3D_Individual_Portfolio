@@ -13,6 +13,10 @@
             "PrototypeTag": "Prototype_Component_Shader_Collider"
         },
         {
+            "FilePath": "../../Client/Bin/ShaderFiles/Shader_Deferred",
+            "PrototypeTag": "Prototype_Component_Shader_Deferred"
+        },
+        {
             "FilePath": "../../Client/Bin/ShaderFiles/Shader_HpBar",
             "PrototypeTag": "Prototype_Component_Shader_HpBar"
         },
@@ -27,6 +31,14 @@
         {
             "FilePath": "../../Client/Bin/ShaderFiles/Shader_VtxCube",
             "PrototypeTag": "Prototype_Component_Shader_VtxCube"
+        },
+        {
+            "FilePath": "../../Client/Bin/ShaderFiles/Shader_VtxInstance_Particle_Point",
+            "PrototypeTag": "Prototype_Component_Shader_VtxInstance_Particle_Point"
+        },
+        {
+            "FilePath": "../../Client/Bin/ShaderFiles/Shader_VtxInstance_Particle_Rect",
+            "PrototypeTag": "Prototype_Component_Shader_VtxInstance_Particle_Rect"
         },
         {
             "FilePath": "../../Client/Bin/ShaderFiles/Shader_VtxMesh",

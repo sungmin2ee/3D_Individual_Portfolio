@@ -27,7 +27,7 @@ CBody_Zombie::CBody_Zombie(const CBody_Zombie& Prototype)
 	m_bPlayerInRange = false;
 	m_bPlayerDetected = false;
 	m_fAttackTime = 0.f;
-	m_iHp = 100;
+	m_iHp = 40;
 
 	pCollidedDoor = nullptr;
 	pStairCollider = nullptr;
@@ -60,30 +60,17 @@ HRESULT CBody_Zombie::Initialize(void* pArg)
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
-	m_pTransformCom->Set_Scale(0.1f, 0.1f, 0.1f);
+	//m_pTransformCom->Set_Scale(0.1f, 0.1f, 0.1f);
 
 	m_pModelCom->Calculate_Box(ETOUI(MODEL::ANIM));
 	CGameInstance::Get().Add_Collider(m_pObbCom);
 	m_pObbCom->SetOwner(SHARED_THIS(CBody_Zombie));
 	ExpandCollider();
-	auto pos = pDesc->pos;
-	m_pTransformCom->Set_State(STATE::POSITION, pDesc->pos);
+	//m_pTransformCom->Set_State(STATE::POSITION, pDesc->pos);
 	m_eCurState = pDesc->State;
 	m_eCurDir = pDesc->Direction;
 	m_ePrevDir = m_eCurDir;
-	if (m_eCurDir == ZOMBIE_DIR::LEFT) {
-		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
-
-	}else if(m_eCurDir == ZOMBIE_DIR::RIGHT) {
-		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
-	}
-	else if (m_eCurDir == ZOMBIE_DIR::FRONT) {
-		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 180.f);
-	}
-	else {
-		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 0.f);
-
-	}
+	m_pZombie = pDesc->zombie;
 
 	if (pDesc->firstState == ZOMBIE_FIRSTSTATE::IDLE) {
 		m_pStateMachine = StateMachine<CBody_Zombie>::Create(this, CZombie_Idle::Create());
@@ -103,7 +90,6 @@ void CBody_Zombie::Priority_Update(_float fTimeDelta)
 
 void CBody_Zombie::Update(_float fTimeDelta)
 {
-
 	m_pStateMachine->Update(fTimeDelta);
 
 	if (true == m_pModelCom->Play_Animation(fTimeDelta))
@@ -144,7 +130,7 @@ void CBody_Zombie::Update(_float fTimeDelta)
 	}
 
 	if (pCollidedDoor != nullptr && !m_bDoorCollided) {
-		m_pTransformCom->Go_Backward(fTimeDelta * 20.f);
+		m_pZombie.lock()->Get_Transform()->Go_Backward(fTimeDelta * 20.f);
 		m_bDirChanged = true;
 		m_bDoorCollided = true;
 		
@@ -163,6 +149,7 @@ void CBody_Zombie::Update(_float fTimeDelta)
 void CBody_Zombie::Late_Update(_float fTimeDelta)
 {
 	Make_CombinedWorldMatrix(XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrixPtr()));
+	m_pHeadMat = m_pModelCom->Get_BoneMatrixPtr("fringeHair");
 
 	CGameInstance::Get().Add_RenderObject(RENDERGROUP::NONBLEND, SHARED_THIS(CBody_Zombie));
 
@@ -274,7 +261,7 @@ void CBody_Zombie::ExpandCollider()
 		if (!bone) continue;
 
 		_matrix boneMatrix = XMLoadFloat4x4(bone);
-		XMVECTOR localPos = boneMatrix.r[3]; // 본의 로컬(모델) 위치
+		XMVECTOR localPos = boneMatrix.r[3];
 
 		_float3 p;
 		XMStoreFloat3(&p, localPos);
@@ -288,36 +275,45 @@ void CBody_Zombie::ExpandCollider()
 		vLocalMax.z = max(vLocalMax.z, p.z);
 	}
 
-	// 캐릭터의 월드 행렬 로드 및 분해
-	_matrix world = XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrixPtr());
+	// 1. 자신의 월드 행렬 계산
+	_matrix myWorld = XMLoadFloat4x4(m_pTransformCom->Get_WorldMatrixPtr());
+
+	// 2. 부모의 행렬이 존재한다면 결합 (핵심 추가 변경 사항)
+	_matrix combinedWorld = myWorld;
+	if (m_pParentMatrix != nullptr)
+	{
+		_matrix parentWorld = XMLoadFloat4x4(m_pParentMatrix);
+		combinedWorld = myWorld * parentWorld; // 행렬 곱셈 순서는 엔진 구조(행우선/열우선)에 맞춰 확인 필요
+	}
+
+	// 3. 결합된 최종 월드 행렬을 분해하여 최종 스케일, 회전, 위치를 추출
 	XMVECTOR vScale, vRot, vTrans;
-	XMMatrixDecompose(&vScale, &vRot, &vTrans, world);
+	XMMatrixDecompose(&vScale, &vRot, &vTrans, combinedWorld);
 
-	_float3 scale = m_pTransformCom->Get_Scaled();
+	_float3 finalScale;
+	XMStoreFloat3(&finalScale, vScale);
 
-	// 1. Center 계산: 로컬 중심점을 먼저 구한 뒤, '월드 변환'을 거칩니다.
+	// 4. Center 계산: 로컬 중심점을 구한 뒤, '최종 결합 행렬'로 월드 변환
 	XMVECTOR localMid = (XMLoadFloat3(&vLocalMax) + XMLoadFloat3(&vLocalMin)) * 0.5f;
-	XMVECTOR centerWorld = XMVector3TransformCoord(localMid, world); // 로컬 중심 -> 월드 중심
+	XMVECTOR centerWorld = XMVector3TransformCoord(localMid, combinedWorld);
 	XMStoreFloat3(&m_pObbCom->myOBB.Center, centerWorld);
 
-	// 2. Extents 계산: 로컬 크기에 현재 트랜스폼의 스케일을 곱해줍니다.
-	// Z축 오프셋(0.9f)은 의도하신 수치 비율대로 유지했습니다.
-	m_pObbCom->myOBB.Extents.x = (vLocalMax.x - vLocalMin.x) * 0.5f * scale.x;
-	m_pObbCom->myOBB.Extents.y = (vLocalMax.y - vLocalMin.y) * 0.5f * scale.y;
-	m_pObbCom->myOBB.Extents.z = (vLocalMax.z - vLocalMin.z) * 0.5f * scale.z * 0.9f;
+	// 5. Extents 계산: 로컬 크기에 부모까지 반영된 '최종 스케일'을 곱해줍니다.
+	m_pObbCom->myOBB.Extents.x = (vLocalMax.x - vLocalMin.x) * 0.6f * finalScale.x;
+	m_pObbCom->myOBB.Extents.y = (vLocalMax.y - vLocalMin.y) * 0.6f * finalScale.y;
+	m_pObbCom->myOBB.Extents.z = (vLocalMax.z - vLocalMin.z) * 0.6f * finalScale.z * 0.9f;
 
-	// 3. Orientation 설정 (이전과 동일하게 정규화 처리 포함)
-	vRot = XMQuaternionNormalize(vRot); // 어서트 방지용 정규화 필수!
+	// 6. Orientation 설정
+	vRot = XMQuaternionNormalize(vRot);
 	XMStoreFloat4(&m_pObbCom->myOBB.Orientation, vRot);
 
-	// 4. 렌더링용 월드 행렬 생성
-	// 기본 크기 1짜리 박스에 [스케일 적용] -> [회전 적용] -> [월드 중심점으로 이동] 순서로 결합합니다.
+	// 7. 렌더링용 OBB 월드 행렬 생성
 	_matrix matOBBWorld = XMMatrixScaling(m_pObbCom->myOBB.Extents.x * 2.f,
 		m_pObbCom->myOBB.Extents.y * 2.f,
 		m_pObbCom->myOBB.Extents.z * 2.f);
 
 	matOBBWorld *= XMMatrixRotationQuaternion(vRot);
-	matOBBWorld *= XMMatrixTranslationFromVector(centerWorld); // 중복 회전 버그 해결!
+	matOBBWorld *= XMMatrixTranslationFromVector(centerWorld);
 
 	m_pObbCom->Set_WorldMatrix(matOBBWorld);
 }
@@ -336,7 +332,7 @@ void CBody_Zombie::DetectPlayer()
 	if (playerBody == nullptr)
 		return;
 	_vector playerPos = player->Get_Transform()->Get_State(STATE::POSITION);
-	_vector deltaPos = m_pTransformCom->Get_State(STATE::POSITION) - playerPos;
+	_vector deltaPos = m_pZombie.lock()->Get_Transform()->Get_State(STATE::POSITION) - playerPos;
 	_float4 fpos;
 	XMStoreFloat4(&fpos, deltaPos);
 	
@@ -399,13 +395,13 @@ void CBody_Zombie::FocusPlayer() {
 	_float4 fPlayerPos; 
 	XMStoreFloat4(&fPlayerPos,playerPos);
 	_float4 myPos;
-	XMStoreFloat4(&myPos, m_pTransformCom->Get_State(STATE::POSITION));
+	XMStoreFloat4(&myPos, m_pZombie.lock()->Get_Transform()->Get_State(STATE::POSITION));
 	if (m_eCurDir == ZOMBIE_DIR::FRONT) {
 		if (fabs(myPos.z - fPlayerPos.z) < 0.05f) {
 			if (myPos.x - fPlayerPos.x > 0) {
 				m_eCurDir = ZOMBIE_DIR::LEFT;
 				m_bDirChanged = true;
-				m_pTransformCom->Set_State(STATE::POSITION, XMVectorSetZ(m_pTransformCom->Get_State(STATE::POSITION), 0));
+				m_pZombie.lock()->Get_Transform()->Set_State(STATE::POSITION, XMVectorSetZ(m_pZombie.lock()->Get_Transform()->Get_State(STATE::POSITION), 0));
 			}
 			else if (myPos.x - fPlayerPos.x < 0) {
 				m_eCurDir = ZOMBIE_DIR::RIGHT;
@@ -449,7 +445,7 @@ void CBody_Zombie::CheckDoorCollide()
 			_float4 myPos;
 			_float3 doorPos;
 
-			XMStoreFloat4(&myPos, m_pTransformCom->Get_State(STATE::POSITION));
+			XMStoreFloat4(&myPos, m_pZombie.lock()->Get_Transform()->Get_State(STATE::POSITION));
 			//XMStoreFloat3(&doorPos, pDoor->Get_Obb()->myOBB.Center);
 			if (fabs(myPos.x - pDoor->Get_Obb()->myOBB.Center.x) < 0.03f) {
 				pCollidedDoor = pDoor.get(); // 충돌한 문의 주소값 저장
@@ -490,16 +486,16 @@ void CBody_Zombie::CheckStairCollide()
 void CBody_Zombie::Turn(_float fTimeDelta)
 {
 	m_bIsRotating = true;
-	bodyAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
+	bodyAngle += fTimeDelta * m_pZombie.lock()->Get_Transform()->Get_RotSpeed();
 
 	if (m_ePrevDir == ZOMBIE_DIR::LEFT) {
 
 
-		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), -90.f + bodyAngle);
+		m_pZombie.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), -90.f + bodyAngle);
 
 		if (bodyAngle >= 180.f) {
 		
-			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
+			m_pZombie.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
 
 			m_bDirChanged = false;
 			m_bIsRotating = false;
@@ -508,10 +504,10 @@ void CBody_Zombie::Turn(_float fTimeDelta)
 		}
 	}
 	else if (m_ePrevDir == ZOMBIE_DIR::RIGHT) {
-		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f + bodyAngle);
+		m_pZombie.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f + bodyAngle);
 
 		if (bodyAngle >= 180.f) {
-			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
+			m_pZombie.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
 
 			m_bDirChanged = false;
 			m_bIsRotating = false;
@@ -521,10 +517,10 @@ void CBody_Zombie::Turn(_float fTimeDelta)
 	}
 	else if (m_ePrevDir == ZOMBIE_DIR::FRONT) {
 		if (m_eCurDir == ZOMBIE_DIR::LEFT) {
-			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 180.f + bodyAngle);
+			m_pZombie.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 180.f + bodyAngle);
 
 			if (bodyAngle >= 90.f) {
-				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
+				m_pZombie.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
 
 				m_bDirChanged = false;
 				m_bIsRotating = false;
@@ -532,9 +528,9 @@ void CBody_Zombie::Turn(_float fTimeDelta)
 				m_ePrevDir = ZOMBIE_DIR::LEFT;
 			}
 		}else if (m_eCurDir == ZOMBIE_DIR::RIGHT) {
-			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 180.f - bodyAngle);
+			m_pZombie.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 180.f - bodyAngle);
 			if (bodyAngle >= 90.f) {
-				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
+				m_pZombie.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
 				m_bDirChanged = false;
 				m_bIsRotating = false;
 				bodyAngle = 0.f;
@@ -544,10 +540,10 @@ void CBody_Zombie::Turn(_float fTimeDelta)
 	
 	}
 	else if (m_ePrevDir == ZOMBIE_DIR::BACK) {
-		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
+		m_pZombie.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), bodyAngle);
 
 		if (bodyAngle >= 180.f) {
-			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 180.f);
+			m_pZombie.lock()->Get_Transform()->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 180.f);
 			m_bDirChanged = false;
 			m_bIsRotating = false;
 			bodyAngle = 0.f;

@@ -116,6 +116,9 @@ void CCamera_Free::Update(_float fTimeDelta)
 	if (playerBody == nullptr)
 		return;
 	auto insideLayer = CGameInstance::Get().Find_Layer(ETOUI(CGameInstance::Get().GetCurLevelIndex()), TEXT("Inside_Layer"));
+	if (insideLayer == nullptr) {
+		return;
+	}
 	auto insideObjects = insideLayer->GetObjects();
 	for (auto& insideObject : insideObjects) {
 		zoomIn = false;

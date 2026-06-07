@@ -51,6 +51,13 @@ HRESULT CBody_Player::Initialize(void* pArg)
 	m_pParentMatrix = pDesc->pParentMatrix;
 	pDesc->fRotationPerSec = 720.f;
 	m_pPlayer = pDesc->player;
+	if (pDesc->nextLevel == LEVEL::STAGE1) {
+		m_eCurWeapon = PLAYER_WEAPON::HAND;
+	}
+	else if (pDesc->nextLevel == LEVEL::STAGE2) {
+		m_eCurWeapon = PLAYER_WEAPON::AXE;
+
+	}
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 

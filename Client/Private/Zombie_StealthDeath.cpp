@@ -3,6 +3,8 @@
 #include "Layer.h"
 #include "Body_Player.h"
 #include "Player.h"
+#include "Zombie.h"
+#include "Blood.h"
 
 CZombie_StealthDeath::CZombie_StealthDeath()
 {
@@ -27,14 +29,17 @@ void CZombie_StealthDeath::Enter(CBody_Zombie& owner)
     if (playerBody->Get_Model()->Get_AnimIndex() == ETOUI(CBody_Player::PLAYER_ANIM::AXE_STEALTH1)) {
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::AXE_STEALTH1),false);
         delta = XMVectorSet(0.1f, 0, 0, 0);
+
     }
     else if (playerBody->Get_Model()->Get_AnimIndex() == ETOUI(CBody_Player::PLAYER_ANIM::AXE_STEALTH2)) {
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::AXE_STEALTH2), false);
         delta = XMVectorSet(0.12f, 0, 0, 0);
+
     }
     else if (playerBody->Get_Model()->Get_AnimIndex() == ETOUI(CBody_Player::PLAYER_ANIM::STEALTH_KILL)) {
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::UNARMED_STEALTH), false);
         delta = XMVectorSet(0.13f, 0, 0, 0);
+
     }
     auto playerPos = player->Get_Transform()->Get_State(STATE::POSITION);
     if (playerBody->Get_CurDir() == CBody_Player::PLAYER_DIR::RIGHT) {
@@ -44,16 +49,57 @@ void CZombie_StealthDeath::Enter(CBody_Zombie& owner)
         playerPos -= delta;
     
     }
-    owner.Get_Transform()->Set_State(STATE::POSITION, playerPos);
-    auto pos = owner.Get_Transform()->Get_State(STATE::POSITION);
+    owner.Get_Zombie().lock()->Get_Transform()->Set_State(STATE::POSITION, playerPos);
+    auto pos = owner.Get_Zombie().lock()->Get_Transform()->Get_State(STATE::POSITION);
     owner.Set_HPZero();
 
 }
 
 void CZombie_StealthDeath::Update(CBody_Zombie& owner, _float deltaTime)
 {
-  
-    auto pos = owner.Get_Transform()->Get_State(STATE::POSITION);
+    animtime += deltaTime;
+    if (owner.Get_Model()->Get_AnimIndex() == ETOUI(CBody_Zombie::ZOMBIE_STATE::UNARMED_STEALTH) && !animFinshed) {
+        if (animtime > 3.2f) {
+            auto zombie = static_pointer_cast<CZombie>(owner.Get_Zombie().lock());
+            static_cast<CBlood*>(zombie->Get_Effect())->Play_Particle();
+            static_cast<CBlood*>(zombie->Get_Effect())->Set_Bleeding();
+
+            animFinshed = true;
+        }
+    }
+    if (owner.Get_Model()->Get_AnimIndex() == ETOUI(CBody_Zombie::ZOMBIE_STATE::AXE_STEALTH1)) {
+        if (animtime > 0.5f && count == 0 && !animFinshed) {
+            auto zombie = static_pointer_cast<CZombie>(owner.Get_Zombie().lock());
+            static_cast<CBlood*>(zombie->Get_Effect())->Play_Particle();
+            static_cast<CBlood*>(zombie->Get_Effect())->Set_Bleeding();
+
+            count++;
+        }
+        if (animtime > 1.8f && count == 1 && !animFinshed) {
+            auto zombie = static_pointer_cast<CZombie>(owner.Get_Zombie().lock());
+            static_cast<CBlood*>(zombie->Get_Effect())->Set_Bleeding();
+            static_cast<CBlood*>(zombie->Get_Effect())->Play_Particle();
+            count++;
+        }
+        if (animtime > 3.f && count == 2 && !animFinshed) {
+            auto zombie = static_pointer_cast<CZombie>(owner.Get_Zombie().lock());
+            static_cast<CBlood*>(zombie->Get_Effect())->Play_Particle();
+            static_cast<CBlood*>(zombie->Get_Effect())->Set_Bleeding();
+
+            animFinshed = true;
+        }
+        
+    }
+    if (owner.Get_Model()->Get_AnimIndex() == ETOUI(CBody_Zombie::ZOMBIE_STATE::AXE_STEALTH2)) {
+        if (animtime > 1.5f && !animFinshed) {
+            auto zombie = static_pointer_cast<CZombie>(owner.Get_Zombie().lock());
+            static_cast<CBlood*>(zombie->Get_Effect())->Set_Bleeding();
+            static_cast<CBlood*>(zombie->Get_Effect())->Play_Particle();
+            animFinshed = true;
+        }
+    }
+
+   // auto pos = owner.Get_Transform()->Get_State(STATE::POSITION);
     
 }
 

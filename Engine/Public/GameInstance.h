@@ -18,6 +18,7 @@ public:
 	void Update_Engine(_float fTimeDelta);
 	HRESULT Draw();
 	void Clear_Resources(uint32_t iClearLevelIndex);
+	_float Random(_float fMin, _float fMax);
 	_float2 Get_ViewportSize() const {
 		return m_vViewportSize;
 	}
@@ -36,6 +37,7 @@ public:
 #pragma region LEVEL_MANAGER
 	HRESULT Change_Level(uint32_t iNewLevelIndex, unique_ptr<class CLevel> pNewLevel);
 	uint32_t GetCurLevelIndex();
+	CLevel* Get_CurrentLevel() const; 
 #pragma endregion
 
 #pragma region PROTOTYPE_MANAGER

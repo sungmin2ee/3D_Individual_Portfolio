@@ -18,6 +18,8 @@
 #include "Body_Player.h"
 #include "Body_Zombie.h"
 #include "Weapon.h"
+#include "Blood.h"
+#include "MainPic.h"
 
 
 CMainApp::CMainApp()
@@ -73,12 +75,12 @@ void CMainApp::Update(float fTimeDelta)
 		//if (CGameInstance::Get().Key_Up(DIK_K)) {
 		//	m_pImguiHandler->Save_StairCollider();
 		//}
-		if (CGameInstance::Get().Key_Up(DIK_L)) {
-			m_pImguiHandler->Load_StairCollider();
-		}
+		//if (CGameInstance::Get().Key_Up(DIK_L)) {
+		//	m_pImguiHandler->Load_StairCollider();
+		//}
 	}
 	//D3D11_SAMPLER_DESC
-	D3D11_DEPTH_STENCIL_DESC desc;
+	//D3D11_DEPTH_STENCIL_DESC desc;
 
 	CGameInstance::Get().Update_Engine(fTimeDelta);
 	m_pImguiHandler->Handle_Imgui(CGameInstance::Get().GetCurLevelIndex(), fTimeDelta);
@@ -302,10 +304,61 @@ HRESULT CMainApp::Ready_Prototypes()
 		CWeapon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_TitleBG"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Logo_Bg_1.png"), 1))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_TitleBG"),
+		CMainPic::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/*CVIBuffer_Particle_Point::PARTICLE_INSTANCE_DESC		ExploDesc{};
+	ExploDesc.iNumInstances = 5;
+	ExploDesc.vCenter = _float3(0.f, 0.f, 0.f);
+	ExploDesc.vRange = _float3(1.f, 0.2f, 1.f);
+	ExploDesc.vSize = _float2(0.05f, 0.1f);
+	ExploDesc.vSpeed = _float2(0.2f, 1.f);
+	ExploDesc.vLifeTime = _float2(0.3f, 0.7f);
+	ExploDesc.isLoop = true;
+	ExploDesc.vPivot = ExploDesc.vCenter;
+
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Particle_Blood"),
+		CVIBuffer_Particle_Point::Create(m_pDevice, m_pContext, &ExploDesc))))
+		return E_FAIL;*/
+
+
+	CVIBuffer_Particle_Point::PARTICLE_INSTANCE_DESC		bloodDesc{};
+	bloodDesc.iNumInstances = 100;
+	bloodDesc.vCenter = _float3(0.f, 2.43f, 0.f);
+	bloodDesc.vRange = _float3(0.f, 0.f, 0.f);
+	bloodDesc.vSize = _float2(0.01f, 0.03f);
+	bloodDesc.vSpeed = _float2(1.f, 3.f);
+	bloodDesc.vLifeTime = _float2(0.3f, 1.2f);
+	bloodDesc.isLoop = false;
+	bloodDesc.vPivot = bloodDesc.vCenter;
+
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Particle_Blood"),
+		CVIBuffer_Particle_Point::Create(m_pDevice, m_pContext, &bloodDesc))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Blood"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/blood_drip_splash_a_bsc.png"), 1))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxInstance_Particle_Point */
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxInstance_Particle_Point"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Particle_Point.hlsl"), VTXINSTANCE_PARTICLE_POINT::Elements, VTXINSTANCE_PARTICLE_POINT::iNumElements))))
+		return E_FAIL;
+
+
+
 
 
 	return S_OK;
 }
+
 
 
 

@@ -29,6 +29,9 @@ private:
 	HRESULT Ready_Layer_Player(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Sky(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_HealthUI(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Map(const _wstring& strLayerTag);
+	HRESULT Load_Stair_Collider();
+
 public:
 	static unique_ptr<CLevel_Shelter> Create(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext);
 

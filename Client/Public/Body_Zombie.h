@@ -39,7 +39,7 @@ public:
 		CBody_Zombie::ZOMBIE_DIR Direction;
 		CBody_Zombie::ZOMBIE_STATE State;
 		CBody_Zombie::ZOMBIE_FIRSTSTATE firstState;
-		_vector pos;
+		shared_ptr<class CZombie> zombie;
 	}BODY_ZOMBIE_DESC;
 
 private:
@@ -78,6 +78,8 @@ public:
 	CDoor* Get_CollidedDoor() { return pCollidedDoor; };
 	CStair_Collider* Get_CollidedStair() { return pStairCollider; }
 	const _float4& Get_StairPos() { return stairColliderPos; }
+	const _float4x4* &Get_HeadMat() { return m_pHeadMat; }
+	weak_ptr<class CZombie> Get_Zombie() { return m_pZombie.lock(); }
 
 
 	void Set_CurState(ZOMBIE_STATE state) { m_eCurState = state; }
@@ -118,11 +120,12 @@ private:
 	_bool									m_bStealthDeath = false;
 	_bool									m_bDoorCollided = false;
 	_float									m_fAttackTime = 0.f;
-	uint32_t								m_iHp = 100;
+	uint32_t								m_iHp = 40;
 	CDoor*									pCollidedDoor = nullptr;
 	CStair_Collider*						pStairCollider = nullptr;
 	_float4									stairColliderPos = {};
-
+	weak_ptr<class CZombie>						m_pZombie;
+	const _float4x4*								m_pHeadMat = nullptr;
 private:
 	void FocusPlayer();
 	//shared_ptr<CBody_Player> m_pPlayer = { nullptr };

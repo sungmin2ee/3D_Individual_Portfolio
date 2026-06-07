@@ -217,7 +217,7 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
                     owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::STAIR_RUN_UP));
                     m_bAnimChanged = true;
                 }
-                if (CGameInstance::Get().GetCurLevelIndex() == 4) {
+                if (CGameInstance::Get().GetCurLevelIndex() == 4 || CGameInstance::Get().GetCurLevelIndex() == 3) {
                     owner.Get_Player().lock()->Get_Transform()->Go_Straight(deltaTime * 1.4f);
                     owner.Get_Player().lock()->Get_Transform()->Go_Up(deltaTime * 0.8f);
                 }
@@ -237,7 +237,7 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
 
                 }
                 owner.Set_CurState(CBody_Player::PLAYER_STATE::STAIR_DOWN);
-                if (CGameInstance::Get().GetCurLevelIndex() == ETOUI(LEVEL::STAGE1)) {
+                if (CGameInstance::Get().GetCurLevelIndex() == ETOUI(LEVEL::STAGE1) || CGameInstance::Get().GetCurLevelIndex() == ETOUI(LEVEL::SHELTER)) {
                     owner.Get_Player().lock()->Get_Transform()->Go_Straight(deltaTime * 1.4f);
                     owner.Get_Player().lock()->Get_Transform()->Go_Down(deltaTime * 0.8f);
                 }
@@ -265,7 +265,7 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
 
                 }
                 owner.Set_CurState(CBody_Player::PLAYER_STATE::STAIR_UP);
-                if (CGameInstance::Get().GetCurLevelIndex() == ETOUI(LEVEL::STAGE1)) {
+                if (CGameInstance::Get().GetCurLevelIndex() == ETOUI(LEVEL::STAGE1) || CGameInstance::Get().GetCurLevelIndex() == ETOUI(LEVEL::SHELTER)) {
                     owner.Get_Player().lock()->Get_Transform()->Go_Straight(deltaTime * 1.4f);
                     owner.Get_Player().lock()->Get_Transform()->Go_Up(deltaTime * 0.8f);
                 }
@@ -284,7 +284,7 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
                     m_bAnimChanged = true;
 
                 }
-                if (CGameInstance::Get().GetCurLevelIndex() == ETOUI(LEVEL::STAGE1)) {
+                if (CGameInstance::Get().GetCurLevelIndex() == ETOUI(LEVEL::STAGE1) || CGameInstance::Get().GetCurLevelIndex() == ETOUI(LEVEL::SHELTER)) {
                     owner.Get_Player().lock()->Get_Transform()->Go_Straight(deltaTime * 1.4f);
                     owner.Get_Player().lock()->Get_Transform()->Go_Down(deltaTime * 0.8f);
                 }

@@ -36,8 +36,9 @@ private: /* For.Thread */
 private: /* For.Loading */
 	_bool							m_isFinished = { false };
 	_tchar							m_szLoadingText[MAX_PATH] = {};
-
 private:
+
+	HRESULT Loading_For_Loading();
 	HRESULT Loading_For_Logo();
 	HRESULT Loading_For_Shelter();
 	HRESULT Loading_For_Stage1();
@@ -46,7 +47,7 @@ private:
 public:
 	static unique_ptr<CLoader> Create(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext, LEVEL eNextLevelIndex);
 	void Load_Models_From_Directory(LEVEL eNextLevelIndex,const string& strSceneName);
-	HRESULT Load_Data(string Scene);
+
 };
 
 NS_END

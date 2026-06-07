@@ -133,6 +133,36 @@
     <Filter Include="02.GameObject\04.Inventory\Overlay">
       <UniqueIdentifier>{eabdd545-11d3-4842-bfc6-3083cd8e18dc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\03.Zombie\Blood">
+      <UniqueIdentifier>{b4971733-3e45-4387-82eb-0efac1e1b0ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\11.Map">
+      <UniqueIdentifier>{50650119-ea42-4431-b47b-84ff35c24617}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\11.Map\Pin">
+      <UniqueIdentifier>{ba722c60-76d0-4fc0-8fe1-8a1521ddc2ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\11.Map\MapInfo">
+      <UniqueIdentifier>{ab81c2e3-97cf-4152-9801-798c5e16331e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\11.Map\MoveButton">
+      <UniqueIdentifier>{76cbbad5-6c3c-4ba1-8803-e73e0befecc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.LoadingScene">
+      <UniqueIdentifier>{87edb2c9-feea-4e1f-9db0-e256b715fd12}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.LoadingScene\MainPic">
+      <UniqueIdentifier>{dcf9e3f0-5ff2-4e12-9bb3-af4cd1d2b7cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.LoadingScene\GameStartButton">
+      <UniqueIdentifier>{d7f8aa01-ef77-4acd-b12d-cd24f9451163}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.LoadingScene\Title">
+      <UniqueIdentifier>{6c3ee611-d6e0-4d66-9e0e-20304de9cc7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.LoadingScene\CloseButton">
+      <UniqueIdentifier>{98f87f07-157f-4a42-b4cf-1efa96da3863}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -318,6 +348,33 @@
     <ClInclude Include="..\Public\Overlay.h">
       <Filter>02.GameObject\04.Inventory\Overlay</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Blood.h">
+      <Filter>02.GameObject\03.Zombie\Blood</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Map.h">
+      <Filter>02.GameObject\11.Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MapPin.h">
+      <Filter>02.GameObject\11.Map\Pin</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapInfo.h">
+      <Filter>02.GameObject\11.Map\MapInfo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MoveButton.h">
+      <Filter>02.GameObject\11.Map\MoveButton</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GameStartButton.h">
+      <Filter>03.LoadingScene\GameStartButton</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MainPic.h">
+      <Filter>03.LoadingScene\MainPic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Title.h">
+      <Filter>03.LoadingScene\Title</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\GameEnd.h">
+      <Filter>03.LoadingScene\CloseButton</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -488,6 +545,33 @@
     <ClCompile Include="..\Private\Overlay.cpp">
       <Filter>02.GameObject\04.Inventory\Overlay</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Blood.cpp">
+      <Filter>02.GameObject\03.Zombie\Blood</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Map.cpp">
+      <Filter>02.GameObject\11.Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MapPin.cpp">
+      <Filter>02.GameObject\11.Map\Pin</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapInfo.cpp">
+      <Filter>02.GameObject\11.Map\MapInfo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MoveButton.cpp">
+      <Filter>02.GameObject\11.Map\MoveButton</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GameStartButton.cpp">
+      <Filter>03.LoadingScene\GameStartButton</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MainPic.cpp">
+      <Filter>03.LoadingScene\MainPic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Title.cpp">
+      <Filter>03.LoadingScene\Title</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\GameEnd.cpp">
+      <Filter>03.LoadingScene\CloseButton</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -540,6 +624,12 @@
       <Filter>Shaderfiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNoLightMesh.hlsl">
+      <Filter>Shaderfiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Particle_Rect.hlsl">
+      <Filter>Shaderfiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Particle_Point.hlsl">
       <Filter>Shaderfiles</Filter>
     </FxCompile>
   </ItemGroup>

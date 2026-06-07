@@ -6,6 +6,7 @@
 #include "Zombie_Damaged.h"
 #include "Zombie_Fatal.h"
 #include "Zombie_StealthDeath.h"
+#include "Zombie.h"
 
 CZombie_Walk::CZombie_Walk()
 {
@@ -49,10 +50,10 @@ void CZombie_Walk::Update(CBody_Zombie& owner, _float deltaTime)
 
     if(!owner.Get_PlayerDetected()) {
         if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::WALK_FAST) {
-            owner.Get_Transform()->Go_Straight(deltaTime * 0.7f);
+            owner.Get_Zombie().lock()->Get_Transform()->Go_Straight(deltaTime * 0.7f);
         }
         else {
-            owner.Get_Transform()->Go_Straight(deltaTime * 0.5f);
+            owner.Get_Zombie().lock()->Get_Transform()->Go_Straight(deltaTime * 0.5f);
 
         }
     }

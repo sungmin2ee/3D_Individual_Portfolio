@@ -31,6 +31,8 @@ HRESULT CRenderer::Draw()
     if (FAILED(Render_Priority()))
         return E_FAIL;
 
+    if (FAILED(Render_Test()))
+        return E_FAIL;
     if (FAILED(Render_NonBlend()))
         return E_FAIL;
 
@@ -59,6 +61,19 @@ HRESULT CRenderer::Render_Priority()
     }
 
     m_RenderObjects[ETOUI(RENDERGROUP::PRIORITY)].clear();
+
+    return S_OK;
+}
+
+HRESULT CRenderer::Render_Test()
+{
+    for (auto& pRenderObject : m_RenderObjects[ETOUI(RENDERGROUP::TEST)])
+    {
+        if (nullptr != pRenderObject)
+            pRenderObject->Render();
+    }
+
+    m_RenderObjects[ETOUI(RENDERGROUP::TEST)].clear();
 
     return S_OK;
 }

@@ -23,7 +23,7 @@ public:
 	void Update(_float fTimeDelta);
 	HRESULT Render();
 	uint32_t GetCurLevelIndex() { return m_iCurrentLevelIndex; }
-
+	CLevel* Get_CurrentLevel() const { return m_pCurrentLevel.get(); }
 private:
 	uint32_t							m_iCurrentLevelIndex = {};
 	unique_ptr<class CLevel>			m_pCurrentLevel = { nullptr };

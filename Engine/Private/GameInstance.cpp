@@ -129,6 +129,13 @@ void CGameInstance::Clear_Resources(uint32_t iClearLevelIndex)
 
 }
 
+
+_float CGameInstance::Random(_float fMin, _float fMax)
+{
+    return fMin + static_cast<_float>(rand()) / RAND_MAX * (fMax - fMin);
+}
+
+
 #pragma region TIMER_MANAGER
 _float CGameInstance::Get_TimeDelta(const _wstring& strTimerTag)
 {
@@ -172,6 +179,9 @@ HRESULT CGameInstance::Change_Level(uint32_t iNewLevelIndex, unique_ptr<class CL
 }
 uint32_t  CGameInstance::GetCurLevelIndex() {
     return m_pLevel_Manager->GetCurLevelIndex();
+}
+CLevel* CGameInstance::Get_CurrentLevel() const{
+    return m_pLevel_Manager->Get_CurrentLevel();
 }
 #pragma endregion
 

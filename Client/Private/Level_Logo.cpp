@@ -5,6 +5,7 @@
 
 #include "Level_Loading.h"
 #include "BackGround.h"
+#include "UIObject.h"
 
 CLevel_Logo::CLevel_Logo(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: CLevel{ pDevice, pContext }
@@ -30,13 +31,14 @@ void CLevel_Logo::Update(_float fTimeDelta)
 	/*if (CGameInstance::Get().Get_DIKeyState(DIK_CAPITAL)) {
 		CGameInstance::Get().Save(ETOUI(LEVEL::LOGO));
 	}*/
-	if (CGameInstance::Get().Key_Down(DIK_INSERT))
+
+	if (m_bChangeLevel)
 	{
 		if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
 			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::SHELTER))))
 			return;
 
-		return;
+		m_bChangeLevel = false;
 	}
 }
 
@@ -51,8 +53,43 @@ HRESULT CLevel_Logo::Render()
 
 HRESULT CLevel_Logo::Ready_Layer_Logo(const _wstring& strLayerTag)
 {
-	CBackGround::BACKGROUND_DESC		Desc{};
-	Desc.iData = 10;
+	CUIObject::UIOBJECT_DESC pDesc;
+	pDesc.fSizeX = g_iWinSizeX;
+	pDesc.fSizeY = g_iWinSizeY;
+	pDesc.fX = g_iWinSizeX *0.5f;
+	pDesc.fY = g_iWinSizeY * 0.5f;
+	pDesc.pGameObjectTag = L"TitleBG";
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_TitleBG"),
+		ETOUI(LEVEL::LOGO), strLayerTag, &pDesc)))
+		return E_FAIL;
+
+	pDesc.fSizeX = g_iWinSizeX * 0.1f;
+	pDesc.fSizeY = g_iWinSizeY * 0.1f;
+	pDesc.fX = g_iWinSizeX * 0.5f;
+	pDesc.fY = g_iWinSizeY * 0.7f;
+	pDesc.pGameObjectTag = L"StartButton";
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::LOGO), TEXT("Prototype_GameObject_GameStart"),
+		ETOUI(LEVEL::LOGO), strLayerTag, &pDesc)))
+		return E_FAIL;
+	pDesc.fSizeX = g_iWinSizeX * 0.1f;
+	pDesc.fSizeY = g_iWinSizeY * 0.1f;
+	pDesc.fX = g_iWinSizeX * 0.5f;
+	pDesc.fY = g_iWinSizeY * 0.9f;
+	pDesc.pGameObjectTag = L"EndButton";
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::LOGO), TEXT("Prototype_GameObject_GameEnd"),
+		ETOUI(LEVEL::LOGO), strLayerTag, &pDesc)))
+		return E_FAIL;
+	pDesc.fSizeX = g_iWinSizeX * 0.6f;
+	pDesc.fSizeY = g_iWinSizeY * 0.5f;
+	pDesc.fX = g_iWinSizeX * 0.5f;
+	pDesc.fY = g_iWinSizeY * 0.3f;
+	pDesc.pGameObjectTag = L"Title";
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::LOGO), TEXT("Prototype_GameObject_Title"),
+		ETOUI(LEVEL::LOGO), strLayerTag, &pDesc)))
+		return E_FAIL;
 
 	CGameInstance::Get().Load(ETOUI(LEVEL::LOGO));
 	

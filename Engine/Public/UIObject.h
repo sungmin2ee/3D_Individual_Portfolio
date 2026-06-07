@@ -28,6 +28,7 @@ public:
 	_float Get_fY() { return m_fY; }
 	_float Get_fSizeX() { return m_fSizeX; }
 	_float Get_fSizeY() { return m_fSizeY; }
+	_bool  &Get_Render() { return m_bRender; }
 	void Set_fX(_float fX) { m_fX = fX; }
 	void Set_fY(_float fY) { m_fY = fY; }
 	void Set_Render(_bool flag) { m_bRender = flag; }

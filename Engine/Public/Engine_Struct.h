@@ -49,34 +49,23 @@ namespace Engine
 		_float4x4 matWVP;
 		_float4 vColor;
 	};
+	typedef struct tagVertexInstanceParticle
+	{
+		XMFLOAT4		vRight, vUp, vLook, vTranslation;
+		XMFLOAT2		vLifeTime;
+	}VTXINSTANCE_PARTICLE;
 
-	//bone indexes which will influence this vertex
-	//int32_t boneIDs[MAX_BONE_INFLUENCE] = { -1,-1,-1,-1 };
-	////weights from each bone
-	//_float weights[MAX_BONE_INFLUENCE] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	typedef struct tagVertexPosition
+	{
+		XMFLOAT3	vPosition;
 
-	//void AddBoneData(uint32_t id, _float weight) {
-	//	if (weight <= 0.0f) return;
-	//	for (uint32_t i = 0; i < 4; ++i) {
-	//		if (weights[i] == 0.0f) { // 빈 슬롯 발견
-	//			boneIDs[i] = id;
-	//			weights[i] = weight;
 
-	//			float total = 0.0f;
-	//			for (int j = 0; j < 4; ++j)
-	//				total += weights[j];
+		static constexpr uint32_t		iNumElements = { 1 };
+		static constexpr D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements] = {
+			{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+		};
+	}VTXPOS;
 
-	//			// 합이 1.0이 되도록 모든 슬롯을 다시 나눕니다.
-	//			if (total > 0.0f) {
-	//				for (int j = 0; j < 4; ++j)
-	//					weights[j] /= total;
-	//			}
-	//			return;
-	//		}
-	//	}
-
-	//	// 만약 4개 이상의 뼈가 영향을 준다면, 보통 가장 작은 가중치를 버리거나 무시합니다.
-	//}
 	typedef struct VERTEX {
 	
 		XMFLOAT3 position;
@@ -194,7 +183,37 @@ namespace Engine
 				{ "BLENDWEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 72, D3D11_INPUT_PER_VERTEX_DATA, 0 }
 			};
 		}VTXANIMMESH;
-}
+
+		typedef struct tagVertexInstanceParticle_Rect
+		{
+			static constexpr uint32_t		iNumElements = { 7 };
+			static constexpr D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements] = {
+				{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+				{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0},
+
+				{ "TEXCOORD", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+				{ "TEXCOORD", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+				{ "TEXCOORD", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+				{ "TEXCOORD", 4, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+				{ "TEXCOORD", 5, DXGI_FORMAT_R32G32_FLOAT, 1, 64, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+			};
+		}VTXINSTANCE_PARTICLE_RECT;
+
+
+		typedef struct tagVertexInstanceParticle_Point
+		{
+			static constexpr uint32_t		iNumElements = { 6 };
+			static constexpr D3D11_INPUT_ELEMENT_DESC		Elements[iNumElements] = {
+				{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0},
+
+				{ "WORLD", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 0, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+				{ "WORLD", 1, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 16, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+				{ "WORLD", 2, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 32, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+				{ "WORLD", 3, DXGI_FORMAT_R32G32B32A32_FLOAT, 1, 48, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+				{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 1, 64, D3D11_INPUT_PER_INSTANCE_DATA, 1},
+			};
+		}VTXINSTANCE_PARTICLE_POINT;
+}	
 
 
 #endif // Engine_Struct_h__

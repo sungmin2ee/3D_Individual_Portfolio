@@ -282,6 +282,7 @@ HRESULT CLevel_Stage2::Ready_Layer_Player(const _wstring& strLayerTag)
 	pDesc.fSpeedPerSec = 10.f;
 	pDesc.fRotationPerSec = 720.f;
 	pDesc.nextLevel = LEVEL::STAGE2;
+	pDesc.pos = XMVectorSet(-4.5f, 0, -0, 1);
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Player"),
 		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
 		return E_FAIL;
@@ -300,6 +301,7 @@ HRESULT CLevel_Stage2::Ready_Layer_Zombie(const _wstring& strLayerTag)
 	pDesc.Direction = CBody_Zombie::ZOMBIE_DIR::BACK;
 	pDesc.State = CBody_Zombie::ZOMBIE_STATE::AGGRO_IDLE1;
 	pDesc.pos = XMVectorSet(-1.5f, 0, 1.f, 1);
+	pDesc.nextLevel = LEVEL::STAGE2;
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Zombie"),
 		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
 		return E_FAIL;

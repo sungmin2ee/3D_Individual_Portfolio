@@ -22,6 +22,15 @@
 #include "SearchItemFrame.h"
 #include "SearchItemIcon.h"
 #include "Overlay.h"
+#include "Blood.h"
+#include "Map.h"
+#include "MapPin.h"
+#include "MapInfo.h"
+#include "MoveButton.h"
+#include "MainPic.h"
+#include "GameStartButton.h"
+#include "Title.h"
+#include "GameEnd.h"
 
 
 CLoader::CLoader(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
@@ -83,6 +92,9 @@ HRESULT CLoader::Loading()
 
 	switch (m_eNextLevelIndex)
 	{
+	case LEVEL::LOADING:
+		hr = Loading_For_Loading();
+		break;
 	case LEVEL::LOGO:
 		hr = Loading_For_Logo();
 		break;
@@ -116,9 +128,30 @@ void CLoader::Output_LoadingText()
 
 #endif
 
+HRESULT CLoader::Loading_For_Loading()
+{
+
+
+	return S_OK;
+}
+
 HRESULT CLoader::Loading_For_Logo()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
+	//if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO), TEXT("Prototype_Component_Texture_TitleBG"),
+	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Logo_Bg_1.png"), 1))))
+	//	return E_FAIL;
+	//m_iLoadedResources++;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO), TEXT("Prototype_Component_Texture_GameStart"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/GameStart.png"), 1))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO), TEXT("Prototype_Component_Texture_Title"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/Logo_OurDarkestDays_01.png"), 1))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO), TEXT("Prototype_Component_Texture_GameEnd"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/GameEnd.png"), 1))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("모델을 로딩 중 입니다."));
 	//Load_Models_From_Directory(LEVEL::LOGO, "Logo");
@@ -126,13 +159,20 @@ HRESULT CLoader::Loading_For_Logo()
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩 중 입니다."));
 	
 	
-	
 
 	lstrcpy(m_szLoadingText, TEXT("객체원형 생성 중 입니다."));
 	
-	/* Prototype_GameObject_BackGround */
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO), TEXT("Prototype_GameObject_BackGround"),
-		CBackGround::Create(m_pDevice, m_pContext))))
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO), TEXT("Prototype_GameObject_GameStart"),
+		CGameStartButton::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO), TEXT("Prototype_GameObject_Title"),
+		CTitle::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO), TEXT("Prototype_GameObject_GameEnd"),
+		CGameEnd::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
@@ -146,6 +186,27 @@ HRESULT CLoader::Loading_For_Shelter()
 {
 
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
+	//Map
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_Component_Texture_Map"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/map_35.png"), 1))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_Component_Texture_MapPin"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/MapPin.png"), 1))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_Component_Texture_MapInfo1"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/MapSchool.png"), 1))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_Component_Texture_MapInfo2"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/MapOffice.png"), 1))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_Component_Texture_MoveButton"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/MoveScene.png"), 1))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("모델을 로딩 중 입니다."));
 
@@ -156,24 +217,31 @@ HRESULT CLoader::Loading_For_Shelter()
 	lstrcpy(m_szLoadingText, TEXT("객체원형 생성 중 입니다."));
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_Overlay", COverlay::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_Inventory", CInventory::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_ItemFrame", CItemFrame::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_ItemIcon", CItemIcon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_EquipBorder", CEquipBorder::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_JoeIcon"),
 		CJoeIcon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_HealthBarFill"),
 		CHealthBarFill::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_HealthBarFrame"),
 		CHealthBarFrame::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_Sky"),
 		CSky::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -181,6 +249,24 @@ HRESULT CLoader::Loading_For_Shelter()
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_Player"),
 		CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_Map"),
+		CMap::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_MapPin"),
+		CMapPin::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_MapInfo"),
+		CMapInfo::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_MoveButton"),
+		CMoveButton::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
@@ -190,52 +276,77 @@ HRESULT CLoader::Loading_For_Shelter()
 
 HRESULT CLoader::Loading_For_Stage1()
 {
+
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
+
 
 	lstrcpy(m_szLoadingText, TEXT("모델을 로딩 중 입니다."));
 
+
+	
 	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩 중 입니다."));
 
 	lstrcpy(m_szLoadingText, TEXT("객체원형 생성 중 입니다."));
+
+	/* For.Prototype_GameObject_Blood */
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Blood"),
+		CBlood::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), L"Prototype_Overlay", COverlay::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), L"Prototype_Search_Collider", CSearch_Collider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), L"Prototype_SearchItemFrame", CSearchItemFrame::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), L"Prototype_SearchItemIcon", CSearchItemIcon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), L"Prototype_SearchBox", CSearchBox::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), L"Prototype_Inventory", CInventory::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), L"Prototype_ItemFrame", CItemFrame::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), L"Prototype_ItemIcon", CItemIcon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), L"Prototype_EquipBorder", CEquipBorder::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Sky"),
 		CSky::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Player"),
 		CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Zombie"),
 		CZombie::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), TEXT("Prototype_JoeIcon"),
 		CJoeIcon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), TEXT("Prototype_HealthBarFill"),
 		CHealthBarFill::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), TEXT("Prototype_HealthBarFrame"),
 		CHealthBarFrame::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
@@ -245,6 +356,7 @@ HRESULT CLoader::Loading_For_Stage1()
 
 HRESULT CLoader::Loading_For_Stage2()
 {
+
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
 
 
@@ -258,20 +370,28 @@ HRESULT CLoader::Loading_For_Stage2()
 	lstrcpy(m_szLoadingText, TEXT("객체원형 생성 중 입니다."));
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), L"Prototype_Overlay", COverlay::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), L"Prototype_Search_Collider", CSearch_Collider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), L"Prototype_SearchItemFrame", CSearchItemFrame::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), L"Prototype_SearchItemIcon", CSearchItemIcon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), L"Prototype_SearchBox", CSearchBox::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), L"Prototype_Inventory", CInventory::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), L"Prototype_ItemFrame", CItemFrame::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), L"Prototype_ItemIcon", CItemIcon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), L"Prototype_EquipBorder", CEquipBorder::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
@@ -281,23 +401,32 @@ HRESULT CLoader::Loading_For_Stage2()
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Player"),
 		CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Zombie"),
 		CZombie::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_JoeIcon"),
 		CJoeIcon::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_HealthBarFill"),
 		CHealthBarFill::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_HealthBarFrame"),
 		CHealthBarFrame::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+
 	/* For.Prototype_GameObject_Sky */
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Sky"),
 		CSky::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Blood"),
+		CBlood::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

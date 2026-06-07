@@ -1,6 +1,4 @@
 #include "Zombie.h"
-
-
 #include "GameInstance.h"
 
 CZombie::CZombie(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
@@ -24,23 +22,42 @@ HRESULT CZombie::Initialize_Prototype()
 
 HRESULT CZombie::Initialize(void* pArg)
 {
-	//ZOMBIE_DESC			Desc{};
-	//Desc.fSpeedPerSec = 10.f;
-	//Desc.fRotationPerSec = 180.f;
-
-	auto		pDesc = static_cast<ZOMBIE_DESC*>(pArg);
+	ZOMBIE_DESC			Desc{};
+	Desc.fSpeedPerSec = 0.1f;
+	Desc.fRotationPerSec = 720.f;
 
 
 
-	if (FAILED(__super::Initialize(&pDesc)))
+
+	if (FAILED(__super::Initialize(&Desc)))
 		return E_FAIL;
+	auto		pDesc = static_cast<ZOMBIE_DESC*>(pArg);
 
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
-	
-	
-	if (FAILED(Ready_PartObjects(pArg)))
+
+	m_pTransformCom->Set_Scale(0.1f, 0.1f, 0.1f);
+	m_pTransformCom->Set_State(STATE::POSITION, pDesc->pos);
+
+	if (pDesc->Direction == CBody_Zombie::ZOMBIE_DIR::LEFT) {
+		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 270.f);
+
+	}
+	else if (pDesc->Direction == CBody_Zombie::ZOMBIE_DIR::RIGHT) {
+		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
+	}
+	else if (pDesc->Direction == CBody_Zombie::ZOMBIE_DIR::FRONT) {
+		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 180.f);
+	}
+	else {
+		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 0.f);
+
+	}
+
+	if (FAILED(Ready_PartObjects(pDesc)))
 		return E_FAIL;
+
+
 	//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
 	return S_OK;
 }
@@ -87,12 +104,26 @@ HRESULT CZombie::Ready_PartObjects(void *pArg)
 	BodyDesc.State = pDesc->State;
 	BodyDesc.Direction = pDesc->Direction;
 	BodyDesc.fRotationPerSec = pDesc->fRotationPerSec;
-	BodyDesc.pos = pDesc->pos;
 	BodyDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrixPtr();
+	BodyDesc.zombie = static_pointer_cast<CZombie>(shared_from_this());
+
 	if (FAILED(__super::Add_PartObject(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Body_Zombie"),
 		TEXT("Part_Body"), &BodyDesc)))
 		return E_FAIL;
 	body = static_pointer_cast<CBody_Zombie>(__super::Get_PartObject(TEXT("Part_Body")));
+
+
+
+	CBlood::BLOOD_DESC bDesc{};
+	bDesc.pParentMatrix = m_pTransformCom->Get_WorldMatrixPtr();
+	bDesc.zombie = static_pointer_cast<CZombie>(shared_from_this());
+
+	if (FAILED(__super::Add_PartObject(ETOUI(pDesc->nextLevel), TEXT("Prototype_GameObject_Blood"),
+		TEXT("Part_Effect"), &bDesc)))
+		return E_FAIL;
+
+
+	efftct = static_pointer_cast<CBlood>(__super::Get_PartObject(TEXT("Part_Effect")));
 
 	return S_OK;
 }

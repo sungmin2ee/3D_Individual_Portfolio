@@ -37,10 +37,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	auto pDesc = static_cast<PLAYER_DESC*>(pArg);
 	m_eNextLevel = pDesc->nextLevel;
-
 	m_pTransformCom->Set_Scale(0.1f, 0.1f, 0.1f);
     m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
-	m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(-1.5f, 0, 0, 1));
+	m_pTransformCom->Set_State(STATE::POSITION, pDesc->pos);
 
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;

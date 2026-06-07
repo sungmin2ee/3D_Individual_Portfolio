@@ -25,5 +25,7 @@ public:
 private:
     _bool animStart = false;
     _bool m_bDead = false;
+    _bool animFinished = false;
+    _float animTimer = 0;
 };
 NS_END

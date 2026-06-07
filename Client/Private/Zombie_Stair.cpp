@@ -5,6 +5,8 @@
 #include "Body_Player.h"
 #include "Stair_Collider.h"
 #include "Zombie_Run.h"
+#include "Zombie.h"
+
 
 CZombie_Stair::CZombie_Stair()
 {
@@ -44,7 +46,7 @@ void CZombie_Stair::Update(CBody_Zombie& owner, _float deltaTime)
     
     
     _float4 myPos;
-    XMStoreFloat4(&myPos, owner.Get_Transform()->Get_State(STATE::POSITION));
+    XMStoreFloat4(&myPos, owner.Get_Zombie().lock()->Get_Transform()->Get_State(STATE::POSITION));
 
     if (!owner.Get_Rotating() && !m_bAdjustingEnter && !m_bEnterAnimFinished) {
         if (owner.Get_CollidedStair()->Get_State() == CStair_Collider::STAIR_COLLIDER::STAIR_UP) {
@@ -65,25 +67,25 @@ void CZombie_Stair::Update(CBody_Zombie& owner, _float deltaTime)
                 //플레이어가 계단 콜라이더 보다 왼쪽에있으면
                 _float4 newPos;
                 if (myPos.x < owner.Get_StairPos().x) {
-                    owner.Get_Transform()->Go_Backward(deltaTime * 1.1f);
-                    XMStoreFloat4(&newPos, owner.Get_Transform()->Get_State(STATE::POSITION));
+                    owner.Get_Zombie().lock()->Get_Transform()->Go_Backward(deltaTime * 1.1f);
+                    XMStoreFloat4(&newPos, owner.Get_Zombie().lock()->Get_Transform()->Get_State(STATE::POSITION));
                     if (newPos.x > owner.Get_StairPos().x) {
-                        owner.Get_Transform()->Set_State(STATE::POSITION, XMVectorSetX(owner.Get_Transform()->Get_State(STATE::POSITION), owner.Get_StairPos().x));
+                        owner.Get_Zombie().lock()->Get_Transform()->Set_State(STATE::POSITION, XMVectorSetX(owner.Get_Zombie().lock()->Get_Transform()->Get_State(STATE::POSITION), owner.Get_StairPos().x));
                     }
                 }
                 //플레이어가 계단 콜라이더 보다 오른쪽에 있으면
 
                 else if (myPos.x > owner.Get_StairPos().x) {
-                    owner.Get_Transform()->Go_Straight(deltaTime * 1.1f);
-                    XMStoreFloat4(&newPos, owner.Get_Transform()->Get_State(STATE::POSITION));
+                    owner.Get_Zombie().lock()->Get_Transform()->Go_Straight(deltaTime * 1.1f);
+                    XMStoreFloat4(&newPos, owner.Get_Zombie().lock()->Get_Transform()->Get_State(STATE::POSITION));
                     if (newPos.x < owner.Get_StairPos().x) {
-                        owner.Get_Transform()->Set_State(STATE::POSITION, XMVectorSetX(owner.Get_Transform()->Get_State(STATE::POSITION), owner.Get_StairPos().x));
+                        owner.Get_Zombie().lock()->Get_Transform()->Set_State(STATE::POSITION, XMVectorSetX(owner.Get_Zombie().lock()->Get_Transform()->Get_State(STATE::POSITION), owner.Get_StairPos().x));
                     }
                 }
                 else {
                 }
                 if (myPos.z < zOffset) {
-                    owner.Get_Transform()->Go_Right(deltaTime * 1.5f);
+                    owner.Get_Zombie().lock()->Get_Transform()->Go_Right(deltaTime * 1.5f);
                 }
                 else {
                     //owner.Get_Transform()->Set_State
@@ -107,26 +109,26 @@ void CZombie_Stair::Update(CBody_Zombie& owner, _float deltaTime)
                 //플레이어가 왼쪽에 있으면
                 _float4 newPos;
                 if (myPos.x < owner.Get_StairPos().x) {
-                    owner.Get_Transform()->Go_Straight(deltaTime * 1.1f);
-                    XMStoreFloat4(&newPos, owner.Get_Transform()->Get_State(STATE::POSITION));
+                    owner.Get_Zombie().lock()->Get_Transform()->Go_Straight(deltaTime * 1.1f);
+                    XMStoreFloat4(&newPos, owner.Get_Zombie().lock()->Get_Transform()->Get_State(STATE::POSITION));
                     if (newPos.x > owner.Get_StairPos().x) {
-                        owner.Get_Transform()->Set_State(STATE::POSITION, XMVectorSetX(owner.Get_Transform()->Get_State(STATE::POSITION), owner.Get_StairPos().x));
+                        owner.Get_Zombie().lock()->Get_Transform()->Set_State(STATE::POSITION, XMVectorSetX(owner.Get_Zombie().lock()->Get_Transform()->Get_State(STATE::POSITION), owner.Get_StairPos().x));
                     }
                 }
                 //플레이어가 계단 콜라이더 보다 오른쪽에 있으면
 
                 else if (myPos.x > owner.Get_StairPos().x) {
-                    owner.Get_Transform()->Go_Backward(deltaTime * 1.1f);
-                    XMStoreFloat4(&newPos, owner.Get_Transform()->Get_State(STATE::POSITION));
+                    owner.Get_Zombie().lock()->Get_Transform()->Go_Backward(deltaTime * 1.1f);
+                    XMStoreFloat4(&newPos, owner.Get_Zombie().lock()->Get_Transform()->Get_State(STATE::POSITION));
                     if (newPos.x < owner.Get_StairPos().x) {
-                        owner.Get_Transform()->Set_State(STATE::POSITION, XMVectorSetX(owner.Get_Transform()->Get_State(STATE::POSITION), owner.Get_StairPos().x));
+                        owner.Get_Zombie().lock()->Get_Transform()->Set_State(STATE::POSITION, XMVectorSetX(owner.Get_Zombie().lock()->Get_Transform()->Get_State(STATE::POSITION), owner.Get_StairPos().x));
                     }
                 }
                 else {
                 }
 
                 if (myPos.z < zOffset) {
-                    owner.Get_Transform()->Go_Left(deltaTime * 1.5f);
+                    owner.Get_Zombie().lock()->Get_Transform()->Go_Left(deltaTime * 1.5f);
                 }
                 else {
 
@@ -153,12 +155,12 @@ void CZombie_Stair::Update(CBody_Zombie& owner, _float deltaTime)
     if (!m_bExiting && !m_bAdjustingExit && !m_bAdjustingEnter) {
         if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::STAIR_WALK_UP) {
             if (CGameInstance::Get().GetCurLevelIndex() == 4) {
-                owner.Get_Transform()->Go_Straight(deltaTime * 0.9f);
-                owner.Get_Transform()->Go_Up(deltaTime * 0.5f);
+                owner.Get_Zombie().lock()->Get_Transform()->Go_Straight(deltaTime * 0.9f);
+                owner.Get_Zombie().lock()->Get_Transform()->Go_Up(deltaTime * 0.5f);
             }
             else {
-                owner.Get_Transform()->Go_Straight(deltaTime * 0.9f);
-                owner.Get_Transform()->Go_Up(deltaTime * 0.75f);
+                owner.Get_Zombie().lock()->Get_Transform()->Go_Straight(deltaTime * 0.9f);
+                owner.Get_Zombie().lock()->Get_Transform()->Go_Up(deltaTime * 0.75f);
             }
    
             CheckExit(owner, myPos);
@@ -166,13 +168,13 @@ void CZombie_Stair::Update(CBody_Zombie& owner, _float deltaTime)
         }
         else if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::STAIR_WALK_DOWN) {
             if (CGameInstance::Get().GetCurLevelIndex() == 4) {
-                owner.Get_Transform()->Go_Straight(deltaTime * 1.3f);
-                owner.Get_Transform()->Go_Down(deltaTime * 0.8f);
+                owner.Get_Zombie().lock()->Get_Transform()->Go_Straight(deltaTime * 1.3f);
+                owner.Get_Zombie().lock()->Get_Transform()->Go_Down(deltaTime * 0.8f);
 
             }
             else {
-                owner.Get_Transform()->Go_Straight(deltaTime * 1.1f);
-                owner.Get_Transform()->Go_Down(deltaTime * 0.8f);
+                owner.Get_Zombie().lock()->Get_Transform()->Go_Straight(deltaTime * 1.1f);
+                owner.Get_Zombie().lock()->Get_Transform()->Go_Down(deltaTime * 0.8f);
             }
 
             CheckExit(owner, myPos);
@@ -200,7 +202,7 @@ void CZombie_Stair::Update(CBody_Zombie& owner, _float deltaTime)
     if (m_bAdjustingExit) {
         if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::STAIR_TOP_EXIT) {
             if (myPos.z > 0) {
-                owner.Get_Transform()->Go_Right(deltaTime * 1.5f);
+                owner.Get_Zombie().lock()->Get_Transform()->Go_Right(deltaTime * 1.5f);
                 return;
 
             }
@@ -217,7 +219,7 @@ void CZombie_Stair::Update(CBody_Zombie& owner, _float deltaTime)
         }
         if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::STAIR_BOTTOM_EXIT) {
             if (myPos.z > 0) {
-                owner.Get_Transform()->Go_Left(deltaTime * 1.5f);
+                owner.Get_Zombie().lock()->Get_Transform()->Go_Left(deltaTime * 1.5f);
                 return;
 
             }
@@ -250,13 +252,13 @@ void CZombie_Stair::CheckExit(CBody_Zombie& owner, _float4 myPos)
         if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::STAIR_WALK_UP) {
             if (myPos.y > m_fReleaseY) {
                 m_bExiting = true;
-                owner.Get_Transform()->Set_State(STATE::POSITION, XMVectorSetY(owner.Get_Transform()->Get_State(STATE::POSITION), m_fReleaseY));
+                owner.Get_Zombie().lock()->Get_Transform()->Set_State(STATE::POSITION, XMVectorSetY(owner.Get_Zombie().lock()->Get_Transform()->Get_State(STATE::POSITION), m_fReleaseY));
             }
         }
         else if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::STAIR_WALK_DOWN) {
             if (myPos.y < m_fReleaseY) {
                 m_bExiting = true;
-                owner.Get_Transform()->Set_State(STATE::POSITION, XMVectorSetY(owner.Get_Transform()->Get_State(STATE::POSITION), m_fReleaseY));
+                owner.Get_Zombie().lock()->Get_Transform()->Set_State(STATE::POSITION, XMVectorSetY(owner.Get_Zombie().lock()->Get_Transform()->Get_State(STATE::POSITION), m_fReleaseY));
             }
         }
     }

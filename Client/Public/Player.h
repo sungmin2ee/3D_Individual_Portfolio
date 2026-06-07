@@ -10,6 +10,8 @@ public:
 	typedef struct tagPlayerDesc : public CContainerObject::CONTAINEROBJECT_DESC
 	{
 		LEVEL  nextLevel;
+		_vector pos;
+
 	}PLAYER_DESC;
 
 

@@ -66,7 +66,10 @@
     <ClInclude Include="..\Public\VIBuffer.h" />
     <ClInclude Include="..\Public\VIBuffer_Collider.h" />
     <ClInclude Include="..\Public\VIBuffer_Cube.h" />
+    <ClInclude Include="..\Public\VIBuffer_Instance.h" />
     <ClInclude Include="..\Public\VIBuffer_Model.h" />
+    <ClInclude Include="..\Public\VIBuffer_Particle_Point.h" />
+    <ClInclude Include="..\Public\VIBuffer_Particle_Rect.h" />
     <ClInclude Include="..\Public\VIBuffer_Rect.h" />
   </ItemGroup>
   <ItemGroup>
@@ -123,7 +126,10 @@
     <ClCompile Include="..\Private\VIBuffer.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Collider.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Cube.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_Instance.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Model.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_Particle_Point.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_Particle_Rect.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Rect.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -131,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\Shaderfiles\Shader_Cell.hlsl" />
+    <FxCompile Include="..\Bin\Shaderfiles\Shader_Deferred.hlsl" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

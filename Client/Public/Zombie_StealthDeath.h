@@ -22,6 +22,8 @@ public:
 public:
     static unique_ptr<CZombie_StealthDeath> Create();
     _bool animStart = false;
-
+    _bool animFinshed = false;
+    _float animtime = 0;
+    uint32_t  count = 0;
 };
 NS_END

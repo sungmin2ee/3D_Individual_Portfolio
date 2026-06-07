@@ -7,6 +7,7 @@
 #include "Layer.h"
 #include "Player.h"
 #include "Body_Player.h"
+#include "Zombie.h"
 
 CZombie_Run::CZombie_Run()
 {
@@ -58,7 +59,7 @@ void CZombie_Run::Update(CBody_Zombie& owner, _float deltaTime)
        
     }
     if (!owner.Get_DirChanged()) {
-        owner.Get_Transform()->Go_Straight(deltaTime * 3.f);
+        owner.Get_Zombie().lock()->Get_Transform()->Go_Straight(deltaTime * 3.f);
     }
 
 }

@@ -98,7 +98,7 @@ private:
 	unique_ptr<StateMachine<CBody_Player>>		m_pStateMachine = nullptr;
 	PLAYER_STATE								m_eCurState = PLAYER_STATE::STAND;
 	PLAYER_DIR									m_eCurDir = PLAYER_DIR::RIGHT;
-	PLAYER_WEAPON								m_eCurWeapon = PLAYER_WEAPON::AXE;
+	PLAYER_WEAPON								m_eCurWeapon = PLAYER_WEAPON::HAND;
 	_float										bodyAngle = 0.f;
 	_bool										m_bDirChanged = false;
 	_bool										m_bIsRotating = false;

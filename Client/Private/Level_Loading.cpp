@@ -7,6 +7,7 @@
 #include "Level_Shelter.h"
 #include "Level_Stage1.h"
 #include "Level_Stage2.h"
+#include "UIObject.h"
 //#include "Level_Stage2.h"
 
 
@@ -39,7 +40,8 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevelIndex)
 
 void CLevel_Loading::Update(_float fTimeDelta)
 {
-	if (true == m_pLoader->isFinished())
+	if (true == m_pLoader->isFinished() &&
+		GetKeyState(VK_SPACE) & 0x8000)
 	{
 
 		unique_ptr<CLevel>		pNewLevel = { nullptr };
@@ -66,6 +68,8 @@ void CLevel_Loading::Update(_float fTimeDelta)
 		return;
 	}
 
+
+
 }
 
 HRESULT CLevel_Loading::Render()
@@ -73,12 +77,22 @@ HRESULT CLevel_Loading::Render()
 #ifdef _DEBUG
 	m_pLoader->Output_LoadingText();
 #endif
+	//CGameInstance::Get().RenderText(1, L"그들은 소리에 민감합니다.", g_iWinSizeX * 0.3f, g_iWinSizeY * 0.5f, DirectX::Colors::Gold, 1.5f);
 
 	return S_OK;
 }
 
 HRESULT CLevel_Loading::Ready_Layer_BackGround(const _wstring& strLayerTag)
 {
+	CUIObject::UIOBJECT_DESC pDesc;
+	pDesc.fSizeX = g_iWinSizeX;
+	pDesc.fSizeY = g_iWinSizeY;
+	pDesc.fX = g_iWinSizeX * 0.5f;
+	pDesc.fY = g_iWinSizeY * 0.5f;
+	pDesc.pGameObjectTag = L"TitleBG";
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_TitleBG"),
+		ETOUI(LEVEL::LOADING), strLayerTag, &pDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 
