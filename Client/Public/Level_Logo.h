@@ -23,6 +23,7 @@ public:
 virtual HRESULT Render() override; private:
 
 private:
+	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_Logo(const _wstring& strLayerTag);
 
 public:

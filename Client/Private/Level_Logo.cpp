@@ -51,6 +51,22 @@ HRESULT CLevel_Logo::Render()
 	return S_OK;
 }
 
+HRESULT CLevel_Logo::Ready_Lights()
+{
+	LIGHT_DESC			LightDesc{};
+
+	LightDesc.eType = LIGHT::DIRECTIONAL;
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+
+	if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CLevel_Logo::Ready_Layer_Logo(const _wstring& strLayerTag)
 {
 	CUIObject::UIOBJECT_DESC pDesc;

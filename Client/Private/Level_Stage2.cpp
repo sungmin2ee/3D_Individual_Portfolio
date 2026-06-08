@@ -36,7 +36,9 @@ HRESULT CLevel_Stage2::Initialize()
 	//	return E_FAIL;
 	//if (FAILED(Ready_Layer_Release_Collider(TEXT("Layer_Release_Collider"))))
 	//	return E_FAIL;
-	
+
+	if (FAILED(Ready_Lights()))
+		return E_FAIL;
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 	
@@ -88,7 +90,21 @@ HRESULT CLevel_Stage2::Render()
 	return S_OK;
 }
 
+HRESULT CLevel_Stage2::Ready_Lights()
+{
+	LIGHT_DESC			LightDesc{};
 
+	LightDesc.eType = LIGHT::DIRECTIONAL;
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+
+	if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
 HRESULT CLevel_Stage2::Ready_Layer_Inven(const _wstring& strLayerTag)
 {
 	CInventory::INVENTORY_DESC pDesc;

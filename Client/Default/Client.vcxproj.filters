@@ -303,9 +303,6 @@
     <ClInclude Include="..\Public\Blocker.h">
       <Filter>02.GameObject\07.Blocker</Filter>
     </ClInclude>
-    <ClInclude Include="..\Bin\ShaderFiles\Shader_Defines.hpp">
-      <Filter>Shaderfiles</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Player_Door.h">
       <Filter>FSM\Player</Filter>
     </ClInclude>
@@ -590,9 +587,6 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl">
       <Filter>Shaderfiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\VertexShader.hlsl">
-      <Filter>Shaderfiles</Filter>
-    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Blocker.hlsl">
       <Filter>Shaderfiles</Filter>
     </FxCompile>
@@ -603,9 +597,6 @@
       <Filter>Shaderfiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl">
-      <Filter>Shaderfiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxBlur.hlsl">
       <Filter>Shaderfiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl">

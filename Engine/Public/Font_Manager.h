@@ -23,6 +23,8 @@ private:
 	std::unique_ptr<SpriteBatch> m_spriteBatch;
 	std::unique_ptr<SpriteFont> m_spriteRegularFont;
 	std::unique_ptr<SpriteFont> m_spriteBoldFont;
+	ComPtr<ID3D11Device> m_pDevice = nullptr;
+	ComPtr<ID3D11DeviceContext> m_pContext = nullptr;;
 };
 
 NS_END

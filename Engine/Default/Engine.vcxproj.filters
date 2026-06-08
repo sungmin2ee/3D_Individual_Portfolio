@@ -160,6 +160,18 @@
     <Filter Include="06.Component\VIBuffer\Instancing\Particles\Rect">
       <UniqueIdentifier>{0255ed2b-51f7-49f2-9a3d-01714678d11f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="11.Light">
+      <UniqueIdentifier>{f6db5301-ce4a-471f-9780-f64113ff2ca5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="11.Light\Manager">
+      <UniqueIdentifier>{8aa58444-4992-4c80-9666-6cb96f679177}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="12.RenderTargets">
+      <UniqueIdentifier>{e9ea0f34-7f1f-42ce-a19d-b1ac5bf4a2dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="12.RenderTargets\Manager">
+      <UniqueIdentifier>{b91a01fe-1288-4f64-a186-5b175ef0f0f7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -317,6 +329,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_Instance.h">
       <Filter>06.Component\VIBuffer\Instancing\Particles</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Light.h">
+      <Filter>11.Light</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Light_Manager.h">
+      <Filter>11.Light\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Target_Manager.h">
+      <Filter>12.RenderTargets\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\RenderTarget.h">
+      <Filter>12.RenderTargets</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -493,6 +517,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Instance.cpp">
       <Filter>06.Component\VIBuffer\Instancing\Particles</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Light.cpp">
+      <Filter>11.Light</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Light_Manager.cpp">
+      <Filter>11.Light\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Target_Manager.cpp">
+      <Filter>12.RenderTargets\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\RenderTarget.cpp">
+      <Filter>12.RenderTargets</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

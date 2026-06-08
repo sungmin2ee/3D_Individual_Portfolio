@@ -8,6 +8,8 @@
 #include "MapPin.h"
 #include "Map.h"
 #include "Stair_Collider.h"
+#include "Zombie.h"
+#include "Body_Zombie.h"
 //#include "Overlay.h"
 //#include "Sky.h"
 namespace fs = std::filesystem;
@@ -23,6 +25,8 @@ CLevel_Shelter::~CLevel_Shelter()
 
 HRESULT CLevel_Shelter::Initialize()
 {
+	if (FAILED(Ready_Lights()))
+		return E_FAIL;
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Inven(TEXT("Layer_Inventory"))))
@@ -38,6 +42,8 @@ HRESULT CLevel_Shelter::Initialize()
 	if (FAILED(Ready_Layer_HealthUI(TEXT("Layer_PlayerUI"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Map(TEXT("Layer_Map"))))
+		return E_FAIL;
+	if (FAILED(Ready_Layer_Zombie(TEXT("Layer_Zombie"))))
 		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::SHELTER)))) {
 		return E_FAIL;
@@ -85,6 +91,24 @@ HRESULT CLevel_Shelter::Render()
 
 	return S_OK;
 }
+
+HRESULT CLevel_Shelter::Ready_Lights()
+{
+	LIGHT_DESC			LightDesc{};
+
+	LightDesc.eType = LIGHT::DIRECTIONAL;
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.4f, 0.4f, 0.4f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+
+
+	if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CLevel_Shelter::Ready_Layer_HealthUI(const _wstring& strLayerTag)
 {
 	CUIObject::UIOBJECT_DESC pDesc;
@@ -285,7 +309,48 @@ HRESULT CLevel_Shelter::Ready_Layer_Camera(const _wstring& strLayerTag)
 	//	return E_FAIL;
 	return S_OK;
 }
+HRESULT CLevel_Shelter::Ready_Layer_Zombie(const _wstring& strLayerTag)
+{
 
+	CZombie::ZOMBIE_DESC pDesc;
+	pDesc.pGameObjectTag = TEXT("Zombie");
+	pDesc.fSpeedPerSec = 0.1f;
+	pDesc.fRotationPerSec = 720.f;
+	pDesc.firstState = CBody_Zombie::ZOMBIE_FIRSTSTATE::IDLE;
+	pDesc.Direction = CBody_Zombie::ZOMBIE_DIR::RIGHT;
+	pDesc.State = CBody_Zombie::ZOMBIE_STATE::DOORHIT;
+	pDesc.pos = XMVectorSet(-0.71f, 0, 0.2f, 1);
+	pDesc.nextLevel = LEVEL::SHELTER;
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_Zombie"),
+		ETOUI(LEVEL::SHELTER), strLayerTag, &pDesc)))
+		return E_FAIL;
+	pDesc.pos = XMVectorSet(-0.71f, 0.f, 0.f, 1);
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_Zombie"),
+		ETOUI(LEVEL::SHELTER), strLayerTag, &pDesc)))
+		return E_FAIL;
+
+	pDesc.Direction = CBody_Zombie::ZOMBIE_DIR::LEFT;
+	pDesc.State = CBody_Zombie::ZOMBIE_STATE::AGGRO_IDLE2;
+	pDesc.pos = XMVectorSet(-1.1f, 0.f, 0.f, 1);
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_Zombie"),
+		ETOUI(LEVEL::SHELTER), strLayerTag, &pDesc)))
+		return E_FAIL;
+	pDesc.pos = XMVectorSet(-1.5f, 0.f, 1.f, 1);
+	pDesc.Direction = CBody_Zombie::ZOMBIE_DIR::RIGHT;
+	pDesc.State = CBody_Zombie::ZOMBIE_STATE::CRAWL_IDLE;
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_Zombie"),
+		ETOUI(LEVEL::SHELTER), strLayerTag, &pDesc)))
+		return E_FAIL;
+	pDesc.pos = XMVectorSet(-1.f, 0.f, -0.3f, 1);
+	pDesc.Direction = CBody_Zombie::ZOMBIE_DIR::BACK;
+	pDesc.State = CBody_Zombie::ZOMBIE_STATE::AGGRO_IDLE2;
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_Zombie"),
+		ETOUI(LEVEL::SHELTER), strLayerTag, &pDesc)))
+		return E_FAIL;
+	return S_OK;
+}
 unique_ptr<CLevel_Shelter> CLevel_Shelter::Create(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext)
 {
 	auto	pInstance = unique_ptr<CLevel_Shelter>(new CLevel_Shelter(pDevice, pContext));

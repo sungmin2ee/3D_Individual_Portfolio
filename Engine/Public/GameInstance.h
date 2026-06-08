@@ -57,6 +57,9 @@ public:
 
 #pragma region RENDERER
 	HRESULT Add_RenderObject(RENDERGROUP eRenderGroup, shared_ptr<CGameObject> pRenderObject);
+#ifdef _DEBUG 
+	HRESULT Add_DebugComponent(shared_ptr<CComponent> pDebugComponent);
+#endif
 #pragma endregion
 
 #pragma region IMGUI_MANAGER
@@ -128,7 +131,26 @@ public:
 	void RenderText(uint32_t fontIndex, const _wstring& text, _float posX, _float posY, _vector color, _float scale);
 #pragma endregion
 
+#pragma region TARGET_MANAGER
+public:
+	HRESULT Add_RenderTarget(const _wstring& strTargetTag, uint32_t iWidth, uint32_t iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);
+	HRESULT Add_MRT(const _wstring& strMRTTag, const _wstring& strTargetTag);
+	HRESULT Begin_MRT(const _wstring& strMRTTag);
+	HRESULT End_MRT();
+	HRESULT Bind_RT_ShaderResource(const _wstring& strTargetTag, shared_ptr<class CShader> pShader, const _char* pConstantName);
 
+
+#ifdef _DEBUG
+	HRESULT Ready_RT_Debug(const _wstring& strTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY);
+	HRESULT Debug_RT_Render(const _wstring& strMRTTag, shared_ptr<class CShader> pShader, const _char* pConstantName, shared_ptr<class CVIBuffer_Rect> pVIBuffer);
+#endif
+#pragma endregion
+
+#pragma region LIGHT_MANAGER
+public:
+	HRESULT Add_Light(const LIGHT_DESC& LightDesc);
+	HRESULT Render_Lights(shared_ptr<class CShader> pShader, shared_ptr<class CVIBuffer_Rect> pVIBuffer);
+#pragma endregion
 private:
 	unique_ptr<class CGraphic_Device>				m_pGraphic_Device = { nullptr };
 	unique_ptr<class CTimer_Manager>				m_pTimer_Manager = { nullptr };
@@ -144,6 +166,8 @@ private:
 	unique_ptr<class CPipeLine>						m_pPipeLine = { nullptr };
 	unique_ptr<class CItem_Manager> 				m_pItem_Manager = nullptr;
 	unique_ptr<class CFont_Manager> 				m_pFont_Manager = nullptr;
+	unique_ptr<class CTarget_Manager> 				m_pTarget_Manager = nullptr;
+	unique_ptr<class CLight_Manager> 				m_pLight_Manager = nullptr;
 
 
 public:

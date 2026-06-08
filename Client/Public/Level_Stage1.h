@@ -23,6 +23,8 @@ public:
 virtual HRESULT Render() override; private:
 
 private:
+
+	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_UI(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Camera(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Player(const _wstring& strLayerTag);

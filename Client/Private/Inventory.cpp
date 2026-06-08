@@ -54,6 +54,10 @@ HRESULT CInventory::Initialize(void* pArg)
 
 	m_fCellSizeX = g_iWinSizeX * 0.4f * 0.19f;
 	m_fCellSizeY = g_iWinSizeY * 0.7f * 0.19f;
+
+
+
+
 	return S_OK;
 }
 
@@ -388,6 +392,31 @@ HRESULT CInventory::Ready_ItemFrames(LEVEL nextLevel)
 	bDesc.fX = framePos[0].first;
 	bDesc.fY = framePos[0].second;
 	CGameInstance::Get().Add_GameObject_toLayer(ETOUI(nextLevel), L"Prototype_EquipBorder", ETOUI(nextLevel), L"UI_EquipBorder", &bDesc);
+
+	auto items = CGameInstance::Get().Get_Items();
+
+	for (auto& item : items)
+	{
+		CItemIcon::ITEMICON_DESC desc{};
+
+		desc.bInitialRender = m_bRender;
+		desc.fSizeX = g_iWinSizeX * 0.4f * 0.15f;
+		desc.fSizeY = g_iWinSizeY * 0.7f * 0.15f;
+
+		desc.fX = framePos[itemCount].first;
+		desc.fY = framePos[itemCount].second;
+
+		desc.pGameObjectTag = item.first;
+
+		CGameInstance::Get().Add_GameObject_toLayer(
+			ETOUI(nextLevel),
+			L"Prototype_ItemIcon",
+			ETOUI(nextLevel),
+			L"UI_ICons",
+			&desc);
+
+		itemCount++;
+	}
 	return S_OK;
 }
 

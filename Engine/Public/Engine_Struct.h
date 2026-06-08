@@ -213,6 +213,18 @@ namespace Engine
 				{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 1, 64, D3D11_INPUT_PER_INSTANCE_DATA, 1},
 			};
 		}VTXINSTANCE_PARTICLE_POINT;
+
+
+		typedef struct tagLightDesc
+		{
+			LIGHT			eType;
+			XMFLOAT4		vDiffuse, vAmbient, vSpecular;
+
+			XMFLOAT4		vDirection;
+			XMFLOAT4		vPosition;
+			float			fRange;
+		}LIGHT_DESC;
+
 }	
 
 

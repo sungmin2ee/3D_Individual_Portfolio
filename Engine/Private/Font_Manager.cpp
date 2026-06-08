@@ -1,6 +1,6 @@
 #include "Font_Manager.h"
 
-CFont_Manager::CFont_Manager(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> context)
+CFont_Manager::CFont_Manager(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> context) : m_pDevice(device), m_pContext(context)
 {
 }
 
@@ -20,6 +20,10 @@ HRESULT CFont_Manager::InitializeFont(ComPtr<ID3D11Device> device, ComPtr<ID3D11
 
 void CFont_Manager::RenderText(uint32_t fontIndex ,const _wstring& text, _float posX, _float posY, _vector color, _float scale)
 {
+	m_pContext->GSSetShader(nullptr, nullptr, 0);
+
+	m_spriteBatch->Begin();
+
 	switch (fontIndex) {
 	case 0:
 		//regular font 
@@ -31,7 +35,7 @@ void CFont_Manager::RenderText(uint32_t fontIndex ,const _wstring& text, _float 
 			XMFLOAT2(posX, posY), color, 0.f, XMFLOAT2(0, 0), scale);
 		break;
 	}
-	
+	m_spriteBatch->End();
 }
 
 unique_ptr<CFont_Manager> CFont_Manager::Create(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> context)

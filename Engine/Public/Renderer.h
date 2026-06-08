@@ -22,16 +22,33 @@ private:
 	list<shared_ptr<CGameObject>>			m_RenderObjects[ETOUI(RENDERGROUP::END)];
 
 private:
-	HRESULT Render_Priority();
-	HRESULT Render_Test();
+	shared_ptr<class CVIBuffer_Rect>		m_pVIBuffer = { nullptr };
+	shared_ptr<class CShader>				m_pShader = { nullptr };
+	_float4x4								m_WorldMatrix{}, m_ViewMatrix{}, m_ProjMatrix{};
+#ifdef _DEBUG
+private:
+	list<shared_ptr<CComponent>>			m_DebugComponents;
 
+#endif
+private:
+	HRESULT Render_Priority();
 	HRESULT Render_NonBlend();
+
+	HRESULT Render_Lights();
+	HRESULT Render_Combined();
 	HRESULT Render_Blend();
 	HRESULT Render_Blocker();
 	HRESULT Render_UI();
 
 	HRESULT Render_ICON();
+	HRESULT Render_NonLights();
 
+#ifdef _DEBUG
+public:
+	HRESULT Add_DebugComponent(shared_ptr<CComponent> pDebugComponent);
+private:
+	HRESULT Render_DEBUG();
+#endif
 
 
 public:

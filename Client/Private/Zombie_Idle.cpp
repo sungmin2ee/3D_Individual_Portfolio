@@ -32,6 +32,10 @@ void CZombie_Idle::Enter(CBody_Zombie& owner)
     else if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::LAYDOWN) {
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::LAYDOWN));
     }
+    else if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::DOORHIT) {
+        
+        owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::DOORHIT), CGameInstance::Get().Random(0.5f, 1.f));
+    }
    
 
 }

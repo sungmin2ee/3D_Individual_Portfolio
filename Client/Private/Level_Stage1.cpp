@@ -28,6 +28,8 @@ CLevel_Stage1::~CLevel_Stage1()
 
 HRESULT CLevel_Stage1::Initialize()
 {
+	if (FAILED(Ready_Lights()))
+		return E_FAIL;
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Inven(TEXT("Layer_Inventory"))))
@@ -81,6 +83,25 @@ HRESULT CLevel_Stage1::Render()
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("스테이지1 레벨입니다."));
 #endif
+
+	return S_OK;
+}
+
+
+
+HRESULT CLevel_Stage1::Ready_Lights()
+{
+	LIGHT_DESC			LightDesc{};
+
+	LightDesc.eType = LIGHT::DIRECTIONAL;
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.4f, 0.4f, 0.4f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+
+
+	if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }

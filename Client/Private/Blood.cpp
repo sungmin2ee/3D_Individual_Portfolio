@@ -61,7 +61,7 @@ void CBlood::Update(_float fTimeDelta)
 void CBlood::Late_Update(_float fTimeDelta)
 {
 
-	CGameInstance::Get().Add_RenderObject(RENDERGROUP::NONBLEND, SHARED_THIS(CBlood));
+	CGameInstance::Get().Add_RenderObject(RENDERGROUP::NONLIGHT, SHARED_THIS(CBlood));
 
 	__super::Late_Update(fTimeDelta);
 }

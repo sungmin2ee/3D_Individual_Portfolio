@@ -143,10 +143,10 @@ HRESULT CModelObject::Render()
         return E_FAIL;
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", proj)))
         return E_FAIL;
-    if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", CGameInstance::Get().Get_CamPosition(), sizeof(_float4))))
-        return E_FAIL;
+    //if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", CGameInstance::Get().Get_CamPosition(), sizeof(_float4))))
+    //    return E_FAIL;
   
-    if (CGameInstance::Get().GetCurLevelIndex() == 5) {
+    /*if (CGameInstance::Get().GetCurLevelIndex() == 5) {
         _float4 g_vLightDiffuse = _float4(0.2f, 0.2f, 0.2f, 1.f);
         _float4 g_vLightAmbient = _float4(0.1f, 0.1f, 0.15f, 1.f);
         _float4 g_vLightSpecular = _float4(0.2f, 0.2f, 0.2f, 1.f);
@@ -167,7 +167,7 @@ HRESULT CModelObject::Render()
             return E_FAIL;
         if (FAILED(m_pShaderCom->Bind_RawValue("g_vLightSpecular", &g_vLightSpecular, sizeof(_float4))))
             return E_FAIL;
-    }
+    }*/
 
 
     if (FAILED(m_pShaderCom->Begin(0)))

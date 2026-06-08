@@ -84,8 +84,11 @@ HRESULT CBody_Zombie::Initialize(void* pArg)
 void CBody_Zombie::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
-	CheckDoorCollide();
-	CheckStairCollide();
+	if (m_eCurState != ZOMBIE_STATE::DOORHIT) {
+		CheckDoorCollide();
+		CheckStairCollide();
+	}
+	
 }
 
 void CBody_Zombie::Update(_float fTimeDelta)
@@ -95,55 +98,59 @@ void CBody_Zombie::Update(_float fTimeDelta)
 	if (true == m_pModelCom->Play_Animation(fTimeDelta))
 		int a = 10;
 	__super::Update(fTimeDelta);
-	if (m_bExecuting || m_bStealthDeath) {
-		CheckColliding();
 
-		return;
-	}
-	ExpandCollider();
-	if (!m_bPlayerDetected) {
-		DetectPlayer();
-	}
-	if (m_bPlayerDetected) {
-		CheckColliding();
-	}
+	if (m_eCurState != ZOMBIE_STATE::DOORHIT) {
+		if (m_bExecuting || m_bStealthDeath) {
+			CheckColliding();
 
-	if (m_bIsDamaged) {
-		m_fAttackTime += fTimeDelta;
-		if (m_fAttackTime >= 0.5f) {
-			m_bIsDamaged = false;
-			m_fAttackTime = 0.f;
+			return;
 		}
-	}
-	
-	if (m_bPlayerDetected && !m_bUsingStairs) {
+		ExpandCollider();
+		if (!m_bPlayerDetected) {
+			DetectPlayer();
+		}
+		if (m_bPlayerDetected) {
+			CheckColliding();
+		}
 
-		if(m_eCurState != ZOMBIE_STATE::KNOCKDOWN)
-			FocusPlayer();
-		if (m_ePrevDir != m_eCurDir) {
+		if (m_bIsDamaged) {
+			m_fAttackTime += fTimeDelta;
+			if (m_fAttackTime >= 0.5f) {
+				m_bIsDamaged = false;
+				m_fAttackTime = 0.f;
+			}
+		}
+
+		if (m_bPlayerDetected && !m_bUsingStairs) {
+
+			if (m_eCurState != ZOMBIE_STATE::KNOCKDOWN)
+				FocusPlayer();
+			if (m_ePrevDir != m_eCurDir) {
+				if (!m_bIsRotating) {
+					m_bDirChanged = true;
+					bodyAngle = 0.f;
+				}
+
+			}
+		}
+
+		if (pCollidedDoor != nullptr && !m_bDoorCollided) {
+			m_pZombie.lock()->Get_Transform()->Go_Backward(fTimeDelta * 20.f);
+			m_bDirChanged = true;
+			m_bDoorCollided = true;
+
+		}
+		if (m_bDoorCollided && !m_bPlayerDetected) {
 			if (!m_bIsRotating) {
 				m_bDirChanged = true;
-				bodyAngle = 0.f;
+				m_bDoorCollided = false;
 			}
-			
+		}
+		if (m_bDirChanged) {
+			Turn(fTimeDelta);
 		}
 	}
 
-	if (pCollidedDoor != nullptr && !m_bDoorCollided) {
-		m_pZombie.lock()->Get_Transform()->Go_Backward(fTimeDelta * 20.f);
-		m_bDirChanged = true;
-		m_bDoorCollided = true;
-		
-	}
-	if (m_bDoorCollided && !m_bPlayerDetected) {
-		if (!m_bIsRotating) {
-			m_bDirChanged = true;
-			m_bDoorCollided = false;
-		}
-	}
-	if (m_bDirChanged) {
-		Turn(fTimeDelta);
-	}
 }
 
 void CBody_Zombie::Late_Update(_float fTimeDelta)

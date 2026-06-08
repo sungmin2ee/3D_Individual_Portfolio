@@ -23,6 +23,7 @@ public:
 virtual HRESULT Render() override; private:
 
 private:
+	HRESULT Ready_Lights();
 	HRESULT Ready_Layer_Inven(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Camera(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Overlay(const _wstring& strLayerTag);
@@ -30,6 +31,8 @@ private:
 	HRESULT Ready_Layer_Sky(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_HealthUI(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Map(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_Zombie(const _wstring& strLayerTag);
+
 	HRESULT Load_Stair_Collider();
 
 public:

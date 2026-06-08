@@ -55,35 +55,7 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 void CPlayer::Update(_float fTimeDelta)
 {
 
-	/*if (GetKeyState(VK_DOWN) & 0x8000)
-	{
-		m_pTransformCom->Go_Backward(fTimeDelta);
-	}
-	if (GetKeyState(VK_LEFT) & 0x8000)
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * -1.f);
-	}
-	if (GetKeyState(VK_RIGHT) & 0x8000)
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta);
-	}
-	if (GetKeyState(VK_UP) & 0x8000)
-	{
-		m_pTransformCom->Go_Straight(fTimeDelta);
 
-
-		if (m_iState & CBody_Player::PLAYER_STATE::IDLE)
-			m_iState ^= CBody_Player::PLAYER_STATE::IDLE;
-
-		m_iState |= CBody_Player::PLAYER_STATE::RUN;
-	}
-	else
-	{
-		if (m_iState & CBody_Player::PLAYER_STATE::RUN)
-			m_iState ^= CBody_Player::PLAYER_STATE::RUN;
-
-		m_iState |= CBody_Player::PLAYER_STATE::IDLE;
-	}*/
 	__super::Update(fTimeDelta);
 }
 

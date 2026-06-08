@@ -25,6 +25,7 @@
     <ClInclude Include="..\Public\Camera.h" />
     <ClInclude Include="..\public\Channel.h" />
     <ClInclude Include="..\Public\CImguiMgr.h" />
+    <ClInclude Include="..\public\Light.h" />
     <ClInclude Include="..\public\CMesh.h" />
     <ClInclude Include="..\public\CModel.h" />
     <ClInclude Include="..\Public\CModelObject.h" />
@@ -48,6 +49,7 @@
     <ClInclude Include="..\Public\Layer.h" />
     <ClInclude Include="..\Public\Level.h" />
     <ClInclude Include="..\Public\Level_Manager.h" />
+    <ClInclude Include="..\public\Light_Manager.h" />
     <ClInclude Include="..\Public\Material.h" />
     <ClInclude Include="..\Public\Obb.h" />
     <ClInclude Include="..\Public\Object_Manager.h" />
@@ -56,8 +58,10 @@
     <ClInclude Include="..\Public\Prototype.h" />
     <ClInclude Include="..\Public\Prototype_Manager.h" />
     <ClInclude Include="..\Public\Renderer.h" />
+    <ClInclude Include="..\public\RenderTarget.h" />
     <ClInclude Include="..\Public\SaveLoad_Manager.h" />
     <ClInclude Include="..\Public\Shader.h" />
+    <ClInclude Include="..\public\Target_Manager.h" />
     <ClInclude Include="..\public\Texture.h" />
     <ClInclude Include="..\Public\Timer.h" />
     <ClInclude Include="..\Public\Timer_Manager.h" />
@@ -91,6 +95,7 @@
     <ClCompile Include="..\private\Animation.cpp" />
     <ClCompile Include="..\private\Channel.cpp" />
     <ClCompile Include="..\Private\CImguiMgr.cpp" />
+    <ClCompile Include="..\private\Light.cpp" />
     <ClCompile Include="..\private\CMesh.cpp" />
     <ClCompile Include="..\private\CModel.cpp" />
     <ClCompile Include="..\Private\CModelObject.cpp" />
@@ -108,6 +113,7 @@
     <ClCompile Include="..\Private\Layer.cpp" />
     <ClCompile Include="..\Private\Level.cpp" />
     <ClCompile Include="..\Private\Level_Manager.cpp" />
+    <ClCompile Include="..\private\Light_Manager.cpp" />
     <ClCompile Include="..\Private\Material.cpp" />
     <ClCompile Include="..\Private\Obb.cpp" />
     <ClCompile Include="..\Private\Object_Manager.cpp" />
@@ -116,8 +122,10 @@
     <ClCompile Include="..\Private\Prototype.cpp" />
     <ClCompile Include="..\Private\Prototype_Manager.cpp" />
     <ClCompile Include="..\Private\Renderer.cpp" />
+    <ClCompile Include="..\private\RenderTarget.cpp" />
     <ClCompile Include="..\Private\SaveLoad_Manager.cpp" />
     <ClCompile Include="..\Private\Shader.cpp" />
+    <ClCompile Include="..\private\Target_Manager.cpp" />
     <ClCompile Include="..\private\Texture.cpp" />
     <ClCompile Include="..\Private\Timer.cpp" />
     <ClCompile Include="..\Private\Timer_Manager.cpp" />

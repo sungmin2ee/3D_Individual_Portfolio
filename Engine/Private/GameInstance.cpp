@@ -16,6 +16,8 @@
 #include "PipeLine.h"
 
 #include "Font_Manager.h"
+#include "Target_Manager.h"
+#include "Light_Manager.h"
 
 CGameInstance::CGameInstance()
 {
@@ -40,6 +42,10 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, ComPtr<I
 
     m_pObject_Manager = CObject_Manager::Create(EngineDesc.iNumLevels);
     if (nullptr == m_pObject_Manager)
+        return E_FAIL;
+
+    m_pTarget_Manager = CTarget_Manager::Create(pOutDevice, pOutContext);
+    if (nullptr == m_pTarget_Manager)
         return E_FAIL;
 
     m_pRenderer = CRenderer::Create(pOutDevice, pOutContext);
@@ -82,6 +88,10 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, ComPtr<I
     if (nullptr == m_pFont_Manager)
         return E_FAIL;
 
+    m_pLight_Manager = CLight_Manager::Create(pOutDevice, pOutContext);
+    if (nullptr == m_pLight_Manager)
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -89,8 +99,8 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 {
     m_pInput_Manager->Update_InputDev();
 
-    m_pPipeLine->Update();
     m_pObject_Manager->Priority_Update(fTimeDelta);
+    m_pPipeLine->Update();
     m_pCollider_Manager->Update();
 
     m_pImguiMgr->Update_Imgui();
@@ -105,7 +115,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
 
 HRESULT CGameInstance::Draw()
 {
-    m_pFont_Manager->Begin();
+   // m_pFont_Manager->Begin();
 
     if (FAILED(m_pRenderer->Draw()))
         return E_FAIL;
@@ -114,7 +124,7 @@ HRESULT CGameInstance::Draw()
     if (FAILED(m_pLevel_Manager->Render()))
         return E_FAIL;
 
-    m_pFont_Manager->End(); // Batch 끝 (실제 출력)
+    //m_pFont_Manager->End(); // Batch 끝 (실제 출력)
 
     if (FAILED(m_pImguiMgr->Render_Imgui()))
         return E_FAIL;
@@ -224,6 +234,12 @@ HRESULT CGameInstance::Add_RenderObject(RENDERGROUP eRenderGroup, shared_ptr<CGa
 {
     return m_pRenderer->Add_RenderObject(eRenderGroup, pRenderObject);
 }
+#ifdef _DEBUG 
+HRESULT CGameInstance::Add_DebugComponent(shared_ptr<CComponent> pDebugComponent)
+{
+    return m_pRenderer->Add_DebugComponent(pDebugComponent);
+}
+#endif
 #pragma endregion
 
 
@@ -391,13 +407,64 @@ void CGameInstance::RenderText(uint32_t fontIndex, const _wstring& text, _float 
 
 #pragma endregion
 
+#pragma region TARGET_MANAGER
+HRESULT CGameInstance::Add_RenderTarget(const _wstring& strTargetTag, uint32_t iWidth, uint32_t iHeight, DXGI_FORMAT ePixelFormat, const _float4& vClearColor)
+{
+
+    return m_pTarget_Manager->Add_RenderTarget(strTargetTag, iWidth, iHeight, ePixelFormat, vClearColor);
+}
+
+HRESULT CGameInstance::Add_MRT(const _wstring& strMRTTag, const _wstring& strTargetTag)
+{
+    return m_pTarget_Manager->Add_MRT(strMRTTag, strTargetTag);
+}
+
+HRESULT CGameInstance::Begin_MRT(const _wstring& strMRTTag)
+{
+    return m_pTarget_Manager->Begin_MRT(strMRTTag);
+}
+
+
+HRESULT CGameInstance::End_MRT()
+{
+    return m_pTarget_Manager->End_MRT();
+}
+
+HRESULT CGameInstance::Bind_RT_ShaderResource(const _wstring& strTargetTag, shared_ptr<class CShader> pShader, const _char* pConstantName)
+{
+    return m_pTarget_Manager->Bind_ShaderResource(strTargetTag, pShader, pConstantName);
+}
+
+#ifdef _DEBUG
+HRESULT CGameInstance::Ready_RT_Debug(const _wstring& strTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
+{
+    return m_pTarget_Manager->Ready_Debug(strTargetTag, fX, fY, fSizeX, fSizeY);
+}
+HRESULT CGameInstance::Debug_RT_Render(const _wstring& strMRTTag, shared_ptr<class CShader> pShader, const _char* pConstantName, shared_ptr<class CVIBuffer_Rect> pVIBuffer)
+{
+    return m_pTarget_Manager->Debug_Render(strMRTTag, pShader, pConstantName, pVIBuffer);
+}
+#endif
+#pragma endregion
+
+#pragma region LIGHT_MANAGER
+
+HRESULT CGameInstance::Add_Light(const LIGHT_DESC& LightDesc)
+{
+    return m_pLight_Manager->Add_Light(LightDesc);
+}
+HRESULT CGameInstance::Render_Lights(shared_ptr<class CShader> pShader, shared_ptr<class CVIBuffer_Rect> pVIBuffer)
+{
+    return m_pLight_Manager->Render(pShader, pVIBuffer);
+}
 void CGameInstance::Release_Engine()
 {
 
 
 
 
-
+    m_pLight_Manager.reset();
+    m_pTarget_Manager.reset();
     m_pHelper.reset();
     m_pFont_Manager.reset();
     m_pItem_Manager.reset();

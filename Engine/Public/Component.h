@@ -21,7 +21,10 @@ protected:
 public:
 	void SetOwner(shared_ptr<class CGameObject> pOwner) { m_pOwner = pOwner; }
 	shared_ptr<class CGameObject > GetOwner() { return m_pOwner.lock(); }
-
+#ifdef _DEBUG
+public:
+	virtual HRESULT Render() { return S_OK; }
+#endif
 public:
 	virtual shared_ptr<CPrototype> Clone(void* pArg) = 0;
 private:
