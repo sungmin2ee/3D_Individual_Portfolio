@@ -33,6 +33,11 @@ HRESULT CLight_Manager::Render(shared_ptr<class CShader> pShader, shared_ptr<cla
     return S_OK;
 }
 
+void CLight_Manager::Clear_Lights()
+{
+    m_Lights.clear();
+}
+
 unique_ptr<CLight_Manager>  CLight_Manager::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 {
     return  unique_ptr<CLight_Manager>(new CLight_Manager(pDevice, pContext));

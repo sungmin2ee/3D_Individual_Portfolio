@@ -45,6 +45,8 @@ private:
 	_wstring strLayerTag = L"";
 	MODEL modelType = {};
 	uint32_t UPorDown = 0;
+	int lightType = 0;
+	LIGHT_DESC m_lightDesc;
 
 };
 

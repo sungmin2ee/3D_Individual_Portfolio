@@ -133,6 +133,7 @@ HRESULT CGameInstance::Draw()
 
 void CGameInstance::Clear_Resources(uint32_t iClearLevelIndex)
 {
+    //CGameInstance::Get().Clear_Lights();
     m_pObject_Manager->Clear(iClearLevelIndex);
 
     m_pPrototype_Manager->Clear(iClearLevelIndex);
@@ -456,6 +457,14 @@ HRESULT CGameInstance::Add_Light(const LIGHT_DESC& LightDesc)
 HRESULT CGameInstance::Render_Lights(shared_ptr<class CShader> pShader, shared_ptr<class CVIBuffer_Rect> pVIBuffer)
 {
     return m_pLight_Manager->Render(pShader, pVIBuffer);
+}
+void  CGameInstance::Clear_Lights()
+{
+    return m_pLight_Manager->Clear_Lights();
+}
+list<shared_ptr<class CLight>> &CGameInstance::Get_Lights()
+{
+    return m_pLight_Manager->Get_Lights();
 }
 void CGameInstance::Release_Engine()
 {

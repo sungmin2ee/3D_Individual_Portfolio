@@ -222,7 +222,8 @@ namespace Engine
 
 			XMFLOAT4		vDirection;
 			XMFLOAT4		vPosition;
-			float			fRange;
+			_float			fRange;
+			_float			fAngle;
 		}LIGHT_DESC;
 
 }	

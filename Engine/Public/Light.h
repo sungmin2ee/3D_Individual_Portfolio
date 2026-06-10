@@ -14,7 +14,9 @@ public:
 public:
 	HRESULT Initialize(const LIGHT_DESC& LightDesc);
 	HRESULT Render(shared_ptr<class CShader> pShader, shared_ptr<class CVIBuffer_Rect> pVIBuffer);
-
+	LIGHT_DESC& Get_Desc() {
+		return m_LightDesc;
+	}
 
 private:
 	ComPtr<ID3D11Device>		m_pDevice = { };

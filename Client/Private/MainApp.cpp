@@ -259,6 +259,7 @@ HRESULT CMainApp::Ready_Prototypes()
 		CModel::Create(m_pDevice, m_pContext, ETOUI(MODEL::NONANIM), "../../Resources/Models/Blocker.fbx"))))
 		return E_FAIL;
 
+
 	_matrix		PreTransformMatrix = XMMatrixIdentity();
 
 	/* For.Prototype_Component_Model_Player */

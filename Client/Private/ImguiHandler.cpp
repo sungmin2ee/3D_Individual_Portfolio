@@ -7,6 +7,7 @@
 #include "Door.h"
 #include "Blocker.h"
 #include "Stair_Collider.h"
+#include "Light.h"
 
 namespace fs = std::filesystem;
 using json = nlohmann::json;
@@ -69,150 +70,150 @@ void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 	if (ImGui::BeginTabBar("MyTabBar", tab_bar_flags))
 	{
 		// 1. Model Tab
-		if (ImGui::BeginTabItem("Model"))
-		{
-			static ImGuiTextFilter filter;
-			filter.Draw("Model Filter");
-
-			for (int i = 0; i < prototypeTags.size(); ++i)
-			{
-				if (filter.PassFilter(prototypeTags[i].c_str()))
-				{
-					ImGui::PushID(i);
-
-					bool isSelected = (m_SelectedIndex == i);
-					if (ImGui::Selectable(prototypeTags[i].c_str(), isSelected))
-					{
-						m_SelectedIndex = i;
-						m_ModelDesc.pModelPrototypeTag = StringToWString(prototypeTags[i]);
-						m_ModelDesc.filePath = filePath[i];
-					}
-
-					ImGui::PopID();
-				}
-			}
-			ImGui::EndTabItem();
-		}
-
-		// 2. Shader Tab
-		if (ImGui::BeginTabItem("Shader"))
-		{
-			static ImGuiTextFilter filter;
-			filter.Draw("Shader Filter");
-
-			for (int i = 0; i < shaders.size(); ++i)
-			{
-				if (filter.PassFilter(shaders[i].c_str()))
-				{
-					ImGui::PushID(i);
-
-					bool isSelected = (m_SelectedIndex == i); // 필요에 따라 셰이더 전용 인덱스 변수를 쓰셔도 좋습니다.
-					if (ImGui::Selectable(shaders[i].c_str(), isSelected))
-					{
-						m_SelectedIndex = i;
-						m_ModelDesc.pShaderPrototypeTag = StringToWString(shaders[i]);
-					}
-
-					ImGui::PopID();
-				}
-			}
-			ImGui::EndTabItem();
-		}
-
-		// 3. Collider Tab
-		if (ImGui::BeginTabItem("Collider"))
-		{
-			if (ImGui::Button("Don't Collide")) { m_ModelDesc.collide = false; }
-			ImGui::SameLine();
-			if (ImGui::Button("Collide")) { m_ModelDesc.collide = true; }
-			ImGui::EndTabItem();
-		}
-
-		// 4. ANIM? Tab
-		if (ImGui::BeginTabItem("ANIM?"))
-		{
-			if (ImGui::Button("NON_ANIM"))
-			{
-				modelType = MODEL::NONANIM;
-				m_ModelDesc.pShaderPrototypeTag = L"Prototype_Component_Shader_VtxMesh";
-			}
-			ImGui::SameLine();
-			if (ImGui::Button("ANIM"))
-			{
-				modelType = MODEL::ANIM;
-				m_ModelDesc.pShaderPrototypeTag = L"Prototype_Component_Shader_VtxAnimMesh";
-			}
-			ImGui::EndTabItem();
-		}
-
-		// 5. Layer Tab
-		if (ImGui::BeginTabItem("Layer"))
-		{
-			if (ImGui::Button("UI_Layer")) { strLayerTag = L"UI_Layer"; }
-			ImGui::SameLine();
-			if (ImGui::Button("Outside_Layer")) { strLayerTag = L"Outside_Layer"; }
-			ImGui::SameLine();
-			if (ImGui::Button("Inside_Layer")) { strLayerTag = L"Inside_Layer"; }
-
-			ImGui::Separator();
-
-			if (ImGui::Button("Add_Object"))
-			{
-				_matrix camView, camWorld;
-				const _float4x4* view = CGameInstance::Get().Get_Transform(D3DTS::VIEW);
-				camView = XMLoadFloat4x4(view);
-				camWorld = XMMatrixInverse(nullptr, camView);
-				XMMATRIX scale = XMMatrixScaling(0.001f, 0.001f, 0.001f);
-				XMMATRIX world = scale * camWorld;
-				XMStoreFloat4x4(&m_ModelDesc.worldMatrix, world);
-				_matrix PreTransformMatrix = XMMatrixIdentity();
-
-				PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
-				m_ModelDesc.pretransformMatrix = PreTransformMatrix;
-				m_ModelDesc.modelType = ETOUI(modelType);
-
-				if (CGameInstance::Get().Find_Prototype(m_ModelDesc.levelIndex, m_ModelDesc.pModelPrototypeTag) == nullptr) {
-					auto pModelProto = CModel::Create(m_pDevice, m_pContext, m_ModelDesc.modelType, m_ModelDesc.filePath, m_ModelDesc.pretransformMatrix);
-					CGameInstance::Get().Add_Prototype(curlevel, m_ModelDesc.pModelPrototypeTag, unique_ptr<CPrototype>(std::move(pModelProto)));
-				}
-
-				CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), L"Prototype_ModelObject", curlevel, strLayerTag, &m_ModelDesc);
-			}
-			ImGui::EndTabItem();
-		}
-		if (ImGui::BeginTabItem("Stair"))
-		{
-			if (ImGui::Button("UP"))
-			{
-				UPorDown = ETOUI(CStair_Collider::STAIR_COLLIDER::STAIR_UP);
-			}
-			if (ImGui::Button("Down"))
-			{
-				UPorDown = ETOUI(CStair_Collider::STAIR_COLLIDER::STAIR_DOWN);
-
-			}
-			if (ImGui::Button("Add_Stair_Collider"))
-			{
-				CStair_Collider::STAIR_DESC desc;
-				_matrix camView, camWorld;
-				const _float4x4* view = CGameInstance::Get().Get_Transform(D3DTS::VIEW);
-				camView = XMLoadFloat4x4(view);
-				camWorld = XMMatrixInverse(nullptr, camView);
-				XMMATRIX world = camWorld;
-				XMStoreFloat4x4(&desc.worldMat, world);
-				desc.pGameObjectTag = L"Stair_Collider";
-				if (UPorDown == ETOUI(CStair_Collider::STAIR_COLLIDER::STAIR_UP)) {
-					desc.state = CStair_Collider::STAIR_COLLIDER::STAIR_UP;
-
-				}
-				else if (UPorDown == ETOUI(CStair_Collider::STAIR_COLLIDER::STAIR_DOWN)) {
-					desc.state = CStair_Collider::STAIR_COLLIDER::STAIR_DOWN;
-				}
-				_wstring layerTag = L"Layer_Stair_Collider";
-				CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), L"Prototype_GameObject_Stair_Collider", curlevel, layerTag, &desc);
-			}
-			ImGui::EndTabItem();
-		}
+		//if (ImGui::BeginTabItem("Model"))
+		//{
+		//	static ImGuiTextFilter filter;
+		//	filter.Draw("Model Filter");
+		//
+		//	for (int i = 0; i < prototypeTags.size(); ++i)
+		//	{
+		//		if (filter.PassFilter(prototypeTags[i].c_str()))
+		//		{
+		//			ImGui::PushID(i);
+		//
+		//			bool isSelected = (m_SelectedIndex == i);
+		//			if (ImGui::Selectable(prototypeTags[i].c_str(), isSelected))
+		//			{
+		//				m_SelectedIndex = i;
+		//				m_ModelDesc.pModelPrototypeTag = StringToWString(prototypeTags[i]);
+		//				m_ModelDesc.filePath = filePath[i];
+		//			}
+		//
+		//			ImGui::PopID();
+		//		}
+		//	}
+		//	ImGui::EndTabItem();
+		//}
+		//
+		//// 2. Shader Tab
+		//if (ImGui::BeginTabItem("Shader"))
+		//{
+		//	static ImGuiTextFilter filter;
+		//	filter.Draw("Shader Filter");
+		//
+		//	for (int i = 0; i < shaders.size(); ++i)
+		//	{
+		//		if (filter.PassFilter(shaders[i].c_str()))
+		//		{
+		//			ImGui::PushID(i);
+		//
+		//			bool isSelected = (m_SelectedIndex == i); // 필요에 따라 셰이더 전용 인덱스 변수를 쓰셔도 좋습니다.
+		//			if (ImGui::Selectable(shaders[i].c_str(), isSelected))
+		//			{
+		//				m_SelectedIndex = i;
+		//				m_ModelDesc.pShaderPrototypeTag = StringToWString(shaders[i]);
+		//			}
+		//
+		//			ImGui::PopID();
+		//		}
+		//	}
+		//	ImGui::EndTabItem();
+		//}
+		//
+		//// 3. Collider Tab
+		//if (ImGui::BeginTabItem("Collider"))
+		//{
+		//	if (ImGui::Button("Don't Collide")) { m_ModelDesc.collide = false; }
+		//	ImGui::SameLine();
+		//	if (ImGui::Button("Collide")) { m_ModelDesc.collide = true; }
+		//	ImGui::EndTabItem();
+		//}
+		//
+		//// 4. ANIM? Tab
+		//if (ImGui::BeginTabItem("ANIM?"))
+		//{
+		//	if (ImGui::Button("NON_ANIM"))
+		//	{
+		//		modelType = MODEL::NONANIM;
+		//		m_ModelDesc.pShaderPrototypeTag = L"Prototype_Component_Shader_VtxMesh";
+		//	}
+		//	ImGui::SameLine();
+		//	if (ImGui::Button("ANIM"))
+		//	{
+		//		modelType = MODEL::ANIM;
+		//		m_ModelDesc.pShaderPrototypeTag = L"Prototype_Component_Shader_VtxAnimMesh";
+		//	}
+		//	ImGui::EndTabItem();
+		//}
+		//
+		//// 5. Layer Tab
+		//if (ImGui::BeginTabItem("Layer"))
+		//{
+		//	if (ImGui::Button("UI_Layer")) { strLayerTag = L"UI_Layer"; }
+		//	ImGui::SameLine();
+		//	if (ImGui::Button("Outside_Layer")) { strLayerTag = L"Outside_Layer"; }
+		//	ImGui::SameLine();
+		//	if (ImGui::Button("Inside_Layer")) { strLayerTag = L"Inside_Layer"; }
+		//
+		//	ImGui::Separator();
+		//
+		//	if (ImGui::Button("Add_Object"))
+		//	{
+		//		_matrix camView, camWorld;
+		//		const _float4x4* view = CGameInstance::Get().Get_Transform(D3DTS::VIEW);
+		//		camView = XMLoadFloat4x4(view);
+		//		camWorld = XMMatrixInverse(nullptr, camView);
+		//		XMMATRIX scale = XMMatrixScaling(0.001f, 0.001f, 0.001f);
+		//		XMMATRIX world = scale * camWorld;
+		//		XMStoreFloat4x4(&m_ModelDesc.worldMatrix, world);
+		//		_matrix PreTransformMatrix = XMMatrixIdentity();
+		//
+		//		PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
+		//		m_ModelDesc.pretransformMatrix = PreTransformMatrix;
+		//		m_ModelDesc.modelType = ETOUI(modelType);
+		//
+		//		if (CGameInstance::Get().Find_Prototype(m_ModelDesc.levelIndex, m_ModelDesc.pModelPrototypeTag) == nullptr) {
+		//			auto pModelProto = CModel::Create(m_pDevice, m_pContext, m_ModelDesc.modelType, m_ModelDesc.filePath, m_ModelDesc.pretransformMatrix);
+		//			CGameInstance::Get().Add_Prototype(curlevel, m_ModelDesc.pModelPrototypeTag, unique_ptr<CPrototype>(std::move(pModelProto)));
+		//		}
+		//
+		//		CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), L"Prototype_ModelObject", curlevel, strLayerTag, &m_ModelDesc);
+		//	}
+		//	ImGui::EndTabItem();
+		//}
+		//if (ImGui::BeginTabItem("Stair"))
+		//{
+		//	if (ImGui::Button("UP"))
+		//	{
+		//		UPorDown = ETOUI(CStair_Collider::STAIR_COLLIDER::STAIR_UP);
+		//	}
+		//	if (ImGui::Button("Down"))
+		//	{
+		//		UPorDown = ETOUI(CStair_Collider::STAIR_COLLIDER::STAIR_DOWN);
+		//
+		//	}
+		//	if (ImGui::Button("Add_Stair_Collider"))
+		//	{
+		//		CStair_Collider::STAIR_DESC desc;
+		//		_matrix camView, camWorld;
+		//		const _float4x4* view = CGameInstance::Get().Get_Transform(D3DTS::VIEW);
+		//		camView = XMLoadFloat4x4(view);
+		//		camWorld = XMMatrixInverse(nullptr, camView);
+		//		XMMATRIX world = camWorld;
+		//		XMStoreFloat4x4(&desc.worldMat, world);
+		//		desc.pGameObjectTag = L"Stair_Collider";
+		//		if (UPorDown == ETOUI(CStair_Collider::STAIR_COLLIDER::STAIR_UP)) {
+		//			desc.state = CStair_Collider::STAIR_COLLIDER::STAIR_UP;
+		//
+		//		}
+		//		else if (UPorDown == ETOUI(CStair_Collider::STAIR_COLLIDER::STAIR_DOWN)) {
+		//			desc.state = CStair_Collider::STAIR_COLLIDER::STAIR_DOWN;
+		//		}
+		//		_wstring layerTag = L"Layer_Stair_Collider";
+		//		CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), L"Prototype_GameObject_Stair_Collider", curlevel, layerTag, &desc);
+		//	}
+		//	ImGui::EndTabItem();
+		//}
 
 		// 6. Connect Door and Blocker Tab
 		//if (ImGui::BeginTabItem("Connect_Door_and Blocker"))
@@ -386,6 +387,56 @@ void CImguiHandler::Handle_Imgui(uint32_t curlevel, _float fTimeDelta)
 
 	ImGui::End();
 
+	ImGui::Begin("Light Editor");
+
+	if (ImGui::BeginTabBar("LightTabBar"))
+	{
+		if (ImGui::BeginTabItem("Light"))
+		{
+			// Light Type 선택
+			ImGui::RadioButton("Directional", &lightType, 0);
+			ImGui::SameLine();
+			ImGui::RadioButton("Point", &lightType, 1);
+			ImGui::SameLine();
+			ImGui::RadioButton("Spot", &lightType, 2);
+
+			switch (lightType)
+			{
+			case 0: m_lightDesc.eType = LIGHT::DIRECTIONAL; break;
+			case 1: m_lightDesc.eType = LIGHT::POINT;       break;
+			case 2: m_lightDesc.eType = LIGHT::SPOT;        break;
+			}
+
+			ImGui::Separator();
+
+			// Position
+			ImGui::DragFloat4("Position", &m_lightDesc.vPosition.x, 0.1f);
+
+			// Direction
+			ImGui::DragFloat4("Direction", &m_lightDesc.vDirection.x, 0.1f);
+
+			ImGui::Separator();
+
+			// 색상
+			ImGui::ColorEdit4("Diffuse", &m_lightDesc.vDiffuse.x);
+			ImGui::ColorEdit4("Ambient", &m_lightDesc.vAmbient.x);
+			ImGui::ColorEdit4("Specular", &m_lightDesc.vSpecular.x);
+
+			ImGui::Separator();
+
+			if (ImGui::Button("Add Light"))
+			{
+				CGameInstance::Get().Add_Light(m_lightDesc);
+			}
+
+			ImGui::EndTabItem();
+		}
+
+		ImGui::EndTabBar();
+	}
+
+	ImGui::End();
+
 	// 저장 
 	
 }
@@ -548,8 +599,52 @@ void CImguiHandler::Imgui_Editor(_float fTimeDelta)
 		}
 	}
 	
-	
-	
+	ImGui::Begin("Light Transform");
+
+	auto& lights = CGameInstance::Get().Get_Lights();
+
+	int index = 0;
+	for (auto& light : lights)
+	{
+		ImGui::PushID(index);
+
+		auto& desc = light->Get_Desc();
+
+		if (ImGui::TreeNode(("Light " + std::to_string(index)).c_str()))
+		{
+			// 타입
+			int type = static_cast<int>(desc.eType);
+			ImGui::RadioButton("Directional", &type, 0);
+			ImGui::SameLine();
+			ImGui::RadioButton("Point", &type, 1);
+			ImGui::SameLine();
+			ImGui::RadioButton("Spot", &type, 2);
+			desc.eType = static_cast<LIGHT>(type);
+
+			ImGui::Separator();
+
+			// 위치 / 방향
+			ImGui::DragFloat3("Position", &desc.vPosition.x, 0.1f);
+			ImGui::DragFloat3("Direction", &desc.vDirection.x, 0.1f);
+
+			// 색상
+			ImGui::ColorEdit4("Diffuse", &desc.vDiffuse.x);
+			ImGui::ColorEdit4("Ambient", &desc.vAmbient.x);
+			ImGui::ColorEdit4("Specular", &desc.vSpecular.x);
+
+			// Spot / Point에서 사용하는 값
+			ImGui::DragFloat("Range", &desc.fRange, 0.1f, 0.0f, 10000.0f);
+			ImGui::SliderFloat("Angle", &desc.fAngle, 0.0f, XM_PI);
+
+			ImGui::TreePop();
+		}
+
+		ImGui::PopID();
+		++index;
+	}
+
+	ImGui::End();
+
 	// 2. 카메라 행렬 및 오브젝트 월드 행렬 가져오기 (float*)
 	
 	//static bool show_demo = true; // 프로그램이 꺼질 때까지 상태가 유지됨

@@ -77,10 +77,14 @@ HRESULT CLevel_Stage2::Initialize()
 void CLevel_Stage2::Update(_float fTimeDelta)
 {
 
-	//if (CGameInstance::Get().Key_Down(DIK_CAPITAL)) {
-	//	CGameInstance::Get().Save(ETOUI(LEVEL::STAGE2));
-	//}
+	if (m_bChangeLevel)
+	{
+		if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
+			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::SHELTER))))
+			return;
 
+		m_bChangeLevel = false;
+	}
 }
 
 HRESULT CLevel_Stage2::Render()
@@ -100,29 +104,42 @@ HRESULT CLevel_Stage2::Ready_Lights()
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 	LightDesc.vDiffuse = _float4(0.2f, 0.2f, 0.2f, 1.f);
 	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 1.f);
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vSpecular = _float4(0.1f, 0.1f, 0.1f, 1.f);
 
 	if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
 		return E_FAIL;
-	LightDesc.eType = LIGHT::POINT;
-	LightDesc.vPosition = _float4(20.f, 5.f, 20.f, 1.f);
-	LightDesc.fRange = 20.f;
-	LightDesc.vDiffuse = _float4(1.f, 0.4f, 0.4f, 1.f);
-	LightDesc.vAmbient = _float4(0.4f, 0.2f, 0.2f, 1.f);
-	LightDesc.vSpecular = _float4(1.f, 0.4f, 0.4f, 1.f);
+	//LightDesc.eType = LIGHT::POINT;
+	//LightDesc.vPosition = _float4(-2.f, 0.3f, 0.f, 1.f);
+	//LightDesc.fRange =2.f;
+	//LightDesc.vDiffuse = _float4(1.f, 0.4f, 0.4f, 1.f);
+	//LightDesc.vAmbient = _float4(0.4f, 0.2f, 0.2f, 1.f);
+	//LightDesc.vSpecular = _float4(1.f, 0.4f, 0.4f, 1.f);
+	//
+	//if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
+	//	return E_FAIL;
+	//
+	//LightDesc.eType = LIGHT::POINT;
+	//LightDesc.vPosition = _float4(0, 0.3f, 0, 1.f);
+	//LightDesc.fRange = 1.f;
+	//LightDesc.vDiffuse = _float4(0.4f, 1.f, 0.4f, 1.f);
+	//LightDesc.vAmbient = _float4(0.2f, 0.4f, 0.2f, 1.f);
+	//LightDesc.vSpecular = _float4(0.4f, 1.f, 0.4f, 1.f);
+	//
+	//if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
+	//	return E_FAIL;
+
+	LightDesc.eType = LIGHT::SPOT;
+	LightDesc.vDirection = _float4(0.f, -1.f, 0.f, 0.f);
+	LightDesc.vPosition = _float4(0.2f, 0.6f, 0, 1.f);
+	LightDesc.fRange = 0.4f;
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.1f, 0.1f, 0.1f, 1.f);
+	LightDesc.vSpecular = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	LightDesc.fAngle = cosf(XMConvertToRadians(45.f));
 
 	if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
 		return E_FAIL;
 
-	LightDesc.eType = LIGHT::POINT;
-	LightDesc.vPosition = _float4(40.f, 5.f, 20.f, 1.f);
-	LightDesc.fRange = 20.f;
-	LightDesc.vDiffuse = _float4(0.4f, 1.f, 0.4f, 1.f);
-	LightDesc.vAmbient = _float4(0.2f, 0.4f, 0.2f, 1.f);
-	LightDesc.vSpecular = _float4(0.4f, 1.f, 0.4f, 1.f);
-
-	if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
-		return E_FAIL;
 	return S_OK;
 }
 HRESULT CLevel_Stage2::Ready_Layer_Inven(const _wstring& strLayerTag)

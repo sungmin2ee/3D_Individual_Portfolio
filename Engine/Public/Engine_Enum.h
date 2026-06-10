@@ -11,9 +11,9 @@ namespace Engine
 	enum class D3DTS { VIEW, PROJ, END };
 	enum class DIMK { LBUTTON, RBUTTON, WHEEL, END };
 	enum class DIMM { X, Y, WHEEL, END };
-	enum class LIGHT { DIRECTIONAL, POINT, END };
+	enum class LIGHT { DIRECTIONAL, POINT,SPOT, END };
 	enum class MODEL { NONANIM, ANIM, END };
-	enum class DEFERRED { DEBUG, DIRECTIONAL, POINT, COMBINED, END };
+	enum class DEFERRED { DEBUG, DIRECTIONAL, POINT,COMBINED, SPOT, END };
 
 }
 #endif // Engine_Enum_h__

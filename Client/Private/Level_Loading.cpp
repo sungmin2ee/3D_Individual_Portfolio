@@ -43,7 +43,7 @@ void CLevel_Loading::Update(_float fTimeDelta)
 	if (true == m_pLoader->isFinished() &&
 		GetKeyState(VK_SPACE) & 0x8000)
 	{
-
+		CGameInstance::Get().Clear_Lights();
 		unique_ptr<CLevel>		pNewLevel = { nullptr };
 
 		switch (m_eNextLevelIndex)

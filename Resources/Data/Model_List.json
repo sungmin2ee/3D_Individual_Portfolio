@@ -57,8 +57,16 @@
             "PrototypeTag": "Prototype_Model_coffee_shop_02"
         },
         {
+            "FilePath": "../../Resources/Models/Cone.fbx",
+            "PrototypeTag": "Prototype_Model_Cone"
+        },
+        {
             "FilePath": "../../Resources/Models/Coupe_01.fbx",
             "PrototypeTag": "Prototype_Model_Coupe_01"
+        },
+        {
+            "FilePath": "../../Resources/Models/Cylinder.fbx",
+            "PrototypeTag": "Prototype_Model_Cylinder"
         },
         {
             "FilePath": "../../Resources/Models/DarkGreenTree.fbx",
