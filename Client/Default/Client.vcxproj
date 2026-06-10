@@ -152,7 +152,9 @@
     <ClInclude Include="..\public\Body_Zombie.h" />
     <ClInclude Include="..\public\Camera_Free.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
+    <ClInclude Include="..\Public\CloseButton.h" />
     <ClInclude Include="..\Public\Door.h" />
+    <ClInclude Include="..\Public\FixUI.h" />
     <ClInclude Include="..\Public\GameEnd.h" />
     <ClInclude Include="..\Public\GameStartButton.h" />
     <ClInclude Include="..\Public\HealthBarFill.h" />
@@ -188,7 +190,7 @@
     <ClInclude Include="..\public\Player_Stair.h" />
     <ClInclude Include="..\public\Player_StealthAttack.h" />
     <ClInclude Include="..\public\Player_Walk.h" />
-    <ClInclude Include="..\public\ReleaseCollider.h" />
+    <ClInclude Include="..\public\BoxCollider.h" />
     <ClInclude Include="..\Public\SearchBox.h" />
     <ClInclude Include="..\Public\SearchItemFrame.h" />
     <ClInclude Include="..\Public\SearchItemIcon.h" />
@@ -197,6 +199,7 @@
     <ClInclude Include="..\public\Stair_Collider.h" />
     <ClInclude Include="..\public\State.h" />
     <ClInclude Include="..\public\StateMachine.h" />
+    <ClInclude Include="..\Public\SubmitButton.h" />
     <ClInclude Include="..\Public\Title.h" />
     <ClInclude Include="..\public\Weapon.h" />
     <ClInclude Include="..\public\Zombie.h" />
@@ -222,6 +225,8 @@
     <ClCompile Include="..\private\Body_Zombie.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />
     <ClCompile Include="..\private\Axe.cpp" />
+    <ClCompile Include="..\Private\CloseButton.cpp" />
+    <ClCompile Include="..\Private\FixUI.cpp" />
     <ClCompile Include="..\Private\GameEnd.cpp" />
     <ClCompile Include="..\Private\GameStartButton.cpp" />
     <ClCompile Include="..\Private\HealthBarFill.cpp" />
@@ -258,7 +263,7 @@
     <ClCompile Include="..\Private\Loader.cpp" />
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
-    <ClCompile Include="..\private\ReleaseCollider.cpp" />
+    <ClCompile Include="..\private\BoxCollider.cpp" />
     <ClCompile Include="..\Private\SearchBox.cpp" />
     <ClCompile Include="..\Private\SearchItemFrame.cpp" />
     <ClCompile Include="..\Private\SearchItemIcon.cpp" />
@@ -267,6 +272,7 @@
     <ClCompile Include="..\private\Stair_Collider.cpp" />
     <ClCompile Include="..\private\State.cpp" />
     <ClCompile Include="..\private\StateMachine.cpp" />
+    <ClCompile Include="..\Private\SubmitButton.cpp" />
     <ClCompile Include="..\Private\Title.cpp" />
     <ClCompile Include="..\private\Weapon.cpp" />
     <ClCompile Include="..\private\Zombie.cpp" />

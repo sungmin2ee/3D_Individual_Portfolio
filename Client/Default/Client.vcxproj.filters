@@ -163,6 +163,15 @@
     <Filter Include="03.LoadingScene\CloseButton">
       <UniqueIdentifier>{98f87f07-157f-4a42-b4cf-1efa96da3863}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\12.FixUI">
+      <UniqueIdentifier>{90d37a5c-e058-4afb-9f43-39c9272fe3b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\12.FixUI\CloseButton">
+      <UniqueIdentifier>{2363eed0-c54c-4b70-b6cf-2ba0f824f21c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\12.FixUI\SubmitButton">
+      <UniqueIdentifier>{c4db0ca5-6636-4d7f-a355-8009433a079d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -312,7 +321,7 @@
     <ClInclude Include="..\public\Player_CloseDoor.h">
       <Filter>FSM\Player</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\ReleaseCollider.h">
+    <ClInclude Include="..\public\BoxCollider.h">
       <Filter>02.GameObject\StairCollider</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Axe.h">
@@ -371,6 +380,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\GameEnd.h">
       <Filter>03.LoadingScene\CloseButton</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CloseButton.h">
+      <Filter>02.GameObject\12.FixUI\CloseButton</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SubmitButton.h">
+      <Filter>02.GameObject\12.FixUI\SubmitButton</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\FixUI.h">
+      <Filter>02.GameObject\12.FixUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -509,7 +527,7 @@
     <ClCompile Include="..\private\Player_CloseDoor.cpp">
       <Filter>FSM\Player</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\ReleaseCollider.cpp">
+    <ClCompile Include="..\private\BoxCollider.cpp">
       <Filter>02.GameObject\StairCollider</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Axe.cpp">
@@ -568,6 +586,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\GameEnd.cpp">
       <Filter>03.LoadingScene\CloseButton</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SubmitButton.cpp">
+      <Filter>02.GameObject\12.FixUI\SubmitButton</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CloseButton.cpp">
+      <Filter>02.GameObject\12.FixUI\CloseButton</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FixUI.cpp">
+      <Filter>02.GameObject\12.FixUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

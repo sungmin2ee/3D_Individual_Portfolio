@@ -11,7 +11,6 @@
 #include "Camera_Free.h"
 #include "StateMachine.h"
 #include "Stair_Collider.h"
-#include "ReleaseCollider.h"
 #include "VIBuffer_Cube.h"
 #include "Door.h"
 #include "Blocker.h"
@@ -179,6 +178,24 @@ HRESULT CMainApp::Ready_Prototypes()
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_dust_scratch_overlay"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/dust_scratch_overlay.png"), 1))))
 		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_icon_Map"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/icon_Map.png"), 1))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_icon_Fix"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/icon_Fix.png"), 1))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_icon_Exit"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/icon_Exit.png"), 1))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_door_fix_ui"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/door_fix_ui.png"), 1))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_SubmitButton"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/SubmitButton.png"), 1))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_closeButton"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/closeButton.png"), 1))))
+		return E_FAIL;
 
 	/////
 
@@ -283,9 +300,6 @@ HRESULT CMainApp::Ready_Prototypes()
 	//Collider
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Stair_Collider"),
 		CStair_Collider::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Release_Collider"),
-		CReleaseCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	//DOOR AND BLOCKER

@@ -17,6 +17,7 @@
 #include "SearchBox.h"
 #include "Inventory.h"
 #include "Overlay.h"
+#include "BoxCollider.h"
 
 CBody_Player::CBody_Player(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: CPartObject{ pDevice, pContext }
@@ -166,6 +167,7 @@ void CBody_Player::Update(_float fTimeDelta)
 	CheckDoorCollide();
 	CheckStairCollide();
 	CheckSearchCollide();
+	CheckBoxCollide();
 }
 
 void CBody_Player::Late_Update(_float fTimeDelta)
@@ -387,6 +389,58 @@ void CBody_Player::CheckSearchCollide()
 		else {
 			pBox->Set_Render(false);
 			
+			//static_pointer_cast<CSearchBox>(searchBox)->Set_Render(false);
+		}
+	}
+}
+
+void CBody_Player::CheckBoxCollide()
+{
+	auto boxLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_BoxCollider"));
+	if (boxLayer == nullptr)
+		return;
+
+	auto boxes = boxLayer->GetObjects();
+
+	for (auto& box : boxes)
+	{
+		auto pBox = static_pointer_cast<CBoxCollider>(box);
+		if (pBox == nullptr) continue;
+
+
+		
+		//auto layer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_SearchBox"));
+		//auto searchBox = layer->GetObjectFirst();
+		if (m_pObbCom->myOBB.Intersects(pBox->Get_Obb()->myOBB))
+		{
+			pBox->Set_Render(true);
+			if (CGameInstance::Get().Key_Down(DIK_F)) {
+				auto purpose = pBox->Get_Puspose();
+				pBox->Set_Active();
+				//if (purpose == CBoxCollider::BOX::MOVE) {
+				//	//action을 킨다.
+				//	// 
+				//	//fade out을 한다.
+				//	
+				//	//
+				//}
+				
+				//auto layer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Inventory"));
+				//auto inven = layer->GetObjectFirst();
+				//static_pointer_cast<CInventory>(inven)->Set_Render(true);
+				//
+				//static_pointer_cast<CSearchBox>(searchBox)->Set_Render(true);
+				//static_pointer_cast<CSearchBox>(searchBox)->Refresh();
+				//auto overlaylayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Overlay"));
+				//auto overlay = overlaylayer->GetObjectFirst();
+				//static_pointer_cast<COverlay>(overlay)->Set_Render(true);
+				//pBox->Set_Dead();
+			}
+			break;
+		}
+		else {
+			//pBox->Set_Render(false);
+
 			//static_pointer_cast<CSearchBox>(searchBox)->Set_Render(false);
 		}
 	}

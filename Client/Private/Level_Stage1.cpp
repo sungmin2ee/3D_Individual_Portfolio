@@ -12,6 +12,7 @@
 #include "Body_Zombie.h"
 #include "SearchBox.h"
 #include "Search_Collider.h"
+#include "BoxCollider.h"
 
 #include "Layer.h"
 
@@ -47,6 +48,8 @@ HRESULT CLevel_Stage1::Initialize()
 	if (FAILED(Ready_Layer_Search_Box(TEXT("Layer_SearchBox"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Overlay(TEXT("Layer_Overlay"))))
+		return E_FAIL;
+	if (FAILED(Ready_BoxCollider(TEXT("Layer_BoxCollider"))))
 		return E_FAIL;
 	if (FAILED(Load_Door_Blocker()))
 		return E_FAIL;
@@ -211,7 +214,7 @@ HRESULT CLevel_Stage1::Ready_Layer_Player(const _wstring& strLayerTag)
 	pDesc.fSpeedPerSec = 0.1f;
 	pDesc.fRotationPerSec = 720.f;
 	pDesc.nextLevel = LEVEL::STAGE1;
-	pDesc.pos = XMVectorSet(-4.5f, 0, -0, 1);
+	pDesc.pos = XMVectorSet(-3.5f, 0, -0, 1);
 
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Player"),
 		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
@@ -289,6 +292,22 @@ HRESULT CLevel_Stage1::Ready_Layer_Zombie(const _wstring& strLayerTag)
 		return E_FAIL;
 	return S_OK;
 }
+
+HRESULT CLevel_Stage1::Ready_BoxCollider(const _wstring& strLayerTag)
+{
+	CBoxCollider::BOX_DESC pDesc;
+	pDesc.pGameObjectTag = TEXT("BoxCollider");
+	pDesc.purpose = CBoxCollider::BOX::MOVE;
+	pDesc.position = XMVectorSet(-4.f, 0.12f, -0.1f, 1);
+
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_BoxCollider"),
+		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CLevel_Stage1::Load_Stair_Collider()
 {
 	string LevelName = "STAGE1";

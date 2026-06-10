@@ -32,8 +32,8 @@ HRESULT CStair_Collider::Initialize(void* pArg)
 
 	CGameInstance::Get().Add_Collider(m_pObbCom);
 	m_pObbCom->SetOwner(SHARED_THIS(CStair_Collider));
-	ExpandCollider();
 	m_pTransformCom->SetWorld(pDesc->worldMat);
+	ExpandCollider();
 	//m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(0.1f, 0.f, 0.f, 1));
 
     return S_OK;
@@ -48,7 +48,7 @@ void CStair_Collider::Priority_Update(_float fTimeDelta)
 void CStair_Collider::Update(_float fTimeDelta)
 {
 	__super::Update(fTimeDelta);
-	ExpandCollider();
+	//ExpandCollider();
 }
 
 void CStair_Collider::Late_Update(_float fTimeDelta)

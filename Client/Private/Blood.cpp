@@ -68,6 +68,9 @@ void CBlood::Late_Update(_float fTimeDelta)
 
 HRESULT CBlood::Render()
 {
+	if (!m_bBleeding) {
+		return E_FAIL;
+	}
 	if (FAILED(__super::Bind_WorldMatrix(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
 	

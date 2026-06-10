@@ -32,6 +32,8 @@ private:
 	HRESULT Ready_Layer_HealthUI(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Map(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Zombie(const _wstring& strLayerTag);
+	HRESULT Ready_Layer_FixUI(const _wstring& strLayerTag);
+	HRESULT Ready_BoxCollider(const _wstring& strLayerTag);
 
 	HRESULT Load_Stair_Collider();
 

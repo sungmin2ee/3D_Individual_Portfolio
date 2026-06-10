@@ -12,6 +12,7 @@
 #include "Body_Zombie.h"
 #include "Search_Collider.h"
 #include "SearchBox.h"
+#include "BoxCollider.h"
 
 #include "Layer.h"
 namespace fs = std::filesystem;
@@ -57,9 +58,10 @@ HRESULT CLevel_Stage2::Initialize()
 		return E_FAIL;
 	if (FAILED(Ready_Layer_HealthUI(TEXT("Layer_PlayerUI"))))
 		return E_FAIL;
-
-
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_BoxCollider(TEXT("Layer_BoxCollider"))))
 		return E_FAIL;
 	
 	if (FAILED(Load_Door_Blocker()))
@@ -96,13 +98,31 @@ HRESULT CLevel_Stage2::Ready_Lights()
 
 	LightDesc.eType = LIGHT::DIRECTIONAL;
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vDiffuse = _float4(0.2f, 0.2f, 0.2f, 1.f);
+	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
 	if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
 		return E_FAIL;
+	LightDesc.eType = LIGHT::POINT;
+	LightDesc.vPosition = _float4(20.f, 5.f, 20.f, 1.f);
+	LightDesc.fRange = 20.f;
+	LightDesc.vDiffuse = _float4(1.f, 0.4f, 0.4f, 1.f);
+	LightDesc.vAmbient = _float4(0.4f, 0.2f, 0.2f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 0.4f, 0.4f, 1.f);
 
+	if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
+		return E_FAIL;
+
+	LightDesc.eType = LIGHT::POINT;
+	LightDesc.vPosition = _float4(40.f, 5.f, 20.f, 1.f);
+	LightDesc.fRange = 20.f;
+	LightDesc.vDiffuse = _float4(0.4f, 1.f, 0.4f, 1.f);
+	LightDesc.vAmbient = _float4(0.2f, 0.4f, 0.2f, 1.f);
+	LightDesc.vSpecular = _float4(0.4f, 1.f, 0.4f, 1.f);
+
+	if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 HRESULT CLevel_Stage2::Ready_Layer_Inven(const _wstring& strLayerTag)
@@ -177,6 +197,20 @@ HRESULT CLevel_Stage2::Ready_Layer_Search_Collider(const _wstring& strLayerTag)
 	//pDesc.position = XMVectorSet(0.84f, 0.712f, -0.1f, 1);
 	//if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), L"Prototype_Search_Collider", ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
 	//	return E_FAIL;
+
+	return S_OK;
+}
+HRESULT CLevel_Stage2::Ready_BoxCollider(const _wstring& strLayerTag)
+{
+	CBoxCollider::BOX_DESC pDesc;
+	pDesc.pGameObjectTag = TEXT("BoxCollider");
+	pDesc.purpose = CBoxCollider::BOX::MOVE;
+	pDesc.position = XMVectorSet(-5.f, 0.12f, -0.1f, 1);
+
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_BoxCollider"),
+		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }

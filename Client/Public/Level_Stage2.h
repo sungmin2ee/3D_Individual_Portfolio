@@ -35,6 +35,7 @@ private:
 	HRESULT Ready_Layer_Search_Box(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_Overlay(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_HealthUI(const _wstring& strLayerTag);
+	HRESULT Ready_BoxCollider(const _wstring& strLayerTag);
 
 	HRESULT Load_Stair_Collider();
 	HRESULT Load_Door_Blocker();

@@ -20,6 +20,7 @@ HRESULT CLight::Render(shared_ptr<CShader> pShader, shared_ptr<CVIBuffer_Rect> p
 {
     uint32_t       iPassIndex = {};
 
+
     if (LIGHT::DIRECTIONAL == m_LightDesc.eType)
     {
         if (FAILED(pShader->Bind_RawValue("g_vLightDir", &m_LightDesc.vDirection, sizeof m_LightDesc.vDirection)))
@@ -29,6 +30,10 @@ HRESULT CLight::Render(shared_ptr<CShader> pShader, shared_ptr<CVIBuffer_Rect> p
     }
     else
     {
+        if (FAILED(pShader->Bind_RawValue("g_vLightPos", &m_LightDesc.vPosition, sizeof m_LightDesc.vPosition)))
+            return E_FAIL;
+        if (FAILED(pShader->Bind_RawValue("g_fLightRange", &m_LightDesc.fRange, sizeof m_LightDesc.fRange)))
+            return E_FAIL;
 
         iPassIndex = ETOUI(DEFERRED::POINT);
     }
@@ -36,6 +41,8 @@ HRESULT CLight::Render(shared_ptr<CShader> pShader, shared_ptr<CVIBuffer_Rect> p
     if (FAILED(pShader->Bind_RawValue("g_vLightDiffuse", &m_LightDesc.vDiffuse, sizeof m_LightDesc.vDiffuse)))
         return E_FAIL;
     if (FAILED(pShader->Bind_RawValue("g_vLightAmbient", &m_LightDesc.vAmbient, sizeof m_LightDesc.vDiffuse)))
+        return E_FAIL;
+    if (FAILED(pShader->Bind_RawValue("g_vLightSpecular", &m_LightDesc.vSpecular, sizeof m_LightDesc.vSpecular)))
         return E_FAIL;
 
 

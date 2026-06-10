@@ -217,6 +217,10 @@
             "PrototypeTag": "Prototype_Model_loan_shark_three_story_04"
         },
         {
+            "FilePath": "../../Resources/Models/mapDesk.fbx",
+            "PrototypeTag": "Prototype_Model_mapDesk"
+        },
+        {
             "FilePath": "../../Resources/Models/master_room_corner_backroom.fbx",
             "PrototypeTag": "Prototype_Model_master_room_corner_backroom"
         },
@@ -389,8 +393,8 @@
             "PrototypeTag": "Prototype_Model_Stage1_3_2"
         },
         {
-            "FilePath": "../../Resources/Models/Stage1_3_3.fbx",
-            "PrototypeTag": "Prototype_Model_Stage1_3_3"
+            "FilePath": "../../Resources/Models/stage1_3_3.fbx",
+            "PrototypeTag": "Prototype_Model_stage1_3_3"
         },
         {
             "FilePath": "../../Resources/Models/Stage1_4_1.fbx",

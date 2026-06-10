@@ -60,47 +60,50 @@ void CMoveButton::Late_Update(_float fTimeDelta)
 	CGameInstance::Get().Add_RenderObject(RENDERGROUP::UI, SHARED_THIS(CMoveButton));
 
 	__super::Late_Update(fTimeDelta);
-	POINT ptMouse;
-	GetCursorPos(&ptMouse);
-	ScreenToClient(g_hWnd, &ptMouse);
+	if (m_bRender) {
+		POINT ptMouse;
+		GetCursorPos(&ptMouse);
+		ScreenToClient(g_hWnd, &ptMouse);
 
-	_float minX, maxX, minY, maxY;
-	minX = m_fX - (m_fSizeX * 0.5f);
-	maxX = m_fX + (m_fSizeX * 0.5f);
-	minY = m_fY - (m_fSizeY * 0.5f);
-	maxY = m_fY + (m_fSizeY * 0.5f);
+		_float minX, maxX, minY, maxY;
+		minX = m_fX - (m_fSizeX * 0.5f);
+		maxX = m_fX + (m_fSizeX * 0.5f);
+		minY = m_fY - (m_fSizeY * 0.5f);
+		maxY = m_fY + (m_fSizeY * 0.5f);
 
-	if (ptMouse.x >= minX && ptMouse.x <= maxX && ptMouse.y >= minY && ptMouse.y <= maxY) {
-		if (CGameInstance::Get().Mouse_Down(DIMK::LBUTTON)) {
-			auto layer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"Layer_MapInfo");
-			if (layer) {
-				auto mapUis = layer->GetObjects();
-				for (auto ui : mapUis) {
+		if (ptMouse.x >= minX && ptMouse.x <= maxX && ptMouse.y >= minY && ptMouse.y <= maxY) {
+			if (CGameInstance::Get().Mouse_Down(DIMK::LBUTTON)) {
+				auto layer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"Layer_MapInfo");
+				if (layer) {
+					auto mapUis = layer->GetObjects();
+					for (auto ui : mapUis) {
 
-					auto mapinfo = static_pointer_cast<CUIObject>(ui);
-					if (mapinfo->Get_Render()) {
-						auto tag = mapinfo->Get_Tag();
-						if (tag == L"MapInfo1") {
-							CGameInstance::Get().Get_CurrentLevel()->Set_ChangeLevel();
-							CGameInstance::Get().Get_CurrentLevel()->Set_NextLevel((ETOUI(LEVEL::STAGE1)));
-							//if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
-							//	CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::STAGE1))))
-							//	return;
-							return;
-						}
-						else if (tag == L"MapInfo2") {
-							CGameInstance::Get().Get_CurrentLevel()->Set_ChangeLevel();
-							CGameInstance::Get().Get_CurrentLevel()->Set_NextLevel((ETOUI(LEVEL::STAGE2)));
-							//if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
-							//	CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::STAGE2))))
-							//	return;
-							return;
+						auto mapinfo = static_pointer_cast<CUIObject>(ui);
+						if (mapinfo->Get_Render()) {
+							auto tag = mapinfo->Get_Tag();
+							if (tag == L"MapInfo1") {
+								CGameInstance::Get().Get_CurrentLevel()->Set_ChangeLevel();
+								CGameInstance::Get().Get_CurrentLevel()->Set_NextLevel((ETOUI(LEVEL::STAGE1)));
+								//if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
+								//	CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::STAGE1))))
+								//	return;
+								return;
+							}
+							else if (tag == L"MapInfo2") {
+								CGameInstance::Get().Get_CurrentLevel()->Set_ChangeLevel();
+								CGameInstance::Get().Get_CurrentLevel()->Set_NextLevel((ETOUI(LEVEL::STAGE2)));
+								//if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
+								//	CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::STAGE2))))
+								//	return;
+								return;
+							}
 						}
 					}
 				}
 			}
 		}
 	}
+	
 }
 
 HRESULT CMoveButton::Render()

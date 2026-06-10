@@ -118,6 +118,7 @@ public:
 	void CheckDoorCollide();
 	void CheckStairCollide();
 	void CheckSearchCollide();
+	void CheckBoxCollide();
 private:
 	HRESULT Ready_Components();
 	void ExpandCollider();

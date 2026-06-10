@@ -31,6 +31,10 @@
 #include "GameStartButton.h"
 #include "Title.h"
 #include "GameEnd.h"
+#include "SubmitButton.h"
+#include "CloseButton.h"
+#include "BoxCollider.h"
+#include "FixUI.h"
 
 
 CLoader::CLoader(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
@@ -64,16 +68,6 @@ HRESULT CLoader::Initialize(LEVEL eNextLevelIndex)
 
 	m_eNextLevelIndex = eNextLevelIndex;
 	Load_Models_From_Directory(LEVEL::STATIC, "Static");
-	//if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO),
-	//	TEXT("Prototype_Player_Model"), CGameInstance::Get().Load("../../Resources/Models/Joe5.fbx"))))
-	//{
-	//	return E_FAIL;
-	//}
-	//if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::LOGO),
-	//	TEXT("Prototype_Player_Model"), CGameInstance::Get().Load("../../Resources/Models/Joe5.fbx"))))
-	//{
-	//	return E_FAIL;
-	//}
 
 	m_hThread = (HANDLE)_beginthreadex(nullptr, 0, ThreadMain, this, 0, nullptr);
 	if (0 == m_hThread)
@@ -273,7 +267,18 @@ HRESULT CLoader::Loading_For_Shelter()
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_Zombie"),
 		CZombie::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_FixUI"),
+		CFixUI::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_SubmitButton"),
+		CSubmitButton::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_CloseButton"),
+		CCloseButton::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_BoxCollider"),
+		CBoxCollider::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
@@ -353,7 +358,9 @@ HRESULT CLoader::Loading_For_Stage1()
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), TEXT("Prototype_HealthBarFrame"),
 		CHealthBarFrame::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_BoxCollider"),
+		CBoxCollider::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
@@ -435,7 +442,9 @@ HRESULT CLoader::Loading_For_Stage2()
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Blood"),
 		CBlood::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_BoxCollider"),
+		CBoxCollider::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;

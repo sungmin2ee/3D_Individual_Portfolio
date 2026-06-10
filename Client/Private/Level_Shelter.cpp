@@ -10,6 +10,9 @@
 #include "Stair_Collider.h"
 #include "Zombie.h"
 #include "Body_Zombie.h"
+#include "BoxCollider.h"
+#include "SubmitButton.h"
+#include "CloseButton.h"
 //#include "Overlay.h"
 //#include "Sky.h"
 namespace fs = std::filesystem;
@@ -20,7 +23,7 @@ CLevel_Shelter::CLevel_Shelter(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11Device
 }
 
 CLevel_Shelter::~CLevel_Shelter()
-{
+{ 
 }
 
 HRESULT CLevel_Shelter::Initialize()
@@ -44,6 +47,10 @@ HRESULT CLevel_Shelter::Initialize()
 	if (FAILED(Ready_Layer_Map(TEXT("Layer_Map"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Zombie(TEXT("Layer_Zombie"))))
+		return E_FAIL;
+	if (FAILED(Ready_Layer_FixUI(TEXT("Layer_FixUI"))))
+		return E_FAIL;
+	if (FAILED(Ready_BoxCollider(TEXT("Layer_BoxCollider"))))
 		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::SHELTER)))) {
 		return E_FAIL;
@@ -347,6 +354,69 @@ HRESULT CLevel_Shelter::Ready_Layer_Zombie(const _wstring& strLayerTag)
 	pDesc.Direction = CBody_Zombie::ZOMBIE_DIR::BACK;
 	pDesc.State = CBody_Zombie::ZOMBIE_STATE::AGGRO_IDLE2;
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_Zombie"),
+		ETOUI(LEVEL::SHELTER), strLayerTag, &pDesc)))
+		return E_FAIL;
+	return S_OK;
+}
+
+
+HRESULT CLevel_Shelter::Ready_Layer_FixUI(const _wstring& strLayerTag)
+{
+
+
+
+	CUIObject::UIOBJECT_DESC pDesc;
+	pDesc.fSizeX = g_iWinSizeX * 0.2f;
+	pDesc.fSizeY = g_iWinSizeY * 0.5f;
+	pDesc.fX = g_iWinSizeX * 0.5f;
+	pDesc.fY = g_iWinSizeY * 0.5f;
+	pDesc.pGameObjectTag = L"FixUI";
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), L"Prototype_GameObject_FixUI", ETOUI(LEVEL::SHELTER), strLayerTag, &pDesc)))
+		return E_FAIL;
+
+
+	CSubmitButton::SUBMIT_DESC buttonDesc;
+	buttonDesc.fSizeX = g_iWinSizeX * 0.1f;
+	buttonDesc.fSizeY = g_iWinSizeY * 0.08f;
+	buttonDesc.fX = g_iWinSizeX * 0.5f;
+	buttonDesc.fY = g_iWinSizeY * 0.68f;
+	buttonDesc.pGameObjectTag = L"SubmitButton";
+	buttonDesc.nextLevel = LEVEL::SHELTER;
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), L"Prototype_GameObject_SubmitButton", ETOUI(LEVEL::SHELTER), strLayerTag, &buttonDesc)))
+		return E_FAIL;
+
+	CCloseButton::CLOSEBUTTON_DESC cbDesc;
+
+	cbDesc.fSizeX = g_iWinSizeX * 0.02f;
+	cbDesc.fSizeY = g_iWinSizeY * 0.03f;
+	cbDesc.fX = g_iWinSizeX * 0.58f;
+	cbDesc.fY = g_iWinSizeY * 0.28f;
+	cbDesc.pGameObjectTag = L"CloseButton";
+	cbDesc.nextLevel = LEVEL::SHELTER;
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), L"Prototype_GameObject_CloseButton", ETOUI(LEVEL::SHELTER), strLayerTag, &cbDesc)))
+		return E_FAIL;
+	return S_OK;
+}
+
+HRESULT CLevel_Shelter::Ready_BoxCollider(const _wstring& strLayerTag)
+{
+	CBoxCollider::BOX_DESC pDesc;
+	pDesc.pGameObjectTag = TEXT("BoxCollider");
+	pDesc.purpose = CBoxCollider::BOX::FIX;
+	pDesc.position = XMVectorSet(-0.6f, 0.12f, -0.1f, 1);
+
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_BoxCollider"),
+		ETOUI(LEVEL::SHELTER), strLayerTag, &pDesc)))
+		return E_FAIL;
+
+	pDesc.pGameObjectTag = TEXT("BoxCollider");
+	pDesc.purpose = CBoxCollider::BOX::MAP;
+	pDesc.position = XMVectorSet(1.94f, 0.412f, -0.1f, 1);
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_BoxCollider"),
 		ETOUI(LEVEL::SHELTER), strLayerTag, &pDesc)))
 		return E_FAIL;
 	return S_OK;
