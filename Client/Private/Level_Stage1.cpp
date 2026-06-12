@@ -67,9 +67,9 @@ HRESULT CLevel_Stage1::Initialize()
 void CLevel_Stage1::Update(_float fTimeDelta)
 {
 
-	//if (CGameInstance::Get().Key_Down(DIK_CAPITAL)) {
-	//	CGameInstance::Get().Save(ETOUI(LEVEL::STAGE1));
-	//}
+	if (CGameInstance::Get().Key_Down(DIK_CAPITAL)) {
+		CGameInstance::Get().Save(ETOUI(LEVEL::STAGE1));
+	}
 
 	if (m_bChangeLevel)
 	{
@@ -99,8 +99,8 @@ HRESULT CLevel_Stage1::Ready_Lights()
 	LightDesc.eType = LIGHT::DIRECTIONAL;
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(0.4f, 0.4f, 0.4f, 1.f);
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
+	LightDesc.vSpecular = _float4(0.3f, 0.3f, 0.3f, 1.f);
 
 
 	if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
@@ -403,7 +403,7 @@ HRESULT CLevel_Stage1::Load_Door_Blocker()
 			}
 		}
 		else if (prototypeTag == L"Prototype_GameObject_Door") {
-			if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(0, L"Prototype_GameObject_Door", ETOUI(LEVEL::STAGE1), layerTag, &desc))) {
+ 			if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(0, L"Prototype_GameObject_Door", ETOUI(LEVEL::STAGE1), layerTag, &desc))) {
 				return E_FAIL;
 			}
 		}

@@ -77,6 +77,12 @@ void CMainApp::Update(float fTimeDelta)
 		//if (CGameInstance::Get().Key_Up(DIK_L)) {
 		//	m_pImguiHandler->Load_StairCollider();
 		//}
+		if (CGameInstance::Get().Key_Up(DIK_K)) {
+			m_pImguiHandler->Save_Lights();
+		}
+		if (CGameInstance::Get().Key_Up(DIK_L)) {
+			m_pImguiHandler->Load_Lights();
+		}
 	}
 	//D3D11_SAMPLER_DESC
 	//D3D11_DEPTH_STENCIL_DESC desc;

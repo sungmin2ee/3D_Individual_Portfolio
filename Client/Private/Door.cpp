@@ -1,4 +1,6 @@
 #include "Door.h"
+#include "Layer.h"
+#include "Player.h"
 
 CDoor::CDoor(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext) : CGameObject{ pDevice, pContext }
 {
@@ -45,18 +47,47 @@ void CDoor::Priority_Update(_float fTimeDelta)
 	__super::Priority_Update(fTimeDelta);
 	_float x = m_pTransformCom->Get_RotSpeed();
 	if (m_bRotating) {
+		auto playerLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"Layer_Player");
+		if (playerLayer == nullptr) return;
+
+		auto player = playerLayer->GetObjectFirst();
+
+		auto playerPos = static_pointer_cast<CPlayer>(player)->Get_Transform()->Get_State(STATE::POSITION);
+		_float4 playerf, myPosf;
+	    XMStoreFloat4(&myPosf,m_pTransformCom->Get_State(STATE::POSITION));
+	    XMStoreFloat4(&playerf,playerPos);
+		
 		if (m_bDoorOpened) {
-			m_fAngle -= fTimeDelta * m_pTransformCom->Get_RotSpeed();
-			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), m_fAngle);
-			if (m_fAngle < -230.f) {
-				m_bRotating = false;
-				
-				m_fAngle = -230.f;
+			if (myPosf.x > playerf.x) {
+				m_fAngle -= fTimeDelta * m_pTransformCom->Get_RotSpeed();
 				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), m_fAngle);
+				if (m_fAngle < -230.f) {
+					m_bRotating = false;
+
+					m_fAngle = -230.f;
+					m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), m_fAngle);
+				}
 			}
+			else {
+				m_fAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
+				m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), m_fAngle);
+				if (m_fAngle < 30.f) {
+					m_bRotating = false;
+
+					m_fAngle = 30.f;
+					m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), m_fAngle);
+				}
+			}
+			
 		}
 		else {
-			m_fAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
+			if (myPosf.x > playerf.x) {
+				m_fAngle += fTimeDelta * m_pTransformCom->Get_RotSpeed();
+				
+			}else{
+				m_fAngle -= fTimeDelta * m_pTransformCom->Get_RotSpeed();
+
+			}
 			m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), m_fAngle);
 			if (m_fAngle > -90.f) {
 				m_bRotating = false;
@@ -131,11 +162,11 @@ HRESULT CDoor::Render()
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", proj)))
         return E_FAIL;
 
-    if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", CGameInstance::Get().Get_CamPosition(), sizeof(_float4))))
-        return E_FAIL;
+    //if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", CGameInstance::Get().Get_CamPosition(), sizeof(_float4))))
+    //    return E_FAIL;
 
-    if (FAILED(m_pShaderCom->Begin(0)))
-        return E_FAIL;
+    //if (FAILED(m_pShaderCom->Begin(1)))
+    //    return E_FAIL;
 
     uint32_t	iNumMeshes = m_pModelCom->Get_NumMeshes();
 
@@ -146,7 +177,7 @@ HRESULT CDoor::Render()
         //if (FAILED(m_pModelCom->Bind_Materials(m_pShaderCom, "g_NormalTexture", i, aiTextureType_Normals, 0)))
         //	return E_FAIL;
   
-        if (FAILED(m_pShaderCom->Begin(0)))
+        if (FAILED(m_pShaderCom->Begin(1)))
             return E_FAIL;
 
         m_pModelCom->Render(i);

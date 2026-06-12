@@ -373,6 +373,10 @@
             "PrototypeTag": "Prototype_Model_stage1Frame"
         },
         {
+            "FilePath": "../../Resources/Models/stage1Map.fbx",
+            "PrototypeTag": "Prototype_Model_stage1Map"
+        },
+        {
             "FilePath": "../../Resources/Models/stage1_1_1.fbx",
             "PrototypeTag": "Prototype_Model_stage1_1_1"
         },
@@ -501,12 +505,12 @@
             "PrototypeTag": "Prototype_Model_street_stop_sign"
         },
         {
-            "FilePath": "../../Resources/Models/sun_chair.fbx",
-            "PrototypeTag": "Prototype_Model_sun_chair"
+            "FilePath": "../../Resources/Models/ststst.fbx",
+            "PrototypeTag": "Prototype_Model_ststst"
         },
         {
-            "FilePath": "../../Resources/Models/test.fbx",
-            "PrototypeTag": "Prototype_Model_test"
+            "FilePath": "../../Resources/Models/sun_chair.fbx",
+            "PrototypeTag": "Prototype_Model_sun_chair"
         },
         {
             "FilePath": "../../Resources/Models/test_bottom.fbx",

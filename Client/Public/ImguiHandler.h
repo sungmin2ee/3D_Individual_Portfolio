@@ -20,8 +20,10 @@ public:
 	void Imgui_Editor(_float fTimeDelta);
 	//void Save_DoorAndBlocker();
 	void Save_StairCollider();
+	void Save_Lights();
 	HRESULT Load_DoorAndBlocker();
 	HRESULT Load_StairCollider();
+	HRESULT Load_Lights();
 
 public:
 	static unique_ptr<CImguiHandler> Create(ENGINE_DESC desc, ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> context);
@@ -30,7 +32,7 @@ private:
 	MODELOBJ_DESC m_ModelDesc;
 	shared_ptr<CGameObject> m_pSelected = nullptr;
 	//shared_ptr<CGameObject> m_pCurBlocker = nullptr;
-	//shared_ptr<CGameObject> m_pCurDoor = nullptr;
+	shared_ptr<CGameObject> m_pCurDoor = nullptr;
 	_float4 position = {};
 	_float3 rotation = {};
 	_float3 scale = {};
@@ -46,7 +48,7 @@ private:
 	MODEL modelType = {};
 	uint32_t UPorDown = 0;
 	int lightType = 0;
-	LIGHT_DESC m_lightDesc;
+	LIGHT_DESC m_lightDesc = {};
 
 };
 

@@ -38,8 +38,8 @@ HRESULT CLevel_Stage2::Initialize()
 	//if (FAILED(Ready_Layer_Release_Collider(TEXT("Layer_Release_Collider"))))
 	//	return E_FAIL;
 
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
+	//if (FAILED(Ready_Lights()))
+	//	return E_FAIL;
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 	
