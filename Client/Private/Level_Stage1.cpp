@@ -67,9 +67,9 @@ HRESULT CLevel_Stage1::Initialize()
 void CLevel_Stage1::Update(_float fTimeDelta)
 {
 
-	if (CGameInstance::Get().Key_Down(DIK_CAPITAL)) {
-		CGameInstance::Get().Save(ETOUI(LEVEL::STAGE1));
-	}
+	//if (CGameInstance::Get().Key_Down(DIK_CAPITAL)) {
+	//	CGameInstance::Get().Save(ETOUI(LEVEL::STAGE1));
+	//}
 
 	if (m_bChangeLevel)
 	{
@@ -99,8 +99,8 @@ HRESULT CLevel_Stage1::Ready_Lights()
 	LightDesc.eType = LIGHT::DIRECTIONAL;
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.vSpecular = _float4(0.3f, 0.3f, 0.3f, 1.f);
+	LightDesc.vAmbient = _float4(0.25f, 0.25f, 0.25f, 1.f);
+	LightDesc.vSpecular = _float4(0.2f, 0.2f, 0.2f, 1.f);
 
 
 	if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
@@ -242,8 +242,8 @@ HRESULT CLevel_Stage1::Ready_Layer_Zombie(const _wstring& strLayerTag)
 	//if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Zombie"),
 	//	ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
 	//	return E_FAIL;
-	pDesc.pos = XMVectorSet(0.5f, 0, 0.f, 1);
-	pDesc.Direction = CBody_Zombie::ZOMBIE_DIR::LEFT;
+	pDesc.pos = XMVectorSet(-0.2f, 0, 0.f, 1);
+	pDesc.Direction = CBody_Zombie::ZOMBIE_DIR::RIGHT;
 	
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Zombie"),
 		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
@@ -268,14 +268,14 @@ HRESULT CLevel_Stage1::Ready_Layer_Zombie(const _wstring& strLayerTag)
 		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
 		return E_FAIL;
 	
-	pDesc.pos = XMVectorSet(-0.5f, 0.f, 0.f, 1);
+	pDesc.pos = XMVectorSet(0.5f, 0.f, 0.f, 1);
 	pDesc.firstState = CBody_Zombie::ZOMBIE_FIRSTSTATE::WALK;
 	pDesc.Direction = CBody_Zombie::ZOMBIE_DIR::RIGHT;
 	pDesc.State = CBody_Zombie::ZOMBIE_STATE::PATROL_WALK;
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Zombie"),
 		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
 		return E_FAIL;
-	pDesc.pos = XMVectorSet(1.f, 0.6f, 0.f, 1);
+	pDesc.pos = XMVectorSet(0.7f, 0.6f, 0.f, 1);
 	pDesc.firstState = CBody_Zombie::ZOMBIE_FIRSTSTATE::IDLE;
 	pDesc.Direction = CBody_Zombie::ZOMBIE_DIR::RIGHT;
 	pDesc.State = CBody_Zombie::ZOMBIE_STATE::LAYDOWN;

@@ -1,6 +1,9 @@
 #include "ItemIcon.h"
 
 #include "GameInstance.h"
+#include "Layer.h"
+#include "Inventory.h"
+
 
 CItemIcon::CItemIcon(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: CUIObject{ pDevice, pContext }
@@ -49,8 +52,15 @@ void CItemIcon::Update(_float fTimeDelta)
 
 
 	__super::Update(fTimeDelta);
-	if (CGameInstance::Get().Key_Down(DIK_E)) {
-		m_bRender = !m_bRender;
+	auto layer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Inventory"));
+	auto inven = layer->GetObjectFirst();
+
+	if (static_pointer_cast<CInventory>(inven)->Get_Render()) {
+		m_bRender = true;
+	}
+	else {
+		m_bRender = false;
+
 	}
 }
 

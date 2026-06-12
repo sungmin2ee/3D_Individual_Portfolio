@@ -89,6 +89,7 @@ void CBody_Zombie::Priority_Update(_float fTimeDelta)
 		CheckStairCollide();
 	}
 	
+	
 }
 
 void CBody_Zombie::Update(_float fTimeDelta)
@@ -110,6 +111,9 @@ void CBody_Zombie::Update(_float fTimeDelta)
 			DetectPlayer();
 		}
 		if (m_bPlayerDetected) {
+			if (pCollidedDoor != nullptr) {
+				m_bPlayerDetected = false;
+			}
 			CheckColliding();
 		}
 

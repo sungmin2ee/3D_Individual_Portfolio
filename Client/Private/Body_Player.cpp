@@ -158,7 +158,9 @@ void CBody_Player::Update(_float fTimeDelta)
 			m_fOnHitTime = 0.f;
 		}
 	}
-	m_pStateMachine->Update(fTimeDelta);
+	if (!m_pInven->Get_Render()) {
+		m_pStateMachine->Update(fTimeDelta);
+	}
 
 	if (true == m_pModelCom->Play_Animation(fTimeDelta))
 		int a = 10;
