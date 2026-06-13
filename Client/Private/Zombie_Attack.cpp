@@ -33,6 +33,20 @@ void CZombie_Attack::Enter(CBody_Zombie& owner)
         if (owner.Get_Obb()->myOBB.Intersects(playerBody->Get_Obb()->myOBB))
             playerBody->Set_OnHit(true);
     }
+    auto a = CGameInstance::Get().Random(0.f, 3.f);
+    if (a < 3 && a > 2) {
+        CGameInstance::Get().PlaySoundOne(L"zombieAttack1.wav", owner.Get_RunChannelPtr(), 1.0f);
+
+    }
+    else if(a < 2 && a > 3) {
+        CGameInstance::Get().PlaySoundOne(L"zombieAttack2.wav", owner.Get_RunChannelPtr(), 1.0f);
+
+    }
+    else {
+        CGameInstance::Get().PlaySoundOne(L"zombieAttack3.wav", owner.Get_RunChannelPtr(), 1.0f);
+
+    }
+
 }
 
 void CZombie_Attack::Update(CBody_Zombie& owner, _float deltaTime)
@@ -54,6 +68,19 @@ void CZombie_Attack::Update(CBody_Zombie& owner, _float deltaTime)
         }
         else if (m_iCount % 3 == 2) {
             owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::ATTACK1), 0.7f, false);
+        }
+        auto a = CGameInstance::Get().Random(0.f, 3.f);
+        if (a < 3 && a > 2) {
+            CGameInstance::Get().PlaySoundOne(L"zombieAttack1.wav", owner.Get_RunChannelPtr(), 1.0f);
+
+        }
+        else if (a < 2 && a > 3) {
+            CGameInstance::Get().PlaySoundOne(L"zombieAttack2.wav", owner.Get_RunChannelPtr(), 1.0f);
+
+        }
+        else {
+            CGameInstance::Get().PlaySoundOne(L"zombieAttack3.wav", owner.Get_RunChannelPtr(), 1.0f);
+
         }
         animStart = true;
         m_iCount++;

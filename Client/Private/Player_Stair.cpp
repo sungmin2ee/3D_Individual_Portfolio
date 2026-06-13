@@ -154,6 +154,8 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
                         owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::STAIR_IDLE_DOWN));
                         animStart = true;
                     }
+                   
+
                 }
             }
             else if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_UP) {
@@ -196,6 +198,8 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
                         owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::STAIR_IDLE_DOWN));
                         animStart = true;
                     }
+           
+
                 }
             }
         }
@@ -215,6 +219,8 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
             if (CGameInstance::Get().Key_Pressing(DIK_D)) {
                 if (!m_bAnimChanged) {
                     owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::STAIR_RUN_UP));
+                    CGameInstance::Get().PlaySoundLoop(L"Run.wav", CHANNELID::SOUND_EFFECT_PLAYER, 1.f);
+
                     m_bAnimChanged = true;
                 }
                 if (CGameInstance::Get().GetCurLevelIndex() == 4 || CGameInstance::Get().GetCurLevelIndex() == 3) {
@@ -234,6 +240,7 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
                 if (!m_bAnimChanged) {
                     owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::STAIR_RUN_DOWN));
                     m_bAnimChanged = true;
+                    CGameInstance::Get().PlaySoundLoop(L"Run.wav", CHANNELID::SOUND_EFFECT_PLAYER, 1.f);
 
                 }
                 owner.Set_CurState(CBody_Player::PLAYER_STATE::STAIR_DOWN);
@@ -261,6 +268,7 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
                 m_bAnimChanged = false;
                 if (!m_bAnimChanged) {
                     owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::STAIR_RUN_UP));
+                    CGameInstance::Get().PlaySoundLoop(L"Run.wav", CHANNELID::SOUND_EFFECT_PLAYER, 1.f);
                     m_bAnimChanged = true;
 
                 }
@@ -281,6 +289,7 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
             if (CGameInstance::Get().Key_Pressing(DIK_A)) {
                 if (!m_bAnimChanged) {
                     owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::STAIR_RUN_DOWN));
+                    CGameInstance::Get().PlaySoundLoop(L"Run.wav", CHANNELID::SOUND_EFFECT_PLAYER, 1.f);
                     m_bAnimChanged = true;
 
                 }
@@ -304,10 +313,14 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
     if (CGameInstance::Get().Key_Up(DIK_D)) {
         if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_DOWN) {
             owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::STAIR_IDLE_DOWN));
+            CGameInstance::Get().StopSound(CHANNELID::SOUND_EFFECT_PLAYER);
+
             return;
         }
         if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_UP) {
             owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::STAIR_IDLE_UP));
+            CGameInstance::Get().StopSound(CHANNELID::SOUND_EFFECT_PLAYER);
+
             return;
 
         }
@@ -315,11 +328,15 @@ void CPlayer_Stair::Update(CBody_Player& owner, _float deltaTime)
     if (CGameInstance::Get().Key_Up(DIK_A)) {
         if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_DOWN) {
             owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::STAIR_IDLE_DOWN));
+            CGameInstance::Get().StopSound(CHANNELID::SOUND_EFFECT_PLAYER);
+
             return;
 
         }
         if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_UP) {
             owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::STAIR_IDLE_UP));
+            CGameInstance::Get().StopSound(CHANNELID::SOUND_EFFECT_PLAYER);
+
             return;
 
         }
@@ -339,6 +356,7 @@ void CPlayer_Stair::Exit(CBody_Player& owner)
     //else if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_DOWN) {
     //    owner.Get_Model()->Set_Animation(16, false);
     //}
+    CGameInstance::Get().StopSound(CHANNELID::SOUND_EFFECT_PLAYER);
 }
 void CPlayer_Stair::CheckExit(CBody_Player& owner, _float4 myPos)
 {

@@ -80,7 +80,8 @@ public:
 	const _float4& Get_StairPos() { return stairColliderPos; }
 	const _float4x4* &Get_HeadMat() { return m_pHeadMat; }
 	weak_ptr<class CZombie> Get_Zombie() { return m_pZombie.lock(); }
-
+	FMOD_CHANNEL* Get_RunChannel() { return m_pRunChannel; }
+	FMOD_CHANNEL** Get_RunChannelPtr() { return &m_pRunChannel; }
 
 	void Set_CurState(ZOMBIE_STATE state) { m_eCurState = state; }
 	void Set_CurDir(ZOMBIE_DIR state) { m_eCurDir = state; }
@@ -96,6 +97,7 @@ public:
 	void CheckDoorCollide();
 	void Turn(_float fTimeDelta);
 	void CheckStairCollide();
+	_float Get_Volume() { return m_fVolume; }
 
 private:
 	shared_ptr<CShader>						m_pShaderCom = { nullptr };
@@ -120,14 +122,17 @@ private:
 	_bool									m_bStealthDeath = false;
 	_bool									m_bDoorCollided = false;
 	_float									m_fAttackTime = 0.f;
+	_float									m_fVolume = 0.f;
 	uint32_t								m_iHp = 40;
 	CDoor*									pCollidedDoor = nullptr;
 	CStair_Collider*						pStairCollider = nullptr;
 	_float4									stairColliderPos = {};
 	weak_ptr<class CZombie>						m_pZombie;
 	const _float4x4*								m_pHeadMat = nullptr;
+	FMOD_CHANNEL* m_pRunChannel = nullptr;
 private:
 	void FocusPlayer();
+	void CalculateVolume();
 	//shared_ptr<CBody_Player> m_pPlayer = { nullptr };
 private:
 	HRESULT Ready_Components();

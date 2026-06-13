@@ -24,7 +24,7 @@ void CPlayer_Run::Enter(CBody_Player& owner)
         //owner.Get_Model()->Set_Animation(12,false);
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::RUN_MED), 0.7f);
         owner.Set_MakingSound(true);
-
+        CGameInstance::Get().PlaySoundLoop(L"Run.wav", CHANNELID::SOUND_EFFECT_PLAYER, 1.f);
     }
     else if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::SIT) {
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::SNEAK_WALK));
@@ -35,6 +35,7 @@ void CPlayer_Run::Enter(CBody_Player& owner)
 
 void CPlayer_Run::Update(CBody_Player& owner, _float deltaTime)
 {
+    runTime += deltaTime;
     if (owner.Get_OnHit()) {
         owner.Get_StateMachine()->ChangeState(CPlayer_Damaged::Create());
         return;
@@ -59,6 +60,7 @@ void CPlayer_Run::Update(CBody_Player& owner, _float deltaTime)
                 }
                 else if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAND) {
                     owner.Get_Player().lock()->Get_Transform()->Go_Straight(deltaTime * 2.5f);
+
                 }
             }
         }
@@ -101,7 +103,14 @@ void CPlayer_Run::Update(CBody_Player& owner, _float deltaTime)
 
 void CPlayer_Run::Exit(CBody_Player& owner)
 {
+   
     owner.Set_MakingSound(false);
+    CGameInstance::Get().StopSound(CHANNELID::SOUND_EFFECT_PLAYER);
+    if (runTime > 2.f) {
+        CGameInstance::Get().PlaySoundOne(L"male_outofbreath_06.wav", CHANNELID::SOUND_EFFECT_PLAYER, 1.f);
+    }
+    //CGameInstance::Get().StopAll();
+
 
 }
 unique_ptr<CPlayer_Run> CPlayer_Run::Create()

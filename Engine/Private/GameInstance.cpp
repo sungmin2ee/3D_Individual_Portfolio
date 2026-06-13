@@ -18,6 +18,7 @@
 #include "Font_Manager.h"
 #include "Target_Manager.h"
 #include "Light_Manager.h"
+#include "Sound_Manager.h"
 
 CGameInstance::CGameInstance()
 {
@@ -91,6 +92,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, ComPtr<I
     m_pLight_Manager = CLight_Manager::Create(pOutDevice, pOutContext);
     if (nullptr == m_pLight_Manager)
         return E_FAIL;
+    m_pSound_Manager = CSound_Manager::Create();
+    if (nullptr == m_pSound_Manager)
+        return E_FAIL;
 
     return S_OK;
 }
@@ -100,6 +104,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
     m_pInput_Manager->Update_InputDev();
 
     m_pObject_Manager->Priority_Update(fTimeDelta);
+    m_pSound_Manager->UpdateSound();
     m_pPipeLine->Update();
     m_pCollider_Manager->Update();
 
@@ -466,9 +471,57 @@ list<shared_ptr<class CLight>> &CGameInstance::Get_Lights()
 {
     return m_pLight_Manager->Get_Lights();
 }
+#pragma endregion
+
+#pragma region SOUND_MANAGER
+
+void  CGameInstance::PlaySoundLoop(const TCHAR* svSoundKey, CHANNELID eID, _float fVolume)
+{
+    return m_pSound_Manager->PlaySoundLoop(svSoundKey, eID, fVolume);
+}
+void  CGameInstance::PlaySoundOne(const TCHAR* svSoundKey, CHANNELID eID, _float fVolume)
+{
+    return m_pSound_Manager->PlaySoundOne(svSoundKey, eID, fVolume);
+}
+void  CGameInstance::PlaySoundLoop(const TCHAR* soundKey, FMOD_CHANNEL** ppChannel, _float volume)
+{
+    return m_pSound_Manager->PlaySoundLoop(soundKey, ppChannel, volume);
+}
+void  CGameInstance::PlaySoundOne(const TCHAR* soundKey, FMOD_CHANNEL** ppChannel, _float volume)
+{
+    return m_pSound_Manager->PlaySoundOne(soundKey, ppChannel, volume);
+}
+void  CGameInstance::PlaySound(const TCHAR* svSoundKey, CHANNELID eID, _float fVolume)
+{
+    return m_pSound_Manager->PlaySoundLoop(svSoundKey, eID, fVolume);
+}
+void  CGameInstance::PlayBGM(const TCHAR* svSoundKey, _float fVolume)
+{
+    return m_pSound_Manager->PlayBGM(svSoundKey, fVolume);
+}
+void  CGameInstance::StopSound(CHANNELID eID)
+{
+    return m_pSound_Manager->StopSound(eID);
+}
+void  CGameInstance::StopSound(FMOD_CHANNEL** ppChannel)
+{
+    return m_pSound_Manager->StopSound(ppChannel);
+}
+void  CGameInstance::StopAll()
+{
+    return m_pSound_Manager->StopAll();
+}
+void  CGameInstance::SetChannelVolume(CHANNELID eID, _float fVolume)
+{
+    return m_pSound_Manager->SetChannelVolume(eID, fVolume);
+}
+void  CGameInstance::SetChannelVolume(FMOD_CHANNEL** ppChannel, _float fVolume)
+{
+    return m_pSound_Manager->SetChannelVolume(ppChannel, fVolume);
+}
+#pragma endregion
 void CGameInstance::Release_Engine()
 {
-
 
 
 
@@ -483,6 +536,7 @@ void CGameInstance::Release_Engine()
     m_pRenderer.reset();
 
     m_pLevel_Manager.reset();
+    m_pSound_Manager.reset();
 
     m_pTimer_Manager.reset();
 

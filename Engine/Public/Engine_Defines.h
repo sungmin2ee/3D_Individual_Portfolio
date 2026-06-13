@@ -34,6 +34,12 @@ using namespace DirectX;
 #include <assimp/postprocess.h>
 #include <filesystem>
 #include <nlohmann/json.hpp>
+#include <io.h>
+
+#include "fmod.h"
+#include "fmod.hpp"
+//#pragma comment(lib, "fmod_vc.lib")
+
 //#ifdef _DEBUG
 //#pragma comment(lib, "DirectXTex/DirectXTex_debug.lib")
 //#pragma comment(lib, "FX11/Effects11d.lib")

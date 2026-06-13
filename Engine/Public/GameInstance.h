@@ -153,6 +153,20 @@ public:
 	void	Clear_Lights();
 	list<shared_ptr<class CLight>>& Get_Lights();
 #pragma endregion
+#pragma region SOUND_MANAGER
+public:
+	void PlaySoundLoop(const TCHAR* svSoundKey, CHANNELID eID, _float fVolume);
+	void PlaySoundOne(const TCHAR* svSoundKey, CHANNELID eID, _float fVolume);
+	void PlaySoundLoop(const TCHAR* soundKey, FMOD_CHANNEL** ppChannel, _float volume);
+	void PlaySoundOne(const TCHAR* soundKey, FMOD_CHANNEL** ppChannel, _float volume);
+	void PlaySound(const TCHAR* pSoundKey, CHANNELID eID, _float fVolume);
+	void PlayBGM(const TCHAR* pSoundKey, _float fVolume);
+	void StopSound(CHANNELID eID);
+	void StopSound(FMOD_CHANNEL** ppChannel);
+	void StopAll();
+	void SetChannelVolume(CHANNELID eID, _float fVolume);
+	void SetChannelVolume(FMOD_CHANNEL** ppChannel, _float fVolume);
+#pragma endregion
 private:
 	unique_ptr<class CGraphic_Device>				m_pGraphic_Device = { nullptr };
 	unique_ptr<class CTimer_Manager>				m_pTimer_Manager = { nullptr };
@@ -170,6 +184,7 @@ private:
 	unique_ptr<class CFont_Manager> 				m_pFont_Manager = nullptr;
 	unique_ptr<class CTarget_Manager> 				m_pTarget_Manager = nullptr;
 	unique_ptr<class CLight_Manager> 				m_pLight_Manager = nullptr;
+	unique_ptr<class CSound_Manager> 				m_pSound_Manager = nullptr;
 
 
 public:

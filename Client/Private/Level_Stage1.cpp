@@ -25,12 +25,14 @@ CLevel_Stage1::CLevel_Stage1(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceCo
 
 CLevel_Stage1::~CLevel_Stage1()
 {
+	CGameInstance::Get().StopAll();
+
 }
 
 HRESULT CLevel_Stage1::Initialize()
 {
-	if (FAILED(Ready_Lights()))
-		return E_FAIL;
+	//if (FAILED(Ready_Lights()))
+	//	return E_FAIL;
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Inven(TEXT("Layer_Inventory"))))
@@ -58,7 +60,8 @@ HRESULT CLevel_Stage1::Initialize()
 	if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::STAGE1)))) {
 		return E_FAIL;
 	}
-	
+	CGameInstance::Get().PlayBGM(L"Stage1BGM.wav", 1.f);
+
 
 
 	return S_OK;
@@ -67,9 +70,9 @@ HRESULT CLevel_Stage1::Initialize()
 void CLevel_Stage1::Update(_float fTimeDelta)
 {
 
-	//if (CGameInstance::Get().Key_Down(DIK_CAPITAL)) {
-	//	CGameInstance::Get().Save(ETOUI(LEVEL::STAGE1));
-	//}
+	if (CGameInstance::Get().Key_Down(DIK_CAPITAL)) {
+		CGameInstance::Get().Save(ETOUI(LEVEL::STAGE1));
+	}
 
 	if (m_bChangeLevel)
 	{

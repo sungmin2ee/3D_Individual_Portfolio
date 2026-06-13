@@ -20,7 +20,8 @@ public:
 public:
     static unique_ptr<CPlayer_Run> Create();
 
-
+private:
+    _float        runTime = 0.f;
 
 };
 NS_END

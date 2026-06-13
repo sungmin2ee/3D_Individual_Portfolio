@@ -24,6 +24,8 @@ CLevel_Stage2::CLevel_Stage2(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceCo
 
 CLevel_Stage2::~CLevel_Stage2()
 {
+	CGameInstance::Get().StopAll();
+
 }
 
 HRESULT CLevel_Stage2::Initialize()
@@ -69,6 +71,7 @@ HRESULT CLevel_Stage2::Initialize()
 	if (FAILED(Load_Stair_Collider()))
 		return E_FAIL;
 
+	CGameInstance::Get().PlayBGM(L"Stage2BGM.wav", 0.6f);
 
 
 	return S_OK;

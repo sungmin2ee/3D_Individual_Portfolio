@@ -64,6 +64,7 @@ void CPlayer_Door::Update(CBody_Player& owner, _float deltaTime)
     }
     if (CGameInstance::Get().Key_Down(DIK_F)) {
         owner.Get_StateMachine()->ChangeState(CPlayer_OpenDoor::Create());
+        CGameInstance::Get().PlaySoundLoop(L"dooropen.wav", CHANNELID::SOUND_EFFECT_ENVIRONMENT, 1.f);
         return;
     }
 

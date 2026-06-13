@@ -88,7 +88,7 @@ void CBody_Zombie::Priority_Update(_float fTimeDelta)
 		CheckDoorCollide();
 		CheckStairCollide();
 	}
-	
+	CalculateVolume();
 	
 }
 
@@ -358,6 +358,8 @@ void CBody_Zombie::DetectPlayer()
 	if (fabs(fpos.x) <= 0.5f&& fpos.y == 0) {
 		if (playerBody->Is_MakingSound()) {
 			m_bPlayerDetected = true;
+			CGameInstance::Get().PlaySoundOne(L"detect.wav", CHANNELID::SOUND_EFFECT_ZOMBIE, 1.f);
+
 		}
 		else if (ETOUI(playerBody->Get_CurDir()) != ETOUI(m_eCurDir) && playerBody->Is_MakingSound()) {
 			m_bPlayerDetected = true;
@@ -435,6 +437,33 @@ void CBody_Zombie::FocusPlayer() {
 			m_eCurDir = ZOMBIE_DIR::RIGHT;
 		}
 	}
+
+}
+void CBody_Zombie::CalculateVolume()
+{
+	auto layer = CGameInstance::Get().Find_Layer(ETOUI(CGameInstance::Get().GetCurLevelIndex()), TEXT("Layer_Player"));
+	if (layer == nullptr)
+		return;
+	auto player = layer->GetObjectFirst();
+	if (player == nullptr)
+		return;
+
+	auto playerPos = player->Get_Transform()->Get_State(STATE::POSITION);
+	_vector myPos = m_pZombie.lock()->Get_Transform()->Get_State(STATE::POSITION);
+
+	_vector vDiff = playerPos - myPos;
+	_float4 fdiff;
+	XMStoreFloat4(&fdiff, vDiff);
+	if (fabs(fdiff.y) > 0.25f) {
+		m_fVolume = 0.f;
+		return;
+	}
+	_float distance = XMVectorGetX(XMVector3Length(vDiff));
+
+	const float maxDistance = 0.8f;
+
+	float volume = 1.0f - (distance / maxDistance);
+	m_fVolume = std::clamp(volume, 0.0f, 1.0f);
 
 }
 void CBody_Zombie::CheckDoorCollide()

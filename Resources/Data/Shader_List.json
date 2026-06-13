@@ -57,6 +57,10 @@
             "PrototypeTag": "Prototype_Component_Shader_VtxNorTex"
         },
         {
+            "FilePath": "../../Client/Bin/ShaderFiles/Shader_VtxSphere",
+            "PrototypeTag": "Prototype_Component_Shader_VtxSphere"
+        },
+        {
             "FilePath": "../../Client/Bin/ShaderFiles/Shader_VtxTex",
             "PrototypeTag": "Prototype_Component_Shader_VtxTex"
         },

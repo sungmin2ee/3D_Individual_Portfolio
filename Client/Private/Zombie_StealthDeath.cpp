@@ -34,6 +34,7 @@ void CZombie_StealthDeath::Enter(CBody_Zombie& owner)
     else if (playerBody->Get_Model()->Get_AnimIndex() == ETOUI(CBody_Player::PLAYER_ANIM::AXE_STEALTH2)) {
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::AXE_STEALTH2), false);
         delta = XMVectorSet(0.12f, 0, 0, 0);
+        CGameInstance::Get().PlaySoundOne(L"execute.wav", owner.Get_RunChannelPtr(), 1.0f);
 
     }
     else if (playerBody->Get_Model()->Get_AnimIndex() == ETOUI(CBody_Player::PLAYER_ANIM::STEALTH_KILL)) {
@@ -63,6 +64,8 @@ void CZombie_StealthDeath::Update(CBody_Zombie& owner, _float deltaTime)
             auto zombie = static_pointer_cast<CZombie>(owner.Get_Zombie().lock());
             static_cast<CBlood*>(zombie->Get_Effect())->Play_Particle();
             static_cast<CBlood*>(zombie->Get_Effect())->Set_Bleeding();
+            CGameInstance::Get().PlaySoundOne(L"bloodSound.wav", owner.Get_RunChannelPtr(), 1.0f);
+
 
             animFinshed = true;
         }
@@ -72,6 +75,7 @@ void CZombie_StealthDeath::Update(CBody_Zombie& owner, _float deltaTime)
             auto zombie = static_pointer_cast<CZombie>(owner.Get_Zombie().lock());
             static_cast<CBlood*>(zombie->Get_Effect())->Play_Particle();
             static_cast<CBlood*>(zombie->Get_Effect())->Set_Bleeding();
+            CGameInstance::Get().PlaySoundOne(L"execute.wav", owner.Get_RunChannelPtr(), 1.0f);
 
             count++;
         }
@@ -79,13 +83,15 @@ void CZombie_StealthDeath::Update(CBody_Zombie& owner, _float deltaTime)
             auto zombie = static_pointer_cast<CZombie>(owner.Get_Zombie().lock());
             static_cast<CBlood*>(zombie->Get_Effect())->Set_Bleeding();
             static_cast<CBlood*>(zombie->Get_Effect())->Play_Particle();
+            CGameInstance::Get().PlaySoundOne(L"execute.wav", owner.Get_RunChannelPtr(), 1.0f);
+
             count++;
         }
         if (animtime > 3.f && count == 2 && !animFinshed) {
             auto zombie = static_pointer_cast<CZombie>(owner.Get_Zombie().lock());
             static_cast<CBlood*>(zombie->Get_Effect())->Play_Particle();
             static_cast<CBlood*>(zombie->Get_Effect())->Set_Bleeding();
-
+            CGameInstance::Get().PlaySoundOne(L"bloodSound.wav", owner.Get_RunChannelPtr(), 1.0f);
             animFinshed = true;
         }
         
@@ -95,6 +101,7 @@ void CZombie_StealthDeath::Update(CBody_Zombie& owner, _float deltaTime)
             auto zombie = static_pointer_cast<CZombie>(owner.Get_Zombie().lock());
             static_cast<CBlood*>(zombie->Get_Effect())->Set_Bleeding();
             static_cast<CBlood*>(zombie->Get_Effect())->Play_Particle();
+            CGameInstance::Get().PlaySoundOne(L"bloodSound.wav", owner.Get_RunChannelPtr(), 1.0f);
             animFinshed = true;
         }
     }

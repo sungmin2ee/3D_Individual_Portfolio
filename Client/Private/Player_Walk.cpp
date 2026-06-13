@@ -30,6 +30,8 @@ void CPlayer_Walk::Enter(CBody_Player& owner)
     else if (owner.Get_CurState() == CBody_Player::PLAYER_STATE::STAND) {
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::WALK), true);
         owner.Set_MakingSound(true);
+        CGameInstance::Get().PlaySoundLoop(L"Walk.wav", CHANNELID::SOUND_EFFECT_PLAYER, 0.5f);
+
 
     }
 }
@@ -108,6 +110,9 @@ void CPlayer_Walk::Exit(CBody_Player& owner)
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::WALKSTOP), false);
     }
     owner.Set_MakingSound(false);
+    CGameInstance::Get().StopSound(CHANNELID::SOUND_EFFECT_PLAYER);
+
+
 
 }
 unique_ptr<CPlayer_Walk> CPlayer_Walk::Create()

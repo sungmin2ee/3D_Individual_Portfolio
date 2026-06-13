@@ -41,6 +41,7 @@ void CPlayer_Attack::Enter(CBody_Player& owner)
            static_pointer_cast<CZombie>(*iter)->Get_Body()->Set_Damaged();
        }
    }
+   CGameInstance::Get().PlaySoundOne(L"playerAttack.wav", CHANNELID::SOUND_EFFECT_PLAYER, 1.f);
 
 
 }
@@ -87,6 +88,8 @@ void CPlayer_Attack::Update(CBody_Player& owner, _float deltaTime)
                 else if (owner.Get_Weapon() == CBody_Player::PLAYER_WEAPON::AXE) {
                     owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::AXE_ATTACK1), false);
                 }
+                CGameInstance::Get().PlaySoundOne(L"playerAttack.wav", CHANNELID::SOUND_EFFECT_PLAYER, 1.f);
+
                 m_iCount++;
             }
             else {
@@ -96,6 +99,8 @@ void CPlayer_Attack::Update(CBody_Player& owner, _float deltaTime)
                 else if (owner.Get_Weapon() == CBody_Player::PLAYER_WEAPON::AXE) {
                     owner.Get_Model()->Set_Animation(ETOUI(CBody_Player::PLAYER_ANIM::AXE_ATTACK2), false);
                 }
+                CGameInstance::Get().PlaySoundOne(L"playerAttack.wav", CHANNELID::SOUND_EFFECT_PLAYER, 1.f);
+
                 m_iCount++;
             }
             m_fTime = 0.f;

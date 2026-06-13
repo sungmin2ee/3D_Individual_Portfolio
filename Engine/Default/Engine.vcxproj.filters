@@ -172,6 +172,12 @@
     <Filter Include="12.RenderTargets\Manager">
       <UniqueIdentifier>{b91a01fe-1288-4f64-a186-5b175ef0f0f7}</UniqueIdentifier>
     </Filter>
+    <Filter Include="13.Sound">
+      <UniqueIdentifier>{09a1ace8-b1e6-4489-ab2a-539572595743}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="13.Sound\Manager">
+      <UniqueIdentifier>{df5015e1-1f80-4d51-8b21-5e382e5be2ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -341,6 +347,9 @@
     </ClInclude>
     <ClInclude Include="..\public\RenderTarget.h">
       <Filter>12.RenderTargets</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sound_Manager.h">
+      <Filter>13.Sound\Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -529,6 +538,9 @@
     </ClCompile>
     <ClCompile Include="..\private\RenderTarget.cpp">
       <Filter>12.RenderTargets</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Sound_Manager.cpp">
+      <Filter>13.Sound\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

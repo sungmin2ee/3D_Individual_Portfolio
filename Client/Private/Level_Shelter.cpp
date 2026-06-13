@@ -24,6 +24,8 @@ CLevel_Shelter::CLevel_Shelter(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11Device
 
 CLevel_Shelter::~CLevel_Shelter()
 { 
+	CGameInstance::Get().StopAll();
+
 }
 
 HRESULT CLevel_Shelter::Initialize()
@@ -57,6 +59,7 @@ HRESULT CLevel_Shelter::Initialize()
 	}
 
 
+	CGameInstance::Get().PlayBGM(L"ShelterBGM.wav", 1.f);
 
 	return S_OK;
 }

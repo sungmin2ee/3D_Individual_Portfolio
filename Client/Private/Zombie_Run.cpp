@@ -21,10 +21,15 @@ void CZombie_Run::Enter(CBody_Zombie& owner)
 {
 
     owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::RUN), 0.7f);
+    CGameInstance::Get().PlaySoundLoop( L"zombieRun.wav", owner.Get_RunChannelPtr(), 1.0f);
 }
 
 void CZombie_Run::Update(CBody_Zombie& owner, _float deltaTime)
 {
+    if (owner.Get_RunChannel())
+    {
+        CGameInstance::Get().SetChannelVolume(owner.Get_RunChannelPtr(), owner.Get_Volume());
+    }
     if (owner.Get_Model()->Play_Animation(deltaTime) == true) {
         animStart = false;
     }
@@ -66,6 +71,11 @@ void CZombie_Run::Update(CBody_Zombie& owner, _float deltaTime)
 
 void CZombie_Run::Exit(CBody_Zombie& owner)
 {
+    if (owner.Get_RunChannel())
+    {
+        CGameInstance::Get().StopSound(owner.Get_RunChannelPtr());
+    }
+
 }
 unique_ptr<CZombie_Run> CZombie_Run::Create()
 {

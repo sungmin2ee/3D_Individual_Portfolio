@@ -31,7 +31,7 @@ HRESULT CSky::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 	
-	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
+	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), -90.f);
 
 	return S_OK;
 }
@@ -68,12 +68,16 @@ HRESULT CSky::Render()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", CGameInstance::Get().Get_Transform(D3DTS::PROJ))))
 		return E_FAIL;
 
-	if (CGameInstance::Get().GetCurLevelIndex() == ETOUI(LEVEL::STAGE2)) {
+	if (CGameInstance::Get().GetCurLevelIndex() == ETOUI(LEVEL::SHELTER)) {
+		if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
+			return E_FAIL;
+	}
+	else if (CGameInstance::Get().GetCurLevelIndex() == ETOUI(LEVEL::STAGE1)) {
 		if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 1)))
 			return E_FAIL;
 	}
 	else {
-		if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 0)))
+		if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DiffuseTexture", 2)))
 			return E_FAIL;
 	}
 
@@ -96,7 +100,7 @@ HRESULT CSky::Ready_Components()
 	if (FAILED(__super::Add_Component(TEXT("Com_VIBuffer"), m_pVIBufferCom)))
 		return E_FAIL;
 
-	m_pShaderCom = dynamic_pointer_cast<CShader>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxCube")));
+	m_pShaderCom = dynamic_pointer_cast<CShader>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxSphere")));
 	if (FAILED(__super::Add_Component(TEXT("Com_Shader"), m_pShaderCom)))
 		return E_FAIL;
 

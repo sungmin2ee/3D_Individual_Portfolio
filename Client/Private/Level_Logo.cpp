@@ -14,6 +14,7 @@ CLevel_Logo::CLevel_Logo(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContex
 
 CLevel_Logo::~CLevel_Logo()
 {
+	CGameInstance::Get().StopAll();
 }
 
 HRESULT CLevel_Logo::Initialize()
@@ -21,7 +22,7 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Ready_Layer_Logo(TEXT("Layer_Logo"))))
 		return E_FAIL;
 	//if(FAILED(CGameInstance::Get().Add_Prototype()))
-
+	CGameInstance::Get().PlayBGM(L"LogoBGM.wav", 1.f);
 	return S_OK;
 }
 
@@ -35,7 +36,8 @@ void CLevel_Logo::Update(_float fTimeDelta)
 	if (m_bChangeLevel)
 	{
 		if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
-			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::STAGE1))))
+			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::STAGE2
+			))))
 			return;
 
 		m_bChangeLevel = false;

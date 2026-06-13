@@ -650,5 +650,8 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Particle_Point.hlsl">
       <Filter>Shaderfiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxSphere.hlsl">
+      <Filter>Shaderfiles</Filter>
+    </FxCompile>
   </ItemGroup>
 </Project>

@@ -307,6 +307,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNoLightMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNonAnim.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxSphere.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxTex.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
