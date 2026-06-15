@@ -39,6 +39,8 @@ void CZombie_Stair::Enter(CBody_Zombie& owner)
 
 
     owner.Set_UsingStair(true);
+    CGameInstance::Get().PlaySoundLoop(L"zombieRun.wav", owner.Get_RunChannelPtr(), 1.0f);
+
 }
 
 void CZombie_Stair::Update(CBody_Zombie& owner, _float deltaTime)
@@ -237,7 +239,10 @@ void CZombie_Stair::Update(CBody_Zombie& owner, _float deltaTime)
 
 void CZombie_Stair::Exit(CBody_Zombie& owner)
 {
-
+    if (owner.Get_RunChannel())
+    {
+        CGameInstance::Get().StopSound(owner.Get_RunChannelPtr());
+    }
 }
 unique_ptr<CZombie_Stair> CZombie_Stair::Create()
 {

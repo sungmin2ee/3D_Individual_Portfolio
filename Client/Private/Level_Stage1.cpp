@@ -15,6 +15,7 @@
 #include "BoxCollider.h"
 
 #include "Layer.h"
+#include "Sky.h"
 
 namespace fs = std::filesystem;
 using json = nlohmann::json;
@@ -31,8 +32,8 @@ CLevel_Stage1::~CLevel_Stage1()
 
 HRESULT CLevel_Stage1::Initialize()
 {
-	//if (FAILED(Ready_Lights()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Lights()))
+		return E_FAIL;
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 	if (FAILED(Ready_Layer_Inven(TEXT("Layer_Inventory"))))
@@ -60,7 +61,7 @@ HRESULT CLevel_Stage1::Initialize()
 	if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::STAGE1)))) {
 		return E_FAIL;
 	}
-	CGameInstance::Get().PlayBGM(L"Stage1BGM.wav", 1.f);
+	CGameInstance::Get().PlayBGM(L"Stage1BGM.wav", 0.3f);
 
 
 
@@ -97,17 +98,25 @@ HRESULT CLevel_Stage1::Render()
 
 HRESULT CLevel_Stage1::Ready_Lights()
 {
-	LIGHT_DESC			LightDesc{};
+	string binPath = "../../Resources/Data/STAGE1_Lights.bin";
 
-	LightDesc.eType = LIGHT::DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(0.25f, 0.25f, 0.25f, 1.f);
-	LightDesc.vSpecular = _float4(0.2f, 0.2f, 0.2f, 1.f);
-
-
-	if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
+	std::ifstream fin(binPath, std::ios::in | std::ios::binary);
+	if (!fin.is_open())
 		return E_FAIL;
+
+	if (fin.is_open()) {
+		// 1. 전체 메쉬 개수 읽기
+		uint32_t numLights = 0;
+		fin.read(reinterpret_cast<char*>(&numLights), sizeof(numLights));
+
+		for (uint32_t i = 0; i < numLights; i++) {
+			LIGHT_DESC desc = {};
+			fin.read((char*)&desc, sizeof(LIGHT_DESC));
+			CGameInstance::Get().Add_Light(desc);
+		}
+	}
+
+	fin.close();
 
 	return S_OK;
 }
@@ -123,8 +132,9 @@ HRESULT CLevel_Stage1::Ready_Layer_UI(const _wstring& strLayerTag)
 HRESULT CLevel_Stage1::Ready_Layer_Sky(const _wstring& strLayerTag)
 {
 
-	CGameObject::GAMEOBJECT_DESC pDesc{};
+	CSky::SKY_DESC pDesc{};
 	pDesc.pGameObjectTag = L"Sky";
+	pDesc.nextLevel = LEVEL::STAGE1;
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Sky"),
 		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
 		return E_FAIL;
@@ -260,6 +270,7 @@ HRESULT CLevel_Stage1::Ready_Layer_Zombie(const _wstring& strLayerTag)
 	pDesc.firstState = CBody_Zombie::ZOMBIE_FIRSTSTATE::IDLE;
 	pDesc.Direction = CBody_Zombie::ZOMBIE_DIR::LEFT;
 	pDesc.State = CBody_Zombie::ZOMBIE_STATE::CRAWL_IDLE;
+
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Zombie"),
 		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
 		return E_FAIL;

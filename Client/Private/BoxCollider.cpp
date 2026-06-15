@@ -60,6 +60,7 @@ void CBoxCollider::Update(_float fTimeDelta)
 				for (auto ui : mapUis) {
 					if (ui->Get_Tag() == L"Map") {
 						static_pointer_cast<CUIObject>(ui)->Set_Render(true);
+						CGameInstance::Get().PlaySoundOne(L"mapOpen.wav", CHANNELID::SOUND_EFFECT_ENVIRONMENT, 1.f);
 						m_bActive = false;
 						return;
 					}
@@ -73,6 +74,8 @@ void CBoxCollider::Update(_float fTimeDelta)
 				for (auto ui : mapUis) {
 					if (ui->Get_Tag() == L"FixUI") {
 						static_pointer_cast<CUIObject>(ui)->Set_Render(true);
+						CGameInstance::Get().PlaySoundOne(L"fixUIOpen.wav", CHANNELID::SOUND_EFFECT_ENVIRONMENT, 1.f);
+
 						m_bActive = false;
 						return;
 					}

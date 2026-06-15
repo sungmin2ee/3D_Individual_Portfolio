@@ -107,7 +107,7 @@ void CPlayer_Run::Exit(CBody_Player& owner)
     owner.Set_MakingSound(false);
     CGameInstance::Get().StopSound(CHANNELID::SOUND_EFFECT_PLAYER);
     if (runTime > 2.f) {
-        CGameInstance::Get().PlaySoundOne(L"male_outofbreath_06.wav", CHANNELID::SOUND_EFFECT_PLAYER, 1.f);
+        CGameInstance::Get().PlaySoundOne(L"male_outofbreath_06.wav", CHANNELID::SOUND_EFFECT_PLAYER, 0.5f);
     }
     //CGameInstance::Get().StopAll();
 

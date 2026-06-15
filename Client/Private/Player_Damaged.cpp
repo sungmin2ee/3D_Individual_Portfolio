@@ -56,6 +56,8 @@ void CPlayer_Damaged::Enter(CBody_Player& owner)
     animStart = true;
     owner.Set_CurState(CBody_Player::PLAYER_STATE::STAND);
     owner.Set_Hp(-15);
+    CGameInstance::Get().PlaySoundOne(L"playerDamaged.wav", CHANNELID::SOUND_EFFECT_PLAYER, 1.0f);
+
 }
 
 void CPlayer_Damaged::Update(CBody_Player& owner, _float deltaTime)

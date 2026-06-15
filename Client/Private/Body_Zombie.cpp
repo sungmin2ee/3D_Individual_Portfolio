@@ -111,9 +111,9 @@ void CBody_Zombie::Update(_float fTimeDelta)
 			DetectPlayer();
 		}
 		if (m_bPlayerDetected) {
-			if (pCollidedDoor != nullptr) {
+			/*if (pCollidedDoor != nullptr) {
 				m_bPlayerDetected = false;
-			}
+			}*/
 			CheckColliding();
 		}
 
@@ -355,7 +355,7 @@ void CBody_Zombie::DetectPlayer()
 	//	m_bPlayerDetected = false;
 	//}
 
-	if (fabs(fpos.x) <= 0.5f&& fpos.y == 0) {
+	if (fabs(fpos.x) <= 0.5f&& fabs(fpos.y) < 0.1f) {
 		if (playerBody->Is_MakingSound()) {
 			m_bPlayerDetected = true;
 			CGameInstance::Get().PlaySoundOne(L"detect.wav", CHANNELID::SOUND_EFFECT_ZOMBIE, 1.f);
@@ -403,6 +403,10 @@ void CBody_Zombie::FocusPlayer() {
 	if (player == nullptr)
 		return;
 
+	if (static_pointer_cast<CPlayer>(player)->Get_Body()->Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_UP ||
+		static_pointer_cast<CPlayer>(player)->Get_Body()->Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_DOWN) {
+		return;
+	}
 	auto playerPos = player->Get_Transform()->Get_State(STATE::POSITION);
 
 	_float4 fPlayerPos; 

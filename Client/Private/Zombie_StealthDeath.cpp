@@ -16,6 +16,8 @@ CZombie_StealthDeath::~CZombie_StealthDeath()
 
 void CZombie_StealthDeath::Enter(CBody_Zombie& owner)
 {
+    CGameInstance::Get().PlaySoundOne(L"zombieWalk.wav", owner.Get_RunChannelPtr(), 1.0f);
+
     auto layer = CGameInstance::Get().Find_Layer(ETOUI(CGameInstance::Get().GetCurLevelIndex()), TEXT("Layer_Player"));
     if (layer == nullptr)
         return;
@@ -60,13 +62,19 @@ void CZombie_StealthDeath::Update(CBody_Zombie& owner, _float deltaTime)
 {
     animtime += deltaTime;
     if (owner.Get_Model()->Get_AnimIndex() == ETOUI(CBody_Zombie::ZOMBIE_STATE::UNARMED_STEALTH) && !animFinshed) {
-        if (animtime > 3.2f) {
+        if (animtime > 1.8f && count == 0) {
+            CGameInstance::Get().PlaySoundOne(L"execute.wav", owner.Get_RunChannelPtr(), 1.0f);
+            count++;
+        }
+        else if (animtime > 2.3f && count == 1) {
+            CGameInstance::Get().PlaySoundOne(L"execute.wav", owner.Get_RunChannelPtr(), 1.0f);
+            count++;
+
+        }else if (animtime > 3.2f && count == 2) {
             auto zombie = static_pointer_cast<CZombie>(owner.Get_Zombie().lock());
             static_cast<CBlood*>(zombie->Get_Effect())->Play_Particle();
             static_cast<CBlood*>(zombie->Get_Effect())->Set_Bleeding();
             CGameInstance::Get().PlaySoundOne(L"bloodSound.wav", owner.Get_RunChannelPtr(), 1.0f);
-
-
             animFinshed = true;
         }
     }

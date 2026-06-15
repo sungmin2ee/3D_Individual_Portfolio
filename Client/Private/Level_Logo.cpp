@@ -22,7 +22,7 @@ HRESULT CLevel_Logo::Initialize()
 	if (FAILED(Ready_Layer_Logo(TEXT("Layer_Logo"))))
 		return E_FAIL;
 	//if(FAILED(CGameInstance::Get().Add_Prototype()))
-	CGameInstance::Get().PlayBGM(L"LogoBGM.wav", 1.f);
+	CGameInstance::Get().PlayBGM(L"LogoBGM.wav", 0.7f);
 	return S_OK;
 }
 
@@ -55,17 +55,17 @@ HRESULT CLevel_Logo::Render()
 
 HRESULT CLevel_Logo::Ready_Lights()
 {
-	LIGHT_DESC			LightDesc{};
-
-	LightDesc.eType = LIGHT::DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-
-	if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
-		return E_FAIL;
-
+	//LIGHT_DESC			LightDesc{};
+	//
+	//LightDesc.eType = LIGHT::DIRECTIONAL;
+	//LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	//LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	//LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+	//LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	//
+	//if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
+	//	return E_FAIL;
+	//
 	return S_OK;
 }
 

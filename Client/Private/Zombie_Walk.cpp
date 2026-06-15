@@ -29,7 +29,7 @@ void CZombie_Walk::Enter(CBody_Zombie& owner)
         owner.Set_CurState(CBody_Zombie::ZOMBIE_STATE::SEARCH_WALK);
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::SEARCH_WALK));
     }
-    CGameInstance::Get().PlaySoundLoop(L"zombieWalk.wav", owner.Get_RunChannelPtr(), 1.0f);
+    CGameInstance::Get().PlaySoundLoop(L"zombieWalk.wav", owner.Get_RunChannelPtr(), 0.0f);
 
 }
 

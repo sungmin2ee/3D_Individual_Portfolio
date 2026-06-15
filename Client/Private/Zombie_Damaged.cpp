@@ -36,6 +36,8 @@ void CZombie_Damaged::Enter(CBody_Zombie& owner)
     }
     m_iCount++;
     animStart = true;
+    CGameInstance::Get().PlaySoundOne(L"zombieHit.wav", owner.Get_RunChannelPtr(), 1.0f);
+
 }
 
 void CZombie_Damaged::Update(CBody_Zombie& owner, _float deltaTime)
@@ -61,6 +63,8 @@ void CZombie_Damaged::Update(CBody_Zombie& owner, _float deltaTime)
             else  if (playerBody->Get_Weapon() == CBody_Player::PLAYER_WEAPON::AXE) {
                 owner.Set_HP(-30);
             }
+            CGameInstance::Get().PlaySoundOne(L"zombieHit.wav", owner.Get_RunChannelPtr(), 1.0f);
+
 
         }
         else if (playerBody->Get_Model()->Get_AnimIndex() == 32 || playerBody->Get_Model()->Get_AnimIndex() == 3) {
@@ -73,6 +77,7 @@ void CZombie_Damaged::Update(CBody_Zombie& owner, _float deltaTime)
             else  if (playerBody->Get_Weapon() == CBody_Player::PLAYER_WEAPON::AXE) {
                 owner.Set_HP(-30);
             }
+            CGameInstance::Get().PlaySoundOne(L"zombieHit.wav", owner.Get_RunChannelPtr(), 1.0f);
 
         }
         m_iCount++;

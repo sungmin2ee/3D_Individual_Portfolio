@@ -31,7 +31,14 @@ HRESULT CSky::Initialize(void* pArg)
 	if (FAILED(Ready_Components()))
 		return E_FAIL;
 	
-	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), -90.f);
+	auto		pDesc = static_cast<SKY_DESC*>(pArg);
+
+	if (pDesc->nextLevel == LEVEL::STAGE1) {
+		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), -50.f);
+	}
+	else {
+		m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), -90.f);
+	}
 
 	return S_OK;
 }

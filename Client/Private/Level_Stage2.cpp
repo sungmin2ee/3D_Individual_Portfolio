@@ -40,8 +40,8 @@ HRESULT CLevel_Stage2::Initialize()
 	//if (FAILED(Ready_Layer_Release_Collider(TEXT("Layer_Release_Collider"))))
 	//	return E_FAIL;
 
-	//if (FAILED(Ready_Lights()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Lights()))
+		return E_FAIL;
 	if (FAILED(Ready_Layer_Sky(TEXT("Layer_Sky"))))
 		return E_FAIL;
 	
@@ -101,50 +101,28 @@ HRESULT CLevel_Stage2::Render()
 
 HRESULT CLevel_Stage2::Ready_Lights()
 {
-	LIGHT_DESC			LightDesc{};
+	string binPath = "../../Resources/Data/STAGE2_Lights.bin";
 
-	LightDesc.eType = LIGHT::DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(0.2f, 0.2f, 0.2f, 1.f);
-	LightDesc.vAmbient = _float4(0.2f, 0.2f, 0.2f, 1.f);
-	LightDesc.vSpecular = _float4(0.1f, 0.1f, 0.1f, 1.f);
-
-	if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
-		return E_FAIL;
-	//LightDesc.eType = LIGHT::POINT;
-	//LightDesc.vPosition = _float4(-2.f, 0.3f, 0.f, 1.f);
-	//LightDesc.fRange =2.f;
-	//LightDesc.vDiffuse = _float4(1.f, 0.4f, 0.4f, 1.f);
-	//LightDesc.vAmbient = _float4(0.4f, 0.2f, 0.2f, 1.f);
-	//LightDesc.vSpecular = _float4(1.f, 0.4f, 0.4f, 1.f);
-	//
-	//if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
-	//	return E_FAIL;
-	//
-	//LightDesc.eType = LIGHT::POINT;
-	//LightDesc.vPosition = _float4(0, 0.3f, 0, 1.f);
-	//LightDesc.fRange = 1.f;
-	//LightDesc.vDiffuse = _float4(0.4f, 1.f, 0.4f, 1.f);
-	//LightDesc.vAmbient = _float4(0.2f, 0.4f, 0.2f, 1.f);
-	//LightDesc.vSpecular = _float4(0.4f, 1.f, 0.4f, 1.f);
-	//
-	//if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
-	//	return E_FAIL;
-
-	LightDesc.eType = LIGHT::SPOT;
-	LightDesc.vDirection = _float4(0.f, -1.f, 0.f, 0.f);
-	LightDesc.vPosition = _float4(0.2f, 0.6f, 0, 1.f);
-	LightDesc.fRange = 0.4f;
-	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(0.1f, 0.1f, 0.1f, 1.f);
-	LightDesc.vSpecular = _float4(0.5f, 0.5f, 0.5f, 1.f);
-	LightDesc.fAngle = cosf(XMConvertToRadians(45.f));
-
-	if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
+	std::ifstream fin(binPath, std::ios::in | std::ios::binary);
+	if (!fin.is_open())
 		return E_FAIL;
 
-	return S_OK;
-}
+	if (fin.is_open()) {
+		// 1. 전체 메쉬 개수 읽기
+		uint32_t numLights = 0;
+		fin.read(reinterpret_cast<char*>(&numLights), sizeof(numLights));
+
+		for (uint32_t i = 0; i < numLights; i++) {
+			LIGHT_DESC desc = {};
+			fin.read((char*)&desc, sizeof(LIGHT_DESC));
+			CGameInstance::Get().Add_Light(desc);
+		}
+	}
+
+	fin.close();
+
+	return S_OK; 
+}  
 HRESULT CLevel_Stage2::Ready_Layer_Inven(const _wstring& strLayerTag)
 {
 	CInventory::INVENTORY_DESC pDesc;
@@ -372,6 +350,14 @@ HRESULT CLevel_Stage2::Ready_Layer_Zombie(const _wstring& strLayerTag)
 	pDesc.State = CBody_Zombie::ZOMBIE_STATE::AGGRO_IDLE1;
 	pDesc.pos = XMVectorSet(-1.5f, 0, 1.f, 1);
 	pDesc.nextLevel = LEVEL::STAGE2;
+
+	for (uint32_t i = 0; i < 20; i++) {
+		pDesc.pos = XMVectorSet(CGameInstance::Get().Random(-3.3f,0.3f), 0, CGameInstance::Get().Random(7.f, 10.f), 1);
+		if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Zombie"),
+			ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
+			return E_FAIL;
+	}
+
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Zombie"),
 		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
 		return E_FAIL;

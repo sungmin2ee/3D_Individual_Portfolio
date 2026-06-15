@@ -36,7 +36,7 @@ private:
 	uint32_t			m_iState = {};
 
 	shared_ptr<CBody_Player> body = nullptr;
-
+	 shared_ptr<class CLight>	m_pPlayerLight = { nullptr };
 private:
 	HRESULT Ready_Components();
 	HRESULT Ready_PartObjects();

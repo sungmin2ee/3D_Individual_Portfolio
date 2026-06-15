@@ -17,38 +17,38 @@ void CZombie_Idle::Enter(CBody_Zombie& owner)
 {
     if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::AGGRO_IDLE1) {
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::AGGRO_IDLE1));
-        CGameInstance::Get().PlaySoundLoop(L"zombieIdle2.wav", owner.Get_RunChannelPtr(), 1.0f);
+        CGameInstance::Get().PlaySoundLoop(L"zombieIdle2.wav", owner.Get_RunChannelPtr(), 0.0f);
 
 
     }else if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::AGGRO_IDLE2) {
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::AGGRO_IDLE2));
-        CGameInstance::Get().PlaySoundLoop(L"zombieIdle2.wav", owner.Get_RunChannelPtr(), 1.0f);
+        CGameInstance::Get().PlaySoundLoop(L"zombieIdle2.wav", owner.Get_RunChannelPtr(), 0.0f);
 
     }
     else if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::CRAWL_IDLE) {
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::CRAWL_IDLE));
-        CGameInstance::Get().PlaySoundLoop(L"zombieIdle2.wav", owner.Get_RunChannelPtr(), 1.0f);
+        CGameInstance::Get().PlaySoundLoop(L"zombieIdle2.wav", owner.Get_RunChannelPtr(), 0.0f);
 
     }
     else if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::PATROL_IDLE) {
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::PATROL_IDLE));
-        CGameInstance::Get().PlaySoundLoop(L"zombieIdle2.wav", owner.Get_RunChannelPtr(), 1.0f);
+        CGameInstance::Get().PlaySoundLoop(L"zombieIdle2.wav", owner.Get_RunChannelPtr(), 0.0f);
 
     }
     else if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::IDLE) {
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::IDLE));
-        CGameInstance::Get().PlaySoundLoop(L"zombieIdle2.wav", owner.Get_RunChannelPtr(), 1.0f);
+        CGameInstance::Get().PlaySoundLoop(L"zombieIdle2.wav", owner.Get_RunChannelPtr(), 0.0f);
 
     }
     else if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::LAYDOWN) {
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::LAYDOWN));
-        CGameInstance::Get().PlaySoundLoop(L"zombieIdle2.wav", owner.Get_RunChannelPtr(), 1.0f);
+        //CGameInstance::Get().PlaySoundLoop(L"zombieIdle2.wav", owner.Get_RunChannelPtr(), 0.0f);
 
     }
     else if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::DOORHIT) {
         
         owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::DOORHIT), CGameInstance::Get().Random(0.5f, 1.f));
-        CGameInstance::Get().PlaySoundLoop(L"doorHit.wav", owner.Get_RunChannelPtr(), 1.0f);
+        CGameInstance::Get().PlaySoundLoop(L"doorHit.wav", owner.Get_RunChannelPtr(), 0.0f);
 
     }
    

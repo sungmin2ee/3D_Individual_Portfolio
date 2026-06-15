@@ -24,5 +24,8 @@ public:
 
 private:
     _bool animStart = false;
+    _float soundTime = 0.f;
+    _bool   soundPlayed = false;
+    uint32_t    count = 0;
 };
 NS_END

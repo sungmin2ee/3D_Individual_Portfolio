@@ -32,12 +32,36 @@ void CPlayer_Execute::Enter(CBody_Player& owner)
 
 void CPlayer_Execute::Update(CBody_Player& owner, _float deltaTime)
 {
+
+    soundTime += deltaTime;
     if (owner.Get_Model()->Play_Animation(deltaTime) == true) {
         animStart = false;
     }
 
-
+    //if (!soundPlayed) {
+    //    if (owner.Get_Model()->Get_AnimIndex() == ETOUI(CBody_Player::PLAYER_ANIM::GROUND_EXECUTE1)) {
+    //        if (count == 0 && soundTime > 1.f) {
+    //            CGameInstance::Get().PlaySoundOne(L"execute.wav", CHANNELID::SOUND_EFFECT_PLAYER, 1.f);
+    //            count++;
+    //        }
+    //        if (count == 1 && soundTime > 2.f) {
+    //            CGameInstance::Get().PlaySoundOne(L"execute.wav", CHANNELID::SOUND_EFFECT_PLAYER, 1.f);
+    //            count++;
+    //            soundPlayed = true;
+    //        }
+    //  
+    //    }
+    //    else if (owner.Get_Model()->Get_AnimIndex() == ETOUI(CBody_Player::PLAYER_ANIM::GROUND_EXECUTE2)) {
+    //        if (count == 0 && soundTime > 1.f) {
+    //            CGameInstance::Get().PlaySoundOne(L"execute.wav", CHANNELID::SOUND_EFFECT_PLAYER, 1.f);
+    //            count++;
+    //            soundPlayed = true;
+    //        }
+    //    }
+    //}
+   
     if (!animStart) {
+
         owner.Get_StateMachine()->ChangeState(CPlayer_Idle::Create());
         return;
     }

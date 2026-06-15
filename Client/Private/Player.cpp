@@ -4,6 +4,7 @@
 
 #include "Weapon.h"
 #include "GameInstance.h"
+#include "Light.h"
 
 CPlayer::CPlayer(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: CContainerObject{ pDevice, pContext }
@@ -43,6 +44,22 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	if (FAILED(Ready_PartObjects()))
 		return E_FAIL;
+
+	if (m_eNextLevel == LEVEL::STAGE2) {
+		LIGHT_DESC			LightDesc{};
+		LightDesc.eType = LIGHT::SPOT;
+		_float4 mypos;
+		XMStoreFloat4(&mypos, m_pTransformCom->Get_State(STATE::POSITION));
+		LightDesc.vPosition = mypos;
+		LightDesc.vDirection = _float4(0.f, -1.f, 0.f, 0.f);
+		LightDesc.vDiffuse = _float4(0.f, 0.f, 0.f, 1.f);
+		LightDesc.vAmbient = _float4(0.4f, 0.4f, 0.4f, 1.f);
+		LightDesc.vSpecular = _float4(0.2f, 0.2f, 0.2f, 1.f);
+		LightDesc.fRange = 0.7f;
+		LightDesc.fAngle = 0.9f;
+		if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
+			return E_FAIL;
+	}
 	//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
 	return S_OK;
 }
@@ -54,7 +71,14 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 void CPlayer::Update(_float fTimeDelta)
 {
-
+	if (m_eNextLevel == LEVEL::STAGE2) {
+		_float4 mypos;
+		XMStoreFloat4(&mypos, m_pTransformCom->Get_State(STATE::POSITION));
+		_float4 newPos;
+		mypos.y = mypos.y + 0.3f;
+		CGameInstance::Get().Get_Lights().back()->Get_Desc().vPosition = mypos;
+	}
+	
 
 	__super::Update(fTimeDelta);
 }

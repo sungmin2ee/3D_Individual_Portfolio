@@ -14,6 +14,13 @@ NS_BEGIN(Client)
 
 class CSky final : public CGameObject
 {
+public:
+	typedef struct tagSkyDesc : public CGameObject::GAMEOBJECT_DESC
+	{
+		LEVEL nextLevel;
+
+	}SKY_DESC;
+
 private:
 	CSky(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
 	CSky(const CSky& Prototype);

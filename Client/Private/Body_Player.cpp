@@ -441,7 +441,7 @@ void CBody_Player::CheckBoxCollide()
 			break;
 		}
 		else {
-			//pBox->Set_Render(false);
+			pBox->Set_Render(false);
 
 			//static_pointer_cast<CSearchBox>(searchBox)->Set_Render(false);
 		}
