@@ -60,6 +60,9 @@ void CZombie_StealthDeath::Enter(CBody_Zombie& owner)
 
 void CZombie_StealthDeath::Update(CBody_Zombie& owner, _float deltaTime)
 {
+    owner.Get_Model()->Play_Animation(deltaTime);
+
+
     animtime += deltaTime;
     if (owner.Get_Model()->Get_AnimIndex() == ETOUI(CBody_Zombie::ZOMBIE_STATE::UNARMED_STEALTH) && !animFinshed) {
         if (animtime > 1.8f && count == 0) {

@@ -20,6 +20,7 @@ public:
 	HRESULT Bind_SRV(const _char* pConstantName, ComPtr<ID3D11ShaderResourceView> pSRV);
 
 	HRESULT Bind_RawValue(const _char* pConstantName, const void* pData, uint32_t iSize);
+	ID3DX11EffectMatrixVariable* Get_MatrixVariable(const _char* pConstantName);
 	HRESULT Bind_Matrices(const _char* pConstantName, const _float4x4* pMatrices, uint32_t iNumMatrices);
 
 	HRESULT Bind_Texture(const _char* name, ComPtr<ID3D11ShaderResourceView> pSRV);
@@ -31,7 +32,7 @@ public:
 private:
 
 
-
+	std::unordered_map<std::string, ID3DX11EffectMatrixVariable*> m_MatrixVariables;
 	ComPtr<ID3DX11Effect>			m_pEffect = { nullptr };
 
 	uint32_t							m_iNumPasses = {};

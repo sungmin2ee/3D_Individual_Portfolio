@@ -37,6 +37,9 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, ComPtr<I
     if (nullptr == m_pGraphic_Device)
         return E_FAIL;
 
+    m_pThreadPool = CThreadPool::Create(thread::hardware_concurrency());
+    if (nullptr == m_pThreadPool)
+        return E_FAIL;
     m_pPrototype_Manager = CPrototype_Manager::Create(EngineDesc.iNumLevels);
     if (nullptr == m_pPrototype_Manager)
         return E_FAIL;
@@ -114,7 +117,7 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
     m_pObject_Manager->Late_Update(fTimeDelta);
 
     m_pLevel_Manager->Update(fTimeDelta);
-
+  
     
 }
 
@@ -519,6 +522,26 @@ void  CGameInstance::SetChannelVolume(FMOD_CHANNEL** ppChannel, _float fVolume)
 {
     return m_pSound_Manager->SetChannelVolume(ppChannel, fVolume);
 }
+
+
+#pragma endregion
+
+#pragma region THREAD_POOL
+
+CThreadPool* CGameInstance::Get_ThreadPool()
+{
+    return m_pThreadPool.get();
+}
+
+void  CGameInstance::Enqueue(function<void()> job)
+{
+    return m_pThreadPool->Enqueue(job);
+}
+void  CGameInstance::WaitAll()
+{
+    return m_pThreadPool->WaitAll();
+}
+
 #pragma endregion
 void CGameInstance::Release_Engine()
 {
@@ -541,7 +564,7 @@ void CGameInstance::Release_Engine()
     m_pTimer_Manager.reset();
 
     m_pObject_Manager.reset();
-
+    m_pThreadPool.reset();
     m_pPrototype_Manager.reset();
     m_pInput_Manager.reset();
     m_pImguiMgr->Free();

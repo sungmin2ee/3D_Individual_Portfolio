@@ -51,15 +51,15 @@ void CPlayer_Attack::Update(CBody_Player& owner, _float deltaTime)
 
     m_fTime += deltaTime;
 
-
+    if (owner.Get_Model()->Play_Animation(deltaTime) == true) {
+        animStart = false;
+    }
 
     if (owner.Get_OnHit()) {
         owner.Get_StateMachine()->ChangeState(CPlayer_Damaged::Create());
         return;
     }
-    if (owner.Get_Model()->Play_Animation(deltaTime) == true) {
-        animStart = false;
-    }
+   
 
     if (m_fTime >= 2.f) {
         owner.Set_CurState(CBody_Player::PLAYER_STATE::STAND);

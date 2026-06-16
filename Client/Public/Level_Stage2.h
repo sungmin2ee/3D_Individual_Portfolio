@@ -46,6 +46,9 @@ public:
 private:
 	ComPtr<ID3D11Device> m_pDevice = nullptr;
 	ComPtr<ID3D11DeviceContext> m_pContext = nullptr;
+
+	vector<shared_ptr<class CZombie>> m_vZombies;
+	size_t workerCount = 0;
 };
 
 NS_END

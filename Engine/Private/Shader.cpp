@@ -132,6 +132,36 @@ HRESULT CShader::Bind_Matrices(const _char* pConstantName, const _float4x4* pMat
     return pMatrixVariable->SetMatrixArray(reinterpret_cast<const _float*>(pMatrices), 0, iNumMatrices);
 }
 
+//ID3DX11EffectMatrixVariable* CShader::Get_MatrixVariable(const _char* pConstantName)
+//{
+//    // 이미 찾아둔 변수라면 바로 반환
+//    auto iter = m_MatrixVariables.find(pConstantName);
+//    if (iter != m_MatrixVariables.end())
+//        return iter->second;
+//
+//    // 없다면 처음 한 번만 검색 후 캐싱
+//    if (nullptr == m_pEffect) return nullptr;
+//
+//    ID3DX11EffectVariable* pVariable = m_pEffect->GetVariableByName(pConstantName);
+//    if (nullptr == pVariable) return nullptr;
+//
+//    ID3DX11EffectMatrixVariable* pMatrixVariable = pVariable->AsMatrix();
+//    if (nullptr != pMatrixVariable)
+//    {
+//        m_MatrixVariables.emplace(pConstantName, pMatrixVariable);
+//    }
+//
+//    return pMatrixVariable;
+//}
+//HRESULT CShader::Bind_Matrices(const _char* pConstantName, const _float4x4* pMatrices, uint32_t iNumMatrices)
+//{
+//    // 문자열 검색 대신 캐싱된 함수 사용
+//    ID3DX11EffectMatrixVariable* pMatrixVariable = Get_MatrixVariable(pConstantName);
+//    if (nullptr == pMatrixVariable)
+//        return E_FAIL;
+//
+//    return pMatrixVariable->SetMatrixArray(reinterpret_cast<const _float*>(pMatrices), 0, iNumMatrices);
+//}
 
 HRESULT CShader::Bind_Texture(const _char* name, ComPtr<ID3D11ShaderResourceView> pSRV) {
     auto pVar = m_pEffect->GetVariableByName(name)->AsShaderResource();

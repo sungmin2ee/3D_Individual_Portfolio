@@ -17,7 +17,7 @@ CZombie_Fatal::~CZombie_Fatal()
 
 void CZombie_Fatal::Enter(CBody_Zombie& owner)
 {
-    owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::KNOCKDOWN), 0.7f, false);
+    owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::KNOCKDOWN), 1.4f, false);
     owner.Set_CurState(CBody_Zombie::ZOMBIE_STATE::KNOCKDOWN);
     CGameInstance::Get().PlaySoundOne(L"zombieDead.wav", owner.Get_RunChannelPtr(), 1.0f);
 
@@ -30,7 +30,7 @@ void CZombie_Fatal::Update(CBody_Zombie& owner, _float deltaTime)
     }
     if (!animStart&& !m_bDead) {
         if (owner.Get_PlayerInRange() && owner.Is_Executing()) {
-            owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::UNARMED_GROUND_EXECUTE), 0.7f, false);
+            owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::UNARMED_GROUND_EXECUTE), 1.4f, false);
             animStart = true;
             m_bDead = true;
             owner.Set_HPZero();

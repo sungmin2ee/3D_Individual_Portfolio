@@ -19,15 +19,15 @@ CZombie_Walk::~CZombie_Walk()
 void CZombie_Walk::Enter(CBody_Zombie& owner)
 {
     if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::WALK_FAST) {
-        owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::WALK_FAST),0.4f);
+        owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::WALK_FAST),0.8f);
     }
     else if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::PATROL_WALK) {
         owner.Set_CurState(CBody_Zombie::ZOMBIE_STATE::PATROL_WALK);
-        owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::PATROL_WALK));
+        owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::PATROL_WALK),2.f);
     }
     else if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::SEARCH_WALK) {
         owner.Set_CurState(CBody_Zombie::ZOMBIE_STATE::SEARCH_WALK);
-        owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::SEARCH_WALK));
+        owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::SEARCH_WALK),2.f);
     }
     CGameInstance::Get().PlaySoundLoop(L"zombieWalk.wav", owner.Get_RunChannelPtr(), 0.0f);
 
@@ -35,6 +35,9 @@ void CZombie_Walk::Enter(CBody_Zombie& owner)
 
 void CZombie_Walk::Update(CBody_Zombie& owner, _float deltaTime)
 {
+    if (owner.Get_Model()->Play_Animation(deltaTime) == true) {
+        animStart = false;
+    }
     if (owner.Get_RunChannel())
     {
         CGameInstance::Get().SetChannelVolume(owner.Get_RunChannelPtr(), owner.Get_Volume());
@@ -71,9 +74,7 @@ void CZombie_Walk::Update(CBody_Zombie& owner, _float deltaTime)
         owner.Get_StateMachine()->ChangeState(CZombie_StealthDeath::Create());
         return;
     }
-    if (owner.Get_Model()->Play_Animation(deltaTime) == true) {
-        animStart = false;
-    }
+ 
 
 }
 

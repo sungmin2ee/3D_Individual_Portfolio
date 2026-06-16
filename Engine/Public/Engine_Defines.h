@@ -18,6 +18,7 @@ using namespace DirectX;
 #include <vector>
 #include <list>
 #include <map>
+#include<queue>
 #include <algorithm>
 #include <functional>
 #include <string>
@@ -35,9 +36,12 @@ using namespace DirectX;
 #include <filesystem>
 #include <nlohmann/json.hpp>
 #include <io.h>
-
 #include "fmod.h"
 #include "fmod.hpp"
+
+#include <thread>  
+#include <mutex> 
+#include <atomic>    
 //#pragma comment(lib, "fmod_vc.lib")
 
 //#ifdef _DEBUG

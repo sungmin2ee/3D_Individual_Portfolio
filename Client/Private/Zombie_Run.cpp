@@ -20,19 +20,20 @@ CZombie_Run::~CZombie_Run()
 void CZombie_Run::Enter(CBody_Zombie& owner)
 {
 
-    owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::RUN), 0.7f);
+    owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::RUN), 1.4f);
     CGameInstance::Get().PlaySoundLoop( L"zombieRun.wav", owner.Get_RunChannelPtr(), 1.0f);
 }
 
 void CZombie_Run::Update(CBody_Zombie& owner, _float deltaTime)
 {
+    if (owner.Get_Model()->Play_Animation(deltaTime) == true) {
+        animStart = false;
+    }
     if (owner.Get_RunChannel())
     {
         CGameInstance::Get().SetChannelVolume(owner.Get_RunChannelPtr(), owner.Get_Volume());
     }
-    if (owner.Get_Model()->Play_Animation(deltaTime) == true) {
-        animStart = false;
-    }
+  
     //CHASE PLALYER
     if (owner.Get_Damaged()) {
         owner.Get_StateMachine()->ChangeState(CZombie_Damaged::Create());

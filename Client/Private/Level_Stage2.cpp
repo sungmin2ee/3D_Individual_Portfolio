@@ -15,6 +15,8 @@
 #include "BoxCollider.h"
 
 #include "Layer.h"
+#include "ThreadPool.h"
+#include <thread>
 namespace fs = std::filesystem;
 using json = nlohmann::json;
 CLevel_Stage2::CLevel_Stage2(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
@@ -73,12 +75,49 @@ HRESULT CLevel_Stage2::Initialize()
 
 	CGameInstance::Get().PlayBGM(L"Stage2BGM.wav", 0.6f);
 
+	auto zombieLayer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::STAGE2),TEXT("Layer_Zombie"));
+	if (zombieLayer == nullptr)
+		return E_FAIL;
+	auto zombies = zombieLayer->GetObjects();
+	
+	for (auto& zombie : zombies) {
+		m_vZombies.push_back(static_pointer_cast<CZombie>(zombie));
+	}
+	workerCount = std::max<size_t>(1, std::thread::hardware_concurrency());
+
 
 	return S_OK;
 }
 
 void CLevel_Stage2::Update(_float fTimeDelta)
 {
+
+
+
+
+	// 실제 생성된 워커 개수(초기화 시 넘긴 값과 맞추는 것이 좋음)
+
+	const size_t zombieCount = m_vZombies.size();
+	const size_t chunkSize = (zombieCount + workerCount - 1) / workerCount;
+
+	for (size_t w = 0; w < workerCount; ++w)
+	{
+		const size_t begin = w * chunkSize;
+		const size_t end = std::min(begin + chunkSize, zombieCount);
+
+		if (begin >= end)
+			break;
+		CGameInstance::Get().Enqueue([this, begin, end, fTimeDelta]() 
+			{
+				for (size_t i = begin; i < end; ++i)
+				{
+					m_vZombies[i]->Get_Body()->Get_StateMachine()->Update(fTimeDelta);
+						
+				}
+			});
+	}
+
+	CGameInstance::Get().WaitAll();
 
 	if (m_bChangeLevel)
 	{
@@ -351,7 +390,7 @@ HRESULT CLevel_Stage2::Ready_Layer_Zombie(const _wstring& strLayerTag)
 	pDesc.pos = XMVectorSet(-1.5f, 0, 1.f, 1);
 	pDesc.nextLevel = LEVEL::STAGE2;
 
-	for (uint32_t i = 0; i < 20; i++) {
+	for (uint32_t i = 0; i < 30; i++) {
 		pDesc.pos = XMVectorSet(CGameInstance::Get().Random(-3.3f,0.3f), 0, CGameInstance::Get().Random(7.f, 10.f), 1);
 		if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Zombie"),
 			ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))

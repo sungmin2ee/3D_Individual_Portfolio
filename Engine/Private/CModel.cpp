@@ -1,4 +1,6 @@
     #include "CModel.h"
+    #include "GameInstance.h"
+    #include "ThreadPool.h"
 
     CModel::CModel(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
         : CComponent{ pDevice, pContext }
@@ -269,6 +271,10 @@
     }
     _bool CModel::Play_Animation(_float fTimeDelta)
     {
+
+
+
+
         fTimeDelta = fTimeDelta * m_fAnimSpeed;
         _bool           isFinished = { false };
         if (m_bAnimChanged)

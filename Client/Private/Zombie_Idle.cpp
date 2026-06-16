@@ -57,6 +57,9 @@ void CZombie_Idle::Enter(CBody_Zombie& owner)
 
 void CZombie_Idle::Update(CBody_Zombie& owner, _float deltaTime)
 {
+    if (owner.Get_Model()->Play_Animation(deltaTime) == true) {
+        animStart = false;
+    }
     //좀비가 방향을 바꾸는 도중이 아니면
     if (owner.Get_RunChannel())
     {
@@ -68,28 +71,28 @@ void CZombie_Idle::Update(CBody_Zombie& owner, _float deltaTime)
         if (owner.Get_PlayerDetected() &&!flag) {
             //발견 애니메이션 발동
             if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::CRAWL_IDLE) {
-                owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::CRAWL_TRANS), 0.5f, false);
+                owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::CRAWL_TRANS), 1.2f, false);
                 curState = CBody_Zombie::ZOMBIE_STATE::CRAWL_TRANS;
             }
             else if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::AGGRO_IDLE1) {
-                owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::AGGRO_TRANS1), 0.6f, false);
+                owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::AGGRO_TRANS1), 1.2f, false);
                 curState = CBody_Zombie::ZOMBIE_STATE::AGGRO_TRANS1;
 
             }
             else if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::AGGRO_IDLE2) {
-                owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::AGGRO_TRANS2), 0.6f, false);
+                owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::AGGRO_TRANS2), 1.2f, false);
                 curState = CBody_Zombie::ZOMBIE_STATE::AGGRO_TRANS2;
             }
             else if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::LAYDOWN) {
-                owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::GET_UP), false);
+                owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::GET_UP), 1.8f,false);
                 curState = CBody_Zombie::ZOMBIE_STATE::GET_UP;
             }
             else if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::PATROL_IDLE) {
-                owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::AGGRO_TRANS1), 0.6f, false);
+                owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::AGGRO_TRANS1), 1.2f, false);
                 curState = CBody_Zombie::ZOMBIE_STATE::AGGRO_TRANS1;
             }
             else {
-                owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::AGGRO_TRANS1, 0.6f, false));
+                owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::AGGRO_TRANS1, 1.2f, false));
                 curState = CBody_Zombie::ZOMBIE_STATE::AGGRO_TRANS1;
             }
             animStart = true;
@@ -104,9 +107,7 @@ void CZombie_Idle::Update(CBody_Zombie& owner, _float deltaTime)
     }*/
     // 발견 애니메이션이 끝났으면
   
-    if (owner.Get_Model()->Play_Animation(deltaTime) == true) {
-        animStart = false;
-    }
+
     if (!animStart && owner.Get_PlayerDetected()) {
         if (curState == CBody_Zombie::ZOMBIE_STATE::CRAWL_TRANS || curState == CBody_Zombie::ZOMBIE_STATE::GET_UP) {
             owner.Get_StateMachine()->ChangeState(CZombie_Run::Create());

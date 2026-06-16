@@ -2,6 +2,7 @@
 
 #include "Prototype_Manager.h"
 #include "Item_Manager.h"
+#include "ThreadPool.h"
 NS_BEGIN(Engine)
 
 class ENGINE_DLL CGameInstance
@@ -167,6 +168,13 @@ public:
 	void SetChannelVolume(CHANNELID eID, _float fVolume);
 	void SetChannelVolume(FMOD_CHANNEL** ppChannel, _float fVolume);
 #pragma endregion
+#pragma region THREAD_POOL
+public:
+	CThreadPool* Get_ThreadPool();
+	void Enqueue(function<void()> job);
+	void WaitAll();
+#pragma endregion
+
 private:
 	unique_ptr<class CGraphic_Device>				m_pGraphic_Device = { nullptr };
 	unique_ptr<class CTimer_Manager>				m_pTimer_Manager = { nullptr };
@@ -185,7 +193,7 @@ private:
 	unique_ptr<class CTarget_Manager> 				m_pTarget_Manager = nullptr;
 	unique_ptr<class CLight_Manager> 				m_pLight_Manager = nullptr;
 	unique_ptr<class CSound_Manager> 				m_pSound_Manager = nullptr;
-
+	unique_ptr<class CThreadPool>					m_pThreadPool = nullptr;
 
 public:
 

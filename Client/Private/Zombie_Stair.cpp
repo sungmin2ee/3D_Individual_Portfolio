@@ -45,7 +45,7 @@ void CZombie_Stair::Enter(CBody_Zombie& owner)
 
 void CZombie_Stair::Update(CBody_Zombie& owner, _float deltaTime)
 {
-    
+    owner.Get_Model()->Play_Animation(deltaTime);
     
     _float4 myPos;
     XMStoreFloat4(&myPos, owner.Get_Zombie().lock()->Get_Transform()->Get_State(STATE::POSITION));

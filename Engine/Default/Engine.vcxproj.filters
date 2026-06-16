@@ -178,6 +178,12 @@
     <Filter Include="13.Sound\Manager">
       <UniqueIdentifier>{df5015e1-1f80-4d51-8b21-5e382e5be2ba}</UniqueIdentifier>
     </Filter>
+    <Filter Include="90.MultiThread">
+      <UniqueIdentifier>{c78577e7-f55a-410d-a965-9e5167f9ea7e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="90.MultiThread\Pool">
+      <UniqueIdentifier>{d22df076-d050-493b-9f16-1764323a3b27}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Public\Engine_Defines.h">
@@ -350,6 +356,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Sound_Manager.h">
       <Filter>13.Sound\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\ThreadPool.h">
+      <Filter>90.MultiThread\Pool</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -541,6 +550,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Sound_Manager.cpp">
       <Filter>13.Sound\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\ThreadPool.cpp">
+      <Filter>90.MultiThread\Pool</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

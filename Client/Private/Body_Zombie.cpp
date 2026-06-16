@@ -78,6 +78,7 @@ HRESULT CBody_Zombie::Initialize(void* pArg)
 	else {
 		m_pStateMachine = StateMachine<CBody_Zombie>::Create(this, CZombie_Walk::Create());
 	}
+
 	return S_OK;
 }
 
@@ -94,10 +95,10 @@ void CBody_Zombie::Priority_Update(_float fTimeDelta)
 
 void CBody_Zombie::Update(_float fTimeDelta)
 {
-	m_pStateMachine->Update(fTimeDelta);
+	//m_pStateMachine->Update(fTimeDelta);
 
-	if (true == m_pModelCom->Play_Animation(fTimeDelta))
-		int a = 10;
+	//if (true == m_pModelCom->Play_Animation(fTimeDelta))
+	//	int a = 10;
 	__super::Update(fTimeDelta);
 
 	if (m_eCurState != ZOMBIE_STATE::DOORHIT) {
