@@ -202,7 +202,17 @@ HRESULT CBody_Zombie::Render()
 
 HRESULT CBody_Zombie::Ready_Components()
 {
-	m_pModelCom = dynamic_pointer_cast<CModel>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Model_Zombie1")));
+	auto random = CGameInstance::Get().Random(0.f, 0.3f);
+	if (random < 0.1f && random > 0.f) {
+		m_pModelCom = dynamic_pointer_cast<CModel>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Model_Zombie1")));
+	}
+	else if(random < 0.2f && random > 0.1f){
+		m_pModelCom = dynamic_pointer_cast<CModel>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Model_Zombie2")));
+	}
+	else {
+		m_pModelCom = dynamic_pointer_cast<CModel>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Model_Zombie3")));
+
+	}
 	if (FAILED(__super::Add_Component(TEXT("Com_Model"), m_pModelCom)))
 		return E_FAIL;
 
@@ -358,7 +368,7 @@ void CBody_Zombie::DetectPlayer()
 	//	m_bPlayerDetected = false;
 	//}
 
-	if (fabs(fpos.x) <= 0.5f&& fabs(fpos.y) < 0.1f && fabs(fpos.z) < 1.f) {
+	if (fabs(fpos.x) <= 0.5f&& fabs(fpos.y) < 0.1f && fabs(fpos.z) < 3.f) {
 		if (playerBody->Is_MakingSound()) {
 			m_bPlayerDetected = true;
 			CGameInstance::Get().PlaySoundOne(L"detect.wav", CHANNELID::SOUND_EFFECT_ZOMBIE, 1.f);

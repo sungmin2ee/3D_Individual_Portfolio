@@ -16,6 +16,7 @@
 
 #include "Layer.h"
 #include "Light.h"
+#include "Fade.h"
 #include "ThreadPool.h"
 #include <thread>
 #include <tchar.h>
@@ -74,6 +75,8 @@ HRESULT CLevel_Stage2::Initialize()
 		return E_FAIL;
 	if (FAILED(Load_Stair_Collider()))
 		return E_FAIL;
+	if (FAILED(Ready_Fade(TEXT("Layer_Fade"))))
+		return E_FAIL;
 
 	CGameInstance::Get().PlayBGM(L"Stage2BGM.wav", 0.6f);
 
@@ -98,7 +101,10 @@ void CLevel_Stage2::Update(_float fTimeDelta)
 	//	CGameInstance::Get().Save(ETOUI(LEVEL::STAGE2));
 	//}
 
-
+	if (m_bEnterScene == false) {
+		fade->Set_Fade(0);
+		m_bEnterScene = true;
+	}
 	// 실제 생성된 워커 개수(초기화 시 넘긴 값과 맞추는 것이 좋음)
 
 	const size_t zombieCount = m_vZombies.size();
@@ -123,13 +129,15 @@ void CLevel_Stage2::Update(_float fTimeDelta)
 
 	CGameInstance::Get().WaitAll();
 
+
 	if (m_bChangeLevel)
 	{
-		if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
-			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::SHELTER))))
-			return;
-
-		m_bChangeLevel = false;
+		if (fade->Get_Finished()) {
+			if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
+				CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::SHELTER))))
+				return;
+			m_bChangeLevel = false;
+		}
 	}
 }
 
@@ -141,7 +149,23 @@ HRESULT CLevel_Stage2::Render()
 
 	return S_OK;
 }
+HRESULT CLevel_Stage2::Ready_Fade(const _wstring& strLayerTag)
+{
+	CUIObject::UIOBJECT_DESC pDesc;
+	pDesc.fSizeX = g_iWinSizeX;
+	pDesc.fSizeY = g_iWinSizeY;
+	pDesc.fX = g_iWinSizeX * 0.5f;
+	pDesc.fY = g_iWinSizeY * 0.5f;
+	pDesc.pGameObjectTag = L"Fade";
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Fade"),
+		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
+		return E_FAIL;
 
+	auto fadeLayer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::STAGE2), L"Layer_Fade");
+	if (fadeLayer == nullptr) return E_FAIL;
+	fade = static_pointer_cast<CFade>(fadeLayer->GetObjectFirst());
+	return S_OK;
+}
 HRESULT CLevel_Stage2::Ready_Lights()
 {
 	string binPath = "../../Resources/Data/STAGE2_Lights.bin";
@@ -269,7 +293,7 @@ HRESULT CLevel_Stage2::Ready_BoxCollider(const _wstring& strLayerTag)
 	CBoxCollider::BOX_DESC pDesc;
 	pDesc.pGameObjectTag = TEXT("BoxCollider");
 	pDesc.purpose = CBoxCollider::BOX::MOVE;
-	pDesc.position = XMVectorSet(-5.f, 0.12f, -0.1f, 1);
+	pDesc.position = XMVectorSet(8.f, 0.12f, -0.1f, 1);
 
 
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_BoxCollider"),
@@ -406,6 +430,7 @@ HRESULT CLevel_Stage2::Ready_Layer_Player(const _wstring& strLayerTag)
 	pDesc.nextLevel = LEVEL::STAGE2;
 	//pDesc.pos = XMVectorSet(-4.5f, 0, -0, 1);
 	pDesc.pos = XMVectorSet(3.5f, 0, -0, 1);
+	//pDesc.pos = XMVectorSet(0.5f, 0, -0, 1);
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Player"),
 		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
 		return E_FAIL;
@@ -426,7 +451,7 @@ HRESULT CLevel_Stage2::Ready_Layer_Zombie(const _wstring& strLayerTag)
 	pDesc.pos = XMVectorSet(-1.5f, 0, 1.f, 1);
 	pDesc.nextLevel = LEVEL::STAGE2;
 
-	for (uint32_t i = 0; i < 20; i++) {
+	for (uint32_t i = 0; i < 30; i++) {
 		pDesc.pos = XMVectorSet(CGameInstance::Get().Random(4.5f,7.f), 0, CGameInstance::Get().Random(4.f, 6.f), 1);
 		if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Zombie"),
 			ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))

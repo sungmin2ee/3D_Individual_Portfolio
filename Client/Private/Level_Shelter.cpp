@@ -13,6 +13,8 @@
 #include "BoxCollider.h"
 #include "SubmitButton.h"
 #include "CloseButton.h"
+#include "Layer.h"
+#include "Fade.h"
 //#include "Overlay.h"
 //#include "Sky.h"
 namespace fs = std::filesystem;
@@ -57,9 +59,19 @@ HRESULT CLevel_Shelter::Initialize()
 	if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::SHELTER)))) {
 		return E_FAIL;
 	}
-
+	if (FAILED(Ready_Fade(TEXT("Layer_Fade"))))
+		return E_FAIL;
 
 	CGameInstance::Get().PlayBGM(L"ShelterBGM.wav", 0.7f);
+	auto zombieLayer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::SHELTER), TEXT("Layer_Zombie"));
+	if (zombieLayer == nullptr)
+		return E_FAIL;
+	auto zombies = zombieLayer->GetObjects();
+
+	for (auto& zombie : zombies) {
+		m_vZombies.push_back(static_pointer_cast<CZombie>(zombie));
+	}
+	workerCount = std::max<size_t>(1, std::thread::hardware_concurrency());
 
 	return S_OK;
 }
@@ -67,29 +79,65 @@ HRESULT CLevel_Shelter::Initialize()
 void CLevel_Shelter::Update(_float fTimeDelta)
 {
 
-	if (CGameInstance::Get().Key_Down(DIK_CAPITAL)) {
-		CGameInstance::Get().Save(ETOUI(LEVEL::SHELTER));
+	//if (CGameInstance::Get().Key_Down(DIK_CAPITAL)) {
+	//	CGameInstance::Get().Save(ETOUI(LEVEL::SHELTER));
+	//}
+	if (m_bEnterScene == false) {
+		fade->Set_Fade(0);
+		m_bEnterScene = true;
 	}
-	 
-	 
-	
+
+	const size_t zombieCount = m_vZombies.size();
+	const size_t chunkSize = (zombieCount + workerCount - 1) / workerCount;
+
+	for (size_t w = 0; w < workerCount; ++w)
+	{
+		const size_t begin = w * chunkSize;
+		const size_t end = std::min(begin + chunkSize, zombieCount);
+
+		if (begin >= end)
+			break;
+		CGameInstance::Get().Enqueue([this, begin, end, fTimeDelta]()
+			{
+				for (size_t i = begin; i < end; ++i)
+				{
+					m_vZombies[i]->Get_Body()->Get_StateMachine()->Update(fTimeDelta);
+
+				}
+			});
+	}
+
+	CGameInstance::Get().WaitAll();
 
 	if (m_bChangeLevel)
 	{
 		switch (m_NextLevel) {
 		case 4:
-			if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
-				CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::STAGE1))))
-				return;
-			break;
-		case 5:
-			if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
-				CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::STAGE2))))
-				return;
+		{
+			if (fade->Get_Finished()) {
+				if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
+					CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::STAGE1))))
+					return;
+				m_bChangeLevel = false;
+
+			}
 			break;
 		}
+		case 5: 
+		{
+			if (fade->Get_Finished()) {
+				if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
+					CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::STAGE2))))
+					return;
+				m_bChangeLevel = false;
+
+			}
+			
+		}
+		break;
+
+		}
 	
-		m_bChangeLevel = false;
 	}
 }
 
@@ -422,6 +470,24 @@ HRESULT CLevel_Shelter::Ready_BoxCollider(const _wstring& strLayerTag)
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_BoxCollider"),
 		ETOUI(LEVEL::SHELTER), strLayerTag, &pDesc)))
 		return E_FAIL;
+	return S_OK;
+}
+HRESULT CLevel_Shelter::Ready_Fade(const _wstring& strLayerTag)
+{
+	CUIObject::UIOBJECT_DESC pDesc;
+	pDesc.fSizeX = g_iWinSizeX;
+	pDesc.fSizeY = g_iWinSizeY;
+	pDesc.fX = g_iWinSizeX * 0.5f;
+	pDesc.fY = g_iWinSizeY * 0.5f;
+	pDesc.pGameObjectTag = L"Fade";
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Fade"),
+		ETOUI(LEVEL::SHELTER), strLayerTag, &pDesc)))
+		return E_FAIL;
+
+
+	auto fadeLayer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::SHELTER), L"Layer_Fade");
+	if (fadeLayer == nullptr) return E_FAIL;
+	fade = static_pointer_cast<CFade>(fadeLayer->GetObjectFirst());
 	return S_OK;
 }
 unique_ptr<CLevel_Shelter> CLevel_Shelter::Create(ComPtr<ID3D11Device>	pDevice, ComPtr<ID3D11DeviceContext> pContext)

@@ -15,6 +15,7 @@ HRESULT CLevel::Initialize()
 
 void CLevel::Update(_float fTimeDelta)
 {
+
 }
 
 HRESULT CLevel::Render()

@@ -47,7 +47,7 @@ void CZombie_Walk::Update(CBody_Zombie& owner, _float deltaTime)
         return;
     }
     if (owner.Get_PlayerDetected() && !owner.Is_UsingStairs() && !owner.Get_Rotating() && !detectedAnimStart) {
-        owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::AGGRO_TRANS1),0.2f, false);
+        owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::AGGRO_TRANS1),0.4f, false);
         detectedAnimStart = true;
         animStart = true;
     

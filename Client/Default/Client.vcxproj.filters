@@ -172,6 +172,9 @@
     <Filter Include="02.GameObject\12.FixUI\SubmitButton">
       <UniqueIdentifier>{c4db0ca5-6636-4d7f-a355-8009433a079d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Fade">
+      <UniqueIdentifier>{06949e38-de87-41c8-95f3-867acbbd44bd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -390,6 +393,9 @@
     <ClInclude Include="..\Public\FixUI.h">
       <Filter>02.GameObject\12.FixUI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Fade.h">
+      <Filter>Fade</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -596,6 +602,9 @@
     <ClCompile Include="..\Private\FixUI.cpp">
       <Filter>02.GameObject\12.FixUI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Fade.cpp">
+      <Filter>Fade</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -651,6 +660,9 @@
       <Filter>Shaderfiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxSphere.hlsl">
+      <Filter>Shaderfiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_FadeInOut.hlsl">
       <Filter>Shaderfiles</Filter>
     </FxCompile>
   </ItemGroup>

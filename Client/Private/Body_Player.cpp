@@ -416,18 +416,23 @@ void CBody_Player::CheckBoxCollide()
 		if (m_pObbCom->myOBB.Intersects(pBox->Get_Obb()->myOBB))
 		{
 			pBox->Set_Render(true);
-			if (pBox->Get_Puspose() != CBoxCollider::BOX::EVENT) {
+			if (pBox->Get_Puspose() == CBoxCollider::BOX::FIX || pBox->Get_Puspose() == CBoxCollider::BOX::MAP) {
 				if (CGameInstance::Get().Key_Down(DIK_F)) {
 					auto purpose = pBox->Get_Puspose();
 					pBox->Set_Active();
 				}
 				break;
 			}
-			else {
+			else if(pBox->Get_Puspose() == CBoxCollider::BOX::EVENT){
 				if(pBox->Get_FirstActive())
 					pBox->Set_Active();
+				break;
+			}else if (pBox->Get_Puspose() == CBoxCollider::BOX::MOVE) {
+				if (pBox->Get_FirstActive()) {
+					pBox->Set_Active();
+				}
+				break;
 			}
-	
 			
 		}
 		else {

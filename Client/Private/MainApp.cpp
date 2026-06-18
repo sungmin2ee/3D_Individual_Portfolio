@@ -19,6 +19,7 @@
 #include "Weapon.h"
 #include "Blood.h"
 #include "MainPic.h"
+#include "Fade.h"
 
 
 CMainApp::CMainApp()
@@ -283,6 +284,14 @@ HRESULT CMainApp::Ready_Prototypes()
 		CModel::Create(m_pDevice, m_pContext, ETOUI(MODEL::ANIM), "../../Resources/Models/Zombie1.fbx", PreTransformMatrix))))
 		return E_FAIL;
 
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Model_Zombie2"),
+		CModel::Create(m_pDevice, m_pContext, ETOUI(MODEL::ANIM), "../../Resources/Models/Zombie2.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Model_Zombie3"),
+		CModel::Create(m_pDevice, m_pContext, ETOUI(MODEL::ANIM), "../../Resources/Models/Zombie3.fbx", PreTransformMatrix))))
+		return E_FAIL;
+
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Model_Axe"),
 		CModel::Create(m_pDevice, m_pContext, ETOUI(MODEL::NONANIM), "../../Resources/Models/FireAxe.fbx", PreTransformMatrix))))
 		return E_FAIL;
@@ -378,7 +387,16 @@ HRESULT CMainApp::Ready_Prototypes()
 
 
 
-
+	/* For.Prototype_Component_Texture_FadeInOut */
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_Black"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/black.dds"), 1))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Shader_FadeInOut"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_FadeInOut.hlsl"), VTXTEX::Elements, VTXTEX::iNumElements))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Fade"),
+		CFade::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	return S_OK;
 }

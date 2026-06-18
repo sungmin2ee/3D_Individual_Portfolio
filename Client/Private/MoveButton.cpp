@@ -4,6 +4,7 @@
 #include "Layer.h"
 #include "MapInfo.h"
 #include "Level_Loading.h"
+#include "Fade.h"
 
 
 CMoveButton::CMoveButton(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
@@ -81,7 +82,12 @@ void CMoveButton::Late_Update(_float fTimeDelta)
 						auto mapinfo = static_pointer_cast<CUIObject>(ui);
 						if (mapinfo->Get_Render()) {
 							auto tag = mapinfo->Get_Tag();
+							auto fadeLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"Layer_Fade");
+							if (fadeLayer == nullptr) return;
+							auto fade = static_pointer_cast<CFade>(fadeLayer->GetObjectFirst());
+							fade->Set_Fade(1);
 							if (tag == L"MapInfo1") {
+
 								CGameInstance::Get().Get_CurrentLevel()->Set_ChangeLevel();
 								CGameInstance::Get().Get_CurrentLevel()->Set_NextLevel((ETOUI(LEVEL::STAGE1)));
 								//if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),

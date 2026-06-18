@@ -5,6 +5,7 @@
 #include "Level_Loading.h"
 #include "Light.h"
 #include "Zombie.h"
+#include "Fade.h"
 CBoxCollider::CBoxCollider(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext) :CGameObject(pDevice, pContext)
 {
 }
@@ -96,13 +97,21 @@ void CBoxCollider::Update(_float fTimeDelta)
 		}
 		else if(m_ePurpose == BOX::MOVE){
 			//fade out ∑ª¥ı»ƒ ¿Ãµø
+
+			auto fadeLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"Layer_Fade");
+			if (fadeLayer == nullptr) return;
+			auto fade = static_pointer_cast<CFade>(fadeLayer->GetObjectFirst());
+
+			fade->Set_Fade(1);
 			CGameInstance::Get().Get_CurrentLevel()->Set_ChangeLevel();
 			CGameInstance::Get().Get_CurrentLevel()->Set_NextLevel((ETOUI(LEVEL::SHELTER)));
 			m_bActive = false;
+			m_bFirstActive = false;
+
 		}
 		else if(m_ePurpose == BOX::EVENT){
 			//fade out ∑ª¥ı»ƒ ¿Ãµø
-			m_pLight->Get_Desc().vDiffuse = _float4(255.f, 0.f, 0.f, 1.f);
+			m_pLight->Get_Desc().vDiffuse = _float4(1.f, 0.f, 0.f, 1.f);
 			
 			CGameInstance::Get().PlaySoundLoop(L"Siren.wav", CHANNELID::SOUND_EFFECT_ENVIRONMENT, 1.f);
 			auto zombieLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Zombie"));
@@ -116,7 +125,7 @@ void CBoxCollider::Update(_float fTimeDelta)
 			}
 			m_bLightOn = true;
 			m_bActive = false;
-			m_bFirstActice = false;
+			m_bFirstActive = false;
 		}
 	}
 
@@ -125,10 +134,10 @@ void CBoxCollider::Update(_float fTimeDelta)
 		if (m_pFlashTime > 0.5f) {
 			m_pFlashTime = 0.f;
 			if (m_iCount % 2 == 0) {
-				m_pLight->Get_Desc().vDiffuse = _float4(0.f, 0.f, 255.f, 1.f);
+				m_pLight->Get_Desc().vDiffuse = _float4(0.f, 0.f, 1.f, 1.f);
 			}
 			else {
-				m_pLight->Get_Desc().vDiffuse = _float4(255.f, 0.f, 0.f, 1.f);
+				m_pLight->Get_Desc().vDiffuse = _float4(1.f, 0.f, 0.f, 1.f);
 			}
 			m_iCount++;
 		}
@@ -142,7 +151,7 @@ void CBoxCollider::Late_Update(_float fTimeDelta)
 	CGameInstance::Get().Add_RenderObject(RENDERGROUP::ICON, SHARED_THIS(CBoxCollider));
 
 	__super::Late_Update(fTimeDelta);
-
+	m_bRender = true;
 }
 
 void CBoxCollider::ExpandCollider()

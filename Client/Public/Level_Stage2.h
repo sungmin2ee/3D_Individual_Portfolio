@@ -36,6 +36,7 @@ private:
 	HRESULT Ready_Layer_Overlay(const _wstring& strLayerTag);
 	HRESULT Ready_Layer_HealthUI(const _wstring& strLayerTag);
 	HRESULT Ready_BoxCollider(const _wstring& strLayerTag);
+	HRESULT Ready_Fade(const _wstring& strLayerTag);
 
 	HRESULT Load_Stair_Collider();
 	HRESULT Load_Door_Blocker();
@@ -49,6 +50,8 @@ private:
 
 	vector<shared_ptr<class CZombie>> m_vZombies;
 	size_t workerCount = 0;
+	shared_ptr<class CFade> fade = nullptr;
+
 };
 
 NS_END

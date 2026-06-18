@@ -16,6 +16,7 @@
 
 #include "Layer.h"
 #include "Sky.h"
+#include "Fade.h"
 
 namespace fs = std::filesystem;
 using json = nlohmann::json;
@@ -58,10 +59,21 @@ HRESULT CLevel_Stage1::Initialize()
 		return E_FAIL;
 	if (FAILED(Load_Stair_Collider()))
 		return E_FAIL;
+	if (FAILED(Ready_Fade(TEXT("Layer_Fade"))))
+		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::STAGE1)))) {
 		return E_FAIL;
 	}
 	CGameInstance::Get().PlayBGM(L"Stage1BGM.wav", 0.3f);
+	auto zombieLayer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::STAGE1), TEXT("Layer_Zombie"));
+	if (zombieLayer == nullptr)
+		return E_FAIL;
+	auto zombies = zombieLayer->GetObjects();
+
+	for (auto& zombie : zombies) {
+		m_vZombies.push_back(static_pointer_cast<CZombie>(zombie));
+	}
+	workerCount = std::max<size_t>(1, std::thread::hardware_concurrency());
 
 
 
@@ -71,17 +83,44 @@ HRESULT CLevel_Stage1::Initialize()
 void CLevel_Stage1::Update(_float fTimeDelta)
 {
 
-	if (CGameInstance::Get().Key_Down(DIK_CAPITAL)) {
-		CGameInstance::Get().Save(ETOUI(LEVEL::STAGE1));
+
+	if (m_bEnterScene == false) {
+		fade->Set_Fade(0);
+		m_bEnterScene = true;
 	}
+	const size_t zombieCount = m_vZombies.size();
+	const size_t chunkSize = (zombieCount + workerCount - 1) / workerCount;
+
+	for (size_t w = 0; w < workerCount; ++w)
+	{
+		const size_t begin = w * chunkSize;
+		const size_t end = std::min(begin + chunkSize, zombieCount);
+
+		if (begin >= end)
+			break;
+		CGameInstance::Get().Enqueue([this, begin, end, fTimeDelta]()
+			{
+				for (size_t i = begin; i < end; ++i)
+				{
+					m_vZombies[i]->Get_Body()->Get_StateMachine()->Update(fTimeDelta);
+
+				}
+			});
+	}
+
+	CGameInstance::Get().WaitAll();
+
+
+
 
 	if (m_bChangeLevel)
 	{
-		if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
-			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::SHELTER))))
-			return;
-
-		m_bChangeLevel = false;
+		if (fade->Get_Finished()) {
+			if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
+				CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::SHELTER))))
+				return;
+			m_bChangeLevel = false;
+		}
 	}
 }
 
@@ -120,7 +159,22 @@ HRESULT CLevel_Stage1::Ready_Lights()
 
 	return S_OK;
 }
-
+HRESULT CLevel_Stage1::Ready_Fade(const _wstring& strLayerTag)
+{
+	CUIObject::UIOBJECT_DESC pDesc;
+	pDesc.fSizeX = g_iWinSizeX;
+	pDesc.fSizeY = g_iWinSizeY;
+	pDesc.fX = g_iWinSizeX * 0.5f;
+	pDesc.fY = g_iWinSizeY * 0.5f;
+	pDesc.pGameObjectTag = L"Fade";
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Fade"),
+		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))
+		return E_FAIL;
+	auto fadeLayer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::STAGE1), L"Layer_Fade");
+	if (fadeLayer == nullptr) return E_FAIL;
+	fade = static_pointer_cast<CFade>(fadeLayer->GetObjectFirst());
+	return S_OK;
+}
 HRESULT CLevel_Stage1::Ready_Layer_UI(const _wstring& strLayerTag)
 {
 
@@ -312,7 +366,7 @@ HRESULT CLevel_Stage1::Ready_BoxCollider(const _wstring& strLayerTag)
 	CBoxCollider::BOX_DESC pDesc;
 	pDesc.pGameObjectTag = TEXT("BoxCollider");
 	pDesc.purpose = CBoxCollider::BOX::MOVE;
-	pDesc.position = XMVectorSet(-4.f, 0.12f, -0.1f, 1);
+	pDesc.position = XMVectorSet(-5.f, 0.12f, -0.1f, 1);
 
 
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_BoxCollider"),

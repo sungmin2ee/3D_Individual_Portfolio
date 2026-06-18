@@ -51,7 +51,7 @@ public:
 		m_bActive = true;
 	}
 	_bool Get_FirstActive() {
-		return m_bFirstActice;
+		return m_bFirstActive;
 	}
 private:
 	shared_ptr<Obb>						m_pObbCom = { nullptr };
@@ -63,7 +63,7 @@ private:
 	_bool								m_bRender = false;
 	_bool								m_bActive = false;
 	_bool								m_bLightOn = false;
-	_bool								m_bFirstActice = true;
+	_bool								m_bFirstActive = true;
 	BOX									m_ePurpose = BOX::END;
 	shared_ptr<class CLight>			m_pLight = { nullptr };
 	_float								m_pFlashTime = 0;
