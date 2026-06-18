@@ -15,8 +15,10 @@
 #include "BoxCollider.h"
 
 #include "Layer.h"
+#include "Light.h"
 #include "ThreadPool.h"
 #include <thread>
+#include <tchar.h>
 namespace fs = std::filesystem;
 using json = nlohmann::json;
 CLevel_Stage2::CLevel_Stage2(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
@@ -92,7 +94,9 @@ HRESULT CLevel_Stage2::Initialize()
 void CLevel_Stage2::Update(_float fTimeDelta)
 {
 
-
+	//if (CGameInstance::Get().Key_Down(DIK_CAPITAL)) {
+	//	CGameInstance::Get().Save(ETOUI(LEVEL::STAGE2));
+	//}
 
 
 	// 실제 생성된 워커 개수(초기화 시 넘긴 값과 맞추는 것이 좋음)
@@ -160,6 +164,29 @@ HRESULT CLevel_Stage2::Ready_Lights()
 
 	fin.close();
 
+	LIGHT_DESC			LightDesc{};
+	LightDesc.eType = LIGHT::POINT;
+	LightDesc.vPosition = _float4(3.75, 0.3f, 1.75f, 0.f);
+	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.fRange = 1.7f;
+	if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
+		return E_FAIL;
+	auto light = CGameInstance::Get().Get_Lights().back();
+	light->Set_Name(L"Police");
+
+
+	LightDesc.eType = LIGHT::SPOT;
+	LightDesc.vPosition = _float4(0.f, 0.f, 0.f, 0.f);
+	LightDesc.vDirection = _float4(0.f, -1.f, 0.f, 0.f);
+	LightDesc.vDiffuse = _float4(0.f, 0.f, 0.f, 1.f);
+	LightDesc.vAmbient = _float4(0.4f, 0.4f, 0.4f, 1.f);
+	LightDesc.vSpecular = _float4(0.2f, 0.2f, 0.2f, 1.f);
+	LightDesc.fRange = 0.7f;
+	LightDesc.fAngle = 0.9f;
+	if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
+		return E_FAIL;
+	light = CGameInstance::Get().Get_Lights().back();
+	light->Set_Name(L"Player");
 	return S_OK; 
 }  
 HRESULT CLevel_Stage2::Ready_Layer_Inven(const _wstring& strLayerTag)
@@ -244,6 +271,14 @@ HRESULT CLevel_Stage2::Ready_BoxCollider(const _wstring& strLayerTag)
 	pDesc.purpose = CBoxCollider::BOX::MOVE;
 	pDesc.position = XMVectorSet(-5.f, 0.12f, -0.1f, 1);
 
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_BoxCollider"),
+		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
+		return E_FAIL;
+
+	pDesc.pGameObjectTag = TEXT("BoxCollider");
+	pDesc.purpose = CBoxCollider::BOX::EVENT;
+	pDesc.position = XMVectorSet(3.75f, 0.12f, 0.f, 1);
 
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_BoxCollider"),
 		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
@@ -369,7 +404,8 @@ HRESULT CLevel_Stage2::Ready_Layer_Player(const _wstring& strLayerTag)
 	pDesc.fSpeedPerSec = 10.f;
 	pDesc.fRotationPerSec = 720.f;
 	pDesc.nextLevel = LEVEL::STAGE2;
-	pDesc.pos = XMVectorSet(-4.5f, 0, -0, 1);
+	//pDesc.pos = XMVectorSet(-4.5f, 0, -0, 1);
+	pDesc.pos = XMVectorSet(3.5f, 0, -0, 1);
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Player"),
 		ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
 		return E_FAIL;
@@ -390,8 +426,8 @@ HRESULT CLevel_Stage2::Ready_Layer_Zombie(const _wstring& strLayerTag)
 	pDesc.pos = XMVectorSet(-1.5f, 0, 1.f, 1);
 	pDesc.nextLevel = LEVEL::STAGE2;
 
-	for (uint32_t i = 0; i < 30; i++) {
-		pDesc.pos = XMVectorSet(CGameInstance::Get().Random(-3.3f,0.3f), 0, CGameInstance::Get().Random(7.f, 10.f), 1);
+	for (uint32_t i = 0; i < 20; i++) {
+		pDesc.pos = XMVectorSet(CGameInstance::Get().Random(4.5f,7.f), 0, CGameInstance::Get().Random(4.f, 6.f), 1);
 		if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE2), TEXT("Prototype_GameObject_Zombie"),
 			ETOUI(LEVEL::STAGE2), strLayerTag, &pDesc)))
 			return E_FAIL;

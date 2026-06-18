@@ -46,19 +46,13 @@ HRESULT CPlayer::Initialize(void* pArg)
 		return E_FAIL;
 
 	if (m_eNextLevel == LEVEL::STAGE2) {
-		LIGHT_DESC			LightDesc{};
-		LightDesc.eType = LIGHT::SPOT;
-		_float4 mypos;
-		XMStoreFloat4(&mypos, m_pTransformCom->Get_State(STATE::POSITION));
-		LightDesc.vPosition = mypos;
-		LightDesc.vDirection = _float4(0.f, -1.f, 0.f, 0.f);
-		LightDesc.vDiffuse = _float4(0.f, 0.f, 0.f, 1.f);
-		LightDesc.vAmbient = _float4(0.4f, 0.4f, 0.4f, 1.f);
-		LightDesc.vSpecular = _float4(0.2f, 0.2f, 0.2f, 1.f);
-		LightDesc.fRange = 0.7f;
-		LightDesc.fAngle = 0.9f;
-		if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
-			return E_FAIL;
+		auto lights = CGameInstance::Get().Get_Lights();
+		for (auto& light : lights) {
+			if (light->Get_Name() == L"Player") {
+				m_pPlayerLight = light;
+				break;
+			}
+		}
 	}
 	//m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), 90.f);
 	return S_OK;
@@ -75,8 +69,8 @@ void CPlayer::Update(_float fTimeDelta)
 		_float4 mypos;
 		XMStoreFloat4(&mypos, m_pTransformCom->Get_State(STATE::POSITION));
 		_float4 newPos;
-		mypos.y = mypos.y + 0.3f;
-		CGameInstance::Get().Get_Lights().back()->Get_Desc().vPosition = mypos;
+		mypos.y = mypos.y + 0.29f;
+		m_pPlayerLight->Get_Desc().vPosition = mypos;
 	}
 	
 

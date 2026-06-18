@@ -332,6 +332,8 @@ void CBody_Zombie::ExpandCollider()
 
 void CBody_Zombie::DetectPlayer()
 {
+	if (m_bPlayerDetected)
+		return;
 	//플레이어가 소리를 냈고 플레이어의 x가 좀비의 x 플마 1? 정도에 있으면 detect는 true
 	//m_bPlayerDetected = false;
 	auto layer = CGameInstance::Get().Find_Layer(ETOUI(CGameInstance::Get().GetCurLevelIndex()), TEXT("Layer_Player"));
@@ -356,7 +358,7 @@ void CBody_Zombie::DetectPlayer()
 	//	m_bPlayerDetected = false;
 	//}
 
-	if (fabs(fpos.x) <= 0.5f&& fabs(fpos.y) < 0.1f) {
+	if (fabs(fpos.x) <= 0.5f&& fabs(fpos.y) < 0.1f && fabs(fpos.z) < 1.f) {
 		if (playerBody->Is_MakingSound()) {
 			m_bPlayerDetected = true;
 			CGameInstance::Get().PlaySoundOne(L"detect.wav", CHANNELID::SOUND_EFFECT_ZOMBIE, 1.f);

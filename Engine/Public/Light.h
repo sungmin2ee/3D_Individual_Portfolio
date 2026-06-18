@@ -14,6 +14,8 @@ public:
 public:
 	HRESULT Initialize(const LIGHT_DESC& LightDesc);
 	HRESULT Render(shared_ptr<class CShader> pShader, shared_ptr<class CVIBuffer_Rect> pVIBuffer);
+	_wstring& Get_Name() { return m_Name; }
+	void Set_Name(_wstring name) { m_Name = name; }
 	LIGHT_DESC& Get_Desc() {
 		return m_LightDesc;
 	}
@@ -23,6 +25,7 @@ private:
 	ComPtr<ID3D11DeviceContext>	m_pContext = { };
 
 	LIGHT_DESC					m_LightDesc{};
+	_wstring					m_Name{};
 
 public:
 	static shared_ptr<CLight> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext, const LIGHT_DESC& LightDesc);

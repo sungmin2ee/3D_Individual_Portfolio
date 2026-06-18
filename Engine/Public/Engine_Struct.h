@@ -224,6 +224,7 @@ namespace Engine
 			XMFLOAT4		vPosition;
 			_float			fRange;
 			_float			fAngle;
+			//_tchar         szName[MAX_PATH];
 		}LIGHT_DESC;
 
 }	

@@ -416,29 +416,19 @@ void CBody_Player::CheckBoxCollide()
 		if (m_pObbCom->myOBB.Intersects(pBox->Get_Obb()->myOBB))
 		{
 			pBox->Set_Render(true);
-			if (CGameInstance::Get().Key_Down(DIK_F)) {
-				auto purpose = pBox->Get_Puspose();
-				pBox->Set_Active();
-				//if (purpose == CBoxCollider::BOX::MOVE) {
-				//	//action을 킨다.
-				//	// 
-				//	//fade out을 한다.
-				//	
-				//	//
-				//}
-				
-				//auto layer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Inventory"));
-				//auto inven = layer->GetObjectFirst();
-				//static_pointer_cast<CInventory>(inven)->Set_Render(true);
-				//
-				//static_pointer_cast<CSearchBox>(searchBox)->Set_Render(true);
-				//static_pointer_cast<CSearchBox>(searchBox)->Refresh();
-				//auto overlaylayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Overlay"));
-				//auto overlay = overlaylayer->GetObjectFirst();
-				//static_pointer_cast<COverlay>(overlay)->Set_Render(true);
-				//pBox->Set_Dead();
+			if (pBox->Get_Puspose() != CBoxCollider::BOX::EVENT) {
+				if (CGameInstance::Get().Key_Down(DIK_F)) {
+					auto purpose = pBox->Get_Puspose();
+					pBox->Set_Active();
+				}
+				break;
 			}
-			break;
+			else {
+				if(pBox->Get_FirstActive())
+					pBox->Set_Active();
+			}
+	
+			
 		}
 		else {
 			pBox->Set_Render(false);

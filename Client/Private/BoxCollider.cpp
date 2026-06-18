@@ -3,6 +3,8 @@
 #include "Layer.h"
 #include "UIObject.h"
 #include "Level_Loading.h"
+#include "Light.h"
+#include "Zombie.h"
 CBoxCollider::CBoxCollider(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext) :CGameObject(pDevice, pContext)
 {
 }
@@ -37,6 +39,16 @@ HRESULT CBoxCollider::Initialize(void* pArg)
 	m_pTransformCom->Set_State(STATE::POSITION, pDesc->position);
 	m_pTransformCom->Set_Scale(0.05f, 0.05f, 0.05f);
 	ExpandCollider();
+
+	if (m_ePurpose == BOX::EVENT) {
+		auto lights = CGameInstance::Get().Get_Lights();
+		for (auto& light : lights) {
+			if (light->Get_Name() == L"Police") {
+				m_pLight = light;
+				break;
+			}
+		}
+	}
 	//m_pTransformCom->SetWorld(pDesc->worldMat);
 	//m_pTransformCom->Set_State(STATE::POSITION, XMVectorSet(0.1f, 0.f, 0.f, 1));
 	return S_OK;
@@ -82,11 +94,43 @@ void CBoxCollider::Update(_float fTimeDelta)
 				}
 			}
 		}
-		else {
+		else if(m_ePurpose == BOX::MOVE){
 			//fade out ·»´õÈÄ ÀÌµ¿
 			CGameInstance::Get().Get_CurrentLevel()->Set_ChangeLevel();
 			CGameInstance::Get().Get_CurrentLevel()->Set_NextLevel((ETOUI(LEVEL::SHELTER)));
 			m_bActive = false;
+		}
+		else if(m_ePurpose == BOX::EVENT){
+			//fade out ·»´õÈÄ ÀÌµ¿
+			m_pLight->Get_Desc().vDiffuse = _float4(255.f, 0.f, 0.f, 1.f);
+			
+			CGameInstance::Get().PlaySoundLoop(L"Siren.wav", CHANNELID::SOUND_EFFECT_ENVIRONMENT, 1.f);
+			auto zombieLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), TEXT("Layer_Zombie"));
+
+			if (zombieLayer == nullptr)
+				return;
+			auto zombies = zombieLayer->GetObjects();
+			auto iter = zombies.begin();
+			for (iter; iter != zombies.end(); iter++) {
+				static_pointer_cast<CZombie>(*iter)->Get_Body()->Set_Detected(true);
+			}
+			m_bLightOn = true;
+			m_bActive = false;
+			m_bFirstActice = false;
+		}
+	}
+
+	if (m_bLightOn) {
+		m_pFlashTime += fTimeDelta;
+		if (m_pFlashTime > 0.5f) {
+			m_pFlashTime = 0.f;
+			if (m_iCount % 2 == 0) {
+				m_pLight->Get_Desc().vDiffuse = _float4(0.f, 0.f, 255.f, 1.f);
+			}
+			else {
+				m_pLight->Get_Desc().vDiffuse = _float4(255.f, 0.f, 0.f, 1.f);
+			}
+			m_iCount++;
 		}
 	}
 	__super::Update(fTimeDelta);
@@ -145,28 +189,31 @@ HRESULT CBoxCollider::Render()
 	}
 	m_pObbCom->Render();
 
-	const _float4x4* view;
-	const _float4x4* proj;
-	view = CGameInstance::Get().Get_Transform(D3DTS::VIEW);
-	proj = CGameInstance::Get().Get_Transform(D3DTS::PROJ);
+	if (m_ePurpose != BOX::EVENT) {
+		const _float4x4* view;
+		const _float4x4* proj;
+		view = CGameInstance::Get().Get_Transform(D3DTS::VIEW);
+		proj = CGameInstance::Get().Get_Transform(D3DTS::PROJ);
 
-	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", view)))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", proj)))
-		return E_FAIL;
+		if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", view)))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", proj)))
+			return E_FAIL;
 
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
-		return E_FAIL;
+		if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+			return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Begin(1)))
-		return E_FAIL;
+		if (FAILED(m_pShaderCom->Begin(1)))
+			return E_FAIL;
 
-	if (FAILED(m_pVIBufferCom->Bind_Resources()))
-		return E_FAIL;
-	if (FAILED(m_pVIBufferCom->Render()))
-		return E_FAIL;
+		if (FAILED(m_pVIBufferCom->Bind_Resources()))
+			return E_FAIL;
+		if (FAILED(m_pVIBufferCom->Render()))
+			return E_FAIL;
+	}
+
 
 
 
@@ -186,16 +233,18 @@ HRESULT CBoxCollider::Ready_Components(BOX purpose)
 		m_pTextureCom = dynamic_pointer_cast<CTexture>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_icon_Fix")));
 		if (FAILED(__super::Add_Component(TEXT("Com_Texture"), m_pTextureCom)))
 			return E_FAIL;
-	}else {
+	}else if(purpose == BOX::MOVE){
 		m_pTextureCom = dynamic_pointer_cast<CTexture>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_icon_Exit")));
 		if (FAILED(__super::Add_Component(TEXT("Com_Texture"), m_pTextureCom)))
 			return E_FAIL;
 	}
 
-
-	m_pShaderCom = dynamic_pointer_cast<CShader>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxTex")));
-	if (FAILED(__super::Add_Component(TEXT("Com_Shader"), m_pShaderCom)))
-		return E_FAIL;
+	if (purpose != BOX::EVENT) {
+		m_pShaderCom = dynamic_pointer_cast<CShader>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Shader_VtxTex")));
+		if (FAILED(__super::Add_Component(TEXT("Com_Shader"), m_pShaderCom)))
+			return E_FAIL;
+	}
+	
 
 
 	m_pObbBfCom = static_pointer_cast<VIBuffer_Collider>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), L"Prototype_Collider_Buffer"));

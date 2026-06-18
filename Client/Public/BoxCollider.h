@@ -17,7 +17,7 @@ class CBoxCollider final : public CGameObject
 public:
 
 	enum class BOX {
-		MAP, MOVE, FIX, END
+		MAP, MOVE, FIX,EVENT ,END
 	};
 	typedef struct tagBoxDesc : public GAMEOBJECT_DESC
 	{
@@ -50,6 +50,9 @@ public:
 	void Set_Active() {
 		m_bActive = true;
 	}
+	_bool Get_FirstActive() {
+		return m_bFirstActice;
+	}
 private:
 	shared_ptr<Obb>						m_pObbCom = { nullptr };
 	shared_ptr<VIBuffer_Collider>		m_pObbBfCom = { nullptr };
@@ -59,8 +62,12 @@ private:
 
 	_bool								m_bRender = false;
 	_bool								m_bActive = false;
+	_bool								m_bLightOn = false;
+	_bool								m_bFirstActice = true;
 	BOX									m_ePurpose = BOX::END;
-
+	shared_ptr<class CLight>			m_pLight = { nullptr };
+	_float								m_pFlashTime = 0;
+	uint32_t							m_iCount = 0;
 private:
 	HRESULT Ready_Components(BOX purpose);
 	void ExpandCollider();
