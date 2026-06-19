@@ -202,6 +202,10 @@ uint32_t  CGameInstance::GetCurLevelIndex() {
 CLevel* CGameInstance::Get_CurrentLevel() const{
     return m_pLevel_Manager->Get_CurrentLevel();
 }
+uint32_t CGameInstance::Get_DayCount() {
+    return m_pLevel_Manager->Get_DayCount();
+}
+
 #pragma endregion
 
 #pragma region PROTOTYPE_MANAGER

@@ -221,6 +221,10 @@
             "PrototypeTag": "Prototype_Model_master_room_corner_backroom"
         },
         {
+            "FilePath": "../../Resources/Models/Missile.fbx",
+            "PrototypeTag": "Prototype_Model_Missile"
+        },
+        {
             "FilePath": "../../Resources/Models/office_building_glass_medium_b_short.fbx",
             "PrototypeTag": "Prototype_Model_office_building_glass_medium_b_short"
         },

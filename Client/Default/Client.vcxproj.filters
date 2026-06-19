@@ -175,6 +175,12 @@
     <Filter Include="Fade">
       <UniqueIdentifier>{06949e38-de87-41c8-95f3-867acbbd44bd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObject\13.QuestUI">
+      <UniqueIdentifier>{cc6c1323-9981-4746-8e24-23f9b9cfca90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObject\14.Nuclear">
+      <UniqueIdentifier>{8df08eff-650b-4b3b-9c5f-d85c86c1a249}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="targetver.h">
@@ -396,6 +402,18 @@
     <ClInclude Include="..\Public\Fade.h">
       <Filter>Fade</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\QuestUI.h">
+      <Filter>02.GameObject\13.QuestUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Nuclear.h">
+      <Filter>02.GameObject\14.Nuclear</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\WhiteRect.h">
+      <Filter>02.GameObject\14.Nuclear</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Bomb.h">
+      <Filter>02.GameObject\14.Nuclear</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -604,6 +622,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\Fade.cpp">
       <Filter>Fade</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\QuestUI.cpp">
+      <Filter>02.GameObject\13.QuestUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Nuclear.cpp">
+      <Filter>02.GameObject\14.Nuclear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\WhiteRect.cpp">
+      <Filter>02.GameObject\14.Nuclear</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Bomb.cpp">
+      <Filter>02.GameObject\14.Nuclear</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

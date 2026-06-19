@@ -150,6 +150,7 @@
     <ClInclude Include="..\public\Blood.h" />
     <ClInclude Include="..\public\Body_Player.h" />
     <ClInclude Include="..\public\Body_Zombie.h" />
+    <ClInclude Include="..\public\Bomb.h" />
     <ClInclude Include="..\public\Camera_Free.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\CloseButton.h" />
@@ -166,6 +167,7 @@
     <ClInclude Include="..\Public\MapInfo.h" />
     <ClInclude Include="..\public\MapPin.h" />
     <ClInclude Include="..\Public\MoveButton.h" />
+    <ClInclude Include="..\public\Nuclear.h" />
     <ClInclude Include="..\Public\Overlay.h" />
     <ClInclude Include="..\public\Player_Attack.h" />
     <ClInclude Include="..\public\Player_CloseDoor.h" />
@@ -192,6 +194,7 @@
     <ClInclude Include="..\public\Player_StealthAttack.h" />
     <ClInclude Include="..\public\Player_Walk.h" />
     <ClInclude Include="..\public\BoxCollider.h" />
+    <ClInclude Include="..\public\QuestUI.h" />
     <ClInclude Include="..\Public\SearchBox.h" />
     <ClInclude Include="..\Public\SearchItemFrame.h" />
     <ClInclude Include="..\Public\SearchItemIcon.h" />
@@ -203,6 +206,7 @@
     <ClInclude Include="..\Public\SubmitButton.h" />
     <ClInclude Include="..\Public\Title.h" />
     <ClInclude Include="..\public\Weapon.h" />
+    <ClInclude Include="..\public\WhiteRect.h" />
     <ClInclude Include="..\public\Zombie.h" />
     <ClInclude Include="..\public\Zombie_Attack.h" />
     <ClInclude Include="..\public\Zombie_Damaged.h" />
@@ -224,6 +228,7 @@
     <ClCompile Include="..\private\Blood.cpp" />
     <ClCompile Include="..\private\Body_Player.cpp" />
     <ClCompile Include="..\private\Body_Zombie.cpp" />
+    <ClCompile Include="..\private\Bomb.cpp" />
     <ClCompile Include="..\private\Camera_Free.cpp" />
     <ClCompile Include="..\private\Axe.cpp" />
     <ClCompile Include="..\Private\CloseButton.cpp" />
@@ -239,6 +244,7 @@
     <ClCompile Include="..\Private\MapInfo.cpp" />
     <ClCompile Include="..\private\MapPin.cpp" />
     <ClCompile Include="..\Private\MoveButton.cpp" />
+    <ClCompile Include="..\private\Nuclear.cpp" />
     <ClCompile Include="..\Private\Overlay.cpp" />
     <ClCompile Include="..\private\Player_CloseDoor.cpp" />
     <ClCompile Include="..\private\Player_OpenDoor.cpp" />
@@ -266,6 +272,7 @@
     <ClCompile Include="..\Private\MainApp.cpp" />
     <ClCompile Include="..\Private\Player.cpp" />
     <ClCompile Include="..\private\BoxCollider.cpp" />
+    <ClCompile Include="..\private\QuestUI.cpp" />
     <ClCompile Include="..\Private\SearchBox.cpp" />
     <ClCompile Include="..\Private\SearchItemFrame.cpp" />
     <ClCompile Include="..\Private\SearchItemIcon.cpp" />
@@ -277,6 +284,7 @@
     <ClCompile Include="..\Private\SubmitButton.cpp" />
     <ClCompile Include="..\Private\Title.cpp" />
     <ClCompile Include="..\private\Weapon.cpp" />
+    <ClCompile Include="..\private\WhiteRect.cpp" />
     <ClCompile Include="..\private\Zombie.cpp" />
     <ClCompile Include="..\private\Zombie_Attack.cpp" />
     <ClCompile Include="..\private\Zombie_Damaged.cpp" />

@@ -4,6 +4,7 @@
 #include "Layer.h"
 #include "FixUI.h"
 #include "Level_Loading.h"
+#include "Bomb.h"
 
 
 CSubmitButton::CSubmitButton(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
@@ -82,7 +83,23 @@ void CSubmitButton::Late_Update(_float fTimeDelta)
 
 		if (ptMouse.x >= minX && ptMouse.x <= maxX && ptMouse.y >= minY && ptMouse.y <= maxY) {
 			if (CGameInstance::Get().Mouse_Down(DIMK::LBUTTON)) {
-
+				m_bButtonClicked = true;
+				m_pFixUI->Set_Render(false);
+			}
+		}
+	}
+	if (m_bButtonClicked) {
+		m_fTime += fTimeDelta;
+		if (m_fTime > 3.f) {
+			auto NuclearLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"Layer_Nuclear");
+			if (NuclearLayer == nullptr) return;
+			auto objects = NuclearLayer->GetObjects();
+			for (auto& obj : objects) {
+				if (obj->Get_Tag() == L"Bomb") {
+					static_pointer_cast<CBomb>(obj)->Set_Start();
+					m_bButtonClicked = false;
+					break;
+				}
 			}
 		}
 	}

@@ -10,19 +10,15 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CSubmitButton final : public CUIObject
+class CWhiteRect final : public CUIObject
 {
 public:
-	typedef struct tagSubmitDesc : public CUIObject::UIOBJECT_DESC
-	{
-		LEVEL nextLevel;
 
-	}SUBMIT_DESC;
 private:
-	CSubmitButton(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
-	CSubmitButton(const CSubmitButton& Prototype);
+	CWhiteRect(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
+	CWhiteRect(const CWhiteRect& Prototype);
 public:
-	virtual ~CSubmitButton();
+	virtual ~CWhiteRect();
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -32,7 +28,6 @@ public:
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-
 private:
 	shared_ptr<CVIBuffer_Rect>	m_pVIBufferCom = { nullptr };
 	shared_ptr<CTexture>		m_pTextureCom = { nullptr };
@@ -40,16 +35,13 @@ private:
 
 private:
 	HRESULT Ready_Components();
-	shared_ptr<class CFixUI>				m_pFixUI = nullptr;
-	_bool									m_bButtonClicked = false;
-	_float									m_fTime = 0;
-private:
+
 public:
-	static unique_ptr<CSubmitButton> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
+	static unique_ptr<CWhiteRect> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
 	virtual shared_ptr<CPrototype> Clone(void* pArg) override;
 
 private:
-
+	_float m_fAlpha = 0;
 };
 
 NS_END

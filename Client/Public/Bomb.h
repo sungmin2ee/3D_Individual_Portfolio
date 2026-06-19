@@ -1,24 +1,25 @@
 #pragma once
+
 #include "Client_Defines.h"
-#include "UIObject.h"
+#include "GameObject.h"
 
 NS_BEGIN(Engine)
 class CShader;
-class CVIBuffer_Rect;
+class CModel;
 NS_END
 
 
 NS_BEGIN(Client)
 
-class COverlay final : public CUIObject
+class CBomb final : public CGameObject
 {
-public:
+
 
 private:
-	COverlay(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
-	COverlay(const COverlay& Prototype);
+	CBomb(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
+	CBomb(const CBomb& Prototype);
 public:
-	virtual ~COverlay();
+	virtual ~CBomb();
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -27,26 +28,23 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-	void Set_ForQuest(_float forQuestis0) {
-		m_fForQuest = forQuestis0;
+	void Set_Start() {
+		m_bStart = true;
 	}
 
 private:
-	shared_ptr<CVIBuffer_Rect>	m_pVIBufferCom = { nullptr };
-	shared_ptr<CTexture>		m_pTextureCom = { nullptr };
+	shared_ptr<CModel>			m_pModelCom = { nullptr };
 	shared_ptr<CShader>			m_pShaderCom = { nullptr };
+
 private:
 	HRESULT Ready_Components();
 
 public:
-	static unique_ptr<COverlay> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
+	static unique_ptr<CBomb> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
 	virtual shared_ptr<CPrototype> Clone(void* pArg) override;
 
 private:
-	_float						m_fForQuest = 1;
+	_bool m_bStart = false;
 };
 
 NS_END
-
-
-

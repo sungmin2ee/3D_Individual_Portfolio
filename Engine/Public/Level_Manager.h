@@ -24,9 +24,11 @@ public:
 	HRESULT Render();
 	uint32_t GetCurLevelIndex() { return m_iCurrentLevelIndex; }
 	CLevel* Get_CurrentLevel() const { return m_pCurrentLevel.get(); }
+	uint32_t &Get_DayCount() { return m_iDayCount; }
 private:
 	uint32_t							m_iCurrentLevelIndex = {};
 	unique_ptr<class CLevel>			m_pCurrentLevel = { nullptr };
+	uint32_t							m_iDayCount = 0;
 
 public:
 	static unique_ptr<CLevel_Manager> Create();

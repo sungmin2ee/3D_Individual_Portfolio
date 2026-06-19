@@ -39,6 +39,7 @@ public:
 	HRESULT Change_Level(uint32_t iNewLevelIndex, unique_ptr<class CLevel> pNewLevel);
 	uint32_t GetCurLevelIndex();
 	CLevel* Get_CurrentLevel() const; 
+	uint32_t Get_DayCount();
 #pragma endregion
 
 #pragma region PROTOTYPE_MANAGER

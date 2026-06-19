@@ -56,11 +56,14 @@ HRESULT CLevel_Shelter::Initialize()
 		return E_FAIL;
 	if (FAILED(Ready_BoxCollider(TEXT("Layer_BoxCollider"))))
 		return E_FAIL;
+	if (FAILED(Ready_Nuclear(TEXT("Layer_Nuclear"))))
+		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Load(ETOUI(LEVEL::SHELTER)))) {
 		return E_FAIL;
 	}
 	if (FAILED(Ready_Fade(TEXT("Layer_Fade"))))
 		return E_FAIL;
+
 
 	CGameInstance::Get().PlayBGM(L"ShelterBGM.wav", 0.7f);
 	auto zombieLayer = CGameInstance::Get().Find_Layer(ETOUI(LEVEL::SHELTER), TEXT("Layer_Zombie"));
@@ -78,6 +81,7 @@ HRESULT CLevel_Shelter::Initialize()
 
 void CLevel_Shelter::Update(_float fTimeDelta)
 {
+	auto a = CGameInstance::Get().Get_DayCount();
 
 	//if (CGameInstance::Get().Key_Down(DIK_CAPITAL)) {
 	//	CGameInstance::Get().Save(ETOUI(LEVEL::SHELTER));
@@ -86,7 +90,19 @@ void CLevel_Shelter::Update(_float fTimeDelta)
 		fade->Set_Fade(0);
 		m_bEnterScene = true;
 	}
-
+	if (CGameInstance::Get().Get_DayCount() == 4  && fade->Get_Finished() && !firstFadeEnd) {
+		auto fixuiLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"Layer_FixUI");
+		if (fixuiLayer == nullptr) return;
+	
+		auto UIs = fixuiLayer->GetObjects();
+		for (auto& ui : UIs) {
+			if (ui->Get_Tag() == L"QuestUI") {
+				static_pointer_cast<CUIObject>(ui)->Set_Render(true);
+				break;
+			}
+		}
+		firstFadeEnd = true;
+	}
 	const size_t zombieCount = m_vZombies.size();
 	const size_t chunkSize = (zombieCount + workerCount - 1) / workerCount;
 
@@ -164,6 +180,31 @@ HRESULT CLevel_Shelter::Ready_Lights()
 	if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
 		return E_FAIL;
 	
+	return S_OK;
+}
+HRESULT CLevel_Shelter::Ready_Nuclear(const _wstring& strLayerTag)
+{
+	CGameObject::GAMEOBJECT_DESC pDesc;
+	pDesc.pGameObjectTag = L"Nuclear";
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_Nuclear"),
+		ETOUI(LEVEL::SHELTER), strLayerTag, &pDesc)))
+		return E_FAIL;
+
+	CUIObject::UIOBJECT_DESC pWhiteDesc;
+	pWhiteDesc.fSizeX = g_iWinSizeX;
+	pWhiteDesc.fSizeY = g_iWinSizeY;
+	pWhiteDesc.fX = g_iWinSizeX * 0.5f;
+	pWhiteDesc.fY = g_iWinSizeY * 0.5f;
+	pWhiteDesc.pGameObjectTag = L"WhiteRect";
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_WhiteRect"),
+		ETOUI(LEVEL::SHELTER), strLayerTag, &pWhiteDesc)))
+		return E_FAIL;
+
+	CGameObject::GAMEOBJECT_DESC pBombDesc;
+	pBombDesc.pGameObjectTag = L"Bomb";
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_Bomb"),
+		ETOUI(LEVEL::SHELTER), strLayerTag, &pBombDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -448,6 +489,17 @@ HRESULT CLevel_Shelter::Ready_Layer_FixUI(const _wstring& strLayerTag)
 	cbDesc.nextLevel = LEVEL::SHELTER;
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), L"Prototype_GameObject_CloseButton", ETOUI(LEVEL::SHELTER), strLayerTag, &cbDesc)))
 		return E_FAIL;
+
+	CUIObject::UIOBJECT_DESC questDesc;
+	questDesc.fSizeX = g_iWinSizeX * 0.5f;
+	questDesc.fSizeY = g_iWinSizeY * 0.5f;
+	questDesc.fX = g_iWinSizeX * 0.5f;
+	questDesc.fY = g_iWinSizeY * 0.5f;
+	questDesc.pGameObjectTag = L"QuestUI";
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), L"Prototype_GameObject_QuestUI", ETOUI(LEVEL::SHELTER), strLayerTag, &questDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

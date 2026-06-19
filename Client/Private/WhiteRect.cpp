@@ -1,30 +1,28 @@
-#include "Overlay.h"
-
+#include "WhiteRect.h"
 #include "GameInstance.h"
 
-COverlay::COverlay(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
+CWhiteRect::CWhiteRect(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 	: CUIObject{ pDevice, pContext }
 
 {
 }
 
-COverlay::COverlay(const COverlay& Prototype)
+CWhiteRect::CWhiteRect(const CWhiteRect& Prototype)
 	: CUIObject{ Prototype }
 {
 }
 
-COverlay::~COverlay()
+CWhiteRect::~CWhiteRect()
 {
-	int a = 10;
 }
 
 
-HRESULT COverlay::Initialize_Prototype()
+HRESULT CWhiteRect::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT COverlay::Initialize(void* pArg)
+HRESULT CWhiteRect::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -35,31 +33,37 @@ HRESULT COverlay::Initialize(void* pArg)
 	return S_OK;
 }
 
-void COverlay::Priority_Update(_float fTimeDelta)
+void CWhiteRect::Priority_Update(_float fTimeDelta)
 {
 
 	__super::Priority_Update(fTimeDelta);
 }
 
-void COverlay::Update(_float fTimeDelta)
+void CWhiteRect::Update(_float fTimeDelta)
 {
 
+	//m_bRender = true;
+	if (m_bRender) {
 
-	__super::Update(fTimeDelta);
-	if (CGameInstance::Get().Key_Down(DIK_E)) {
-		m_bRender = !m_bRender;
+		m_fAlpha += fTimeDelta;
 	}
+
+	if (m_fAlpha > 1.f) {
+		m_fAlpha = 1.f;
+	}
+	__super::Update(fTimeDelta);
+	
 }
 
-void COverlay::Late_Update(_float fTimeDelta)
+void CWhiteRect::Late_Update(_float fTimeDelta)
 {
 
-	CGameInstance::Get().Add_RenderObject(RENDERGROUP::BLEND, SHARED_THIS(COverlay));
+	CGameInstance::Get().Add_RenderObject(RENDERGROUP::ICON, SHARED_THIS(CWhiteRect));
 
 	__super::Late_Update(fTimeDelta);
 }
 
-HRESULT COverlay::Render()
+HRESULT CWhiteRect::Render()
 {
 	if (!m_bRender)
 		return E_FAIL;
@@ -69,24 +73,23 @@ HRESULT COverlay::Render()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_forQuest",&m_fForQuest, sizeof(_float))))
-		return E_FAIL;
 
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fAlpha", &m_fAlpha, sizeof(_float))))
+		return E_FAIL;
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Begin(2)))
+	if (FAILED(m_pShaderCom->Begin(4)))
 		return E_FAIL;
 
 	if (FAILED(m_pVIBufferCom->Bind_Resources()))
 		return E_FAIL;
 	if (FAILED(m_pVIBufferCom->Render()))
 		return E_FAIL;
-
 	return S_OK;
 }
 
-HRESULT COverlay::Ready_Components()
+HRESULT CWhiteRect::Ready_Components()
 {
 	m_pVIBufferCom = dynamic_pointer_cast<CVIBuffer_Rect>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_VIBuffer_Rect")));
 	if (FAILED(__super::Add_Component(TEXT("Com_VIBuffer"), m_pVIBufferCom)))
@@ -96,7 +99,7 @@ HRESULT COverlay::Ready_Components()
 	if (FAILED(__super::Add_Component(TEXT("Com_Shader"), m_pShaderCom)))
 		return E_FAIL;
 
-	m_pTextureCom = dynamic_pointer_cast<CTexture>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Component_Texture_dust_scratch_overlay")));
+	m_pTextureCom = dynamic_pointer_cast<CTexture>(CGameInstance::Get().Clone_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_Component_Texture_White")));
 	if (FAILED(__super::Add_Component(TEXT("Com_Texture"), m_pTextureCom)))
 		return E_FAIL;
 
@@ -106,13 +109,13 @@ HRESULT COverlay::Ready_Components()
 	return S_OK;
 }
 
-unique_ptr<COverlay> COverlay::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
+unique_ptr<CWhiteRect> CWhiteRect::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 {
-	auto	pInstance = unique_ptr<COverlay>(new COverlay(pDevice, pContext));
+	auto	pInstance = unique_ptr<CWhiteRect>(new CWhiteRect(pDevice, pContext));
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed to Created : COverlay");
+		MSG_BOX("Failed to Created : CWhiteRect");
 		return nullptr;
 	}
 
@@ -120,16 +123,16 @@ unique_ptr<COverlay> COverlay::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D1
 }
 
 
-shared_ptr<CPrototype> COverlay::Clone(void* pArg)
+shared_ptr<CPrototype> CWhiteRect::Clone(void* pArg)
 {
-	auto	pInstance = shared_ptr<CGameObject>(new COverlay(*this));
+	auto	pInstance = shared_ptr<CGameObject>(new CWhiteRect(*this));
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed to Cloned : COverlay");
+		MSG_BOX("Failed to Cloned : CWhiteRect");
 		return nullptr;
 	}
-	
+
 	return pInstance;
 }
 

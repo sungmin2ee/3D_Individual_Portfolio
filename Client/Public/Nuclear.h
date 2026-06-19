@@ -10,19 +10,15 @@ NS_END
 
 NS_BEGIN(Client)
 
-class CSubmitButton final : public CUIObject
+class CNuclear final : public CGameObject
 {
 public:
-	typedef struct tagSubmitDesc : public CUIObject::UIOBJECT_DESC
-	{
-		LEVEL nextLevel;
 
-	}SUBMIT_DESC;
 private:
-	CSubmitButton(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
-	CSubmitButton(const CSubmitButton& Prototype);
+	CNuclear(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
+	CNuclear(const CNuclear& Prototype);
 public:
-	virtual ~CSubmitButton();
+	virtual ~CNuclear();
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -31,24 +27,25 @@ public:
 	virtual void Update(_float fTimeDelta) override;
 	virtual void Late_Update(_float fTimeDelta) override;
 	virtual HRESULT Render() override;
-
+	void Set_Start() { m_bStart = true; };
 
 private:
 	shared_ptr<CVIBuffer_Rect>	m_pVIBufferCom = { nullptr };
 	shared_ptr<CTexture>		m_pTextureCom = { nullptr };
 	shared_ptr<CShader>			m_pShaderCom = { nullptr };
-
+	
+	uint32_t					m_iRow = 2;
+	uint32_t					m_iCol = 12;
+	uint32_t					m_iCurIndex = 0;
+	_float						m_fEffectTime = 0;
+	_bool						m_bStart = false;
 private:
 	HRESULT Ready_Components();
-	shared_ptr<class CFixUI>				m_pFixUI = nullptr;
-	_bool									m_bButtonClicked = false;
-	_float									m_fTime = 0;
-private:
-public:
-	static unique_ptr<CSubmitButton> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
-	virtual shared_ptr<CPrototype> Clone(void* pArg) override;
+	HRESULT Ready_ItemFrames(LEVEL nextLevel);
 
-private:
+public:
+	static unique_ptr<CNuclear> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
+	virtual shared_ptr<CPrototype> Clone(void* pArg) override;
 
 };
 
