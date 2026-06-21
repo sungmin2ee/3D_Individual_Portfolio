@@ -31,6 +31,21 @@ HRESULT CRenderer::Initialize()
     /* For.Target_Depth */
     if (FAILED(CGameInstance::Get().Add_RenderTarget(TEXT("Target_Depth"), vViewportSize.x, vViewportSize.y, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
         return E_FAIL;
+    /*For. Target Emissive*/
+    if (FAILED(CGameInstance::Get().Add_RenderTarget(TEXT("Target_Emissive"), vViewportSize.x, vViewportSize.y, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
+        return E_FAIL;
+
+
+    /* For.Target_Bloom */
+    if (FAILED(CGameInstance::Get().Add_RenderTarget(TEXT("Target_Scene"), vViewportSize.x, vViewportSize.y, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+        return E_FAIL;
+    if (FAILED(CGameInstance::Get().Add_RenderTarget(TEXT("Target_Bright"), vViewportSize.x, vViewportSize.y, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
+        return E_FAIL;
+    /* For.Target_Blur */
+    if (FAILED(CGameInstance::Get().Add_RenderTarget(TEXT("Target_BlurX"), vViewportSize.x, vViewportSize.y, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
+        return E_FAIL;
+    if (FAILED(CGameInstance::Get().Add_RenderTarget(TEXT("Target_BlurY"), vViewportSize.x, vViewportSize.y, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
+        return E_FAIL;
 
     /* For.MRT_GameObject */
     if (FAILED(CGameInstance::Get().Add_MRT(TEXT("MRT_GameObject"), TEXT("Target_Diffuse"))))
@@ -39,11 +54,24 @@ HRESULT CRenderer::Initialize()
         return E_FAIL;
     if (FAILED(CGameInstance::Get().Add_MRT(TEXT("MRT_GameObject"), TEXT("Target_Depth"))))
         return E_FAIL;
+    if (FAILED(CGameInstance::Get().Add_MRT(TEXT("MRT_GameObject"), TEXT("Target_Emissive"))))
+        return E_FAIL;
     /* For.MRT_LightAcc */
     if (FAILED(CGameInstance::Get().Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Shade"))))
         return E_FAIL;
 
     if (FAILED(CGameInstance::Get().Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Specular"))))
+        return E_FAIL;
+
+    /* For.MRT_Scene */
+    if (FAILED(CGameInstance::Get().Add_MRT(TEXT("MRT_Scene"), TEXT("Target_Scene"))))
+        return E_FAIL;
+
+    if (FAILED(CGameInstance::Get().Add_MRT(TEXT("MRT_Bright"), TEXT("Target_Bright"))))
+        return E_FAIL;
+    if (FAILED(CGameInstance::Get().Add_MRT(TEXT("MRT_BlurX"), TEXT("Target_BlurX"))))
+        return E_FAIL;
+    if (FAILED(CGameInstance::Get().Add_MRT(TEXT("MRT_BlurY"), TEXT("Target_BlurY"))))
         return E_FAIL;
 
     m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
@@ -67,6 +95,17 @@ HRESULT CRenderer::Initialize()
     //    return E_FAIL;
     //if (FAILED(CGameInstance::Get().Ready_RT_Debug(TEXT("Target_Specular"), 450.f, 450.f, 300.f, 300.f)))
     //    return E_FAIL;
+    if (FAILED(CGameInstance::Get().Ready_RT_Debug(TEXT("Target_Scene"), 150.f, 150.f, 300.f, 300.f)))
+        return E_FAIL;
+
+    if (FAILED(CGameInstance::Get().Ready_RT_Debug(TEXT("Target_Bright"), 150.f, 450.f, 300.f, 300.f)))
+        return E_FAIL;
+    if (FAILED(CGameInstance::Get().Ready_RT_Debug(TEXT("Target_Emissive"), 450.f, 150.f, 300.f, 300.f)))
+        return E_FAIL;
+    if (FAILED(CGameInstance::Get().Ready_RT_Debug(TEXT("Target_Depth"), 450.f, 450.f, 300.f, 300.f)))
+        return E_FAIL;
+
+
 
 #endif
     return S_OK;
@@ -97,6 +136,17 @@ HRESULT CRenderer::Draw()
     if (FAILED(Render_Combined()))
         return E_FAIL;
 
+    if (FAILED(Render_Bright()))
+        return E_FAIL;
+
+    if (FAILED(Render_BlurX()))
+        return E_FAIL;
+
+    if (FAILED(Render_BlurY()))
+        return E_FAIL;
+
+    if (FAILED(Render_Final()))
+        return E_FAIL;
     if (FAILED(Render_NonLights()))
         return E_FAIL;
 
@@ -108,10 +158,10 @@ HRESULT CRenderer::Draw()
 
     if (FAILED(Render_UI()))
         return E_FAIL;
-    
 
     if (FAILED(Render_ICON()))
         return E_FAIL;
+
 #ifdef _DEBUG
     if (FAILED(Render_DEBUG()))
         return E_FAIL;
@@ -182,11 +232,18 @@ HRESULT CRenderer::Render_Lights()
 
 HRESULT CRenderer::Render_Combined()
 {
+
+    if (FAILED(CGameInstance::Get().Begin_MRT(TEXT("MRT_Scene"))))
+        return E_FAIL;
+
+
     if (FAILED(CGameInstance::Get().Bind_RT_ShaderResource(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
         return E_FAIL;
     if (FAILED(CGameInstance::Get().Bind_RT_ShaderResource(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
         return E_FAIL;
     if (FAILED(CGameInstance::Get().Bind_RT_ShaderResource(TEXT("Target_Specular"), m_pShader, "g_SpecularTexture")))
+        return E_FAIL;
+    if (FAILED(CGameInstance::Get().Bind_RT_ShaderResource(TEXT("Target_Emissive"), m_pShader, "g_EmissiveTexture")))
         return E_FAIL;
 
     m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
@@ -200,6 +257,105 @@ HRESULT CRenderer::Render_Combined()
         return E_FAIL;
 
     if (FAILED(m_pVIBuffer->Render()))
+        return E_FAIL;
+
+    if (FAILED(CGameInstance::Get().End_MRT()))
+        return E_FAIL;
+
+
+    return S_OK;
+}
+HRESULT CRenderer::Render_BlurX()
+{
+    if (FAILED(CGameInstance::Get().Begin_MRT(TEXT("MRT_BlurX"))))
+        return E_FAIL;
+
+    CGameInstance::Get().Bind_RT_ShaderResource(TEXT("Target_Bright"), m_pShader, "g_BlurTexture");
+
+    _float2 texel =
+    {
+        1.f / CGameInstance::Get().Get_ViewportSize().x,
+        1.f / CGameInstance::Get().Get_ViewportSize().y
+    };
+    m_pShader->Bind_RawValue(
+        "g_vTexelSize",
+        &texel,
+        sizeof(_float2));
+   // m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
+   // m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
+   // m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
+
+    m_pShader->Begin(ETOUI(DEFERRED::BLUR_X));
+
+    m_pVIBuffer->Bind_Resources();
+    m_pVIBuffer->Render();
+    if (FAILED(CGameInstance::Get().End_MRT()))
+        return E_FAIL;
+
+
+    return S_OK;
+}
+
+HRESULT CRenderer::Render_BlurY()
+{
+    if (FAILED(CGameInstance::Get().Begin_MRT(TEXT("MRT_BlurY"))))
+        return E_FAIL;
+
+    CGameInstance::Get().Bind_RT_ShaderResource(TEXT("Target_BlurX"), m_pShader, "g_BlurTexture");
+
+    //m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
+    //m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
+    //m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
+    _float2 texel =
+    {
+        1.f / CGameInstance::Get().Get_ViewportSize().x,
+        1.f / CGameInstance::Get().Get_ViewportSize().y
+    };
+    m_pShader->Bind_RawValue(
+        "g_vTexelSize",
+        &texel,
+        sizeof(_float2));
+    m_pShader->Begin(ETOUI(DEFERRED::BLUR_Y));
+
+    m_pVIBuffer->Bind_Resources();
+    m_pVIBuffer->Render();
+
+    if (FAILED(CGameInstance::Get().End_MRT()))
+        return E_FAIL;
+
+    return S_OK;
+}
+
+HRESULT CRenderer::Render_Final()
+{
+    CGameInstance::Get().Bind_RT_ShaderResource(TEXT("Target_Scene"),m_pShader, "g_SceneTexture");
+    CGameInstance::Get().Bind_RT_ShaderResource(TEXT("Target_BlurY"),m_pShader, "g_BloomTexture");
+
+    m_pShader->Begin(ETOUI(DEFERRED::FINAL));
+
+    m_pVIBuffer->Bind_Resources();
+    m_pVIBuffer->Render();
+
+
+    return S_OK;
+}
+
+HRESULT CRenderer::Render_Bright()
+{
+    if (FAILED(CGameInstance::Get().Begin_MRT(TEXT("MRT_Bright"))))
+        return E_FAIL;
+
+    CGameInstance::Get().Bind_RT_ShaderResource(TEXT("Target_Scene"), m_pShader, "g_SceneTexture");
+
+    m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
+    m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
+    m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
+    m_pShader->Begin( ETOUI(DEFERRED::BRIGHT));
+
+    m_pVIBuffer->Bind_Resources();
+    m_pVIBuffer->Render();
+
+    if (FAILED(CGameInstance::Get().End_MRT()))
         return E_FAIL;
 
     return S_OK;
@@ -300,6 +456,10 @@ HRESULT CRenderer::Render_DEBUG()
     if (FAILED(CGameInstance::Get().Debug_RT_Render(TEXT("MRT_GameObject"), m_pShader, "g_Texture", m_pVIBuffer)))
         return E_FAIL;
     if (FAILED(CGameInstance::Get().Debug_RT_Render(TEXT("MRT_LightAcc"), m_pShader, "g_Texture", m_pVIBuffer)))
+        return E_FAIL;
+    if (FAILED(CGameInstance::Get().Debug_RT_Render(TEXT("MRT_Scene"), m_pShader, "g_Texture", m_pVIBuffer)))
+        return E_FAIL;
+    if (FAILED(CGameInstance::Get().Debug_RT_Render(TEXT("MRT_Bright"), m_pShader, "g_Texture", m_pVIBuffer)))
         return E_FAIL;
 
     return S_OK;

@@ -205,6 +205,11 @@ HRESULT CLevel_Shelter::Ready_Nuclear(const _wstring& strLayerTag)
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_Bomb"),
 		ETOUI(LEVEL::SHELTER), strLayerTag, &pBombDesc)))
 		return E_FAIL;
+	pBombDesc.pGameObjectTag = L"Explosion";
+
+	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_Explosion"),
+		ETOUI(LEVEL::SHELTER), strLayerTag, &pBombDesc)))
+		return E_FAIL;
 	return S_OK;
 }
 

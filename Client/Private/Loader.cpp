@@ -39,6 +39,7 @@
 #include "Nuclear.h"
 #include "WhiteRect.h"
 #include "Bomb.h"
+#include "Explosion.h"
 
 
 CLoader::CLoader(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
@@ -215,15 +216,25 @@ HRESULT CLoader::Loading_For_Shelter()
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_Component_Texture_White"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/white.dds"), 1))))
 		return E_FAIL;
+	//if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_Component_Texture_White"),
+	//	CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/white.dds"), 1))))
+	//	return E_FAIL;
+
+
+
+	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩 중 입니다."));
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_Component_Shader_Explosion"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Explosion.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("모델을 로딩 중 입니다."));
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_Model_Bomb"),
 		CModel::Create(m_pDevice, m_pContext, ETOUI(MODEL::NONANIM), "../../Resources/Models/Missile.fbx"))))
 		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_Model_Explosion"),
+		CModel::Create(m_pDevice, m_pContext, ETOUI(MODEL::NONANIM), "../../Resources/Models/Explosion.fbx"))))
+		return E_FAIL;
 
-
-	lstrcpy(m_szLoadingText, TEXT("셰이더를 로딩 중 입니다."));
-	
 	lstrcpy(m_szLoadingText, TEXT("객체원형 생성 중 입니다."));
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), L"Prototype_Overlay", COverlay::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -306,6 +317,9 @@ HRESULT CLoader::Loading_For_Shelter()
 		return E_FAIL;
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_Bomb"),
 		CBomb::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_GameObject_Explosion"),
+		CExplosion::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 

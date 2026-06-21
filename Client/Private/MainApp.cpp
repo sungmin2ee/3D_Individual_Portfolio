@@ -276,7 +276,7 @@ HRESULT CMainApp::Ready_Prototypes()
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.f));
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.f));
 
-	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Model_Joe"),
+ 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::STATIC), TEXT("Prototype_Model_Joe"),
 		CModel::Create(m_pDevice, m_pContext, ETOUI(MODEL::ANIM), "../../Resources/Models/Player1.fbx", PreTransformMatrix))))
 		return E_FAIL;
 

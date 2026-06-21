@@ -414,6 +414,9 @@
     <ClInclude Include="..\public\Bomb.h">
       <Filter>02.GameObject\14.Nuclear</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Explosion.h">
+      <Filter>02.GameObject\14.Nuclear</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Client.cpp">
@@ -635,6 +638,9 @@
     <ClCompile Include="..\private\Bomb.cpp">
       <Filter>02.GameObject\14.Nuclear</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Explosion.cpp">
+      <Filter>02.GameObject\14.Nuclear</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -693,6 +699,9 @@
       <Filter>Shaderfiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_FadeInOut.hlsl">
+      <Filter>Shaderfiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Explosion.hlsl">
       <Filter>Shaderfiles</Filter>
     </FxCompile>
   </ItemGroup>

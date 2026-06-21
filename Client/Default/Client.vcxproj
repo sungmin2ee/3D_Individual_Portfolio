@@ -155,6 +155,7 @@
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\CloseButton.h" />
     <ClInclude Include="..\Public\Door.h" />
+    <ClInclude Include="..\public\Explosion.h" />
     <ClInclude Include="..\Public\Fade.h" />
     <ClInclude Include="..\Public\FixUI.h" />
     <ClInclude Include="..\Public\GameEnd.h" />
@@ -232,6 +233,7 @@
     <ClCompile Include="..\private\Camera_Free.cpp" />
     <ClCompile Include="..\private\Axe.cpp" />
     <ClCompile Include="..\Private\CloseButton.cpp" />
+    <ClCompile Include="..\private\Explosion.cpp" />
     <ClCompile Include="..\Private\Fade.cpp" />
     <ClCompile Include="..\Private\FixUI.cpp" />
     <ClCompile Include="..\Private\GameEnd.cpp" />
@@ -308,6 +310,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Blocker.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Collider.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Explosion.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_FadeInOut.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_HpBar.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />

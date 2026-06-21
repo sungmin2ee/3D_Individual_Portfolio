@@ -17,6 +17,10 @@
             "PrototypeTag": "Prototype_Component_Shader_Deferred"
         },
         {
+            "FilePath": "../../Client/Bin/ShaderFiles/Shader_Explosion",
+            "PrototypeTag": "Prototype_Component_Shader_Explosion"
+        },
+        {
             "FilePath": "../../Client/Bin/ShaderFiles/Shader_FadeInOut",
             "PrototypeTag": "Prototype_Component_Shader_FadeInOut"
         },

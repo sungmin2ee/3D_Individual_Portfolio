@@ -36,6 +36,10 @@ private:
 
 	HRESULT Render_Lights();
 	HRESULT Render_Combined();
+	HRESULT Render_Final();
+	HRESULT Render_Bright();
+	HRESULT Render_BlurX();
+	HRESULT Render_BlurY();
 	HRESULT Render_Blend();
 	HRESULT Render_Blocker();
 	HRESULT Render_UI();
