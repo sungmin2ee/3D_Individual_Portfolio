@@ -47,8 +47,9 @@ void CExplosion::Priority_Update(_float fTimeDelta)
 
 void CExplosion::Update(_float fTimeDelta)
 {
-	//if (!m_bStart)
-	//	return;
+	if (!m_bStart)
+		return;
+	
 	m_pTransformCom->Rotation(XMVectorSet(0.f, 1.f, 1.f, 0.f), 1.f);
 	auto scale = m_pTransformCom->Get_Scaled();
 	__super::Update(fTimeDelta);
@@ -59,6 +60,21 @@ void CExplosion::Update(_float fTimeDelta)
 		myPos.z -= (fTimeDelta);
 		m_pTransformCom->Set_Scale(scale.x + fTimeDelta * 0.009f, scale.y + fTimeDelta * 0.009f, scale.z + fTimeDelta * 0.009f);
 		m_pTransformCom->Set_State(STATE::POSITION, XMLoadFloat4(&myPos));
+
+		if (myPos.z < 1.5f && !m_bSoundStart) {
+			auto NuclearLayer = CGameInstance::Get().Find_Layer(CGameInstance::Get().GetCurLevelIndex(), L"Layer_Nuclear");
+			if (NuclearLayer == nullptr) return;
+			auto objects = NuclearLayer->GetObjects();
+			for (auto& obj : objects) {
+				if (obj->Get_Tag() == L"WhiteRect") {
+					static_pointer_cast<CUIObject>(obj)->Set_Render(true);
+					CGameInstance::Get().PlaySoundOne(L"whitenoise.wav", CHANNELID::SOUND_EFFECT, 0.02f);
+					m_bSoundStart = true;
+					break;
+				}
+			}
+		}
+		
 	}
 
 	//if (myPos.y < 0) {
@@ -89,6 +105,8 @@ void CExplosion::Late_Update(_float fTimeDelta)
 
 HRESULT CExplosion::Render()
 {
+	if (!m_bStart)
+		return E_FAIL;
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", CGameInstance::Get().Get_Transform(D3DTS::VIEW))))

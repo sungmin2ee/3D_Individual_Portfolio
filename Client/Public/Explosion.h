@@ -45,6 +45,7 @@ public:
 
 private:
 	_bool m_bStart = false;
+	_bool m_bSoundStart = false;
 };
 
 NS_END

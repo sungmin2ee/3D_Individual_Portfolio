@@ -1,5 +1,5 @@
 #include "Bomb.h"
-#include "Nuclear.h"
+#include "Explosion.h"
 #include "Layer.h"
 
 #include "GameInstance.h"
@@ -60,8 +60,10 @@ void CBomb::Update(_float fTimeDelta)
 		if (NuclearLayer == nullptr) return;
 		auto objects = NuclearLayer->GetObjects();
 		for (auto& obj : objects) {
-			if (obj->Get_Tag() == L"Nuclear") {
-				static_pointer_cast<CNuclear>(obj)->Set_Start();
+			if (obj->Get_Tag() == L"Explosion") {
+				static_pointer_cast<CExplosion>(obj)->Set_Start();
+				CGameInstance::Get().StopAll();
+				CGameInstance::Get().PlaySoundOne(L"atomic_bomb.wav", CHANNELID::SOUND_EFFECT, 1.f);
 				break;
 			}
 		}

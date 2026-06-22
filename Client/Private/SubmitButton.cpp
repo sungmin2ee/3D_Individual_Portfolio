@@ -85,6 +85,8 @@ void CSubmitButton::Late_Update(_float fTimeDelta)
 			if (CGameInstance::Get().Mouse_Down(DIMK::LBUTTON)) {
 				m_bButtonClicked = true;
 				m_pFixUI->Set_Render(false);
+				CGameInstance::Get().PlaySoundOne(L"plane.wav", CHANNELID::SOUND_EFFECT, 1.f);
+
 			}
 		}
 	}
@@ -98,6 +100,7 @@ void CSubmitButton::Late_Update(_float fTimeDelta)
 				if (obj->Get_Tag() == L"Bomb") {
 					static_pointer_cast<CBomb>(obj)->Set_Start();
 					m_bButtonClicked = false;
+
 					break;
 				}
 			}
