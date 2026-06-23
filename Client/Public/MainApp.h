@@ -50,7 +50,11 @@ private:
 
 private:
 	HRESULT Start_Level(LEVEL eStartLevelIndex);
+#ifdef DEBUG
     unique_ptr<class CImguiHandler>		m_pImguiHandler = { nullptr };
+
+#endif // DEBUG
+
     HRESULT Ready_Prototypes();
 
 public:

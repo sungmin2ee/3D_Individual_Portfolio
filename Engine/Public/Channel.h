@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Engine_Defines.h"
+#include "Bone.h"
 NS_BEGIN(Engine)
 
 class CChannel final

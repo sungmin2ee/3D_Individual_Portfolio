@@ -65,13 +65,13 @@ void CPlayer::Priority_Update(_float fTimeDelta)
 
 void CPlayer::Update(_float fTimeDelta)
 {
-	if (m_eNextLevel == LEVEL::STAGE2) {
-		_float4 mypos;
-		XMStoreFloat4(&mypos, m_pTransformCom->Get_State(STATE::POSITION));
-		_float4 newPos;
-		mypos.y = mypos.y + 0.29f;
-		m_pPlayerLight->Get_Desc().vPosition = mypos;
-	}
+	//if (m_eNextLevel == LEVEL::STAGE2) {
+	//	_float4 mypos;
+	//	XMStoreFloat4(&mypos, m_pTransformCom->Get_State(STATE::POSITION));
+	//	_float4 newPos;
+	//	mypos.y = mypos.y + 0.1f;
+	//	m_pPlayerLight->Get_Desc().vPosition = mypos;
+	//}
 	
 
 	__super::Update(fTimeDelta);

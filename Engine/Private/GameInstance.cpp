@@ -69,11 +69,15 @@ HRESULT CGameInstance::Initialize_Engine(const ENGINE_DESC& EngineDesc, ComPtr<I
         return E_FAIL;
 
 
+#ifdef DEBUG
 
     m_pImguiMgr = CImguiMgr::Create(EngineDesc);
     if (nullptr == m_pImguiMgr)
         return E_FAIL;
     m_pImguiMgr->Ready_Imgui(EngineDesc.hWnd, pOutDevice, pOutContext);
+#endif // DEBUG
+
+ 
     
 
 
@@ -111,7 +115,11 @@ void CGameInstance::Update_Engine(_float fTimeDelta)
     m_pPipeLine->Update();
     m_pCollider_Manager->Update();
 
+#ifdef DEBUG
     m_pImguiMgr->Update_Imgui();
+
+#endif // DEBUG
+
     m_pObject_Manager->Update(fTimeDelta);
 
     m_pObject_Manager->Late_Update(fTimeDelta);
@@ -134,8 +142,12 @@ HRESULT CGameInstance::Draw()
 
     //m_pFont_Manager->End(); // Batch 끝 (실제 출력)
 
+#ifdef DEBUG
     if (FAILED(m_pImguiMgr->Render_Imgui()))
         return E_FAIL;
+#endif // DEBUG
+
+
     return S_OK;
 }
 
@@ -571,8 +583,12 @@ void CGameInstance::Release_Engine()
     m_pThreadPool.reset();
     m_pPrototype_Manager.reset();
     m_pInput_Manager.reset();
+#ifdef DEBUG
     m_pImguiMgr->Free();
     m_pImguiMgr.reset();
+
+#endif // DEBUG
+
 
     m_pPipeLine.reset();
     m_pGraphic_Device->Shutdown();

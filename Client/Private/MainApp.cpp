@@ -52,16 +52,22 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;
 	if (FAILED(Start_Level(LEVEL::LOGO)))
 		return E_FAIL;
-
+#ifdef DEBUG
 	m_pImguiHandler = CImguiHandler::Create(EngineDesc, m_pDevice, m_pContext);
 	if (nullptr == m_pImguiHandler)
 		return E_FAIL;
 	m_pImguiHandler->Initialize();
+#endif // DEBUG
+
+	
 	return S_OK;
 }
 
 void CMainApp::Update(float fTimeDelta)
 {
+	CGameInstance::Get().Update_Engine(fTimeDelta);
+
+#ifdef DEBUG
 	if (CGameInstance::Get().Key_Up(DIK_HOME)) {
 		SaveLoadEnable = !SaveLoadEnable;
 	}
@@ -85,11 +91,14 @@ void CMainApp::Update(float fTimeDelta)
 			m_pImguiHandler->Load_Lights();
 		}
 	}
+	m_pImguiHandler->Handle_Imgui(CGameInstance::Get().GetCurLevelIndex(), fTimeDelta);
+
 	//D3D11_SAMPLER_DESC
 	//D3D11_DEPTH_STENCIL_DESC desc;
 
-	CGameInstance::Get().Update_Engine(fTimeDelta);
-	m_pImguiHandler->Handle_Imgui(CGameInstance::Get().GetCurLevelIndex(), fTimeDelta);
+#endif // DEBUG
+
+	
 }
 
 HRESULT CMainApp::Render()

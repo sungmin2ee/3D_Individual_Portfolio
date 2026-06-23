@@ -433,6 +433,8 @@ HRESULT CRenderer::Add_DebugComponent(shared_ptr<CComponent> pDebugComponent)
     return S_OK;
 }
 #endif
+#ifdef _DEBUG
+
 HRESULT CRenderer::Render_DEBUG()
 {
 
@@ -464,6 +466,8 @@ HRESULT CRenderer::Render_DEBUG()
 
     return S_OK;
 }
+#endif
+
 unique_ptr<CRenderer> CRenderer::Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext)
 {
     auto		pInstance = unique_ptr<CRenderer>(new CRenderer(pDevice, pContext));

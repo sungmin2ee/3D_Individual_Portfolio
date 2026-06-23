@@ -47,7 +47,7 @@ void CZombie_Idle::Enter(CBody_Zombie& owner)
     }
     else if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::DOORHIT) {
         
-        owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::DOORHIT), CGameInstance::Get().Random(0.5f, 1.f));
+        owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::DOORHIT), CGameInstance::Get().Random(1.f, 1.5f));
         CGameInstance::Get().PlaySoundLoop(L"doorHit.wav", owner.Get_RunChannelPtr(), 0.0f);
 
     }

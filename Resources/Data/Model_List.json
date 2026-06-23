@@ -57,16 +57,8 @@
             "PrototypeTag": "Prototype_Model_coffee_shop_02"
         },
         {
-            "FilePath": "../../Resources/Models/Cone.fbx",
-            "PrototypeTag": "Prototype_Model_Cone"
-        },
-        {
             "FilePath": "../../Resources/Models/Coupe_01.fbx",
             "PrototypeTag": "Prototype_Model_Coupe_01"
-        },
-        {
-            "FilePath": "../../Resources/Models/Cylinder.fbx",
-            "PrototypeTag": "Prototype_Model_Cylinder"
         },
         {
             "FilePath": "../../Resources/Models/DarkGreenTree.fbx",
@@ -131,10 +123,6 @@
         {
             "FilePath": "../../Resources/Models/footpath_right.fbx",
             "PrototypeTag": "Prototype_Model_footpath_right"
-        },
-        {
-            "FilePath": "../../Resources/Models/forensic_bench_02.fbx",
-            "PrototypeTag": "Prototype_Model_forensic_bench_02"
         },
         {
             "FilePath": "../../Resources/Models/garage_workshop_03.fbx",
@@ -513,16 +501,12 @@
             "PrototypeTag": "Prototype_Model_street_stop_sign"
         },
         {
-            "FilePath": "../../Resources/Models/ststst.fbx",
-            "PrototypeTag": "Prototype_Model_ststst"
-        },
-        {
             "FilePath": "../../Resources/Models/sun_chair.fbx",
             "PrototypeTag": "Prototype_Model_sun_chair"
         },
         {
-            "FilePath": "../../Resources/Models/test_bottom.fbx",
-            "PrototypeTag": "Prototype_Model_test_bottom"
+            "FilePath": "../../Resources/Models/test.fbx",
+            "PrototypeTag": "Prototype_Model_test"
         },
         {
             "FilePath": "../../Resources/Models/trafficlight_set_a_intersection.fbx",

@@ -36,7 +36,7 @@ void CLevel_Logo::Update(_float fTimeDelta)
 	if (m_bChangeLevel)
 	{
 		if (FAILED(CGameInstance::Get().Change_Level(ETOUI(LEVEL::LOADING),
-			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::SHELTER
+			CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL::STAGE2
 			))))
 			return;
 

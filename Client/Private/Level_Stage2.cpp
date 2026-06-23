@@ -197,15 +197,15 @@ HRESULT CLevel_Stage2::Ready_Lights()
 		return E_FAIL;
 	auto light = CGameInstance::Get().Get_Lights().back();
 	light->Set_Name(L"Police");
-
-
-	LightDesc.eType = LIGHT::SPOT;
-	LightDesc.vPosition = _float4(0.f, 0.f, 0.f, 0.f);
+	
+	
+	LightDesc.eType = LIGHT::POINT;
+	LightDesc.vPosition = _float4(0.7f, 0.65f, 0.65f, 0.f);
 	LightDesc.vDirection = _float4(0.f, -1.f, 0.f, 0.f);
-	LightDesc.vDiffuse = _float4(0.f, 0.f, 0.f, 1.f);
+	LightDesc.vDiffuse = _float4(0.7f, 0.65f, 0.65f, 1.f);
 	LightDesc.vAmbient = _float4(0.4f, 0.4f, 0.4f, 1.f);
-	LightDesc.vSpecular = _float4(0.2f, 0.2f, 0.2f, 1.f);
-	LightDesc.fRange = 0.7f;
+	LightDesc.vSpecular = _float4(0.f, 0.f, 0.f, 1.f);
+	LightDesc.fRange = 0.2f;
 	LightDesc.fAngle = 0.9f;
 	if (FAILED(CGameInstance::Get().Add_Light(LightDesc)))
 		return E_FAIL;

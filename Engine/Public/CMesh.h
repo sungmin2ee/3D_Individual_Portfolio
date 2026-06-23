@@ -61,6 +61,27 @@ private:
 	vector<_float4x4>	m_BoneMatrices;
 	vector<_float4x4>	m_OffsetMatrices;
 
-};
 
+
+};
+template HRESULT Engine::CMesh::Initialize_Binary<Engine::VTXMESH>(uint32_t matIndex, const vector<Engine::VTXMESH>& vertices, const vector<uint32_t>& indices, uint32_t numBones);
+template HRESULT Engine::CMesh::Initialize_Binary<Engine::VTXANIMMESH>(uint32_t matIndex, const vector<Engine::VTXANIMMESH>& vertices, const vector<uint32_t>& indices, uint32_t numBones);
+
+template std::shared_ptr<Engine::CMesh> Engine::CMesh::Create_Binary<Engine::VTXMESH>(
+	Microsoft::WRL::ComPtr<ID3D11Device> pDevice,
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext,
+	const std::vector<Engine::VTXMESH>& vertices,
+	const std::vector<uint32_t>& indices,
+	uint32_t matIndex,
+	uint32_t numBones
+);
+
+template std::shared_ptr<Engine::CMesh> Engine::CMesh::Create_Binary<Engine::VTXANIMMESH>(
+	Microsoft::WRL::ComPtr<ID3D11Device> pDevice,
+	Microsoft::WRL::ComPtr<ID3D11DeviceContext> pContext,
+	const std::vector<Engine::VTXANIMMESH>& vertices,
+	const std::vector<uint32_t>& indices,
+	uint32_t matIndex,
+	uint32_t numBones
+);
 NS_END
