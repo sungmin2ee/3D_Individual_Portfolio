@@ -186,9 +186,8 @@ HRESULT CLoader::Loading_For_Shelter()
 
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
 	//Map
-
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_Component_Texture_Map"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/map_35.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Resources/Textures/ShelterMap_%d.png"), 2))))
 		return E_FAIL;
 
 	if (FAILED(CGameInstance::Get().Add_Prototype(ETOUI(LEVEL::SHELTER), TEXT("Prototype_Component_Texture_MapPin"),

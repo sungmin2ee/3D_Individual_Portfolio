@@ -410,7 +410,7 @@ HRESULT CLevel_Shelter::Ready_Layer_Camera(const _wstring& strLayerTag)
 	
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STATIC), TEXT("Prototype_GameObject_Camera_Free"),
 		ETOUI(LEVEL::SHELTER), strLayerTag, &FreeDesc)))
-	//	return E_FAIL;
+		return E_FAIL;
 	return S_OK;
 }
 HRESULT CLevel_Shelter::Ready_Layer_Zombie(const _wstring& strLayerTag)

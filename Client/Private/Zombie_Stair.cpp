@@ -23,6 +23,8 @@ void CZombie_Stair::Enter(CBody_Zombie& owner)
     auto playerBody = static_pointer_cast<CPlayer>(player)->Get_Body();
     if (playerBody->Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_UP) {
         owner.Set_CurState(CBody_Zombie::ZOMBIE_STATE::STAIR_BOTTOM_ENTER);
+        owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::STAIR_BOTTOM_ENTER), false);
+
         m_fReleaseY = owner.Get_StairPos().y + 0.3f;
         if (owner.Get_CurDir() == CBody_Zombie::ZOMBIE_DIR::LEFT) {
             owner.Set_DirChanged();
@@ -40,7 +42,8 @@ void CZombie_Stair::Enter(CBody_Zombie& owner)
 
     owner.Set_UsingStair(true);
     CGameInstance::Get().PlaySoundLoop(L"zombieRun.wav", owner.Get_RunChannelPtr(), 1.0f);
-
+    animStart = true;
+    m_bAdjustingEnter = true;
 }
 
 void CZombie_Stair::Update(CBody_Zombie& owner, _float deltaTime)
@@ -49,20 +52,19 @@ void CZombie_Stair::Update(CBody_Zombie& owner, _float deltaTime)
     
     _float4 myPos;
     XMStoreFloat4(&myPos, owner.Get_Zombie().lock()->Get_Transform()->Get_State(STATE::POSITION));
-
-    if (!owner.Get_Rotating() && !m_bAdjustingEnter && !m_bEnterAnimFinished) {
-        if (owner.Get_CollidedStair()->Get_State() == CStair_Collider::STAIR_COLLIDER::STAIR_UP) {
-            owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::STAIR_BOTTOM_ENTER), false);
-            animStart = true;
-            m_bAdjustingEnter = true;
-
-        }
-        else  if (owner.Get_CollidedStair()->Get_State() == CStair_Collider::STAIR_COLLIDER::STAIR_DOWN) {
-            owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::STAIR_TOP_ENTER), false);
-            m_bAdjustingEnter = true;
-            animStart = true;
-        }
-    }
+    //if (!owner.Get_Rotating() && !m_bAdjustingEnter && !m_bEnterAnimFinished) {
+    //    if (owner.Get_CollidedStair()->Get_State() == CStair_Collider::STAIR_COLLIDER::STAIR_UP) {
+    //        owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::STAIR_BOTTOM_ENTER), false);
+    //        animStart = true;
+    //        m_bAdjustingEnter = true;
+    //
+    //    }
+    //    else  if (owner.Get_CollidedStair()->Get_State() == CStair_Collider::STAIR_COLLIDER::STAIR_DOWN) {
+    //        owner.Get_Model()->Set_Animation(ETOUI(CBody_Zombie::ZOMBIE_STATE::STAIR_TOP_ENTER), false);
+    //        m_bAdjustingEnter = true;
+    //        animStart = true;
+    //    }
+    //}
     if (m_bAdjustingEnter) {
         if (!owner.Get_Rotating()) {
             if (owner.Get_CurState() == CBody_Zombie::ZOMBIE_STATE::STAIR_TOP_ENTER) {

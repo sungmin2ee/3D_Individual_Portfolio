@@ -43,7 +43,6 @@ HRESULT CSearch_Collider::Initialize(void* pArg)
 void CSearch_Collider::Priority_Update(_float fTimeDelta)
 {
 	__super::Priority_Update(fTimeDelta);
-		
 }
 
 void CSearch_Collider::Update(_float fTimeDelta)
@@ -54,7 +53,7 @@ void CSearch_Collider::Update(_float fTimeDelta)
 
 void CSearch_Collider::Late_Update(_float fTimeDelta)
 {
-	CGameInstance::Get().Add_RenderObject(RENDERGROUP::ICON, SHARED_THIS(CSearch_Collider));
+	CGameInstance::Get().Add_RenderObject(RENDERGROUP::BLEND, SHARED_THIS(CSearch_Collider));
 
 	__super::Late_Update(fTimeDelta);
 

@@ -129,12 +129,12 @@ void CCamera_Free::Update(_float fTimeDelta)
 		}
 	}
 
-	//if (zoomIn) {
-	//	ZoomIn(playerBody);
-	//}
-	//else {
-	//	ZoomOut(playerBody);
-	//}
+	if (zoomIn) {
+		ZoomIn(playerBody);
+	}
+	else {
+		ZoomOut(playerBody);
+	}
 }
 
 void CCamera_Free::Late_Update(_float fTimeDelta)

@@ -39,7 +39,7 @@ private:
 
 private:
 	_bool m_bReset = { false };
-
+	_float	m_fTime = 0;
 public:
 	static unique_ptr<CMap> Create(ComPtr<ID3D11Device> pDevice, ComPtr<ID3D11DeviceContext> pContext);
 	virtual shared_ptr<CPrototype> Clone(void* pArg) override;

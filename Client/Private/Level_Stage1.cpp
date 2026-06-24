@@ -281,7 +281,8 @@ HRESULT CLevel_Stage1::Ready_Layer_Player(const _wstring& strLayerTag)
 	pDesc.fSpeedPerSec = 0.1f;
 	pDesc.fRotationPerSec = 720.f;
 	pDesc.nextLevel = LEVEL::STAGE1;
-	pDesc.pos = XMVectorSet(-3.5f, 0, -0, 1);
+	//pDesc.pos = XMVectorSet(0.5f, 0, -0, 1);
+	pDesc.pos = XMVectorSet(-4.5f, 0, -0, 1);
 
 	if (FAILED(CGameInstance::Get().Add_GameObject_toLayer(ETOUI(LEVEL::STAGE1), TEXT("Prototype_GameObject_Player"),
 		ETOUI(LEVEL::STAGE1), strLayerTag, &pDesc)))

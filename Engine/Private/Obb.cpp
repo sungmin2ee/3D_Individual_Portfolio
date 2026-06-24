@@ -19,38 +19,42 @@ HRESULT Obb::Initialize(void* pArg) {
 HRESULT Obb::Render()
 {
 
+#ifdef DEBUG
     if (FAILED(m_pShaderCom->Begin(0)))
         return E_FAIL;
-    
-    
+
+
     if (nullptr == m_pBuffer)
         return E_FAIL;
-    
+
     if (nullptr == m_pShaderCom) {
         return E_FAIL;
     }
-    
-    
+
+
     const _float4x4* view;
     const _float4x4* proj;
     view = CGameInstance::Get().Get_Transform(D3DTS::VIEW);
     proj = CGameInstance::Get().Get_Transform(D3DTS::PROJ);
-    
+
     if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
         return E_FAIL;
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", view)))
         return E_FAIL;
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", proj)))
         return E_FAIL;
-    
+
     _float4 vColor = m_bIsSelected ? _float4(1, 0, 0, 1) : _float4(0, 1, 0, 1);
     if (FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &vColor, sizeof(_float4))))
         return E_FAIL;
     //XMStoreFloat4x4(&cb.matWVP, XMMatrixTranspose(wvp));
-    
+
     //m_pBuffer->UpdateConstantBuffer(cb);
     m_pBuffer->Bind_Resources();
     m_pBuffer->Render();
+#endif // DEBUG
+
+  
     
     return S_OK;
 }

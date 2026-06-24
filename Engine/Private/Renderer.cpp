@@ -138,7 +138,6 @@ HRESULT CRenderer::Draw()
 
     if (FAILED(Render_Bright()))
         return E_FAIL;
-
     if (FAILED(Render_BlurX()))
         return E_FAIL;
 
@@ -147,14 +146,15 @@ HRESULT CRenderer::Draw()
 
     if (FAILED(Render_Final()))
         return E_FAIL;
+    if (FAILED(Render_Blocker()))
+        return E_FAIL;
     if (FAILED(Render_NonLights()))
         return E_FAIL;
 
     if (FAILED(Render_Blend()))
         return E_FAIL;
 
-    if (FAILED(Render_Blocker()))
-        return E_FAIL;
+
 
     if (FAILED(Render_UI()))
         return E_FAIL;
@@ -270,7 +270,7 @@ HRESULT CRenderer::Render_BlurX()
     if (FAILED(CGameInstance::Get().Begin_MRT(TEXT("MRT_BlurX"))))
         return E_FAIL;
 
-    CGameInstance::Get().Bind_RT_ShaderResource(TEXT("Target_Bright"), m_pShader, "g_BlurTexture");
+    CGameInstance::Get().Bind_RT_ShaderResource(TEXT("Target_Scene"), m_pShader, "g_BlurTexture");
 
     _float2 texel =
     {
@@ -325,11 +325,71 @@ HRESULT CRenderer::Render_BlurY()
 
     return S_OK;
 }
+//HRESULT CRenderer::Render_BlurX()
+//{
+//    if (FAILED(CGameInstance::Get().Begin_MRT(TEXT("MRT_BlurX"))))
+//        return E_FAIL;
+//
+//    CGameInstance::Get().Bind_RT_ShaderResource(TEXT("Target_Bright"), m_pShader, "g_BlurTexture");
+//
+//    _float2 texel =
+//    {
+//        1.f / CGameInstance::Get().Get_ViewportSize().x,
+//        1.f / CGameInstance::Get().Get_ViewportSize().y
+//    };
+//    m_pShader->Bind_RawValue(
+//        "g_vTexelSize",
+//        &texel,
+//        sizeof(_float2));
+//   // m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
+//   // m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
+//   // m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
+//
+//    m_pShader->Begin(ETOUI(DEFERRED::BLUR_X));
+//
+//    m_pVIBuffer->Bind_Resources();
+//    m_pVIBuffer->Render();
+//    if (FAILED(CGameInstance::Get().End_MRT()))
+//        return E_FAIL;
+//
+//
+//    return S_OK;
+//}
+//
+//HRESULT CRenderer::Render_BlurY()
+//{
+//    if (FAILED(CGameInstance::Get().Begin_MRT(TEXT("MRT_BlurY"))))
+//        return E_FAIL;
+//
+//    CGameInstance::Get().Bind_RT_ShaderResource(TEXT("Target_BlurX"), m_pShader, "g_BlurTexture");
+//
+//    //m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
+//    //m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix);
+//    //m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix);
+//    _float2 texel =
+//    {
+//        1.f / CGameInstance::Get().Get_ViewportSize().x,
+//        1.f / CGameInstance::Get().Get_ViewportSize().y
+//    };
+//    m_pShader->Bind_RawValue(
+//        "g_vTexelSize",
+//        &texel,
+//        sizeof(_float2));
+//    m_pShader->Begin(ETOUI(DEFERRED::BLUR_Y));
+//
+//    m_pVIBuffer->Bind_Resources();
+//    m_pVIBuffer->Render();
+//
+//    if (FAILED(CGameInstance::Get().End_MRT()))
+//        return E_FAIL;
+//
+//    return S_OK;
+//}
 
 HRESULT CRenderer::Render_Final()
 {
     CGameInstance::Get().Bind_RT_ShaderResource(TEXT("Target_Scene"),m_pShader, "g_SceneTexture");
-    CGameInstance::Get().Bind_RT_ShaderResource(TEXT("Target_BlurY"),m_pShader, "g_BloomTexture");
+    //CGameInstance::Get().Bind_RT_ShaderResource(TEXT("Target_BlurY"),m_pShader, "g_BloomTexture");
 
     m_pShader->Begin(ETOUI(DEFERRED::FINAL));
 
@@ -376,6 +436,7 @@ HRESULT CRenderer::Render_Blend()
 
 HRESULT CRenderer::Render_Blocker()
 {
+
     for (auto& pRenderObject : m_RenderObjects[ETOUI(RENDERGROUP::BLOCKER)])
     {
         if (nullptr != pRenderObject)

@@ -279,6 +279,7 @@ HRESULT CBlocker::Render()
 
 	if (FAILED(m_pTransformCom->Bind_ShaderResource(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
+	CGameInstance::Get().Bind_RT_ShaderResource(TEXT("Target_BlurY"),m_pShaderCom,"g_BlurTexture");
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", view)))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", proj)))
@@ -290,6 +291,15 @@ HRESULT CBlocker::Render()
 	if (FAILED(m_pShaderCom->Bind_RawValue("EndPoint", &m_fEndPoint,sizeof _float2)))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("ShadeStart", &m_fShadeStart, sizeof _float)))
+		return E_FAIL;
+
+	_float2 screenSize =
+	{
+		CGameInstance::Get().Get_ViewportSize().x,
+		CGameInstance::Get().Get_ViewportSize().y
+	};
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vScreenSize", &screenSize, sizeof _float2)))
 		return E_FAIL;
 	//if (m_bDoorClose || m_bDoorOpen) {
 		if (FAILED(m_pShaderCom->Bind_RawValue("DoorOpenClose", &m_fDoorOpenClose, sizeof _float)))

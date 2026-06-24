@@ -127,7 +127,6 @@ void CBody_Zombie::Update(_float fTimeDelta)
 		}
 
 		if (m_bPlayerDetected && !m_bUsingStairs) {
-
 			if (m_eCurState != ZOMBIE_STATE::KNOCKDOWN)
 				FocusPlayer();
 			if (m_ePrevDir != m_eCurDir) {
@@ -409,23 +408,24 @@ void CBody_Zombie::CheckColliding()
 
 void CBody_Zombie::FocusPlayer() {
 
+
 	auto layer = CGameInstance::Get().Find_Layer(ETOUI(CGameInstance::Get().GetCurLevelIndex()), TEXT("Layer_Player"));
 	if (layer == nullptr)
 		return;
 	auto player = layer->GetObjectFirst();
 	if (player == nullptr)
 		return;
-
-	if (static_pointer_cast<CPlayer>(player)->Get_Body()->Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_UP ||
-		static_pointer_cast<CPlayer>(player)->Get_Body()->Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_DOWN) {
+	_float4 myPos;
+	XMStoreFloat4(&myPos, m_pZombie.lock()->Get_Transform()->Get_State(STATE::POSITION));
+	if ((static_pointer_cast<CPlayer>(player)->Get_Body()->Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_UP ||
+		static_pointer_cast<CPlayer>(player)->Get_Body()->Get_CurState() == CBody_Player::PLAYER_STATE::STAIR_DOWN) && myPos.z != 0) {
 		return;
 	}
 	auto playerPos = player->Get_Transform()->Get_State(STATE::POSITION);
 
 	_float4 fPlayerPos; 
 	XMStoreFloat4(&fPlayerPos,playerPos);
-	_float4 myPos;
-	XMStoreFloat4(&myPos, m_pZombie.lock()->Get_Transform()->Get_State(STATE::POSITION));
+
 	if (m_eCurDir == ZOMBIE_DIR::FRONT) {
 		if (fabs(myPos.z - fPlayerPos.z) < 0.05f) {
 			if (myPos.x - fPlayerPos.x > 0) {
